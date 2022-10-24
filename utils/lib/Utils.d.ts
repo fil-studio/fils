@@ -1,4 +1,5 @@
 export declare function el(type: string, className?: string, parent?: HTMLElement): HTMLElement;
+export declare function webgl2(): boolean;
 export declare function webgl(): boolean;
 export declare function getDocumentHeight(): number;
 export declare function isMobile(): boolean;

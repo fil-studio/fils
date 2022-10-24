@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.copyToClipboard = exports.hasGetUserMedia = exports.isTouchDevice = exports.isDesktop = exports.getIOSVersion = exports.isIpad = exports.isIphone = exports.getAndroidVersion = exports.isSafari = exports.isBrowser = exports.isMobile = exports.getDocumentHeight = exports.webgl = exports.el = void 0;
+exports.copyToClipboard = exports.hasGetUserMedia = exports.isTouchDevice = exports.isDesktop = exports.getIOSVersion = exports.isIpad = exports.isIphone = exports.getAndroidVersion = exports.isSafari = exports.isBrowser = exports.isMobile = exports.getDocumentHeight = exports.webgl = exports.webgl2 = exports.el = void 0;
 function el(type, className, parent) {
     var e = document.createElement(type);
     if (className != undefined)
@@ -10,6 +10,12 @@ function el(type, className, parent) {
     return e;
 }
 exports.el = el;
+function webgl2() {
+    var canvas = document.createElement("canvas");
+    var gl = canvas.getContext("webgl2");
+    return (gl != null && gl instanceof WebGL2RenderingContext);
+}
+exports.webgl2 = webgl2;
 function webgl() {
     var canvas = document.createElement("canvas");
     var gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
