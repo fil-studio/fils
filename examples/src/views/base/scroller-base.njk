@@ -5,11 +5,19 @@
 
   <body class="scroller-base">
 
-    {% block content %}
-      <main data-template="{{ templateClass }}">
-        {{ content | safe }}
-      </main>
-    {% endblock %}
+    <div fil-scroller>
+      <div fil-scroller-holder>
+        <div fil-scroller-container>
+          <div fil-scroller-content>
+            {% block content %}
+              <main data-template="{{ templateClass }}">
+                {{ content | safe }}
+              </main>
+            {% endblock %}
+          </div>
+        </div>
+      </div>
+    </div>
   
     <script src="{{ '/' | url }}js/main.js"></script>
   </body>

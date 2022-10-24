@@ -133,7 +133,7 @@
   dependencies:
     three "^0.137.5"
 
-"@jocabola/math@^0.2.32", "@jocabola/math@^0.2.42":
+"@jocabola/math@^0.2.32":
   version "0.2.42"
   resolved "https://registry.yarnpkg.com/@jocabola/math/-/math-0.2.42.tgz#3c67c35da2dbbec2ac06aacbea787f9e33939593"
   integrity sha512-3vYIZyAA0p73JFqDTVkb1b+NFZ4gHAgDIl9/lKn5/dywW6kXywb5vNJRnzdY35MDsdIWP4IWNOsKGIhEi6n6Tg==

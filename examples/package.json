@@ -34,7 +34,6 @@
   "dependencies": {
     "@jocabola/gfx": "^0.4.92",
     "@jocabola/io": "^0.3.56",
-    "@jocabola/math": "^0.2.42",
     "@jocabola/utils": "^0.1.89",
     "@sanity/image-url": "^1.0.1",
     "gsap": "./gsap-bonus.tgz",

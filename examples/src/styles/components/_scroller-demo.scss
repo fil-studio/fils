@@ -1,0 +1,17 @@
+.scroller-base {
+
+	$base-color: #036;
+
+	@for $i from 1 through 20 {
+		section:nth-child(3n + #{$i}) {
+			background-color: lighten($base-color, $i * 5%);
+		}
+	}
+
+	section {
+		--section-height: 0.8;
+		width: 100%;
+		height: calc(var(--section-height) * 100vh);
+	}
+
+}

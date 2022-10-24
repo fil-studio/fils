@@ -23,5 +23,9 @@
 	"publishConfig": {
 		"access": "public",
 		"registry": "https://registry.npmjs.org/"
+	},
+	"dependencies": {
+		"@jocabola/math": "^0.2.42",
+		"three": "^0.145.0"
 	}
 }
