@@ -1,10 +1,10 @@
 {
 	"name": "@fils/gen",
-	"version": "0.0.1-0",
+	"version": "0.0.1-1",
 	"description": "Generative Package written in TypeScript",
 	"main": "lib/main.js",
 	"repository": "git@github.com:fil-studio/fils.git",
-	"homepage": "https://github.com/fil-studio/fils/tree/main/gfx",
+	"homepage": "https://github.com/fil-studio/fils/tree/main/gen",
 	"author": "fil studio <hello@fil.studio>",
 	"license": "Apache-2.0",
 	"private": false,
