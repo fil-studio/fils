@@ -4,7 +4,11 @@ Animation Package written in TypeScript.
 This is part of a series of packages that I use in my studio for personal and commercial web & [THREEjs](https://threejs.org) based work. It might remain undocumented for a long while but feel free to try it out!
 
 ### License
-© Copyright 2021, Eduard Prats Molner
+© Copyright 2022, fil studio
+
+fil is a studio with a creative tech soul. We build bespoke interactive journeys primarily using modern web technologies. We deliver tailored solutions for installations and on-line experiences using our internal toolkit + [ThreeJS](https://threejs.org).
+
+fil is the Catalan word for thread. We love threads cause we often talk about them when building applications and, at the same time, threads are something so organic, colourful and playful.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
