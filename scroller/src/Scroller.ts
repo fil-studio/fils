@@ -58,6 +58,12 @@ const style = `
 	[fil-scroller-content] * {
 		pointer-events: none;
 	}
+	[fil-scroller].fil-scroller-disabled [fil-scroller-container]{
+		position: relative;
+		overflow: auto;
+		top: unset;
+		left: unset;
+	}
 `;
 
 export default class Scroller {
@@ -95,7 +101,6 @@ export default class Scroller {
 			return;
 		}
 
-
 		this.create();
 	}
 
@@ -111,13 +116,13 @@ export default class Scroller {
 		if(this.disabled) return;
 		this.disabled = true;
 		this.html.content.style.transform = `translate3d(0, 0, 0)`;
-		this.html.scroller.classList.add('disabled');
+		this.html.holder.style.height = `auto`;
+		this.html.scroller.classList.add('fil-scroller-disabled');
 	}
-
 	enable(){
 		if(!this.disabled) return;
 		this.disabled = false;
-		this.html.scroller.classList.remove('disabled');
+		this.html.scroller.classList.remove('fil-scroller-disabled');
 	}
 
 
@@ -128,7 +133,6 @@ export default class Scroller {
 		const _styles = document.createElement('style');
 		_styles.textContent = style;
 		document.head.append(_styles);
-		
 
 	}
 
@@ -136,13 +140,28 @@ export default class Scroller {
 
 		this.addStyles();
 
-		if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-
 		const dom = this.html.scroller;
 		this.html.holder = dom.querySelector('[fil-scroller-holder]');
 		this.html.container = dom.querySelector('[fil-scroller-container]');
 		this.html.content = dom.querySelector('[fil-scroller-content]');
 
+		if(!this.html.holder){
+			console.warn('Fil Scroller - No `fil-scroller-holder` element');
+			return;
+		}
+		if(!this.html.container){
+			console.warn('Fil Scroller - No `fil-scroller-container` element');
+			return;
+		}
+		if(!this.html.content){
+			console.warn('Fil Scroller - No `fil-scroller-content` element');
+			return;
+		}
+
+		if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
+		console.log('Fil Scroller - Loaded');
+		
 		this.loaded = true;
 
 	}
@@ -151,6 +170,9 @@ export default class Scroller {
 		if(this.height === this.html.content.offsetHeight) return;
 
 		this.height = this.html.content.offsetHeight;
+
+		if(this.disabled) return;
+		
 		this.html.holder.style.height = `${this.height}px`;    
 	}
 
