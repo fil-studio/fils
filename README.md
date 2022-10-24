@@ -10,6 +10,18 @@ It might remain undocumented for a long while but feel free to try it out!
 | Package | Description |
 |:--|:--|
 | [@fils/ani](https://www.npmjs.com/package/@fils/ani) | Easing functions and animation utilities. |
+|:--|:--|
+| [@fils/gen](https://www.npmjs.com/package/@fils/gen) | Vertex Buffer Generators for procedural geometries. |
+|:--|:--|
+| [@fils/gfx](https://www.npmjs.com/package/@fils/gfx) | GFX package for WebGL & ThreeJS Utilities. |
+|:--|:--|
+| [@fils/io](https://www.npmjs.com/package/@fils/io) | Utilities for loading data, assets & creating assets bundles. |
+|:--|:--|
+| [@fils/math](https://www.npmjs.com/package/@fils/math) | Math utilities and better Random. |
+|:--|:--|
+| [@fils/phy](https://www.npmjs.com/package/@fils/phy) | Verlet Physics package. |
+|:--|:--|
+| [@fils/utils](https://www.npmjs.com/package/@fils/utils) | Utils and FileUtils for the web. |
 
 ## License
 © Copyright 2022, fil studio
