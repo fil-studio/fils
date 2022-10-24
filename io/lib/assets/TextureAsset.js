@@ -1,0 +1,27 @@
+import { TextureLoader } from 'three';
+import { TextureUtils } from '../utils/TextureUtils';
+import { Asset } from "./Asset";
+const loader = new TextureLoader();
+export class TextureAsset extends Asset {
+    constructor(url, opts = null) {
+        super(url);
+        this.options = opts;
+    }
+    load(callback = null) {
+        loader.load(this.url, (texture) => {
+            this.content = texture;
+            if (this.options)
+                TextureUtils.applyTextureOptions(texture, this.options);
+            if (callback != null)
+                callback();
+            this._loaded = true;
+        }, (event) => { }, (event) => {
+            console.warn('Error Loading Image Asset');
+            this._failed = true;
+        });
+    }
+    destroy() {
+        this.content.dispose();
+        super.destroy();
+    }
+}
