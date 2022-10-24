@@ -10,6 +10,7 @@ It might remain undocumented for a long while but feel free to try it out!
 | Package | Description |
 |:--|:--|
 | [@fils/ani](https://www.npmjs.com/package/@fils/ani) | Easing functions and animation utilities. |
+| [@fils/scroller](https://www.npmjs.com/package/@fils/scroller) | Smooth Secroller by sections. |
 
 ## License
 © Copyright 2022, fil studio
