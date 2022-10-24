@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/js/core/App.ts", "../../src/js/main.js"],
+  "sourcesContent": ["\nexport class App {\n\tconstructor(){\n\t\t\n\t}\n}\n", "const { App } = require(\"./core/App\");\nexport const _App = new App();\n//# sourceMappingURL=main.js.map\n"],
+  "mappings": "qcAAA,IAAAA,EAAA,GAAAC,EAAAD,EAAA,SAAAE,IAAA,IACaA,EADbC,EAAAC,EAAA,KACaF,EAAN,KAAU,CAChB,aAAa,CAEb,CACD,ICLA,GAAM,CAAE,IAAAG,CAAI,EAAI,WACHC,EAAO,IAAID",
+  "names": ["App_exports", "__export", "App", "init_App", "__esmMin", "App", "_App"]
+}

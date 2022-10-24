@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  {% include "head.njk" %}
+
+  <body class="default-base">
+
+    {% block content %}
+      <main data-template="{{ templateClass }}">
+        {{ content | safe }}
+      </main>
+    {% endblock %}
+  
+    <script src="{{ '/' | url }}js/main.js"></script>
+  </body>
+
+</html>

@@ -1,0 +1,124 @@
+/* mixins.scss */
+
+/* MEDIAS */
+/* LARGE DESKTOP */
+@mixin lg {
+  @media only screen and (min-width: 1300px) {
+    @content;
+  }
+}
+
+@mixin laptop {
+  @media only screen and (min-width: 1025px) and (max-height: 800px) {
+    @content;
+  }
+}
+@mixin tabletHorizontal {
+  @media only screen and (max-width: 1025px) and (max-height: 769px) {
+    @content;
+  }
+}
+
+/* MEDIUM DESKTOP */
+@mixin md {
+  @media only screen and (min-width: 1025px) {
+    @content;
+  }
+}
+
+/* TABLET> */
+@mixin sm {
+  @media only screen and (max-device-width: 1024px),
+    only screen and (max-width: 1024px) {
+    @content;
+  }
+}
+
+/* MOBILE */
+@mixin xs {
+  @media only screen and (max-device-width: 767px),
+    only screen and (max-width: 767px) {
+    @content;
+  }
+}
+/* MOBILE */
+@mixin xxs {
+  @media only screen and (max-device-width: 400px),
+    only screen and (max-width: 500px) {
+    @content;
+  }
+}
+@mixin xxxs {
+  @media only screen and (max-device-width: 374px),
+    only screen and (max-width: 374px) {
+    @content;
+  }
+}
+
+/* MAX TABLET< */
+@mixin maxsm {
+  @media only screen and (max-device-width: 1024px),
+    only screen and (max-width: 1024px) {
+    @content;
+  }
+}
+
+/* ONLY TABLET */
+@mixin osm {
+  @media only screen and (max-width: 1024px) and (min-width: 768px) {
+    @content;
+  }
+}
+@mixin monitor {
+  @media only screen and (min-width: 1025px) {
+    @content;
+  }
+}
+@mixin device {
+  @media only screen and (max-width: 1024px) {
+    @content;
+  }
+}
+
+@mixin grid-layout {
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: repeat(12, 1fr);
+}
+%grid-layout {
+  @include grid-layout;
+}
+.grid-layout {
+  @extend %grid-layout;
+}
+
+@mixin flexible-spacing {
+  padding: 100px 0;
+
+  @include xs {
+    padding: 50px 0;
+  }
+}
+
+/* Bg images aspect ratio */
+/* @include aspect-ratio(4,3); */
+@mixin aspect-ratio($width, $height) {
+  position: relative;
+  &:before {
+    display: block;
+    content: '';
+    width: 100%;
+    padding-top: ($height / $width) * 100%;
+  }
+}
+
+// --------------------------------------------- 100vh fallback
+// @mixin height($total) {
+//   height: calc(#{$total} * 1vh);
+//   height: calc(var(--vh, 1vh) * #{$total});
+// }
+// @mixin min-height($total) {
+//   min-height: calc(#{$total} * 1vh);
+//   min-height: calc(var(--vh, 1vh) * #{$total});
+// }
+

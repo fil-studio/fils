@@ -12,9 +12,9 @@
 		"prepare": "yarn build",
 		"build": "tsc --build tsconfig.scroller.json"
 	},
+	"type": "module",
 	"files": [
 		"lib",
-		"examples",
 		"README.md"
 	],
 	"devDependencies": {
