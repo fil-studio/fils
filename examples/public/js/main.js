@@ -12904,6 +12904,9 @@
 		left: 0;
 		overflow: hidden;
 		pointer-events: none;
+
+		top: 100%;
+
 	}
 	[fil-scroller-content] {
 		position: relative;
@@ -12934,10 +12937,12 @@
             current: 0,
             target: 0
           };
+          this.sections = [];
           this.loaded = false;
           this.paused = false;
           this.disabled = false;
           this.height = 0;
+          this.wh = 0;
           this.ease = 0.1;
           this.position.current = 0;
           this.position.target = 0;
@@ -12947,7 +12952,6 @@
             return;
           }
           this.create();
-          this.disable();
         }
         pause() {
           this.paused = true;
@@ -12975,28 +12979,51 @@
           _styles.textContent = style;
           document.head.append(_styles);
         }
-        create() {
-          this.addStyles();
+        addHTML() {
           const dom = this.html.scroller;
           this.html.holder = dom.querySelector("[fil-scroller-holder]");
           this.html.container = dom.querySelector("[fil-scroller-container]");
           this.html.content = dom.querySelector("[fil-scroller-content]");
-          if (!this.html.holder) {
-            console.warn("Fil Scroller - No `fil-scroller-holder` element");
-            return;
+        }
+        addSections() {
+          const sections = this.html.content.querySelectorAll("[fil-scroller-section]");
+          for (const _section of sections) {
+            const section = {
+              dom: _section,
+              rect: null,
+              visible: false
+            };
+            this.sections.push(section);
           }
-          if (!this.html.container) {
-            console.warn("Fil Scroller - No `fil-scroller-container` element");
-            return;
-          }
-          if (!this.html.content) {
-            console.warn("Fil Scroller - No `fil-scroller-content` element");
-            return;
-          }
+        }
+        restore() {
+          for (const section of this.sections)
+            section.rect = section.dom.getBoundingClientRect();
+          this.wh = window.innerHeight;
+        }
+        onResize() {
+          this.restore();
+        }
+        addEventListeners() {
+          window.addEventListener("resize", () => {
+            this.onResize();
+          });
+        }
+        create() {
+          this.addStyles();
+          this.addHTML();
+          this.addSections();
+          this.addEventListeners();
+          this.restore();
           if ("scrollRestoration" in history)
             history.scrollRestoration = "manual";
           console.log("Fil Scroller - Loaded");
           this.loaded = true;
+        }
+        updateTarget() {
+          this.position.target = this.html.scroller.scrollTop;
+          if (this.paused)
+            this.html.scroller.scrollTop = this.position.current;
         }
         updateCheckHeight() {
           if (this.height === this.html.content.offsetHeight)
@@ -13016,16 +13043,25 @@
             this.position.target,
             this.ease
           );
-          this.html.content.style.transform = `translate3d(0, ${-this.position.current}px, 0)`;
+        }
+        updateSections() {
+          console.log(this.position.target + this.wh, this.sections[3].rect.top + this.sections[3].rect.height);
+          for (let i = 0, len = this.sections.length; i < len; i++) {
+            const section = this.sections[i];
+            const rect = section.rect;
+            if (this.position.current > rect.top && this.position.current < rect.top + rect.height)
+              section.dom.classList.add("visible");
+            else
+              section.dom.classList.remove("visible");
+          }
         }
         update() {
           if (!this.loaded)
             return;
-          this.position.target = this.html.scroller.scrollTop;
-          if (this.paused)
-            this.html.scroller.scrollTop = this.position.current;
+          this.updateTarget();
           this.updateCheckHeight();
           this.updateScrollValues();
+          this.updateSections();
         }
       };
     }
