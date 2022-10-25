@@ -187,7 +187,11 @@ export default class Scroller {
 	}
 
 	restore(){
-		for(const section of this.sections) section.rect = section.dom.getBoundingClientRect();
+		for(const section of this.sections) {
+			section.dom.classList.remove('visible');
+			section.dom.style.transform = 'none';
+			section.rect = section.dom.getBoundingClientRect();			
+		}
 		this.wh = window.innerHeight;
 	}
 

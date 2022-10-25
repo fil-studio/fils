@@ -13013,8 +13013,12 @@
           }
         }
         restore() {
-          for (const section of this.sections)
+          for (const section of this.sections) {
+            section.dom.classList.remove("visible");
+            section.dom.style.transform = "none";
             section.rect = section.dom.getBoundingClientRect();
+            console.log(section.rect);
+          }
           this.wh = window.innerHeight;
         }
         onResize() {
@@ -13024,7 +13028,6 @@
           window.addEventListener("resize", () => {
             this.onResize();
           });
-          console.log("AddEventListeners");
           let timeout;
           const disableScroll = () => {
             if (timeout)
@@ -13035,11 +13038,9 @@
             }, 100);
           };
           window.addEventListener("wheel", () => {
-            console.log("Wheel");
             disableScroll();
           });
           window.addEventListener("touchmove", () => {
-            console.log("Touchmove");
             disableScroll();
           });
         }
