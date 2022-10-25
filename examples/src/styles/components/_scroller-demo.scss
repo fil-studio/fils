@@ -12,6 +12,23 @@
 		--section-height: 0.8;
 		width: 100%;
 		height: calc(var(--section-height) * 100vh);
+		border: 1px solid red;
+
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		a {
+			width: 80%;
+			height: 200px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			background-color: blue;
+			border: 2px solid white;
+			color: white;
+			cursor: pointer;
+		}
 	}
 
 }

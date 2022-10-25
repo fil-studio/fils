@@ -34,8 +34,9 @@ const style = `
 		position: relative;
 		width: 100%;
 		height: 100vh;
-		overflow-y: auto;
 		pointer-events: all;
+		overflow-y: scroll;
+		-webkit-overflow-scrolling: touch;
 	}
 	[fil-scroller-holder] {
 		pointer-events: none;
@@ -48,9 +49,6 @@ const style = `
 		left: 0;
 		overflow: hidden;
 		pointer-events: none;
-
-		top: 100%;
-
 	}
 	[fil-scroller-content] {
 		position: relative;
@@ -62,11 +60,28 @@ const style = `
 	[fil-scroller-content] * {
 		pointer-events: none;
 	}
+	[fil-scroller-content] [fil-scroller-pointer] {
+		pointer-events: all;
+	}
+
+	.scrolling [fil-scroller-content] [fil-scroller-pointer] {
+		pointer-events: none;
+	}
+
 	[fil-scroller].fil-scroller-disabled [fil-scroller-container]{
 		position: relative;
 		overflow: auto;
 		top: unset;
 		left: unset;
+	}
+
+	[fil-scroller-section]{
+		opacity: 0;
+		visibility: hidden;
+	}
+	[fil-scroller-section].visible {
+		opacity: 1;
+		visibility: visible;
 	}
 `;
 
@@ -92,7 +107,9 @@ export default class Scroller {
 
 	height: number = 0;
 	wh: number = 0;
-	ease: number = 0.1
+	ease: number = 0.1;
+
+	pointerElements:NodeListOf<HTMLElement>;
 
 	constructor(){
 
@@ -149,6 +166,8 @@ export default class Scroller {
 		this.html.container = dom.querySelector('[fil-scroller-container]');
 		this.html.content = dom.querySelector('[fil-scroller-content]');
 
+		this.pointerElements = dom.querySelectorAll('[fil-scroller-pointer]');
+
 	}
 
 	addSections(){
@@ -176,8 +195,24 @@ export default class Scroller {
 		this.restore();
 	}
 	addEventListeners(){
+
 		window.addEventListener('resize', () => {
 			this.onResize();
+		})
+		
+		let timeout; 
+		const disableScroll = () => {
+			if(timeout) clearTimeout(timeout);
+			document.documentElement.classList.add('scrolling')
+			timeout = setTimeout(() => {
+				document.documentElement.classList.remove('scrolling')
+			}, 100)
+		}
+		window.addEventListener('wheel', () => {
+			disableScroll();
+		})
+		window.addEventListener('touchmove', () => {
+			disableScroll();
 		})
 	}
 
@@ -207,9 +242,8 @@ export default class Scroller {
 	}
 
 	updateCheckHeight(){
-		if(this.height === this.html.content.offsetHeight) return;
-
-		this.height = this.html.content.offsetHeight;
+		this.height = 0;
+		for(let i = 0, len = this.sections.length; i < len; i++) this.height += this.sections[i].rect.height;
 
 		if(this.disabled) return;
 		
@@ -231,16 +265,34 @@ export default class Scroller {
 	}
 
 	updateSections(){
-		console.log(this.position.target + this.wh, this.sections[3].rect.top + this.sections[3].rect.height);
+		
+		const scroll = this.position.target;	
 		
 		for(let i = 0, len = this.sections.length; i < len; i++){
 			const section = this.sections[i];
-			const rect = section.rect;
-
-			if(this.position.current > rect.top && this.position.current < rect.top + rect.height) section.dom.classList.add('visible');
-			else section.dom.classList.remove('visible');
-
+			const top = section.rect.top;
+			const bottom = section.rect.top + section.rect.height;
 			
+			// if(scroll - this.wh <= top ) {
+			if(scroll + this.wh >= top && scroll <= bottom ) {
+				
+				section.visible = true;
+				section.dom.classList.add('visible')
+				section.dom.style.transform = `translateY(${-scroll}px)`;
+			
+
+				continue;
+			}
+
+			if(!section.visible) continue;
+
+			section.visible = false;
+			section.dom.classList.remove('visible');
+			section.dom.style.transform = `translateY(${-this.wh}px)`;
+
+		
+
+
 		}
 	}
 
