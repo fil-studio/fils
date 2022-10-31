@@ -14,6 +14,13 @@ export * from './utils/GfxUtils';
 export * from './sim/Simulator';
 export * from './sim/LEDScreenTile';
 export * from './utils/EquirectangularToCubemap';
+export * from './vfx/VFXRenderer';
+
+import rgb from './glsl/lib/rgbSplit.glsl';
+
+const gfxShaders = {
+	rgbSplit: rgb
+}
 
 export {
 	glInfo,
@@ -27,5 +34,6 @@ export {
 	FXAAPass,
 	Sketch,
 	WebGLSketch,
-	RenderOptions
+	RenderOptions,
+	gfxShaders
 }

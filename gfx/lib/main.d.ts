@@ -13,4 +13,8 @@ export * from './utils/GfxUtils';
 export * from './sim/Simulator';
 export * from './sim/LEDScreenTile';
 export * from './utils/EquirectangularToCubemap';
-export { glInfo, RTHelper, RTUtils, RenderComposer, RenderPass, BlurPass, BlurSettings, DoFPass, FXAAPass, Sketch, WebGLSketch, RenderOptions };
+export * from './vfx/VFXRenderer';
+declare const gfxShaders: {
+    rgbSplit: string;
+};
+export { glInfo, RTHelper, RTUtils, RenderComposer, RenderPass, BlurPass, BlurSettings, DoFPass, FXAAPass, Sketch, WebGLSketch, RenderOptions, gfxShaders };
