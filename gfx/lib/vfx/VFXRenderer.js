@@ -8,15 +8,22 @@ const COMP = new RawShaderMaterial({
     uniforms: {
         tScene: { value: null },
         tGlow: { value: null },
-        glowStrength: { value: 1.8 },
+        exposure: { value: 1.2 },
+        gamma: { value: 1.8 },
         rgbStrength: { value: 0.5 },
         rgbDelta: { value: new Vector2() },
-        rgb: { value: false }
+        rgb: { value: false },
+        renderGlow: { value: true },
+        renderScene: { value: true }
     },
     transparent: true
 });
 export class VFXRenderer {
     constructor(renderer, width, height, settings) {
+        this.showGlow = true;
+        this.showScene = true;
+        this.exposure = COMP.uniforms.exposure.value;
+        this.gamma = COMP.uniforms.gamma.value;
         this.rnd = renderer;
         const w = width * window.devicePixelRatio;
         const h = height * window.devicePixelRatio;
@@ -27,16 +34,19 @@ export class VFXRenderer {
         this.sceneRT['samples'] = 4;
         this.sceneRT.texture[0].name = 'diffuse';
         this.sceneRT.texture[1].name = 'glow';
-        const bs = settings && settings.glowSettings ?
-            settings.glowSettings : {
+        const bs = settings && settings.blurSettings ?
+            settings.blurSettings : {
             scale: .3,
             radius: 1,
             iterations: 8,
             quality: 0
         };
         this.glow = new BlurPass(this.sceneRT.texture[1], w, h, bs);
-        if (settings && settings.glowStrength) {
-            COMP.uniforms.glowStrength.value = settings.glowStrength;
+        if (settings && settings.exposure) {
+            this.exposure = settings.exposure;
+        }
+        if (settings && settings.gamma) {
+            this.gamma = settings.gamma;
         }
         if (settings && settings.rgbStrength) {
             COMP.uniforms.rgb.value = true;
@@ -56,14 +66,22 @@ export class VFXRenderer {
         this.sceneRT.setSize(w, h);
         this.glow.setSize(w, h);
     }
+    updateUniforms() {
+        const u = COMP.uniforms;
+        u.exposure.value = this.exposure;
+        u.gamma.value = this.gamma;
+        u.renderGlow.value = this.showGlow;
+        u.renderScene.value = this.showScene;
+        u.tScene.value = this.sceneRT.texture[0];
+        u.tGlow.value = this.glow.texture;
+    }
     render(scene, camera, target = null) {
         this.rnd.autoClear = true;
         this.rnd.setRenderTarget(this.sceneRT);
         this.rnd.render(scene, camera);
         this.glow.renderInternal(this.rnd);
         this.rnd.setRenderTarget(null);
-        COMP.uniforms.tScene.value = this.sceneRT.texture[0];
-        COMP.uniforms.tGlow.value = this.glow.texture;
+        this.updateUniforms();
         if (target) {
             RTUtils.renderToRT(target, this.rnd, COMP);
         }
