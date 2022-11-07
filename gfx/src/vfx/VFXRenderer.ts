@@ -21,25 +21,33 @@ const COMP = new RawShaderMaterial({
     uniforms: {
         tScene: {value: null},
         tGlow: {value: null},
-        glowStrength: {value: 1.8},
+        exposure: {value: 1.2},
+        gamma: {value: 1.8},
         rgbStrength: {value: 0.5},
         rgbDelta: {value: new Vector2()},
-        rgb: {value: false}
+        rgb: {value: false},
+        renderGlow: {value: true},
+        renderScene: {value: true}
     },
     transparent: true
 });
 
 export type VFXCompSettings = {
-    glowSettings?:BlurSettings;
+    blurSettings?:BlurSettings;
     rgbStrength?:number;
     rgbDelta?:Vector2;
-    glowStrength?:number;
+    exposure?:number;
+    gamma?:number;
 }
 
 export class VFXRenderer {
     rnd:WebGLRenderer;
     sceneRT:WebGLMultipleRenderTargets;
     glow:BlurPass;
+    showGlow:boolean = true;
+    showScene:boolean = true;
+    exposure:number = COMP.uniforms.exposure.value;
+    gamma:number =  COMP.uniforms.gamma.value;
 
     constructor(renderer:WebGLRenderer, width:number, height:number, settings?:VFXCompSettings) {
         this.rnd = renderer;
@@ -59,8 +67,8 @@ export class VFXRenderer {
         /* this.sceneRT['depthTexture'] = new DepthTexture(w, h, FloatType);
         this.sceneRT['depthTexture'].format = DepthFormat; */
 
-        const bs:BlurSettings = settings && settings.glowSettings ?
-        settings.glowSettings : {
+        const bs:BlurSettings = settings && settings.blurSettings ?
+        settings.blurSettings : {
             scale: .3,
             radius: 1,
             iterations: 8,
@@ -69,8 +77,12 @@ export class VFXRenderer {
 
         this.glow = new BlurPass(this.sceneRT.texture[1], w, h, bs);
 
-        if(settings && settings.glowStrength) {
-            COMP.uniforms.glowStrength.value = settings.glowStrength;
+        if(settings && settings.exposure) {
+            this.exposure = settings.exposure;
+        }
+
+        if(settings && settings.gamma) {
+            this.gamma = settings.gamma;
         }
 
         if(settings && settings.rgbStrength) {
@@ -96,6 +108,17 @@ export class VFXRenderer {
         this.glow.setSize(w, h);
     }
 
+    private updateUniforms() {
+        const u = COMP.uniforms;
+        u.exposure.value = this.exposure;
+        u.gamma.value = this.gamma;
+        u.renderGlow.value = this.showGlow;
+        u.renderScene.value = this.showScene;
+
+        u.tScene.value = this.sceneRT.texture[0];
+        u.tGlow.value = this.glow.texture;
+    }
+
     render(scene:Scene, camera:PerspectiveCamera|OrthographicCamera, target:WebGLRenderTarget=null) {
         this.rnd.autoClear = true;
         // this.rnd.setClearColor(0x000000, 1);
@@ -109,8 +132,7 @@ export class VFXRenderer {
         this.rnd.setRenderTarget(null);
 
         // final comp
-        COMP.uniforms.tScene.value = this.sceneRT.texture[0];
-        COMP.uniforms.tGlow.value = this.glow.texture;
+        this.updateUniforms();
 
         if(target) {
             RTUtils.renderToRT(target, this.rnd, COMP);

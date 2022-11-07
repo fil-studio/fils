@@ -15,6 +15,7 @@ export * from './sim/Simulator';
 export * from './sim/LEDScreenTile';
 export * from './utils/EquirectangularToCubemap';
 export * from './vfx/VFXRenderer';
+export * from './vfx/MaterialUtils';
 
 import rgb from './glsl/lib/rgbSplit.glsl';
 
