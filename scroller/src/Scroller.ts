@@ -79,7 +79,7 @@ const style = `
 		opacity: 0;
 		visibility: hidden;
 	}
-	[fil-scroller-section].visible {
+	[fil-scroller-section].fil-scroller-visible {
 		opacity: 1;
 		visibility: visible;
 	}
@@ -101,13 +101,14 @@ export default class Scroller {
 	sections:Array<Section> = [];
 
 	private loaded: boolean = false;
-
-	paused: boolean = false;
-	disabled: boolean = false;
+	private paused: boolean = false;
+	private disabled: boolean = false;
 
 	height: number = 0;
-	wh: number = 0;
+	private wh: number = 0;
 	private _ease: number = 0.1;
+
+	private delta: number = 0;
 
 	pointerElements:NodeListOf<HTMLElement>;
 
@@ -217,7 +218,7 @@ export default class Scroller {
 			document.documentElement.classList.add('scrolling')
 			timeout = setTimeout(() => {
 				document.documentElement.classList.remove('scrolling')
-			}, 100)
+			}, 20)
 		}
 		window.addEventListener('wheel', () => {
 			disableScroll();
@@ -268,12 +269,16 @@ export default class Scroller {
 			return
 		}
 
+		const previous = this.position.current;
+
 		this.position.current = MathUtils.lerp(
 			this.position.current, 
 			this.position.target,
 			this.ease
 		);
-		
+
+		const newDelta = (this.position.current - previous) * 0.01;	
+		this.delta = 	MathUtils.clamp(MathUtils.lerp(this.delta, newDelta, this.ease), -1, 1)
 	}
 
 	updateSections(){
@@ -288,7 +293,7 @@ export default class Scroller {
 			if(scroll + this.wh >= top && scroll <= bottom ) {
 				
 				section.visible = true;
-				section.dom.classList.add('visible')
+				section.dom.classList.add('fil-scroller-visible')
 				section.dom.style.transform = `translateY(${-scroll}px)`;
 			
 
@@ -298,7 +303,7 @@ export default class Scroller {
 			if(!section.visible) continue;
 
 			section.visible = false;
-			section.dom.classList.remove('visible');
+			section.dom.classList.remove('fil-scroller-visible');
 			section.dom.style.transform = `translateY(${-this.wh}px)`;
 
 		}
@@ -314,6 +319,8 @@ export default class Scroller {
 		this.updateScrollValues();
 
 		this.updateSections();
+
+		this.html.container.style.setProperty('--fil-scroller-delta', `${this.delta.toFixed(5)}`);		
 
 	}
 }
