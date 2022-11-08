@@ -32,7 +32,13 @@
 		"sass": "^1.55.0"
 	},
 	"dependencies": {
-		"stats.js": "^0.17.0",
+		"@fils/ani": "^0.0.2-0",
+		"@fils/gen": "^0.0.1-1",
+		"@fils/gfx": "^0.0.1-48",
+		"@fils/io": "^0.0.1-1",
+		"@fils/math": "^0.0.1-0",
+		"@fils/phy": "^0.0.1-1",
+		"@fils/utils": "^0.0.1-0",
 		"three": "^0.146.0"
 	}
 }

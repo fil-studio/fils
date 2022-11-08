@@ -1,8 +1,9 @@
-import { WebGLSketch } from '../../../../../gfx/src/prototype/WebGLSketch'; // @fils/gfx/WebGLSketch
+// import { WebGLSketch } from '../../../../gfx/src/prototype/WebGLSketch'; // @fils/gfx/WebGLSketch
 import { BoxGeometry, CylinderGeometry, DirectionalLight, Mesh, MeshPhongMaterial, ShaderChunk, SphereGeometry, TorusKnotGeometry } from 'three';
-import { initMaterial } from '../../../../../gfx/src/vfx/MaterialUtils';
-import { VFXRenderer } from '../../../../../gfx/src/vfx/VFXRenderer';
-import { gfxShaders } from '@fils/gfx';
+// import { initMaterial } from '../../../../gfx/src/vfx/MaterialUtils';
+// import { VFXRenderer } from '../../../../gfx/src/vfx/VFXRenderer';
+// import { gfxShaders } from '../../../../gfx';
+import { gfxShaders, initMaterial, VFXRenderer, WebGLSketch } from '@fils/gfx';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 
@@ -11,7 +12,7 @@ const BALL_GEO = new SphereGeometry(1);
 const CYL_GEO = new CylinderGeometry(.1,.1,1,32,8);
 const TOR_GEO = new TorusKnotGeometry(10,2,64,32,2,3);
 
-export class App extends WebGLSketch {
+export class SelectiveGlowDemo extends WebGLSketch {
 	customRenderer:VFXRenderer;
 	meshes:Array<Mesh> = [];
 

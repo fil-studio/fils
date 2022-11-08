@@ -63,9 +63,9 @@
 
 	.section-3 {
 		h2, p {
-			transform: skewY(calc(-1 * var(--fil-scroller-delta) * 20deg));
+			transform: rotateZ(calc(-1 * var(--fil-scroller-delta) * 20deg));
 			@include xs {
-				transform: skewY(calc(-1 * var(--fil-scroller-delta) * 30deg));
+				transform: rotateZ(calc(-1 * var(--fil-scroller-delta) * 30deg));
 			}
 			will-change: transform;
 		}

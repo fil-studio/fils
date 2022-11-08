@@ -17,7 +17,7 @@ interface Section {
 	dom: HTMLElement,
 	rect: DOMRect,
 	visible: boolean,
-	range: number,
+	progress: number,
 	animationIn: Function,
 	animationOut: Function
 }
@@ -72,20 +72,18 @@ const style = `
 		pointer-events: none;
 	}
 
-	[fil-scroller].fil-scroller-disabled [fil-scroller-container]{
-		position: relative;
-		overflow: auto;
-		top: unset;
-		left: unset;
-	}
-
 	[fil-scroller-section]{
 		opacity: 0;
 		visibility: hidden;
+		will-change: transform;
 	}
 	[fil-scroller-section].fil-scroller-visible {
 		opacity: 1;
 		visibility: visible;
+	}
+
+	[fil-scroller="disabled"] [fil-scroller-container] {
+		position: relative;
 	}
 `;
 
@@ -118,9 +116,6 @@ export default class Scroller {
 
 	constructor(){
 
-		this.position.current = 0;
-		this.position.target = 0;
-
 		this.html.scroller = document.querySelector('[fil-scroller]');
 
 		if(!this.html.scroller){
@@ -143,14 +138,12 @@ export default class Scroller {
 	disable(){
 		if(this.disabled) return;
 		this.disabled = true;
-		this.html.content.style.transform = `translate3d(0, 0, 0)`;
-		this.html.holder.style.height = `auto`;
-		this.html.scroller.classList.add('fil-scroller-disabled');
+		this.html.scroller.setAttribute('fil-scroller', 'disabled');
 	}
 	enable(){
 		if(!this.disabled) return;
 		this.disabled = false;
-		this.html.scroller.classList.remove('fil-scroller-disabled');
+		this.html.scroller.setAttribute('fil-scroller', '');
 	}
 
 	set ease(newEase:number) {
@@ -198,27 +191,24 @@ export default class Scroller {
 				dom: _section,
 				rect: null,
 				visible: false,
-				range: 0,
+				progress: 0,
 				animationIn: () => {
-					console.log(`Fil Scroller - Section ${id} IN`);
+					// console.log(`Fil Scroller - Section ${id} IN`);
 				},
 				animationOut: () => {
-					console.log(`Fil Scroller - Section ${id} OUT`);
+					// console.log(`Fil Scroller - Section ${id} OUT`);
 				}
 			}
 		
 			this.sections.push(section);
 		}
-
-		console.log(this.sections);
-
 	}
 
 	restore(){
 		for(const section of this.sections) {
-			section.dom.classList.remove('visible');
 			section.dom.style.transform = 'none';
-			section.rect = section.dom.getBoundingClientRect();			
+			section.visible = true;
+			section.rect = section.dom.getBoundingClientRect();						
 		}
 		this.wh = window.innerHeight;
 	}
@@ -268,37 +258,35 @@ export default class Scroller {
 
 	}
 
-	updateTarget(){
-		this.position.target = this.html.scroller.scrollTop;
+	updateTarget(){		
+		this.position.target = this.html.scroller.scrollTop;          
 		if(this.paused) this.html.scroller.scrollTop = this.position.current;
 	}
 
 	updateCheckHeight(){
 		this.height = 0;
-		for(let i = 0, len = this.sections.length; i < len; i++) this.height += this.sections[i].rect.height;
-
-		if(this.disabled) return;
-		
+		for(let i = 0, len = this.sections.length; i < len; i++) this.height += this.sections[i].rect.height;		
 		this.html.holder.style.height = `${this.height}px`;    
 	}
 
 	updateScrollValues(){
 
-		if(this.disabled) {
-			this.position.current = this.position.target;
-			return
-		}
-
 		const previous = this.position.current;
 
-		this.position.current = MathUtils.lerp(
-			this.position.current, 
-			this.position.target,
-			this.ease
-		);
+		if(this.disabled) {
+			this.position.current = this.position.target;
+		} else {
+
+			this.position.current = MathUtils.lerp(
+				this.position.current, 
+				this.position.target,
+				this.ease
+			);
+
+		}
 
 		const newDelta = (this.position.current - previous) * 0.01;	
-		this._delta = 	MathUtils.clamp(MathUtils.lerp(this._delta, newDelta, 0.3), -1, 1)
+		this._delta = MathUtils.clamp(MathUtils.lerp(this._delta, newDelta, 0.1), -1, 1)
 	}
 
 	updateSections(){
@@ -316,24 +304,26 @@ export default class Scroller {
 				
 				section.visible = true;
 				section.dom.classList.add('fil-scroller-visible')
-				section.dom.style.transform = `translateY(${-scroll}px)`;
+				section.dom.style.setProperty('--fil-scroller-delta', `${this._delta}`);
+				section.progress = MathUtils.map(scroll, top - this.wh, bottom, 0, 1);
+				section.dom.style.setProperty('--fil-scroller-progress', `${section.progress}`);
 
-				section.dom.style.setProperty('--fil-scroller-delta', `${this._delta.toFixed(5)}`);
-				section.range = MathUtils.map(scroll, top - this.wh, bottom, 0, 1);
-				section.dom.style.setProperty('--fil-scroller-range', `${section.range.toFixed(5)}`);
+				if(!this.disabled) section.dom.style.transform = `translateY(${-scroll}px)`;
 
 				continue;
 			}
-
+			
+			
 			if(!section.visible) continue;
 
 			section.animationOut();
 
 			section.visible = false;
 			section.dom.classList.remove('fil-scroller-visible');
-			section.dom.style.transform = `translateY(${-this.wh}px)`;
-			
 			section.dom.style.setProperty('--fil-scroller-delta', '0');
+			section.progress = 0;
+
+			if(!this.disabled) section.dom.style.transform = `translateY(${-this.wh}px)`;
 
 		}
 	}

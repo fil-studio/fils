@@ -1,5 +1,10 @@
 
 import Scroller from '../../../../scroller/src/Scroller';
+import Stats from 'three/examples/jsm/libs/stats.module.js';
+
+const stats = Stats();
+stats.showPanel(0);
+document.body.appendChild(stats.dom);
 
 export class ScrollerDemo {
 	scroller:Scroller;
@@ -7,12 +12,23 @@ export class ScrollerDemo {
 	cssVariablesElements: NodeListOf<HTMLElement>;
 
 	constructor(){
+		
 		this.scroller = new Scroller();
 		this.scroller.ease = 0.16;
 
 		if(window.innerWidth < 768) this.scroller.disable();
 
 		this.cssVariablesElements = document.querySelectorAll('[css-var]');
+
+		const animate = () => {
+
+			stats.begin();
+			this.update();
+			stats.end();
+
+			requestAnimationFrame(animate);
+		}
+		animate();
 	}
 
 	update(){
@@ -23,7 +39,7 @@ export class ScrollerDemo {
 			const el = this.cssVariablesElements[i];
 			const type = el.getAttribute('css-var');
 			if(type === 'delta') el.innerText = `${this.scroller.delta.toFixed(5)}`;
-			if(type === 'range') el.innerText = `${section.range.toFixed(5)}`;
+			if(type === 'progress') el.innerText = `${section.progress.toFixed(5)}`;
 		}
 	}
 }
