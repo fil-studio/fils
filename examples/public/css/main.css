@@ -99,11 +99,10 @@ a {
 }
 .scroller-base .section-0 {
   opacity: 0;
-  transition: opacity 0.5s ease-in-out;
 }
 .scroller-base .section-0.fil-scroller-visible {
   opacity: 1;
-  transition-delay: 0.5s;
+  transition: opacity 0.5s 0.5s ease-in-out;
 }
 .scroller-base .section-1 a {
   border: 1px solid black;
@@ -115,8 +114,13 @@ a {
   color: white;
 }
 .scroller-base .section-3 h2, .scroller-base .section-3 p {
-  transform: skewY(calc(var(--fil-scroller-delta) * 20deg));
+  transform: skewY(calc(-1 * var(--fil-scroller-delta) * 20deg));
   will-change: transform;
+}
+@media only screen and (max-device-width: 767px), only screen and (max-width: 767px) {
+  .scroller-base .section-3 h2, .scroller-base .section-3 p {
+    transform: skewY(calc(-1 * var(--fil-scroller-delta) * 30deg));
+  }
 }
 
 .default-base {

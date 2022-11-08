@@ -1,4 +1,9 @@
+import Stats from 'stats.js';
 import { ScrollerDemo } from "../demos/ScrollerDemo";
+
+const stats = new Stats();
+stats.showPanel(0);
+document.body.appendChild(stats.dom);
 
 export class App {
 	demo: ScrollerDemo;
@@ -12,8 +17,12 @@ export class App {
 		}
 		
 		const animate = () => {
+
+			stats.begin();
 			this.update();
-			requestAnimationFrame(animate)
+			stats.end();
+
+			requestAnimationFrame(animate);
 		}
 		animate();
 	}
