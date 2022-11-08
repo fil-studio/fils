@@ -1,5 +1,4 @@
 
-import { zip } from 'rxjs';
 import Scroller from '../../../../scroller/src/Scroller';
 
 export class ScrollerDemo {
@@ -9,7 +8,9 @@ export class ScrollerDemo {
 
 	constructor(){
 		this.scroller = new Scroller();
-		this.scroller.ease = window.innerWidth > 768 ? 0.16 : 0.3;
+		this.scroller.ease = 0.16;
+
+		if(window.innerWidth < 768) this.scroller.disable();
 
 		this.cssVariablesElements = document.querySelectorAll('[css-var]');
 	}
