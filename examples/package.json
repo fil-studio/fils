@@ -32,7 +32,6 @@
 		"sass": "^1.55.0"
 	},
 	"dependencies": {
-		"@jocabola/math": "^0.2.43",
 		"three": "^0.146.0"
 	}
 }
