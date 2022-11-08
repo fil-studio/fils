@@ -1,0 +1,25 @@
+{
+	"name": "@fils/io",
+	"version": "0.0.1-1",
+	"description": "Web Assets Package written in TypeScript",
+	"main": "lib/main.js",
+	"repository": "git@github.com:fil-studio/fils.git",
+	"homepage": "https://github.com/fil-studio/fils/tree/main/io",
+	"author": "fil studio <hello@fil.studio>",
+	"license": "Apache-2.0",
+	"scripts": {
+		"prepare": "yarn build",
+		"build": "tsc --build tsconfig.io.json"
+	},
+	"files": [
+		"lib",
+		"examples",
+		"README.md"
+	],
+	"dependencies": {
+		"three": "^0.145.0"
+	},
+	"devDependencies": {
+		"typescript": "^4.8.4"
+	}
+}

@@ -1,27 +1,42 @@
 {
-	"name": "@fils/ani",
-	"version": "0.0.1",
-	"description": "Animation Package written in TypeScript",
-	"main": "lib/main.js",
-	"repository": "git@github.com:fil-studio/fils.git",
-	"homepage": "https://github.com/fil-studio/fils/tree/main/ani",
-	"author": "fil studio <hello@fil.studio>",
-	"license": "Apache-2.0",
-	"private": false,
-	"scripts": {
-		"prepare": "yarn build",
-		"build": "tsc --build tsconfig.ani.json"
-	},
-	"files": [
-		"lib",
-		"examples",
-		"README.md"
-	],
-	"devDependencies": {
-		"typescript": "^4.5.2"
-	},
-	"publishConfig": {
-		"access": "public",
-		"registry": "https://registry.npmjs.org/"
-	}
+  "name": "@fils/ani",
+  "version": "0.0.2-0",
+  "description": "Animation Package written in TypeScript",
+  "main": "lib/main.js",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/fil-studio/fils.git"
+  },
+  "homepage": "https://github.com/fil-studio/fils/tree/main/ani",
+  "author": "fil studio <hello@fil.studio>",
+  "license": "Apache-2.0",
+  "private": false,
+  "scripts": {
+    "prepare": "yarn build",
+    "build": "tsc --build tsconfig.ani.json"
+  },
+  "files": [
+    "lib",
+    "examples",
+    "README.md"
+  ],
+  "devDependencies": {
+    "typescript": "^4.5.2"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "types": "./lib/main.d.ts",
+  "bugs": {
+    "url": "https://github.com/fil-studio/fils/issues"
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "keywords": [
+    "typescript",
+    "easing",
+    "animation"
+  ]
 }

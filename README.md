@@ -10,12 +10,18 @@ It might remain undocumented for a long while but feel free to try it out!
 | Package | Description |
 |:--|:--|
 | [@fils/ani](https://www.npmjs.com/package/@fils/ani) | Easing functions and animation utilities. |
+| [@fils/gen](https://www.npmjs.com/package/@fils/gen) | Vertex Buffer Generators for procedural geometries. |
+| [@fils/gfx](https://www.npmjs.com/package/@fils/gfx) | GFX package for WebGL & ThreeJS Utilities. |
+| [@fils/io](https://www.npmjs.com/package/@fils/io) | Utilities for loading data, assets & creating assets bundles. |
+| [@fils/math](https://www.npmjs.com/package/@fils/math) | Math utilities and better Random. |
+| [@fils/phy](https://www.npmjs.com/package/@fils/phy) | Verlet Physics package. |
 | [@fils/scroller](https://www.npmjs.com/package/@fils/scroller) | Smooth Secroller by sections. |
+| [@fils/utils](https://www.npmjs.com/package/@fils/utils) | Utils and FileUtils for the web. |
 
 ## License
 © Copyright 2022, fil studio
 
-fil is a studio with a creative tech soul. We build bespoke interactive journeys primarily using modern web technologies. We deliver tailored solutions for installations and on-line experiences using our internal toolkit + [ThreeJS](https://threejs.org).
+[fil](https://fil.studio) is a studio with a creative tech soul. We build bespoke interactive journeys primarily using modern web technologies. We deliver tailored solutions for installations and on-line experiences using our internal toolkit + [ThreeJS](https://threejs.org).
 
 fil is the Catalan word for thread. We love threads cause we often talk about them when building applications and, at the same time, threads are something so organic, colourful and playful.
 

@@ -1,7 +1,12 @@
-# @fils/ani
-Animation Package written in TypeScript.
+# @fils/gfx
 
-This is part of a series of packages that we use in our studio for personal and commercial web & [THREEjs](https://threejs.org) based work. It might remain undocumented for a long while but feel free to try it out!
+WebGL / GFX Package written in TypeScript.
+
+This package contains a set of utilities for working with WebGL and ThreeJS.
+
+glInfo is a dependency-less (WebGL only) Utils class. RTUtils & Composer classes work alongside [THREEjs](https://threejs.org).
+
+This is part of a series of packages that I use in my studio for personal and commercial web & [THREEjs](https://threejs.org) based work. It might remain undocumented for a long while but feel free to try it out!
 
 ### License
 © Copyright 2022, fil studio

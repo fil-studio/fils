@@ -1,5 +1,6 @@
-# @fils/ani
-Animation Package written in TypeScript.
+# @fils/utils
+
+Web Utils Package written in TypeScript. Lightweight Wrapper of useful functions for web dev.
 
 This is part of a series of packages that we use in our studio for personal and commercial web & [THREEjs](https://threejs.org) based work. It might remain undocumented for a long while but feel free to try it out!
 

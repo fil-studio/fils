@@ -1,9 +1,7 @@
-# @fils/ani
-Animation Package written in TypeScript.
+# Selective Glow
+This example demonstrates how to create a ThreeJS rendering pipeline in WebGL2 with selective glow in threejs using the emissive material channel and @fils/gfx.
 
-This is part of a series of packages that we use in our studio for personal and commercial web & [THREEjs](https://threejs.org) based work. It might remain undocumented for a long while but feel free to try it out!
-
-### License
+## License
 © Copyright 2022, fil studio
 
 [fil](https://fil.studio) is a studio with a creative tech soul. We build bespoke interactive journeys primarily using modern web technologies. We deliver tailored solutions for installations and on-line experiences using our internal toolkit + [ThreeJS](https://threejs.org).
