@@ -13,9 +13,13 @@ interface html {
 }
 
 interface Section {
+	id: string,
 	dom: HTMLElement,
 	rect: DOMRect,
-	visible: boolean
+	visible: boolean,
+	range: number,
+	animationIn: Function,
+	animationOut: Function
 }
 
 const style = `
@@ -108,7 +112,7 @@ export default class Scroller {
 	private wh: number = 0;
 	private _ease: number = 0.1;
 
-	private delta: number = 0;
+	private _delta: number = 0;
 
 	pointerElements:NodeListOf<HTMLElement>;
 
@@ -157,6 +161,10 @@ export default class Scroller {
 		return this._ease;
 	}
 
+	get delta(){
+		return this._delta;
+	}
+
 	addStyles(){
 
 		document.documentElement.setAttribute('fil-scroller-parent', '')
@@ -182,15 +190,27 @@ export default class Scroller {
 
 		const sections:NodeListOf<HTMLElement> = this.html.content.querySelectorAll('[fil-scroller-section]');
 
-		for(const _section of sections){
+		for(let i = 0, len = sections.length; i<len; i++){
+			const _section = sections[i];
+			const id = _section.getAttribute('fil-scroller-section') ? _section.getAttribute('fil-scroller-section') : `section-${i}`;
 			const section:Section = {
+				id,
 				dom: _section,
 				rect: null,
-				visible: false
+				visible: false,
+				range: 0,
+				animationIn: () => {
+					console.log(`Fil Scroller - Section ${id} IN`);
+				},
+				animationOut: () => {
+					console.log(`Fil Scroller - Section ${id} OUT`);
+				}
 			}
-
+		
 			this.sections.push(section);
 		}
+
+		console.log(this.sections);
 
 	}
 
@@ -278,7 +298,7 @@ export default class Scroller {
 		);
 
 		const newDelta = (this.position.current - previous) * 0.01;	
-		this.delta = 	MathUtils.clamp(MathUtils.lerp(this.delta, newDelta, this.ease), -1, 1)
+		this._delta = 	MathUtils.clamp(MathUtils.lerp(this._delta, newDelta, 0.3), -1, 1)
 	}
 
 	updateSections(){
@@ -292,19 +312,28 @@ export default class Scroller {
 			
 			if(scroll + this.wh >= top && scroll <= bottom ) {
 				
+				if(!section.visible) section.animationIn();
+				
 				section.visible = true;
 				section.dom.classList.add('fil-scroller-visible')
 				section.dom.style.transform = `translateY(${-scroll}px)`;
-			
+
+				section.dom.style.setProperty('--fil-scroller-delta', `${this._delta.toFixed(5)}`);
+				section.range = MathUtils.map(scroll, top - this.wh, bottom, 0, 1);
+				section.dom.style.setProperty('--fil-scroller-range', `${section.range.toFixed(5)}`);
 
 				continue;
 			}
 
 			if(!section.visible) continue;
 
+			section.animationOut();
+
 			section.visible = false;
 			section.dom.classList.remove('fil-scroller-visible');
 			section.dom.style.transform = `translateY(${-this.wh}px)`;
+			
+			section.dom.style.setProperty('--fil-scroller-delta', '0');
 
 		}
 	}
@@ -319,8 +348,5 @@ export default class Scroller {
 		this.updateScrollValues();
 
 		this.updateSections();
-
-		this.html.container.style.setProperty('--fil-scroller-delta', `${this.delta.toFixed(5)}`);		
-
 	}
 }

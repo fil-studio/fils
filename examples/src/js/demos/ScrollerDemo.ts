@@ -17,7 +17,7 @@ export class ScrollerDemo {
 	update(){
 		this.scroller.update();
 			
-		const section = this.scroller.sections.find(x => x.id === 'section-5');
+		const section = this.scroller.sections.find(x => x.id === 'css-var-section');
 		for(let i = 0, len = this.cssVariablesElements.length; i<len; i++){
 			const el = this.cssVariablesElements[i];
 			const type = el.getAttribute('css-var');
