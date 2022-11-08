@@ -107,7 +107,7 @@ export default class Scroller {
 
 	height: number = 0;
 	wh: number = 0;
-	ease: number = 0.1;
+	private _ease: number = 0.1;
 
 	pointerElements:NodeListOf<HTMLElement>;
 
@@ -148,6 +148,13 @@ export default class Scroller {
 		this.html.scroller.classList.remove('fil-scroller-disabled');
 	}
 
+	set ease(newEase:number) {
+		this._ease = newEase;
+	}
+
+	get ease(){
+		return this._ease;
+	}
 
 	addStyles(){
 
@@ -266,18 +273,18 @@ export default class Scroller {
 			this.position.target,
 			this.ease
 		);
+		
 	}
 
 	updateSections(){
 		
-		const scroll = this.position.target;	
+		const scroll = this.position.current;	
 		
 		for(let i = 0, len = this.sections.length; i < len; i++){
 			const section = this.sections[i];
 			const top = section.rect.top;
 			const bottom = section.rect.top + section.rect.height;
 			
-			// if(scroll - this.wh <= top ) {
 			if(scroll + this.wh >= top && scroll <= bottom ) {
 				
 				section.visible = true;
@@ -293,9 +300,6 @@ export default class Scroller {
 			section.visible = false;
 			section.dom.classList.remove('visible');
 			section.dom.style.transform = `translateY(${-this.wh}px)`;
-
-		
-
 
 		}
 	}

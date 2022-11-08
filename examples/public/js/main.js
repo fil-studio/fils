@@ -12958,7 +12958,7 @@
           this.disabled = false;
           this.height = 0;
           this.wh = 0;
-          this.ease = 0.1;
+          this._ease = 0.1;
           this.position.current = 0;
           this.position.target = 0;
           this.html.scroller = document.querySelector("[fil-scroller]");
@@ -12987,6 +12987,12 @@
             return;
           this.disabled = false;
           this.html.scroller.classList.remove("fil-scroller-disabled");
+        }
+        set ease(newEase) {
+          this._ease = newEase;
+        }
+        get ease() {
+          return this._ease;
         }
         addStyles() {
           document.documentElement.setAttribute("fil-scroller-parent", "");
@@ -13017,7 +13023,6 @@
             section.dom.classList.remove("visible");
             section.dom.style.transform = "none";
             section.rect = section.dom.getBoundingClientRect();
-            console.log(section.rect);
           }
           this.wh = window.innerHeight;
         }
@@ -13078,9 +13083,10 @@
             this.position.target,
             this.ease
           );
+          console.log(this.ease);
         }
         updateSections() {
-          const scroll = this.position.target;
+          const scroll = this.position.current;
           for (let i = 0, len = this.sections.length; i < len; i++) {
             const section = this.sections[i];
             const top = section.rect.top;
@@ -13118,6 +13124,7 @@
       ScrollerDemo = class {
         constructor() {
           this.scroller = new Scroller();
+          this.scroller.ease = 0.16;
         }
         update() {
           this.scroller.update();
