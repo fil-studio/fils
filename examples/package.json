@@ -31,14 +31,5 @@
 		"postcss": "^8.4.18",
 		"sass": "^1.55.0"
 	},
-	"dependencies": {
-		"@jocabola/gfx": "^0.4.92",
-		"@jocabola/io": "^0.3.56",
-		"@jocabola/utils": "^0.1.89",
-		"@sanity/image-url": "^1.0.1",
-		"gsap": "./gsap-bonus.tgz",
-		"imagesloaded": "^5.0.0",
-		"stats.js": "^0.17.0",
-		"three": "^0.145.0"
-	}
+	"dependencies": {}
 }
