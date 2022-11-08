@@ -1,4 +1,4 @@
-import { MathUtils } from '@jocabola/math';
+import { MathUtils } from "@jocabola/math";
 
 interface position {
 	current: number,
