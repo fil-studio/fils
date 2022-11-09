@@ -5,6 +5,7 @@ import { VFXRenderer } from '../../../../gfx/src/vfx/VFXRenderer';
 import { gfxShaders } from '../../../../gfx';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 const BOX_GEO = new BoxGeometry(1,1,1);
 const BALL_GEO = new SphereGeometry(1);
@@ -112,10 +113,14 @@ export class SelectiveGlowDemo extends WebGLSketch {
 
 		const stats = Stats();
 		document.body.appendChild(stats.domElement);
+
+		const controls = new OrbitControls(this.camera, this.domElement);
+
 		const customRaf = () => {
 			requestAnimationFrame(customRaf);
 			stats.begin();
 			this.update();
+			controls.update();
 			this.render();
 			stats.end();
 		}
