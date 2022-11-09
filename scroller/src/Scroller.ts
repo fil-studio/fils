@@ -1,4 +1,4 @@
-import { MathUtils } from '../../math/src/MathUtils'
+import { MathUtils } from "@fils/math";
 
 interface position {
 	current: number,
