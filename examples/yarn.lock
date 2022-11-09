@@ -122,10 +122,10 @@
   resolved "https://registry.yarnpkg.com/@fils/gen/-/gen-0.0.1-1.tgz#9e4bf1a70388b2d99181080432b8cc7598bc3c48"
   integrity sha512-44VwtU8nf0ueKb3OLNVN6Uc1fCc6reei7IgLUNde/G8LNdj0AbdU26pTfD6DMmyvoy7lv9PWH5Wcz2MyCjRolA==
 
-"@fils/gfx@^0.0.1-48":
-  version "0.0.1-48"
-  resolved "https://registry.yarnpkg.com/@fils/gfx/-/gfx-0.0.1-48.tgz#5244d084b109594e464d764b9f61fb007fe0164e"
-  integrity sha512-+UClXFzohbYWKLXq4tqu5b4xuOA2EOdcYfwJBxLejYYpoRa13FUsxawxPdR6v33BifF6RedgrtZZqLHEf40ehQ==
+"@fils/gfx@^0.0.1-49":
+  version "0.0.1-49"
+  resolved "https://registry.yarnpkg.com/@fils/gfx/-/gfx-0.0.1-49.tgz#abc1e5e2c38397ec4c313951b291eedb06b3a326"
+  integrity sha512-yGL01SagpM4cluHvjca2c79haft+CELoxCSinTPiW0QizrWni0LT5Et1SSNVAt3sdU0TNeEz3vO9pHWMSn2JsQ==
   dependencies:
     "@fils/io" "^0.0.1-1"
     "@fils/math" "^0.0.1-0"
