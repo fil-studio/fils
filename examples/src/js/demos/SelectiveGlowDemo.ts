@@ -133,6 +133,26 @@ export class SelectiveGlowDemo extends WebGLSketch {
 		gui.add(this.customRenderer, 'exposure', 1, 5, .1);
 		gui.add(this.customRenderer, 'gamma', 1, 3.2, .1);
 
+		const blur = gui.addFolder('Blur Options');
+		blur.add(this.customRenderer.glow, 'iterations', 2, 32, 1);
+		blur.add(this.customRenderer.glow, 'quality', {
+			BLUR5: 0,
+			BLUR9: 1,
+			BLUR13: 2,
+		});
+		blur.add(this.customRenderer.glow, 'radius', {
+			'1': 1,
+			'1/2': 0.5,
+			'1/4': 0.25,
+		});
+		blur.add(this.customRenderer.glow, 'scale', {
+			'100%': 1,
+			'50%': 0.5,
+			'25%': 0.25,
+		}).onFinishChange(()=>{
+			this.customRenderer.glow.setSize(window.innerWidth, window.innerHeight);
+		});
+
 		this.start(customRaf);
 	}
 
