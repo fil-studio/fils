@@ -15,7 +15,7 @@ It might remain undocumented for a long while but feel free to try it out!
 | [@fils/io](https://www.npmjs.com/package/@fils/io) | Utilities for loading data, assets & creating assets bundles. |
 | [@fils/math](https://www.npmjs.com/package/@fils/math) | Math utilities and better Random. |
 | [@fils/phy](https://www.npmjs.com/package/@fils/phy) | Verlet Physics package. |
-| [@fils/scroller](https://www.npmjs.com/package/@fils/scroller) | Smooth Secroller by sections. |
+| [@fils/scroller](https://www.npmjs.com/package/@fils/scroller) | Smooth Scroller by sections. |
 | [@fils/utils](https://www.npmjs.com/package/@fils/utils) | Utils and FileUtils for the web. |
 
 ## License
