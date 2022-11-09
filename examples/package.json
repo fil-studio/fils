@@ -8,10 +8,10 @@
 	"license": "ISC",
 	"private": true,
 	"scripts": {
+		"postinstall": "yarn --cwd ../ani && yarn --cwd ../gen && yarn --cwd ../gfx && yarn --cwd ../io && yarn --cwd ../phy && yarn --cwd ../utils && yarn --cwd ../scroller",
 		"clean": "del public",
 		"dev": "eleventy --serve --watch",
-		"build": "ELEVENTY_ENV=production eleventy",
-		"publish-dev": "curl -X POST -d '{}' https://api.netlify.com/build_hooks/6110fb7cfdc6d3c195d40e32"
+		"build": "ELEVENTY_ENV=production eleventy"
 	},
 	"devDependencies": {
 		"@11ty/eleventy": "^1.0.2",
