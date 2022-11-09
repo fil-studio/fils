@@ -2,10 +2,6 @@
 import Scroller from '../../../../scroller/src/Scroller';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 
-const stats = Stats();
-stats.showPanel(0);
-document.body.appendChild(stats.dom);
-
 export class ScrollerDemo {
 	scroller:Scroller;
 
@@ -19,6 +15,10 @@ export class ScrollerDemo {
 		if(window.innerWidth < 768) this.scroller.disable();
 
 		this.cssVariablesElements = document.querySelectorAll('[css-var]');
+
+		const stats = Stats();
+		stats.showPanel(0);
+		document.body.appendChild(stats.dom);
 
 		const animate = () => {
 

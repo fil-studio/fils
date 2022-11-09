@@ -427,14 +427,11 @@
   });
 
   // src/js/demos/ScrollerDemo.ts
-  var stats, ScrollerDemo;
+  var ScrollerDemo;
   var init_ScrollerDemo = __esm({
     "src/js/demos/ScrollerDemo.ts"() {
       init_Scroller();
       init_stats_module();
-      stats = stats_module_default();
-      stats.showPanel(0);
-      document.body.appendChild(stats.dom);
       ScrollerDemo = class {
         constructor() {
           this.scroller = new Scroller();
@@ -442,6 +439,9 @@
           if (window.innerWidth < 768)
             this.scroller.disable();
           this.cssVariablesElements = document.querySelectorAll("[css-var]");
+          const stats = stats_module_default();
+          stats.showPanel(0);
+          document.body.appendChild(stats.dom);
           const animate = () => {
             stats.begin();
             this.update();
@@ -18123,14 +18123,14 @@
               }
             }
           );
-          const stats2 = stats_module_default();
-          document.body.appendChild(stats2.domElement);
+          const stats = stats_module_default();
+          document.body.appendChild(stats.domElement);
           const customRaf = () => {
             requestAnimationFrame(customRaf);
-            stats2.begin();
+            stats.begin();
             this.update();
             this.render();
-            stats2.end();
+            stats.end();
           };
           const gui = new g2();
           gui.add(
