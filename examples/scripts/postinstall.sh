@@ -1,5 +1,5 @@
 #!/bin/sh
-packages=(ani gen gfx io math phy utils)
+packages=(ani gen gfx io math phy scroller utils)
 
 for i in "${packages[@]}"
 do

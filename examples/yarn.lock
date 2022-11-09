@@ -152,10 +152,10 @@
   dependencies:
     "@fils/math" "^0.0.1-0"
 
-"@fils/scroller@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@fils/scroller/-/scroller-0.0.1.tgz#72d1bd5d3176985f9199e73512b2451e118cbbb1"
-  integrity sha512-iaoprR3deAGF15hipLh6E4SIDzjdFCU+GgyKRw0+UpZZqGuanBKvgYCbLIWx8U+2UkPzDqxzZ9C4FX3/4ZBc/w==
+"@fils/scroller@^0.0.1-1":
+  version "0.0.1-1"
+  resolved "https://registry.yarnpkg.com/@fils/scroller/-/scroller-0.0.1-1.tgz#c668c25f06ad7344a129a59e0d890d6cc923c1b6"
+  integrity sha512-1AWqw1LO6PzhOSO5+vn7dJ6/GawcQHxD/MXeMNEDrkICnb1dSugDc12FT8Y329UhgZDEnCHI33tpZkCJXM2mqw==
   dependencies:
     "@fils/math" "^0.0.1-0"
     three "^0.145.0"
