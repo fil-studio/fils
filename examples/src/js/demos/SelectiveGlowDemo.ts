@@ -1,9 +1,9 @@
-// import { WebGLSketch } from '../../../../gfx/src/prototype/WebGLSketch'; // @fils/gfx/WebGLSketch
+import { WebGLSketch } from '../../../../gfx/src/prototype/WebGLSketch'; // @fils/gfx/WebGLSketch
 import { BoxGeometry, CylinderGeometry, DirectionalLight, Mesh, MeshPhongMaterial, ShaderChunk, SphereGeometry, TorusKnotGeometry } from 'three';
-// import { initMaterial } from '../../../../gfx/src/vfx/MaterialUtils';
-// import { VFXRenderer } from '../../../../gfx/src/vfx/VFXRenderer';
-// import { gfxShaders } from '../../../../gfx';
-import { gfxShaders, initMaterial, VFXRenderer, WebGLSketch } from '@fils/gfx';
+import { initMaterial } from '../../../../gfx/src/vfx/MaterialUtils';
+import { VFXRenderer } from '../../../../gfx/src/vfx/VFXRenderer';
+import { gfxShaders } from '../../../../gfx';
+// import { gfxShaders, initMaterial, VFXRenderer, WebGLSketch } from '@fils/gfx';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 
