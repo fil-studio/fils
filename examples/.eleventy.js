@@ -99,6 +99,7 @@ module.exports = function (eleventyConfig) {
   // This allows Eleventy to watch for file changes during local development.
   eleventyConfig.setUseGitIgnore(false);
 
+
   // browser sync options
   eleventyConfig.setBrowserSyncConfig({
     ghostMode: false,
