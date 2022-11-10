@@ -1,43 +1,44 @@
 {
 	"name": "fils",
 	"version": "0.0.1",
-	"description": "Smash Studio official site",
+	"description": "Examples of fils",
 	"main": "index.js",
 	"repository": "https://github.com/fil-studio/fils",
-	"author": "Martí Fenosa <marti.fenosa@outlook.com>",
+	"author": "Fil Studio <hello@fil.studio",
 	"license": "ISC",
 	"private": true,
 	"scripts": {
-		"postinstall": "yarn --cwd ../ani && yarn --cwd ../gen && yarn --cwd ../gfx && yarn --cwd ../io && yarn --cwd ../phy && yarn --cwd ../utils && yarn --cwd ../scroller",
+		"postinstall": "./scripts/postinstall.sh",
 		"clean": "del public",
 		"dev": "eleventy --serve --watch",
 		"build": "ELEVENTY_ENV=production eleventy"
 	},
 	"devDependencies": {
 		"@11ty/eleventy": "^1.0.2",
-		"@11ty/eleventy-plugin-syntaxhighlight": "^4.1.0",
+		"@11ty/eleventy-plugin-syntaxhighlight": "^4.2.0",
 		"@sanity/asset-utils": "^1.3.0",
 		"@sanity/block-content-to-html": "^2.0.0",
 		"@sanity/client": "^3.4.1",
-		"autoprefixer": "^10.4.12",
+		"autoprefixer": "^10.4.13",
 		"chokidar": "^3.5.3",
 		"clean-css": "^5.3.1",
 		"cross-env": "^7.0.3",
 		"del-cli": "^5.0.0",
-		"esbuild": "^0.15.10",
+		"esbuild": "^0.15.13",
 		"esbuild-plugin-alias": "^0.2.1",
 		"groq": "^2.33.2",
 		"html-minifier": "^4.0.0",
 		"postcss": "^8.4.18",
-		"sass": "^1.55.0"
+		"sass": "^1.56.1"
 	},
 	"dependencies": {
 		"@fils/ani": "^0.0.2-0",
 		"@fils/gen": "^0.0.1-1",
-		"@fils/gfx": "^0.0.1-48",
+		"@fils/gfx": "^0.0.1-49",
 		"@fils/io": "^0.0.1-1",
 		"@fils/math": "^0.0.1-0",
 		"@fils/phy": "^0.0.1-1",
+		"@fils/scroller": "^0.0.1-1",
 		"@fils/utils": "^0.0.1-0",
 		"three": "^0.146.0"
 	}

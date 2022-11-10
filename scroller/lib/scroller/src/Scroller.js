@@ -1,4 +1,4 @@
-import { MathUtils } from "@fils/math";
+import { MathUtils } from '../../math/src/MathUtils';
 const style = `
 	[fil-scroller-parent],
 	[fil-scroller-parent] body { 

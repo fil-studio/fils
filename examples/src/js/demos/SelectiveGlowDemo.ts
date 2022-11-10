@@ -5,6 +5,7 @@ import { VFXRenderer } from '../../../../gfx/src/vfx/VFXRenderer';
 import { gfxShaders } from '../../../../gfx';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 const BOX_GEO = new BoxGeometry(1,1,1);
 const BALL_GEO = new SphereGeometry(1);
@@ -112,10 +113,14 @@ export class SelectiveGlowDemo extends WebGLSketch {
 
 		const stats = Stats();
 		document.body.appendChild(stats.domElement);
+
+		const controls = new OrbitControls(this.camera, this.domElement);
+
 		const customRaf = () => {
 			requestAnimationFrame(customRaf);
 			stats.begin();
 			this.update();
+			controls.update();
 			this.render();
 			stats.end();
 		}
@@ -132,6 +137,26 @@ export class SelectiveGlowDemo extends WebGLSketch {
 		);
 		gui.add(this.customRenderer, 'exposure', 1, 5, .1);
 		gui.add(this.customRenderer, 'gamma', 1, 3.2, .1);
+
+		const blur = gui.addFolder('Blur Options');
+		blur.add(this.customRenderer.glow, 'iterations', 2, 32, 1);
+		blur.add(this.customRenderer.glow, 'quality', {
+			BLUR5: 0,
+			BLUR9: 1,
+			BLUR13: 2,
+		});
+		blur.add(this.customRenderer.glow, 'radius', {
+			'1': 1,
+			'1/2': 0.5,
+			'1/4': 0.25,
+		});
+		blur.add(this.customRenderer.glow, 'scale', {
+			'100%': 1,
+			'50%': 0.5,
+			'25%': 0.25,
+		}).onFinishChange(()=>{
+			this.customRenderer.glow.setSize(window.innerWidth, window.innerHeight);
+		});
 
 		this.start(customRaf);
 	}

@@ -48,6 +48,7 @@ export class BlurPass extends RenderPass{
 		this.radius = radius;
 		this.iterations = iterations;
 		this.scale = scale;
+		this.quality = quality;
 
 		this.shader = new RawShaderMaterial({
 			vertexShader: vert,
@@ -110,6 +111,7 @@ export class BlurPass extends RenderPass{
 
 	blurPass(renderer:WebGLRenderer, src:Texture, dst:WebGLRenderTarget, dx:number, dy:number) {
 		renderer.setRenderTarget(dst);
+		this.shader.uniforms.mode.value = this.quality;
 		this.shader.uniforms.direction.value.set(dx,dy);
 		this.shader.uniforms.tMap.value = src;
 		renderer.render(this.scene, this.camera);
