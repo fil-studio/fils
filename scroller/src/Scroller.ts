@@ -1,4 +1,6 @@
 import { MathUtils } from "@fils/math";
+import { Vector2 } from "three";
+import { Section } from "./Section";
 
 interface position {
 	current: number,
@@ -10,16 +12,6 @@ interface html {
 	holder: HTMLElement,
 	container: HTMLElement,
 	content: HTMLElement
-}
-
-interface Section {
-	id: string,
-	dom: HTMLElement,
-	rect: DOMRect,
-	visible: boolean,
-	progress: number,
-	animationIn: Function,
-	animationOut: Function
 }
 
 const style = `
@@ -138,11 +130,13 @@ export default class Scroller {
 	disable(){
 		if(this.disabled) return;
 		this.disabled = true;
+		for(const section of this.sections) section.disabled = this.disabled;
 		this.html.scroller.setAttribute('fil-scroller', 'disabled');
 	}
 	enable(){
 		if(!this.disabled) return;
 		this.disabled = false;
+		for(const section of this.sections) section.disabled = this.disabled;
 		this.html.scroller.setAttribute('fil-scroller', '');
 	}
 
@@ -186,36 +180,19 @@ export default class Scroller {
 		for(let i = 0, len = sections.length; i<len; i++){
 			const _section = sections[i];
 			const id = _section.getAttribute('fil-scroller-section') ? _section.getAttribute('fil-scroller-section') : `section-${i}`;
-			const section:Section = {
-				id,
-				dom: _section,
-				rect: null,
-				visible: false,
-				progress: 0,
-				animationIn: () => {
-					// console.log(`Fil Scroller - Section ${id} IN`);
-				},
-				animationOut: () => {
-					// console.log(`Fil Scroller - Section ${id} OUT`);
-				}
-			}
-		
+			const section = new Section(id, _section);
 			this.sections.push(section);
 		}
 	}
 
 	restore(){
-		for(const section of this.sections) {
-			section.dom.style.transform = 'none';
-			section.visible = true;
-			section.rect = section.dom.getBoundingClientRect();						
-		}
-		this.wh = window.innerHeight;
+		for(const section of this.sections) section.restore();
 	}
 
 	onResize(){
 		this.restore();
 	}
+
 	addEventListeners(){
 
 		window.addEventListener('resize', () => {
@@ -293,39 +270,13 @@ export default class Scroller {
 		
 		const scroll = this.position.current;	
 		
-		for(let i = 0, len = this.sections.length; i < len; i++){
+		for(let i = 0, len = this.sections.length; i < len; i++) {
 			const section = this.sections[i];
-			const top = section.rect.top;
-			const bottom = section.rect.top + section.rect.height;
-			
-			if(scroll + this.wh >= top && scroll <= bottom ) {
-				
-				if(!section.visible) section.animationIn();
-				
-				section.visible = true;
-				section.dom.classList.add('fil-scroller-visible')
-				section.dom.style.setProperty('--fil-scroller-delta', `${this._delta}`);
-				section.progress = MathUtils.map(scroll, top - this.wh, bottom, 0, 1);
-				section.dom.style.setProperty('--fil-scroller-progress', `${section.progress}`);
-
-				if(!this.disabled) section.dom.style.transform = `translateY(${-scroll}px)`;
-
-				continue;
-			}
-			
-			
-			if(!section.visible) continue;
-
-			section.animationOut();
-
-			section.visible = false;
-			section.dom.classList.remove('fil-scroller-visible');
-			section.dom.style.setProperty('--fil-scroller-delta', '0');
-			section.progress = 0;
-
-			if(!this.disabled) section.dom.style.transform = `translateY(${-this.wh}px)`;
-
+			section.scroll = scroll;
+			section.delta = this._delta;
+			section.update();
 		}
+		
 	}
 
 	update(){
