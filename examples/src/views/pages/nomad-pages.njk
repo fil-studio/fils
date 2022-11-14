@@ -1,0 +1,14 @@
+---
+layout: base
+pageTemplate: nomad
+pagination:
+  alias: p
+  data: nomadPages
+  size: 1
+permalink: "/{{ p.slug | slug }}/"
+eleventyComputed:
+  title: "{{ p.title }}"
+  description: "{{ p.description }}"
+  image: "{{ p.image }}"
+---
+

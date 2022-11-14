@@ -1,14 +1,14 @@
 ---
 layout: base
-templateClass: lifecycle
+templateClass: nomad
 eleventyComputed:
-  title: "LifeCycle"
+  title: "Nomad"
 ---
 
 
-<p>LifeCycle Demo Page</p>
+<p>Nomad Demo Page</p>
 <ul>
-  {% for page in lifeCyclePages %}
+  {% for page in nomadPages %}
     <li><a href="/{{ page.slug }}">{{ page.title }}</a></li>
   {% endfor %}
 </ul>

@@ -4,8 +4,8 @@ const getPage = () => {
 
 	for(let i = 0; i < 10; i++){
 		const p = {
-			title: `LifeCyle page ${i}`,
-			slug: `lifecycle-page-slug-${i}`
+			title: `Nomad page ${i}`,
+			slug: `nomad-page-slug-${i}`
 		};
 		pages.push(p)
 	}
