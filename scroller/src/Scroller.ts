@@ -1,5 +1,4 @@
 import { MathUtils } from "@fils/math";
-import { Vector2 } from "three";
 import { Section } from "./Section";
 
 interface position {
@@ -12,6 +11,13 @@ interface html {
 	holder: HTMLElement,
 	container: HTMLElement,
 	content: HTMLElement
+}
+
+export enum D {
+	TOP,
+	BOTTOM,
+	LEFT,
+	RIGHT
 }
 
 const style = `
@@ -92,17 +98,23 @@ export default class Scroller {
 		target: 0
 	};
 
+	direction: D = D.RIGHT;
+
 	sections:Array<Section> = [];
 
 	private loaded: boolean = false;
 	private paused: boolean = false;
 	private disabled: boolean = false;
 
-	height: number = 0;
-	private wh: number = 0;
-	private _ease: number = 0.1;
+	scrollingDistance: number = 0;
+	private _ease: number = 0.16;
 
-	private _delta: number = 0;
+	delta: number = 0;
+
+	w:{w:number, h:number} = {
+		w: 0,
+		h: 0
+	};
 
 	pointerElements:NodeListOf<HTMLElement>;
 
@@ -148,10 +160,6 @@ export default class Scroller {
 		return this._ease;
 	}
 
-	get delta(){
-		return this._delta;
-	}
-
 	addStyles(){
 
 		document.documentElement.setAttribute('fil-scroller-parent', '')
@@ -180,13 +188,18 @@ export default class Scroller {
 		for(let i = 0, len = sections.length; i<len; i++){
 			const _section = sections[i];
 			const id = _section.getAttribute('fil-scroller-section') ? _section.getAttribute('fil-scroller-section') : `section-${i}`;
-			const section = new Section(id, _section);
+			const section = new Section(id, _section, this.direction);
 			this.sections.push(section);
 		}
 	}
 
 	restore(){
-		for(const section of this.sections) section.restore();
+		this.w.w = window.innerWidth;
+		this.w.h = window.innerHeight;
+		for(const section of this.sections) {
+			section.w = this.w;
+			section.restore();
+		}
 	}
 
 	onResize(){
@@ -237,13 +250,23 @@ export default class Scroller {
 
 	updateTarget(){		
 		this.position.target = this.html.scroller.scrollTop;          
-		if(this.paused) this.html.scroller.scrollTop = this.position.current;
+		if(this.paused) this.html.scroller.scrollTop = this.position.current;	
 	}
 
 	updateCheckHeight(){
-		this.height = 0;
-		for(let i = 0, len = this.sections.length; i < len; i++) this.height += this.sections[i].rect.height;		
-		this.html.holder.style.height = `${this.height}px`;    
+		this.scrollingDistance = 0;
+
+		const vertical = this.direction === D.TOP || this.direction === D.BOTTOM;
+
+		for(let i = 0, len = this.sections.length; i < len; i++) {
+			if(vertical) this.scrollingDistance += this.sections[i].rect.height;		
+			else this.scrollingDistance += this.sections[i].rect.width;		
+		}		
+
+		// If horizontal the difference between height and width must be taken care of. 
+		if(!vertical) this.scrollingDistance += this.w.h - this.w.w;
+
+		this.html.holder.style.height = `${this.scrollingDistance}px`;    
 	}
 
 	updateScrollValues(){
@@ -263,17 +286,20 @@ export default class Scroller {
 		}
 
 		const newDelta = (this.position.current - previous) * 0.01;	
-		this._delta = MathUtils.clamp(MathUtils.lerp(this._delta, newDelta, 0.1), -1, 1)
+		this.delta = MathUtils.clamp(MathUtils.lerp(this.delta, newDelta, 0.1), -1, 1)
 	}
 
 	updateSections(){
 		
-		const scroll = this.position.current;	
-		
+		const scroll = this.position.current;			
+		let w = 0;
+
 		for(let i = 0, len = this.sections.length; i < len; i++) {
 			const section = this.sections[i];
 			section.scroll = scroll;
-			section.delta = this._delta;
+			section.delta = this.delta;
+			section.widthOffset = w;
+			w += section.rect.width;
 			section.update();
 		}
 		

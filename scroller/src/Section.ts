@@ -1,15 +1,22 @@
-import { MathUtils } from "@fils/math"
-import { Vector2 } from "three"
+import { MathUtils } from "@fils/math";
+import { D } from "./Scroller";
+
+
 
 export class Section {
 	id: string;
 	dom: HTMLElement;
 	
 	rect: DOMRect;
-	wh: number = window.innerHeight;
+	widthOffset: number;
+
+	w:{w:number, h:number} = {
+		w: 0,
+		h: 0
+	};
 	
 	progress: number;
-	direction: Vector2;
+	direction: D = D.LEFT;
 
 	scroll: number = 0;
 	delta: number = 0;
@@ -18,10 +25,11 @@ export class Section {
 	disabled: boolean = false;
 
 
-	constructor(id: string, dom: HTMLElement){
+	constructor(id: string, dom: HTMLElement, direction: D){
 
 		this.id = id;
 		this.dom = dom;
+		this.direction = direction;
 		
 	}
 
@@ -29,7 +37,6 @@ export class Section {
 		this.dom.style.transform = 'none';
 		this.visible = true;
 		this.rect = this.dom.getBoundingClientRect();		
-		this.wh = window.innerHeight;
 	}
 
 	animationIn(){
@@ -39,21 +46,50 @@ export class Section {
 
 	}
 
-	update(){
-		const top = this.rect.top;
-		const bottom = this.rect.top + this.rect.height;
+	get threshold(){
 
-		if(this.scroll + this.wh >= top && this.scroll <= bottom ) {
+		// VERTICAL SCROLL THRESHOLDS
+		if(this.direction === D.TOP || this.direction === D.BOTTOM) return [ 
+			this.rect.top - this.w.h,	
+			this.rect.top + this.rect.height 
+		];
+		
+		// HORIZONTAL SCROLL THRESHOLDS
+		if(this.direction === D.LEFT || this.direction === D.RIGHT) return [ 
+			this.widthOffset - this.w.w,	
+			this.widthOffset + this.rect.width 
+		]
+
+	}
+
+	get position() {
+
+		if(!this.visible) return {x: 0, y: -this.w.h};
+		if(this.direction === D.TOP) return {x: 0, y: -this.scroll};
+		if(this.direction === D.BOTTOM) return {x: 0, y: this.scroll + (this.w.h - this.rect.height) - this.rect.top * 2};
+		if(this.direction === D.LEFT) return {x: this.widthOffset - this.scroll, y: -this.rect.top};
+		if(this.direction === D.RIGHT) return {x: this.scroll + (this.w.w - this.rect.width) - this.widthOffset, y: -this.rect.top};
+
+	}
+
+	updateTransform(){
+		if(this.disabled) return;
+		this.dom.style.transform = `translate3d(${this.position.x}px, ${this.position.y}px, 0)`;
+	}
+
+	update(){
+
+		if(this.scroll >= this.threshold[0] && this.scroll <= this.threshold[1] ) {
 
 			if(!this.visible) this.animationIn();
 
 			this.visible = true;
 			this.dom.classList.add('fil-scroller-visible')
 			this.dom.style.setProperty('--fil-scroller-delta', `${this.delta}`);
-			this.progress = MathUtils.map(this.scroll, top - this.wh, bottom, 0, 1);
+			this.progress = MathUtils.map(this.scroll, this.threshold[0], this.threshold[1], 0, 1);
 			this.dom.style.setProperty('--fil-scroller-progress', `${this.progress}`);
 
-			if(!this.disabled) this.dom.style.transform = `translate3d(0, ${-this.scroll}px, 0)`;
+			this.updateTransform();
 
 			return
 		}
@@ -68,6 +104,6 @@ export class Section {
 		this.dom.style.setProperty('--fil-scroller-delta', '0');
 		this.progress = 0;
 
-		if(!this.disabled) this.dom.style.transform = `translate3d(0, ${-this.wh}px, 0)`;
+		this.updateTransform();
 	}
 }
