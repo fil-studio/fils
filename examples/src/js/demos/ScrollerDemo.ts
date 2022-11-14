@@ -12,9 +12,7 @@ export class ScrollerDemo {
 		this.scroller = new Scroller();
 		this.scroller.ease = 0.16;
 
-		if(window.innerWidth < 768) this.scroller.disable();
-
-		this.cssVariablesElements = document.querySelectorAll('[csss-var]');
+		this.cssVariablesElements = document.querySelectorAll('[css-var]');
 
 		const stats = Stats();
 		stats.showPanel(0);
