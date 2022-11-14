@@ -10,9 +10,9 @@
         <div fil-scroller-container>
           <div fil-scroller-content>
             {% block content %}
-              <main data-template="{{ templateClass }}">
+              <div data-template="{{ templateClass }}">
                 {{ content | safe }}
-              </main>
+              </div>
             {% endblock %}
           </div>
         </div>

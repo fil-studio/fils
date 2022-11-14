@@ -3,7 +3,13 @@
 
   {% include "head.njk" %}
 
-  <body class="default-base">
+  <body class="nomad-base">
+
+		<div class="nomad-menu">
+			{% for page in nomadPages %}
+				<a href="/{{ page.slug }}">{{ page.title }}</a>
+			{% endfor %}
+		</div>
 
     {% block content %}
       <div data-template="{{ templateClass }}">

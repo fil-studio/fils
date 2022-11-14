@@ -1,0 +1,43 @@
+.nomad-menu {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: auto;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	a {
+		padding: 20px;
+		font-size: 1.5vw;
+
+		&:hover {
+			text-decoration: underline;
+		}
+
+		&.active {
+			font-weight: 900;
+		}
+	}
+}
+
+[data-template="nomad"]{
+	display: flex;
+	justify-content: center;
+	padding: 10vw;
+
+	.wrapper {
+		max-width: 1100px;
+	}
+
+	h2 {
+		font-size: 3vw;
+		font-weight: 900;
+		margin: 0 0 1em;
+	}
+
+	p {
+		margin: 0 0 1em;
+	}
+}

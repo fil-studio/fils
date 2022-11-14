@@ -6,23 +6,11 @@
 @import './partials/fonts';
 
 // Demos
+@import './components/default';
 @import './components/scroller-demo';
+@import './components/nomad-demo';
 
 
-.default-base {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-
-  font-size: 2vw;
-
-  a {
-    font-weight: 900;
-    text-decoration: underline;
-  }
-}
-
-.default-base ul {
-  padding-top: 50px;
+body {
+  font-family: $font;
 }

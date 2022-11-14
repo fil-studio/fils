@@ -1,4 +1,12 @@
 import { MathUtils } from "@fils/math";
+import { Section } from "./Section";
+export var D;
+(function (D) {
+    D[D["TOP"] = 0] = "TOP";
+    D[D["BOTTOM"] = 1] = "BOTTOM";
+    D[D["LEFT"] = 2] = "LEFT";
+    D[D["RIGHT"] = 3] = "RIGHT";
+})(D || (D = {}));
 const style = `
 	[fil-scroller-parent],
 	[fil-scroller-parent] body { 
@@ -75,14 +83,18 @@ export default class Scroller {
             current: 0,
             target: 0
         };
+        this._direction = D.RIGHT;
         this.sections = [];
         this.loaded = false;
         this.paused = false;
         this.disabled = false;
-        this.height = 0;
-        this.wh = 0;
-        this._ease = 0.1;
-        this._delta = 0;
+        this.distance = 0;
+        this._ease = 0.16;
+        this.delta = 0;
+        this.w = {
+            w: 0,
+            h: 0
+        };
         this.html.scroller = document.querySelector('[fil-scroller]');
         if (!this.html.scroller) {
             console.warn('Fil Scroller - No `fil-scroller` element');
@@ -100,22 +112,33 @@ export default class Scroller {
         if (this.disabled)
             return;
         this.disabled = true;
+        for (const section of this.sections)
+            section.disabled = this.disabled;
         this.html.scroller.setAttribute('fil-scroller', 'disabled');
     }
     enable() {
         if (!this.disabled)
             return;
         this.disabled = false;
+        for (const section of this.sections)
+            section.disabled = this.disabled;
         this.html.scroller.setAttribute('fil-scroller', '');
+    }
+    set direction(val) {
+        if (val > D.RIGHT)
+            val = 0;
+        this._direction = val;
+        for (const section of this.sections)
+            section.direction = this.direction;
+    }
+    get direction() {
+        return this._direction;
     }
     set ease(newEase) {
         this._ease = newEase;
     }
     get ease() {
         return this._ease;
-    }
-    get delta() {
-        return this._delta;
     }
     addStyles() {
         document.documentElement.setAttribute('fil-scroller-parent', '');
@@ -135,27 +158,17 @@ export default class Scroller {
         for (let i = 0, len = sections.length; i < len; i++) {
             const _section = sections[i];
             const id = _section.getAttribute('fil-scroller-section') ? _section.getAttribute('fil-scroller-section') : `section-${i}`;
-            const section = {
-                id,
-                dom: _section,
-                rect: null,
-                visible: false,
-                progress: 0,
-                animationIn: () => {
-                },
-                animationOut: () => {
-                }
-            };
+            const section = new Section(id, _section, this.direction);
             this.sections.push(section);
         }
     }
     restore() {
+        this.w.w = window.innerWidth;
+        this.w.h = window.innerHeight;
         for (const section of this.sections) {
-            section.dom.style.transform = 'none';
-            section.visible = true;
-            section.rect = section.dom.getBoundingClientRect();
+            section.w = this.w;
+            section.restore();
         }
-        this.wh = window.innerHeight;
     }
     onResize() {
         this.restore();
@@ -197,10 +210,17 @@ export default class Scroller {
             this.html.scroller.scrollTop = this.position.current;
     }
     updateCheckHeight() {
-        this.height = 0;
-        for (let i = 0, len = this.sections.length; i < len; i++)
-            this.height += this.sections[i].rect.height;
-        this.html.holder.style.height = `${this.height}px`;
+        this.distance = 0;
+        const vertical = this.direction === D.TOP || this.direction === D.BOTTOM;
+        for (let i = 0, len = this.sections.length; i < len; i++) {
+            if (vertical)
+                this.distance += this.sections[i].rect.height;
+            else
+                this.distance += this.sections[i].rect.width;
+        }
+        if (!vertical)
+            this.distance += this.w.h - this.w.w;
+        this.html.holder.style.height = `${this.distance}px`;
     }
     updateScrollValues() {
         const previous = this.position.current;
@@ -211,35 +231,18 @@ export default class Scroller {
             this.position.current = MathUtils.lerp(this.position.current, this.position.target, this.ease);
         }
         const newDelta = (this.position.current - previous) * 0.01;
-        this._delta = MathUtils.clamp(MathUtils.lerp(this._delta, newDelta, 0.1), -1, 1);
+        this.delta = MathUtils.clamp(MathUtils.lerp(this.delta, newDelta, 0.1), -1, 1);
     }
     updateSections() {
         const scroll = this.position.current;
+        let w = 0;
         for (let i = 0, len = this.sections.length; i < len; i++) {
             const section = this.sections[i];
-            const top = section.rect.top;
-            const bottom = section.rect.top + section.rect.height;
-            if (scroll + this.wh >= top && scroll <= bottom) {
-                if (!section.visible)
-                    section.animationIn();
-                section.visible = true;
-                section.dom.classList.add('fil-scroller-visible');
-                section.dom.style.setProperty('--fil-scroller-delta', `${this._delta}`);
-                section.progress = MathUtils.map(scroll, top - this.wh, bottom, 0, 1);
-                section.dom.style.setProperty('--fil-scroller-progress', `${section.progress}`);
-                if (!this.disabled)
-                    section.dom.style.transform = `translateY(${-scroll}px)`;
-                continue;
-            }
-            if (!section.visible)
-                continue;
-            section.animationOut();
-            section.visible = false;
-            section.dom.classList.remove('fil-scroller-visible');
-            section.dom.style.setProperty('--fil-scroller-delta', '0');
-            section.progress = 0;
-            if (!this.disabled)
-                section.dom.style.transform = `translateY(${-this.wh}px)`;
+            section.scroll = scroll;
+            section.delta = this.delta;
+            section.widthOffset = w;
+            w += section.rect.width;
+            section.update();
         }
     }
     update() {

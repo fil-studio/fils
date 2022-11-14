@@ -1,14 +1,6 @@
 ---
-layout: base
+layout: nomad-base
 templateClass: nomad
 eleventyComputed:
   title: "Nomad"
 ---
-
-
-<p>Nomad Demo Page</p>
-<ul>
-  {% for page in nomadPages %}
-    <li><a href="/{{ page.slug }}">{{ page.title }}</a></li>
-  {% endfor %}
-</ul>

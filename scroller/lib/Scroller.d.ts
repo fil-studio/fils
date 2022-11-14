@@ -1,3 +1,4 @@
+import { Section } from "./Section";
 interface position {
     current: number;
     target: number;
@@ -8,35 +9,37 @@ interface html {
     container: HTMLElement;
     content: HTMLElement;
 }
-interface Section {
-    id: string;
-    dom: HTMLElement;
-    rect: DOMRect;
-    visible: boolean;
-    progress: number;
-    animationIn: Function;
-    animationOut: Function;
+export declare enum D {
+    TOP = 0,
+    BOTTOM = 1,
+    LEFT = 2,
+    RIGHT = 3
 }
 export default class Scroller {
     html: html;
     position: position;
+    private _direction;
     sections: Array<Section>;
     private loaded;
     private paused;
     private disabled;
-    height: number;
-    private wh;
+    distance: number;
     private _ease;
-    private _delta;
+    delta: number;
+    w: {
+        w: number;
+        h: number;
+    };
     pointerElements: NodeListOf<HTMLElement>;
     constructor();
     pause(): void;
     resume(): void;
     disable(): void;
     enable(): void;
+    set direction(val: D | number);
+    get direction(): D | number;
     set ease(newEase: number);
     get ease(): number;
-    get delta(): number;
     addStyles(): void;
     addHTML(): void;
     addSections(): void;
