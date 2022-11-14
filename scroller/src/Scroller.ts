@@ -106,7 +106,7 @@ export default class Scroller {
 	private paused: boolean = false;
 	private disabled: boolean = false;
 
-	scrollingDistance: number = 0;
+	distance: number = 0;
 	private _ease: number = 0.16;
 
 	delta: number = 0;
@@ -262,19 +262,19 @@ export default class Scroller {
 	}
 
 	updateCheckHeight(){
-		this.scrollingDistance = 0;
+		this.distance = 0;
 
 		const vertical = this.direction === D.TOP || this.direction === D.BOTTOM;
 
 		for(let i = 0, len = this.sections.length; i < len; i++) {
-			if(vertical) this.scrollingDistance += this.sections[i].rect.height;		
-			else this.scrollingDistance += this.sections[i].rect.width;		
+			if(vertical) this.distance += this.sections[i].rect.height;		
+			else this.distance += this.sections[i].rect.width;		
 		}		
 
 		// If horizontal the difference between height and width must be taken care of. 
-		if(!vertical) this.scrollingDistance += this.w.h - this.w.w;
+		if(!vertical) this.distance += this.w.h - this.w.w;
 
-		this.html.holder.style.height = `${this.scrollingDistance}px`;    
+		this.html.holder.style.height = `${this.distance}px`;    
 	}
 
 	updateScrollValues(){
