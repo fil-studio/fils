@@ -14,7 +14,7 @@ export class ScrollerDemo {
 
 		if(window.innerWidth < 768) this.scroller.disable();
 
-		this.cssVariablesElements = document.querySelectorAll('[css-var]');
+		this.cssVariablesElements = document.querySelectorAll('[csss-var]');
 
 		const stats = Stats();
 		stats.showPanel(0);
