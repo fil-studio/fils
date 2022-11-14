@@ -22,7 +22,10 @@
 	}
 
 	p {
-		font-size: max(30px, 2vw);
+		font-size: 2vw;
+		@include xs {
+			font-size: 5vw;
+		}
 	}
 
 	section {
@@ -32,10 +35,8 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-
 		text-align: center;
-		padding: 3vw;
-		border: 1px solid red;
+		padding: 10vw;
 	}
 
 	.section-0 {

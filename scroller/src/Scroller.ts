@@ -98,7 +98,7 @@ export default class Scroller {
 		target: 0
 	};
 
-	direction: D = D.RIGHT;
+	private _direction: D = D.RIGHT;
 
 	sections:Array<Section> = [];
 
@@ -152,10 +152,18 @@ export default class Scroller {
 		this.html.scroller.setAttribute('fil-scroller', '');
 	}
 
+	set direction(val: D | number){
+		if(val > D.RIGHT) val = 0;
+		this._direction = val;
+		for(const section of this.sections) section.direction = this.direction;
+	}
+	get direction(){
+		return this._direction;
+	}
+
 	set ease(newEase:number) {
 		this._ease = newEase;
 	}
-
 	get ease(){
 		return this._ease;
 	}

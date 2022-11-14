@@ -1,5 +1,5 @@
 
-import Scroller from '../../../../scroller/src/Scroller';
+import Scroller, { D } from '../../../../scroller/src/Scroller';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 
 export class ScrollerDemo {
@@ -10,7 +10,7 @@ export class ScrollerDemo {
 	constructor(){
 		
 		this.scroller = new Scroller();
-		this.scroller.ease = 0.16;
+		this.scroller.ease = 0.05;
 
 		this.cssVariablesElements = document.querySelectorAll('[css-var]');
 
@@ -27,6 +27,11 @@ export class ScrollerDemo {
 			requestAnimationFrame(animate);
 		}
 		animate();
+
+		window.addEventListener('click', () => {
+			this.scroller.direction = this.scroller.direction + 1;
+			
+		})
 	}
 
 	update(){
