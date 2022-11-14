@@ -8,7 +8,7 @@
 	"license": "ISC",
 	"private": true,
 	"scripts": {
-		"postinstall": "./scripts/postinstall.sh",
+		"post-install": "./scripts/postinstall.sh",
 		"clean": "del public",
 		"dev": "eleventy --serve --watch",
 		"build": "ELEVENTY_ENV=production eleventy"
