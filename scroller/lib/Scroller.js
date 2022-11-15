@@ -71,7 +71,7 @@ const style = `
 		position: relative;
 	}
 `;
-export default class Scroller {
+export class Scroller {
     constructor() {
         this.html = {
             scroller: null,

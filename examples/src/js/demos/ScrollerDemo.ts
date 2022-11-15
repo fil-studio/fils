@@ -1,5 +1,5 @@
 
-import { D, Scroller } from '@fils/scroller';
+import { Scroller } from '@fils/scroller';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 
@@ -31,7 +31,6 @@ export class ScrollerDemo {
 		}
 		animate();
 
-
 		const gui = new GUI();
 		gui.domElement.style.pointerEvents = 'all';
 		gui.add(
@@ -39,11 +38,12 @@ export class ScrollerDemo {
 			'direction',
 			{ Top: 0, Bottom: 1, Left: 2, Right: 3}
 		);
+
 		gui.add(
 			this.scroller,
 			'ease',
 			0.001, 0.99
-		).step(0.001);
+		)
 		
 	}
 

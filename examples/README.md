@@ -3,6 +3,8 @@ Here you'll find a collection of examples of different packages and utilities co
 
 Each demo is written in a typescript class and needs to be transpiled. All examples are running in a single [11ty](https://www.11ty.dev/) static site generator. To launch this run `yarn && yarn dev` and launch [localhost:8080](http://localhost:8080) in your browser to see a list of available demos.
 
+When developing demos, if you are using relative paths to packages, you may need to runn `./scripts/postinstall.sh`.
+
 ## License
 © Copyright 2022, fil studio
 

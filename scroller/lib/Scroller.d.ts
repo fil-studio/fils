@@ -15,7 +15,7 @@ export declare enum D {
     LEFT = 2,
     RIGHT = 3
 }
-export default class Scroller {
+export declare class Scroller {
     html: html;
     position: position;
     private _direction;

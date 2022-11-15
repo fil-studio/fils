@@ -85,7 +85,7 @@ const style = `
 	}
 `;
 
-export default class Scroller {
+export class Scroller {
 	html:html = {
 		scroller: null,
 		holder: null,
