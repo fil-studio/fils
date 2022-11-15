@@ -37,6 +37,7 @@
 		"@fils/gfx": "^0.0.1-49",
 		"@fils/io": "^0.0.1-1",
 		"@fils/math": "^0.0.1-0",
+		"@fils/nomad": "^0.0.1-1",
 		"@fils/phy": "^0.0.1-1",
 		"@fils/scroller": "^0.0.1-1",
 		"@fils/utils": "^0.0.1-0",

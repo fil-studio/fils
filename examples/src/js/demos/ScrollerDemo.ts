@@ -1,5 +1,5 @@
 
-import Scroller from '../../../../scroller/src/Scroller';
+import { Scroller } from '@fils/scroller';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 
 export class ScrollerDemo {

@@ -1,8 +1,6 @@
 import { MathUtils } from "@fils/math";
 import { D } from "./Scroller";
 
-
-
 export class Section {
 	id: string;
 	dom: HTMLElement;

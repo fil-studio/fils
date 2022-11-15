@@ -1,5 +1,5 @@
 
-import Nomad from '../../../../nomad/src/Nomad';
+import Nomad from '@fils/nomad';
 
 export class NomadDemo {
 	constructor(){

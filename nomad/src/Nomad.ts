@@ -1,9 +1,7 @@
 const linkRule = 'a:not([target]):not([href^=\\#]):not([fil-nomad-ignore])';
 
-export default class Nomad {
+export class Nomad {
 	constructor(){
-
-		console.log('Entra');
 		
 		this.attachLinks();
 
@@ -32,8 +30,6 @@ export default class Nomad {
 		if (e.metaKey || e.ctrlKey) return;
 
 		e.preventDefault();
-
-		console.log('Hola', e);
 		
 	}
 }

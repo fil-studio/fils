@@ -1,5 +1,2 @@
-import Scroller from './Scroller';
-
-export {
-	Scroller 
-}
+export * from './Scroller';
+export * from './Section';
