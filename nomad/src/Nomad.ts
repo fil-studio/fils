@@ -30,21 +30,13 @@ export class Nomad {
 		this.location = this.utils.getLocation(window.location.href);
 
 		this.wrapper = document.querySelector('#nomad__wrapper');
-		
-		// Init current page
-		this.attachLinks();
 
-		window.addEventListener('popstate', () => {
-			this.redirect(window.location.href, 'popstate');
+		window.addEventListener('popstate', (e) => {
+			this.onPopState();
 		});
 
-
-		window.addEventListener('nomad-before', (e:CustomEvent) => {
-			console.log('nomad-before', e.detail);
-		})
-		window.addEventListener('nomad-after', (e:CustomEvent) => {
-			console.log('nomad-after', e.detail);
-		})
+		// Init current page
+		this.attachLinks();
 
 	}
 	
@@ -57,7 +49,7 @@ export class Nomad {
 			link.setAttribute('data-nomad', 'true');
 			
 			link.addEventListener('click', (e) => {
-				this.navigate(e);
+				this.onClick(e);
 			}, true);
 		}
 
@@ -65,7 +57,7 @@ export class Nomad {
 
 	}
 
-	navigate(e){
+	onClick(e){
 		
 		if (e.metaKey || e.ctrlKey) return;
 
@@ -73,6 +65,11 @@ export class Nomad {
 
 		this.redirect(e.currentTarget.href, e.currentTarget)
 		
+	}
+
+	onPopState(){
+		this.isPopstate = true;
+		this.redirect(window.location.href, 'popstate');
 	}
 
 	redirect(href, trigger: string = 'script'){		
@@ -87,7 +84,6 @@ export class Nomad {
 		this.inProgress = true;
 
 		this.beforeFetch(href).then(() => {
-			console.log('Before');
 			
 			this.fetch().then((html) => {
 				
@@ -100,11 +96,6 @@ export class Nomad {
 		
 	}
 
-	pushState(){
-		if(this.isPopstate) return;
-    window.history.pushState(this.location, '', this.location.href); 
-	}
-
 	addContent(html: string){
 
 		// Create html
@@ -112,8 +103,11 @@ export class Nomad {
 		content.innerHTML = html;
 
 		// Update page title
-		document.documentElement.querySelector('title').textContent = content.querySelector('title').textContent;
+		const title = content.querySelector('title').textContent;
+		document.documentElement.querySelector('title').textContent = title;
+		if(!this.isPopstate) window.history.pushState(this.location, title, this.location.href); 
 
+		// Append new page
 		const oldPage = this.wrapper.querySelector('[data-template]');
 		const newPage = content.querySelector('[data-template]');
 
@@ -125,7 +119,7 @@ export class Nomad {
 	}
 
 	async beforeFetch(href){
-		
+
 		const fromLocation = this.location;
 		this.location = this.utils.getLocation(href);
 
@@ -134,8 +128,6 @@ export class Nomad {
 			'to': this.location,
 			'trigger': this.trigger
 		})
-
-		this.pushState();
 
 		// Todo await transition
 		return 1;
@@ -160,16 +152,18 @@ export class Nomad {
 
 	async afterFetch(){
 
+		// Attach new links
 		this.attachLinks();
 
 		this.inProgress = false;
+		this.isPopstate = false;
 		this.trigger = null;
 
 		this.utils.emitEvent('nomad-after', {
 			'location': this.location,
 		})
 
-
+		// Cleanup
 		const oldPage = this.wrapper.querySelector('.nomad__old-page');
 		oldPage?.remove();
 		const newPage = this.wrapper.querySelector('.nomad__new-page');
