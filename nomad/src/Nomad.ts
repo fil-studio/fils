@@ -1,3 +1,5 @@
+import { CheckActiveLinks } from "./utils";
+
 const linkRule = 'a:not([target]):not([href^=\\#]):not([fil-nomad-ignore])';
 
 export class Nomad {
@@ -13,6 +15,7 @@ export class Nomad {
 			link.addEventListener('click', this.navigate.bind(this));
 		}
 
+		CheckActiveLinks(domLinks);
 	}
 
 	dettachLinks(){
@@ -20,10 +23,6 @@ export class Nomad {
 		for(const link of domLinks) {
 			link.removeEventListener('click', this.navigate.bind(this));
 		}
-	}
-
-	click(){
-
 	}
 
 	navigate(e){
