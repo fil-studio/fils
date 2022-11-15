@@ -1,6 +1,8 @@
 
-import Scroller from '../../../../scroller/src/Scroller';
+import { D, Scroller } from '@fils/scroller';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
+import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
+
 
 export class ScrollerDemo {
 	scroller:Scroller;
@@ -10,6 +12,7 @@ export class ScrollerDemo {
 	constructor(){
 		
 		this.scroller = new Scroller();
+		this.scroller.direction = 0;
 		this.scroller.ease = 0.05;
 
 		this.cssVariablesElements = document.querySelectorAll('[css-var]');
@@ -28,10 +31,15 @@ export class ScrollerDemo {
 		}
 		animate();
 
-		window.addEventListener('click', () => {
-			this.scroller.direction = this.scroller.direction + 1;
-			
-		})
+
+		const gui = new GUI();
+		gui.domElement.style.pointerEvents = 'all';
+		gui.add(
+			this.scroller,
+			'direction',
+			{ Top: 0, Bottom: 1, Left: 2, Right: 3}
+		);
+		
 	}
 
 	update(){
@@ -42,7 +50,7 @@ export class ScrollerDemo {
 			const el = this.cssVariablesElements[i];
 			const type = el.getAttribute('css-var');
 			if(type === 'delta') el.innerText = `${this.scroller.delta.toFixed(5)}`;
-			if(type === 'progress') el.innerText = `${section.progress.toFixed(5)}`;
+			if(type === 'progress' && section) el.innerText = `${section.progress.toFixed(5)}`;
 		}
 	}
 }
