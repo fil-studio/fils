@@ -39,6 +39,11 @@ export class ScrollerDemo {
 			'direction',
 			{ Top: 0, Bottom: 1, Left: 2, Right: 3}
 		);
+		gui.add(
+			this.scroller,
+			'ease',
+			0.001, 0.99
+		).step(0.001);
 		
 	}
 
