@@ -13,11 +13,13 @@
 			{% endfor %}
 		</div>
 
-    {% block content %}
-      <div data-template="{{ templateClass }}">
-        {{ content | safe }}
-      </div>
-    {% endblock %}
+    <div id="nomad__wrapper">
+      {% block content %}
+        <div data-template="{{ templateClass }}">
+          {{ content | safe }}
+        </div>
+      {% endblock %}
+    </div>
   
     <script src="{{ '/' | url }}js/main.js"></script>
   </body>

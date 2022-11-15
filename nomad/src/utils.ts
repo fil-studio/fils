@@ -2,7 +2,36 @@
  * Some utils inspired by https://github.com/Dogstudio/highway/blob/master/src/helpers.js
  */
 
+export interface Location {
+	href: string,
+	anchor: string,
+	origin: string,
+	params: object,
+	pathname: string,
+	protocol: string
+}
+
+const PARSER = new window.DOMParser();
+
 export class Utils {
+
+	getPageId(){
+
+	}
+
+	getPageTemplate(){
+
+	}
+
+	emitEvent(name, detail:Object = {}){
+
+		const event = new CustomEvent(name, {
+			detail
+		});
+
+		window.dispatchEvent(event);
+
+	}
 
 	checkActiveLinks = (links:NodeListOf<HTMLLinkElement>) => {
 
@@ -37,7 +66,7 @@ export class Utils {
 		return this.addSlash(match ? match[1] : '/');
 	}
 
-	getScheme(url) {
+	getProtocol(url) {
 		const match = url.match(/^[^:]+(?=:\/\/)/);
 		return match ? match[0] : null;
 	}
@@ -68,30 +97,20 @@ export class Utils {
 		return object;
 	}
 
-	// getDOM(page) {
-	//   return typeof page === 'string' ? PARSER.parseFromString(page, 'text/html') : page;
-	// }
-
-	// getView(page) {
-	//   return page.querySelector('[data-router-view]');
-	// }
-
-	// getSlug(view) {
-	//   return view.getAttribute('data-router-view');
-	// }
-
 	getLocation(slug) {
 
 		const url = slug.includes(window.location.origin) ? slug : `${window.location.origin}${slug}`;		
+
+		const location : Location = {
+			href: url,
+			anchor: this.getAnchor(url),
+			origin: this.getOrigin(url),
+			params: this.getParams(url),
+			pathname: this.getPathname(url),
+			protocol: this.getProtocol(url)
+		}
 		
-		return {
-				href: url,
-				anchor: this.getAnchor(url),
-				origin: this.getOrigin(url),
-				params: this.getParams(url),
-				pathname: this.getPathname(url),
-				scheme: this.getScheme(url)
-		};
+		return location;
 	}
 
 }

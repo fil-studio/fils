@@ -25,6 +25,7 @@
 		"registry": "https://registry.npmjs.org/"
 	},
 	"dependencies": {
+		"@fils/utils": "^0.0.1-0",
 		"three": "^0.145.0"
 	}
 }
