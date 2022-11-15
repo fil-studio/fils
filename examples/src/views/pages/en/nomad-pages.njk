@@ -5,7 +5,7 @@ pagination:
   alias: p
   data: nomadPages
   size: 1
-permalink: "/{{ p.slug | slug }}/"
+permalink: "/{{ lang }}/{{ p.slug | slug }}/"
 eleventyComputed:
   title: "{{ p.title }}"
   description: "{{ p.description }}"

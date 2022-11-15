@@ -89,6 +89,9 @@ if(!isProduction) {
   });
 }
 
+
+
+
 module.exports = function (eleventyConfig) {
   // Folders to copy to build dir (See. 1.1)
   eleventyConfig.addPassthroughCopy({'src/assets' : 'assets'});
@@ -99,14 +102,12 @@ module.exports = function (eleventyConfig) {
   // This allows Eleventy to watch for file changes during local development.
   eleventyConfig.setUseGitIgnore(false);
 
-
   // browser sync options
   eleventyConfig.setBrowserSyncConfig({
     ghostMode: false,
   });
 
   eleventyConfig.setWatchJavaScriptDependencies(false);
-
 
   return {
     dir: {

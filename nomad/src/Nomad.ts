@@ -1,9 +1,12 @@
-import { CheckActiveLinks } from "./utils";
+import { Utils } from "./utils";
 
 const linkRule = 'a:not([target]):not([href^=\\#]):not([fil-nomad-ignore])';
 
 export class Nomad {
+	utils: Utils;
 	constructor(){
+
+		this.utils = new Utils();
 		
 		this.attachLinks();
 
@@ -15,7 +18,7 @@ export class Nomad {
 			link.addEventListener('click', this.navigate.bind(this));
 		}
 
-		CheckActiveLinks(domLinks);
+		this.utils.checkActiveLinks(domLinks);
 	}
 
 	dettachLinks(){
@@ -27,8 +30,12 @@ export class Nomad {
 
 	navigate(e){
 		if (e.metaKey || e.ctrlKey) return;
-
+		
 		e.preventDefault();
 		
+	}
+
+	redirect(href, trigger: string = 'script'){
+
 	}
 }
