@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ locale }}">
+
+  
 
   {% include "head.njk" %}
 
@@ -7,7 +9,7 @@
 
 		<div class="nomad-menu">
 			{% for page in nomadPages %}
-				<a href="/{{ page.slug }}">{{ page.title }}</a>
+				<a href="/{{ lang + '/' + page.slug | url }}">{{ page.title }}</a>
 			{% endfor %}
 		</div>
 

@@ -6,7 +6,7 @@ export class Utils {
 
 	checkActiveLinks = (links:NodeListOf<HTMLLinkElement>) => {
 
-		const pathname = window.location.pathname;
+		const pathname = this.addSlash(window.location.pathname);
 
 		for(const link of links){
 			link.classList.remove('nomad__active-link')
@@ -15,22 +15,16 @@ export class Utils {
 
 			const href = link.getAttribute('href');
 			const location = this.getLocation(href);
-			console.log(location);
 			
-			// if(href.charAt(href.length - 1) !== '/') {
-			// 	href += '/';
-			// 	link.setAttribute('href', href);
-			// }
-			
-			// if( href === pathname ) link.classList.add('nomad__active-link')
-			// else if( href.includes(pathname) ) link.classList.add('nomad__active-parent-link')
+			if( location.pathname === pathname  ) link.classList.add('nomad__active-link')
+			else if( location.pathname != pathname &&  pathname.includes(location.pathname) ) link.classList.add('nomad__parent-link')
 			
 		}
 		
 	}
 
-	getLanguage(url){
-
+	addSlash(url){
+		return url.charAt(url.length - 1) === '/' ? url : `${url}/`
 	}
 
 	getOrigin(url) {
@@ -40,7 +34,7 @@ export class Utils {
 
 	getPathname(url) {
 		const match = url.match(/https?:\/\/.*?(\/[\w_\-./]+)/);
-		return match ? match[1] : '/';
+		return this.addSlash(match ? match[1] : '/');
 	}
 
 	getScheme(url) {
@@ -92,7 +86,6 @@ export class Utils {
 		
 		return {
 				href: url,
-				lang: this.getLanguage(url),
 				anchor: this.getAnchor(url),
 				origin: this.getOrigin(url),
 				params: this.getParams(url),
