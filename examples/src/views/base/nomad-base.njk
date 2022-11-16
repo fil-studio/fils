@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ locale }}">
 
-  
-
   {% include "head.njk" %}
 
   <body class="nomad-base">
@@ -13,9 +11,9 @@
 			{% endfor %}
 		</div>
 
-    <div id="nomad__wrapper">
+    <div nomad-wrapper>
       {% block content %}
-        <div data-template="{{ templateClass }}" nomad-transition="{{ transition }}">
+        <div template="{{ templateClass }}">
           {{ content | safe }}
         </div>
       {% endblock %}

@@ -33,7 +33,7 @@ export class Utils {
 
 	}
 
-	checkActiveLinks = (links:NodeListOf<HTMLLinkElement>) => {
+	checkActiveLinks = (links:NodeListOf<HTMLLinkElement> | Array<HTMLLinkElement>) => {
 
 		const pathname = this.addSlash(window.location.pathname);
 

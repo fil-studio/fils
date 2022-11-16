@@ -1,13 +1,18 @@
-import { Location, Utils } from "./utils";
 import { el } from '@fils/utils';
-import { Transition } from "./Transition";
+import { Page } from "./Page";
+import { Location, Utils } from "./utils";
 
 const linkRule = 'a:not([target]):not([href^=\\#]):not([fil-nomad-ignore])';
 
+interface Route {
+	id: string,
+	template: string,
+	page: Page,
+	location: Location
+}
+
 export class Nomad {
 	utils: Utils;
-
-	transitions:Array<Transition>;
 
 	isPopstate:boolean;
 	inProgress:boolean;
@@ -15,16 +20,16 @@ export class Nomad {
 
 	location: Location;
 
-	history:Map<Location, string>;
+	routes:Array<Route>;
 
 	wrapper:HTMLElement;
-	links:NodeListOf<HTMLLinkElement>;
+	links:Array<HTMLLinkElement>;
 
-	constructor(transitions:Array<Transition> = []){
+	createCallback: Function;
 
-		this.transitions = [new Transition(), ...transitions];
-		console.log(this.transitions);
-		
+	constructor(callback:Function = (template: string, dom: HTMLElement) => {}){
+
+		this.createCallback = callback;
 
 		// Init Utils
 		this.utils = new Utils();
@@ -36,7 +41,16 @@ export class Nomad {
 
 		this.location = this.utils.getLocation(window.location.href);
 
-		this.wrapper = document.querySelector('#nomad__wrapper');
+		this.wrapper = document.querySelector('[nomad-wrapper]');
+		if(!this.wrapper) {
+			console.warn("Nomad can't work without warpper element.");
+			return;
+		}
+
+		console.log('hola');
+		
+
+		this.links = [];
 
 		window.addEventListener('popstate', (e) => {
 			this.onPopState();
@@ -46,21 +60,26 @@ export class Nomad {
 		this.attachLinks();
 
 	}
-	
+
 	attachLinks(){
 
-		this.links = document.querySelectorAll(linkRule) as NodeListOf<HTMLLinkElement>;
-		for(const link of this.links) {
-			
-			if(link.hasAttribute('data-nomad')) continue;
-			link.setAttribute('data-nomad', 'true');
-			
+		// Prevents double events on links
+		const allLinks = document.querySelectorAll(linkRule) as NodeListOf<HTMLLinkElement>;
+		const newLinks = [];
+
+		for(const link of allLinks){
+			if(this.links.find(x => x === link)) continue;
+			this.links.push(link);
+			newLinks.push(link);
+		}
+
+		for(const link of newLinks) {
 			link.addEventListener('click', (e) => {
 				this.onClick(e);
 			}, true);
 		}
 
-		this.utils.checkActiveLinks(this.links);
+		this.utils.checkActiveLinks(allLinks);
 
 	}
 
@@ -91,18 +110,30 @@ export class Nomad {
 		this.inProgress = true;
 
 		this.beforeFetch(href);
+
 		this.fetch().then((html) => {
 
-		 	this.addContent(html).then(() => {
-				this.afterFetch();
-			});
-				
+		 	this.addContent(html);
+			this.afterFetch();
+			
 		})
 	
 		
 	}
 
-	async addContent(html: string){
+	beforeFetch(href){
+
+		const fromLocation = this.location;
+		this.location = this.utils.getLocation(href);
+
+		// this.utils.emitEvent('nomad-before', {
+		// 	'from': fromLocation,
+		// 	'to': this.location,
+		// 	'trigger': this.trigger
+		// })
+	}
+
+	addContent(html: string){
 
 		// Create html
 		const content = el('div');
@@ -114,32 +145,19 @@ export class Nomad {
 		if(!this.isPopstate) window.history.pushState(this.location, title, this.location.href); 
 
 		// Append new page
-		const oldPage = this.wrapper.querySelector('[data-template]') as HTMLElement;
-		const newPage = content.querySelector('[data-template]') as HTMLElement;
+		const oldPage = this.wrapper.querySelector('[template]') as HTMLElement;
+		console.log(oldPage, this.wrapper);
+		
+		const newPage = content.querySelector('[template]') as HTMLElement;
 
 		oldPage.classList.add('nomad__old-page');
 		newPage.classList.add('nomad__new-page');
+		let newClass = this.createCallback(newPage.getAttribute('template'), newPage);
+		if(!newClass) newClass = new Page(newPage);
+		
 
-		const tOut = this.transitions.find(x => x.id === (oldPage.hasAttribute('nomad-transition') ? oldPage.getAttribute('nomad-transition') : ''));
-		if(tOut) await tOut.transitionOutWrapper(oldPage);
-
-		this.wrapper.appendChild(newPage.cloneNode(true));
-
-		const tIn = this.transitions.find(x => x.id === (newPage.hasAttribute('nomad-transition') ? newPage.getAttribute('nomad-transition') : ''));
-		if(tIn) await tIn.transitionInWrapper(newPage);
-
-	}
-
-	beforeFetch(href){
-
-		const fromLocation = this.location;
-		this.location = this.utils.getLocation(href);
-
-		this.utils.emitEvent('nomad-before', {
-			'from': fromLocation,
-			'to': this.location,
-			'trigger': this.trigger
-		})
+		oldPage?.remove();
+		this.wrapper.appendChild(newPage);
 	}
 
 	async fetch(){
@@ -155,11 +173,12 @@ export class Nomad {
 			return response.text();
 		}
 
+		// Force reload if response fails
 		window.location.href = this.location.href;
 
 	}
 
-	afterFetch(){
+	afterFetch(){		
 
 		// Attach new links
 		this.attachLinks();
@@ -168,15 +187,15 @@ export class Nomad {
 		this.isPopstate = false;
 		this.trigger = null;
 
-		this.utils.emitEvent('nomad-after', {
-			'location': this.location,
-		})
+		// this.utils.emitEvent('nomad-after', {
+		// 	'location': this.location,
+		// })
 
 		// Cleanup
-		const oldPage = this.wrapper.querySelector('.nomad__old-page');
-		oldPage?.remove();
 		const newPage = this.wrapper.querySelector('.nomad__new-page');
-		newPage?.classList.remove('.nomad__new-page');
+		console.log(newPage);
+		
+		newPage?.classList.remove('nomad__new-page');
 
 	}
 }

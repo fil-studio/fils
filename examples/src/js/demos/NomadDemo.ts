@@ -1,16 +1,17 @@
 
 import { Nomad } from '../../../../nomad/src/Nomad';
-import { FadeTransition } from './transitions/FadeTransition';
+import { CustomPage } from './NomadPages/CustomPage';
 
 export class NomadDemo {
 	constructor(){
+
 		console.log('NomadDemo');
 
-		const transitions = [
-			new FadeTransition()
-		]
+		new Nomad((template, dom) => {
+			if(template === 'nomad') return new CustomPage(dom);
+			return null;
+		});
 
-		new Nomad(transitions);
 	}
 
 }

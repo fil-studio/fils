@@ -5,9 +5,9 @@ import { SelectiveGlowDemo } from "../demos/SelectiveGlowDemo";
 export class App {
 	constructor(){		
 
-		const dom = document.querySelector('[data-template]')
+		const dom = document.querySelector('[template]')
 		if(!dom) return;
-		const demo = dom.getAttribute('data-template');
+		const demo = dom.getAttribute('template');
 		if(demo === 'scroller') new ScrollerDemo();
 		if(demo === 'selective-glow') new SelectiveGlowDemo();
 		if(demo === 'nomad') new NomadDemo();

@@ -5,24 +5,28 @@
 	width: 100%;
 	height: auto;
 	display: flex;
-	justify-content: center;
+	justify-content: space-around;
 	align-items: center;
+	z-index: 1;
+	padding: 0 50px;
 
 	a {
-		padding: 20px;
+		padding: 20px 0;
 		font-size: 1.5vw;
+		flex-grow: 0;
+		flex-shrink: 0;
 
 		&:hover {
 			text-decoration: underline;
 		}
 
-		&.active {
+		&.nomad__active-link {
 			font-weight: 900;
 		}
 	}
 }
 
-[data-template="nomad"]{
+[template="nomad"]{
 	display: flex;
 	justify-content: center;
 	padding: 10vw;
@@ -39,5 +43,14 @@
 
 	p {
 		margin: 0 0 1em;
+	}
+}
+
+[nomad-transition="fade"]{
+	opacity: 0;
+	transition: opacity 2s ease-in-out;
+
+	&.visible {
+		// opacity: 1;
 	}
 }
