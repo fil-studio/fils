@@ -11,27 +11,7 @@ export interface Location {
 	protocol: string
 }
 
-const PARSER = new window.DOMParser();
-
 export class Utils {
-
-	getPageId(){
-
-	}
-
-	getPageTemplate(){
-
-	}
-
-	emitEvent(name, detail:Object = {}){
-
-		const event = new CustomEvent(name, {
-			detail
-		});
-
-		window.dispatchEvent(event);
-
-	}
 
 	checkActiveLinks = (links:NodeListOf<HTMLLinkElement> | Array<HTMLLinkElement>) => {
 

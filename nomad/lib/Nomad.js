@@ -7,83 +7,110 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+import { el } from '@fils/utils';
+import { Page } from "./Page";
 import { Utils } from "./utils";
 const linkRule = 'a:not([target]):not([href^=\\#]):not([fil-nomad-ignore])';
 export class Nomad {
-    constructor() {
+    constructor(createPage = (template, dom) => { return null; }) {
+        this.createPage = createPage;
         this.utils = new Utils();
         this.isPopstate = false;
         this.inProgress = false;
         this.trigger = null;
-        this.location = this.utils.getLocation(window.location.href);
-        this.attachLinks();
-        window.addEventListener('popstate', () => {
-            this.redirect(window.location.href, 'popstate');
-        });
-        window.addEventListener('nomad-before', (e) => {
-            console.log('nomad-before', e.detail);
-        });
-        window.addEventListener('nomad-after', (e) => {
-            console.log('nomad-after', e.detail);
-        });
-    }
-    attachLinks() {
-        const domLinks = document.querySelectorAll(linkRule);
-        for (const link of domLinks) {
-            link.addEventListener('click', this.navigate.bind(this));
+        this.routes = [];
+        this.route = null;
+        this.wrapper = document.querySelector('[nomad-wrapper]');
+        if (!this.wrapper) {
+            console.warn("Nomad can't work without warpper element.");
+            return;
         }
-        this.utils.checkActiveLinks(domLinks);
+        this.links = [];
+        this.addLinksListener();
+        window.addEventListener('popstate', (e) => {
+            this.onPopState();
+        });
+        const newPage = this.wrapper.querySelector('[template]');
+        const template = newPage.getAttribute('template');
+        let newPageClass = this.createPage(template, newPage);
+        if (!newPageClass)
+            newPageClass = new Page(newPage);
+        this.createRoute(template, newPageClass);
     }
-    detachLinks() {
-        const domLinks = document.querySelectorAll(linkRule);
-        for (const link of domLinks) {
-            link.removeEventListener('click', this.navigate.bind(this));
+    createRoute(template, page, href = window.location.href) {
+        const location = this.utils.getLocation(href);
+        const exists = this.routes.find(x => x.id === location.pathname);
+        this.route = exists !== undefined ? exists : {
+            id: location.pathname,
+            template,
+            page,
+            location,
+        };
+        if (exists === undefined) {
+            this.routes.push(this.route);
         }
     }
-    navigate(e) {
+    addLinksListener() {
+        const allPageLinks = document.querySelectorAll(linkRule);
+        const newLinks = [];
+        for (const link of allPageLinks) {
+            if (this.links.find(x => x === link))
+                continue;
+            this.links.push(link);
+            newLinks.push(link);
+        }
+        for (const link of newLinks) {
+            link.addEventListener('click', (e) => {
+                this.onClick(e);
+            }, true);
+        }
+        this.utils.checkActiveLinks(allPageLinks);
+    }
+    onClick(e) {
         if (e.metaKey || e.ctrlKey)
             return;
         e.preventDefault();
-        this.redirect(e.currentTarget.href, e.currentTarget);
+        this.lifeCycle(e.currentTarget.href, e.currentTarget);
     }
-    redirect(href, trigger = 'script') {
+    onPopState() {
+        this.isPopstate = true;
+        this.lifeCycle(window.location.href, 'popstate');
+    }
+    lifeCycle(href, trigger = 'script') {
         if (this.inProgress) {
             console.log('Page Change inProgress');
             return;
         }
         this.trigger = trigger;
         this.inProgress = true;
-        this.beforeFetch(href).then(() => {
-            console.log('Before');
-            this.fetch().then((page) => {
-                const newPage = document.querySelector(page);
-                console.log(newPage);
-                this.afterFetch();
-            });
+        this.beforeFetch();
+        this.fetch(href).then((html) => {
+            this.addContent(href, html);
+            this.afterFetch();
         });
     }
-    pushState() {
-        if (this.isPopstate)
-            return;
-        window.history.pushState(this.location, '', this.location.href);
+    beforeFetch() {
     }
-    beforeFetch(href) {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.detachLinks();
-            const fromLocation = this.location;
-            this.location = this.utils.getLocation(href);
-            this.utils.emitEvent('nomad-before', {
-                'from': fromLocation,
-                'to': this.location,
-                'trigger': this.trigger
-            });
-            this.pushState();
-            return 1;
-        });
+    addContent(href, html) {
+        const oldPage = this.wrapper.querySelector('[template]');
+        const content = el('div');
+        content.innerHTML = html;
+        const newPage = content.querySelector('[template]');
+        const template = newPage.getAttribute('template');
+        let newPageClass = this.createPage(template, newPage);
+        if (!newPageClass)
+            newPageClass = new Page(newPage);
+        this.createRoute(template, newPageClass, href);
+        const title = content.querySelector('title').textContent;
+        document.documentElement.querySelector('title').textContent = title;
+        if (!this.isPopstate)
+            window.history.pushState(this.route.location, title, this.route.location.href);
+        oldPage === null || oldPage === void 0 ? void 0 : oldPage.remove();
+        this.wrapper.appendChild(newPage);
     }
-    fetch() {
+    fetch(href) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield fetch(this.location.href, {
+            const response = yield fetch(href, {
                 mode: 'same-origin',
                 method: 'GET',
                 headers: { 'X-Requested-With': 'Nomad' },
@@ -92,18 +119,13 @@ export class Nomad {
             if (response.status >= 200 && response.status < 300) {
                 return response.text();
             }
-            window.location.href = this.location.href;
+            window.location.href = href;
         });
     }
     afterFetch() {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.attachLinks();
-            this.inProgress = false;
-            this.trigger = null;
-            this.utils.emitEvent('nomad-after', {
-                'location': this.location,
-            });
-            return 1;
-        });
+        this.addLinksListener();
+        this.inProgress = false;
+        this.isPopstate = false;
+        this.trigger = null;
     }
 }

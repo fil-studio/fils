@@ -1,2 +1,2 @@
 export * from './Nomad';
-export * from './Transition';
+export * from './Page';
