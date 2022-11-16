@@ -1,4 +1,4 @@
-import { Page } from "../../../../../nomad/src/Page";
+import { Page } from "@fils/nomad";
 import { gsap } from 'gsap';
 
 export class CustomPage extends Page {

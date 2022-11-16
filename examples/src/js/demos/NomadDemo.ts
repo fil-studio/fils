@@ -1,5 +1,5 @@
 
-import { Nomad } from '../../../../nomad/src/Nomad';
+import { Nomad } from '@fils/nomad';
 import { CustomPage } from './NomadPages/CustomPage';
 
 export class NomadDemo {
