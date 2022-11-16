@@ -107,7 +107,7 @@ export class Nomad {
 	onClick(e){
 		if (e.metaKey || e.ctrlKey) return;
 		e.preventDefault();
-		this.lifeCycle(e.currentTarget.href, e.currentTarget)
+		this.lifeCycle(e.currentTarget.href)
 	}
 	onPopState(){
 		this.isPopstate = true;

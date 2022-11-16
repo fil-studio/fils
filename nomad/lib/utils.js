@@ -1,4 +1,3 @@
-const PARSER = new window.DOMParser();
 export class Utils {
     constructor() {
         this.checkActiveLinks = (links) => {
@@ -15,16 +14,6 @@ export class Utils {
                     link.classList.add('nomad__parent-link');
             }
         };
-    }
-    getPageId() {
-    }
-    getPageTemplate() {
-    }
-    emitEvent(name, detail = {}) {
-        const event = new CustomEvent(name, {
-            detail
-        });
-        window.dispatchEvent(event);
     }
     addSlash(url) {
         return url.charAt(url.length - 1) === '/' ? url : `${url}/`;

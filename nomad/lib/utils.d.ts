@@ -7,9 +7,6 @@ export interface Location {
     protocol: string;
 }
 export declare class Utils {
-    getPageId(): void;
-    getPageTemplate(): void;
-    emitEvent(name: any, detail?: Object): void;
     checkActiveLinks: (links: NodeListOf<HTMLLinkElement> | Array<HTMLLinkElement>) => void;
     addSlash(url: any): any;
     getOrigin(url: any): any;

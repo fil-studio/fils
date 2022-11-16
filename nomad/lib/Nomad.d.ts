@@ -10,7 +10,6 @@ export declare class Nomad {
     utils: Utils;
     isPopstate: boolean;
     inProgress: boolean;
-    trigger: HTMLLinkElement | string;
     routes: Array<Route>;
     route: Route;
     wrapper: HTMLElement;
@@ -21,9 +20,9 @@ export declare class Nomad {
     addLinksListener(): void;
     onClick(e: any): void;
     onPopState(): void;
-    lifeCycle(href: any, trigger?: string): void;
-    beforeFetch(): void;
-    addContent(href: string, html: string): void;
+    lifeCycle(href: any): void;
+    beforeFetch(): Promise<unknown>;
+    addContent(href: string, html: string): Promise<unknown>;
     fetch(href: any): Promise<string>;
     afterFetch(): void;
 }
