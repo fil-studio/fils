@@ -7,7 +7,9 @@ uniform float exposure;
 uniform float gamma;
 uniform bool rgb;
 uniform float rgbStrength;
+uniform vec2 maxRGBDisp;
 uniform vec2 rgbDelta;
+uniform bool rgbRadial;
 
 uniform bool renderGlow;
 uniform bool renderScene;
@@ -17,7 +19,9 @@ uniform bool renderScene;
 void main () {
     vec4 scene = vec4(0.0, 0.0, 0.0, 1.0);
     if(renderScene) {
-        if(rgb) scene = rgbSplit(tScene, vUv, rgbStrength, rgbDelta);
+        if(rgb) {
+            scene = rgbSplit(tScene, vUv, rgbStrength, rgbDelta, maxRGBDisp, rgbRadial);
+        }
         else scene = texture2D(tScene, vUv);
     }
     vec4 glow = vec4(0.0);

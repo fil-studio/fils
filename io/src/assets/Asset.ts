@@ -8,6 +8,7 @@ export class Asset {
 	url:string;
 	protected _loaded:boolean = false;
 	protected _failed:boolean = false;
+	protected _destroying:boolean = false;
 	content:any = null;
 
 	constructor(url:string) {
@@ -20,6 +21,7 @@ export class Asset {
 		this.content = null;
 		this._loaded = false;
 		this._failed = false;
+		this._destroying = false;
 	}
 
 	get loaded(): boolean {

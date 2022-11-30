@@ -20,6 +20,7 @@ export class TextureAsset extends Asset {
 				if(this.options) TextureUtils.applyTextureOptions(texture, this.options);
 				if (callback != null) callback();
 				this._loaded = true;
+				if(this._destroying) this.destroy();
 			},
 			(event) => {},
 			(event) => {
@@ -30,6 +31,8 @@ export class TextureAsset extends Asset {
 	}
 
 	destroy() {
+		this._destroying = true;
+		if(!this.loaded) return;
 		this.content.dispose();
 		super.destroy();
 	}

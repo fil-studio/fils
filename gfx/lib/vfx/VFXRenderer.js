@@ -11,9 +11,11 @@ const COMP = new RawShaderMaterial({
         exposure: { value: 1.2 },
         gamma: { value: 1.8 },
         rgbStrength: { value: 0.5 },
+        maxRGBDisp: { value: new Vector2(1, 1) },
         rgbDelta: { value: new Vector2() },
         rgb: { value: false },
         renderGlow: { value: true },
+        rgbRadial: { value: true },
         renderScene: { value: true }
     },
     transparent: true
@@ -55,6 +57,14 @@ export class VFXRenderer {
         if (settings && settings.rgbDelta) {
             COMP.uniforms.rgb.value = true;
             COMP.uniforms.rgbDelta.value.copy(settings.rgbDelta);
+        }
+        if (settings && settings.maxRGBDisp) {
+            COMP.uniforms.rgb.value = true;
+            COMP.uniforms.rgbDelta.value.copy(settings.maxRGBDisp);
+        }
+        if (settings && settings.rgbRadial != undefined) {
+            COMP.uniforms.rgb.value = true;
+            COMP.uniforms.rgbRadial.value = settings.rgbRadial;
         }
     }
     get shader() {

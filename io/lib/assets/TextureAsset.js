@@ -15,12 +15,17 @@ export class TextureAsset extends Asset {
             if (callback != null)
                 callback();
             this._loaded = true;
+            if (this._destroying)
+                this.destroy();
         }, (event) => { }, (event) => {
             console.warn('Error Loading Image Asset');
             this._failed = true;
         });
     }
     destroy() {
+        this._destroying = true;
+        if (!this.loaded)
+            return;
         this.content.dispose();
         super.destroy();
     }

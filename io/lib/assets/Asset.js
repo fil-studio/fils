@@ -3,6 +3,7 @@ export class Asset {
     constructor(url) {
         this._loaded = false;
         this._failed = false;
+        this._destroying = false;
         this.content = null;
         this.url = url;
     }
@@ -11,6 +12,7 @@ export class Asset {
         this.content = null;
         this._loaded = false;
         this._failed = false;
+        this._destroying = false;
     }
     get loaded() {
         return this._loaded;

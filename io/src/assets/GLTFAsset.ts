@@ -4,6 +4,7 @@ import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 const loader = new GLTFLoader();
 
 export class GLTFAsset extends Asset {
+
 	constructor(url:string) {
 		super(url);
 	}
@@ -28,6 +29,7 @@ export class GLTFAsset extends Asset {
 			this.content = gltf;
 
 			this._loaded = true;
+			if(this._destroying) this.destroy();
 
 			if (callback != null) callback();
 
@@ -46,6 +48,8 @@ export class GLTFAsset extends Asset {
 	}
 
 	destroy() {
+		this._destroying = true;
+		if(!this.loaded) return;
 		const dispose = (scene) => {
 			for ( let c of scene.children ) {
 				if (c.geometry) c.geometry.dispose();

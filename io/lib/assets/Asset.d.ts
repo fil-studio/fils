@@ -2,6 +2,7 @@ export declare class Asset {
     url: string;
     protected _loaded: boolean;
     protected _failed: boolean;
+    protected _destroying: boolean;
     content: any;
     constructor(url: string);
     load(callback?: Function): void;

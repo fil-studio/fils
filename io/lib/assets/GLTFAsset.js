@@ -15,6 +15,8 @@ export class GLTFAsset extends Asset {
             gltf.asset;
             this.content = gltf;
             this._loaded = true;
+            if (this._destroying)
+                this.destroy();
             if (callback != null)
                 callback();
         }, function (xhr) {
@@ -24,6 +26,9 @@ export class GLTFAsset extends Asset {
         });
     }
     destroy() {
+        this._destroying = true;
+        if (!this.loaded)
+            return;
         const dispose = (scene) => {
             for (let c of scene.children) {
                 if (c.geometry)

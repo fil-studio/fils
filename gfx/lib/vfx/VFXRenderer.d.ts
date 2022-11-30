@@ -4,6 +4,8 @@ export declare type VFXCompSettings = {
     blurSettings?: BlurSettings;
     rgbStrength?: number;
     rgbDelta?: Vector2;
+    maxRGBDisp?: Vector2;
+    rgbRadial?: boolean;
     exposure?: number;
     gamma?: number;
 };

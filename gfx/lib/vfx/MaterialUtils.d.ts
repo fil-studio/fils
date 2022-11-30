@@ -1,2 +1,2 @@
-import { MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial } from "three";
-export declare function initMaterial(mat: MeshPhongMaterial | MeshStandardMaterial | MeshPhysicalMaterial): any;
+import { Material } from "three";
+export declare function initMaterial(mat: Material): Material;
