@@ -31,15 +31,15 @@
 		"sass": "^1.56.1"
 	},
 	"dependencies": {
-		"@fils/ani": "^0.0.2-0",
-		"@fils/gen": "^0.0.1-1",
-		"@fils/gfx": "^0.0.1-49",
-		"@fils/io": "^0.0.1-1",
-		"@fils/math": "^0.0.1-0",
-		"@fils/nomad": "^0.0.1-1",
-		"@fils/phy": "^0.0.1-1",
-		"@fils/scroller": "^0.0.1-1",
-		"@fils/utils": "^0.0.1-0",
+		"@fils/ani": "workspace:^",
+		"@fils/gen": "workspace:^",
+		"@fils/gfx": "workspace:^",
+		"@fils/io": "workspace:^",
+		"@fils/math": "workspace:^",
+		"@fils/nomad": "workspace:^",
+		"@fils/phy": "workspace:^",
+		"@fils/scroller": "workspace:^",
+		"@fils/utils": "workspace:^",
 		"gsap": "^3.11.3",
 		"three": "^0.146.0"
 	}

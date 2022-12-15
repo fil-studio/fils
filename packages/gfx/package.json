@@ -18,8 +18,8 @@
 		"README.md"
 	],
 	"dependencies": {
-		"@fils/io": "^0.0.1-1",
-		"@fils/math": "^0.0.1-0",
+		"@fils/io": "workspace:^",
+		"@fils/math": "workspace:^",
 		"three": "^0.145.0"
 	},
 	"devDependencies": {

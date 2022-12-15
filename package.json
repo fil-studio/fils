@@ -1,0 +1,22 @@
+{
+    "name": "fils",
+	"version": "0.0.1-1",
+	"description": "A collection of fils",
+	"repository": "git@github.com:fil-studio/fils.git",
+	"homepage": "https://github.com/fil-studio/fils/",
+	"author": "fil studio <hello@fil.studio>",
+	"license": "Apache-2.0",
+	"private": false,
+    "workspaces": [
+      "./packages/ani",
+      "./packages/gen",
+      "./packages/gfx",
+      "./packages/io",
+      "./packages/math",
+      "./packages/nomad",
+      "./packages/phy",
+      "./packages/scroller",
+      "./packages/utils"
+    ]
+  }
+  

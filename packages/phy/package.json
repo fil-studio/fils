@@ -20,6 +20,6 @@
     "typescript": "^4.5.4"
   },
   "dependencies": {
-    "@fils/math": "^0.0.1-0"
+    "@fils/math": "workspace:^"
   }
 }
