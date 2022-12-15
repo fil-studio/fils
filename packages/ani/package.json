@@ -7,7 +7,7 @@
     "type": "git",
     "url": "git+ssh://git@github.com/fil-studio/fils.git"
   },
-  "homepage": "https://github.com/fil-studio/fils/tree/main/ani",
+  "homepage": "https://github.com/fil-studio/fils/tree/main/packages/ani",
   "author": "fil studio <hello@fil.studio>",
   "license": "Apache-2.0",
   "private": false,
