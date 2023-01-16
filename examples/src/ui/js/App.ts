@@ -1,5 +1,8 @@
+import { UI } from '../../../../packages/ui/src/main';
+
 export class App {
 	constructor() {
-		console.log('UI APP');
+
+		new UI();
 	}
 }

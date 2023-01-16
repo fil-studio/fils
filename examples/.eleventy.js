@@ -92,6 +92,7 @@ module.exports = function (eleventyConfig) {
 
   // Todo mirar si amb el path 0 ja funciona
   eleventyConfig.addWatchTarget('**');
+  eleventyConfig.addWatchTarget('../packages/**/*.ts');
 
   // This allows Eleventy to watch for file changes during local development.
   eleventyConfig.setUseGitIgnore(false);
