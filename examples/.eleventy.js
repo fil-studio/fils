@@ -10,7 +10,7 @@ const isProduction = process.env.ELEVENTY_ENV === 'production';
 const examples = [
   'scroller',
   'selective-glow',
-  'default',
+  'core',
 ];
 
 try {
