@@ -5,11 +5,16 @@
 
   <body template="{{ templateClass }}">
 
+    <link rel="stylesheet" href="{{ '/' | url }}core/css/main.css"/>
+    {% if templateClass != 'core' %}<link rel="stylesheet" href="{{ '/' | url }}{{ templateClass }}/css/main.css"/>{% endif %}
+
+
     {% block content %}
       {{ content | safe }}
     {% endblock %}
 
-    <script src="{{ '/' | url }}default/js/main.js"></script>
+    <script src="{{ '/' | url }}core/js/main.js"></script>
+    {% if templateClass != 'core' %}<script src="{{ '/' | url }}{{ templateClass }}/js/main.js"></script>{% endif %}
   </body>
 
 </html>

@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../../../src/default/js/App.ts", "../../../src/default/js/main.js"],
-  "sourcesContent": ["export class App {\n\tconstructor() {\n\t\tconsole.log('test 7');\n\n\t\tconsole.log('APP');\n\n\t}\n}", "const { App } = require(\"./App\");\nconst _App = new App();\n"],
-  "mappings": "qcAAA,IAAAA,EAAA,GAAAC,EAAAD,EAAA,SAAAE,IAAA,IAAaA,EAAbC,EAAAC,EAAA,KAAaF,EAAN,KAAU,CAChB,aAAc,CACb,QAAQ,IAAI,QAAQ,EAEpB,QAAQ,IAAI,KAAK,CAElB,CACD,ICPA,GAAM,CAAE,IAAAG,CAAI,EAAI,WACVC,EAAO,IAAID",
-  "names": ["App_exports", "__export", "App", "init_App", "__esmMin", "App", "_App"]
-}

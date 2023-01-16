@@ -1,2 +1,43 @@
-(()=>{var t=Object.defineProperty;var g=Object.getOwnPropertyDescriptor;var u=Object.getOwnPropertyNames;var A=Object.prototype.hasOwnProperty;var P=(o,s)=>()=>(o&&(s=o(o=0)),s);var a=(o,s)=>{for(var e in s)t(o,e,{get:s[e],enumerable:!0})},i=(o,s,e,l)=>{if(s&&typeof s=="object"||typeof s=="function")for(let c of u(s))!A.call(o,c)&&c!==e&&t(o,c,{get:()=>s[c],enumerable:!(l=g(s,c))||l.enumerable});return o};var q=o=>i(t({},"__esModule",{value:!0}),o);var r={};a(r,{App:()=>n});var n,p=P(()=>{n=class{constructor(){console.log("test 7"),console.log("APP")}}});var{App:w}=(p(),q(r)),_=new w;})();
+(() => {
+  var __defProp = Object.defineProperty;
+  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+  var __getOwnPropNames = Object.getOwnPropertyNames;
+  var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __esm = (fn, res) => function __init() {
+    return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+  };
+  var __export = (target, all) => {
+    for (var name in all)
+      __defProp(target, name, { get: all[name], enumerable: true });
+  };
+  var __copyProps = (to, from, except, desc) => {
+    if (from && typeof from === "object" || typeof from === "function") {
+      for (let key of __getOwnPropNames(from))
+        if (!__hasOwnProp.call(to, key) && key !== except)
+          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+    }
+    return to;
+  };
+  var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+
+  // src/core/js/App.ts
+  var App_exports = {};
+  __export(App_exports, {
+    App: () => App
+  });
+  var App;
+  var init_App = __esm({
+    "src/core/js/App.ts"() {
+      App = class {
+        constructor() {
+          console.log("Default APP");
+        }
+      };
+    }
+  });
+
+  // src/core/js/main.js
+  var { App: App2 } = (init_App(), __toCommonJS(App_exports));
+  var _App = new App2();
+})();
 //# sourceMappingURL=main.js.map

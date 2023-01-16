@@ -40,7 +40,7 @@ const compileJs = (example) => {
   esbuild.build({
     entryPoints: [path],
     bundle: true,
-    minify: !isProduction,
+    minify: isProduction,
     sourcemap: !isProduction,
     define: { DEV_MODE: !isProduction },
     loader: { '.glsl': 'text', '.vert': 'text', '.frag': 'text' },

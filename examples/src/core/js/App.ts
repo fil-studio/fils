@@ -1,8 +1,5 @@
 export class App {
 	constructor() {
-		console.log('test 7');
-
-		console.log('APP');
-
+		console.log('Default APP');
 	}
 }

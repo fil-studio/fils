@@ -1,5 +1,5 @@
 export class App {
 	constructor() {
-		console.log('APP');
+		console.log('UI APP');
 	}
 }

@@ -4,7 +4,7 @@ import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 
 
-export class ScrollerDemo {
+export class App {
 	scroller:Scroller;
 
 	cssVariablesElements: NodeListOf<HTMLElement>;
@@ -21,7 +21,9 @@ export class ScrollerDemo {
 		document.body.appendChild(stats.dom);
 
 		const animate = () => {
+			stats.begin();
 			this.update();
+			stats.end();
 			requestAnimationFrame(animate);
 		}
 		animate();
