@@ -81,6 +81,11 @@ if(!isProduction) {
 
   }
 
+  chokidar.watch('../packages').on('change', (eventType, file) => {
+    console.log(`Package Updated [${eventType}]`);
+    buildAllJS();
+  });
+
 }
 
 buildAllCSS();
