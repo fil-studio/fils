@@ -1,0 +1,27 @@
+{
+	"name": "@fils/gui",
+	"version": "0.0.1",
+	"description": "GUI Package written in TypeScript",
+	"main": "lib/main.js",
+	"repository": "git@github.com:fil-studio/fils.git",
+	"homepage": "https://github.com/fil-studio/fils/tree/main/gui",
+	"author": "fil studio <hello@fil.studio>",
+	"license": "Apache-2.0",
+	"private": false,
+	"scripts": {
+		"prepare": "yarn build",
+		"build": "tsc --build tsconfig.gui.json"
+	},
+	"type": "module",
+	"files": [
+		"lib",
+		"README.md"
+	],
+	"devDependencies": {
+		"typescript": "^4.5.2"
+	},
+	"publishConfig": {
+		"access": "public",
+		"registry": "https://registry.npmjs.org/"
+	}
+}
