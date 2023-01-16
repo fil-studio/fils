@@ -1,8 +1,4 @@
 .scroller-base {
-
-	font-family: $font;
-
-
 	h1,
 	h2,
 	h3 {
@@ -70,10 +66,6 @@
 		h2,
 		p {
 			transform: rotateZ(calc(-1 * var(--fil-scroller-delta) * 20deg));
-
-			@include xs {
-				transform: rotateZ(calc(-1 * var(--fil-scroller-delta) * 30deg));
-			}
 
 			will-change: transform;
 		}

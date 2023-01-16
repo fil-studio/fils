@@ -26,7 +26,7 @@
 	}
 }
 
-[template="nomad"]{
+[template="nomad"] {
 	display: flex;
 	justify-content: center;
 	padding: 10vw;
@@ -46,7 +46,7 @@
 	}
 }
 
-[nomad-transition="fade"]{
+[nomad-transition="fade"] {
 	opacity: 0;
 	transition: opacity 2s ease-in-out;
 

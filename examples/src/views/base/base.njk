@@ -6,16 +6,10 @@
   <body template="{{ templateClass }}">
 
     {% block content %}
-<<<<<<< HEAD
-      <div template="{{ templateClass }}">
-        {{ content | safe }}
-      </div>
-=======
       {{ content | safe }}
->>>>>>> 9bc6d85 (Refactor WIP)
     {% endblock %}
 
-    <script src="{{ '/' | url }}js/main.js"></script>
+    <script src="{{ '/' | url }}default/js/main.js"></script>
   </body>
 
 </html>

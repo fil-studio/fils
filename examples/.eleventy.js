@@ -1,89 +1,95 @@
 const sass = require('sass');
-const autoprefixer = require('autoprefixer');
-const postcss = require('postcss');
 const CleanCSS = require('clean-css');
 const fs = require('fs');
 const process = require('process');
 const esbuild = require('esbuild');
 const alias = require('esbuild-plugin-alias');
 
-const OUT_CSS = 'public/css/main.css';
-const OUT_JS = 'public/js/main.js';
-
 const isProduction = process.env.ELEVENTY_ENV === 'production';
 
 const examples = [
   'scroller',
-  'glow'
+  'selective-glow',
+  'default',
 ];
 
-
-// create paths just in case
 try {
-  fs.mkdirSync('public');
-  fs.mkdirSync('public/css', {recursive: true});
-  fs.mkdirSync('public/js', {recursive: true});
+  for(const example of examples) {
+    fs.mkdirSync(`public/${example}/js`, { recursive: true });
+    fs.mkdirSync(`public/${example}/css`, { recursive: true });
+  }
 } catch (e) {}
 
 console.log('Production:', isProduction);
 
-const buildAllCSS = () => {
-  sass.compile(
-    { file: 'src/styles/main.scss' },
-    (err, result) => {
-      const css = result.css.toString();
-      postcss([autoprefixer])
-        .process(css)
-        .then((result) => {
-          const css = result.css;
-          const finalCSS = isProduction ? new CleanCSS({}).minify(css).styles : css;
-          fs.writeFile(OUT_CSS, finalCSS);
-        });
-    }
-  );
+const compileCss = (example) => {
+  const path = `./src/${example}/css/main.scss`;
+
+  const result = sass.compile(path);
+  const css = result.css.toString();
+  const finalCSS = isProduction ? new CleanCSS({}).minify(css).styles : css;
+  fs.writeFile(`public/${example}/css/main.css`, finalCSS, () => {});
 }
 
-const buildAllJS = () => {
+const compileJs = (example) => {
+
+  const path = `src/${example}/js/main.js`;
 
   esbuild.build({
-    entryPoints: ['src/js/main.js'],
-    bundle: isProduction,
+    entryPoints: [path],
+    bundle: true,
     minify: !isProduction,
     sourcemap: !isProduction,
     define: { DEV_MODE: !isProduction },
-    loader: {'.glsl': 'text', '.vert': 'text', '.frag': 'text'},
-    outfile: OUT_JS,
+    loader: { '.glsl': 'text', '.vert': 'text', '.frag': 'text' },
+    outfile: `public/${example}/js/main.js`,
     plugins: [
       alias({
         three: __dirname + '/node_modules/three/build/three.min.js',
       }),
     ],
   });
+
+}
+
+const buildAllCSS = () => {
+  for(const example of examples) compileCss(example);
+}
+
+const buildAllJS = () => {
+  for(const example of examples) compileJs(example);
 }
 
 if(!isProduction) {
   const chokidar = require('chokidar');
 
-  chokidar.watch('src/styles/').on('change', (eventType, file) => {
-    console.log(`Updated SCSS [${eventType}]`);
-    buildAllCSS();
-  });
+  for(const example of examples) {
 
-  chokidar.watch('src/js/').on('change', (eventType, file) => {
-    console.log(`Updated JS [${eventType}]`);
-    buildAllJS()
-  });
+    const path = `src/${example}`;
+
+    chokidar.watch(`${path}/css`).on('change', (eventType, file) => {
+      console.log(`Updated SCSS [${eventType}]`);
+      compileCss(example);
+    });
+
+    chokidar.watch(`${path}/js`).on('change', (eventType, file) => {
+      console.log(`Updated JS [${eventType}]`);
+      compileJs(example);
+    });
+
+  }
+
 }
 
-
-
+buildAllCSS();
+buildAllJS();
 
 module.exports = function (eleventyConfig) {
   // Folders to copy to build dir (See. 1.1)
   eleventyConfig.addPassthroughCopy({'src/assets' : 'assets'});
 
-  eleventyConfig.addWatchTarget("src/js/");
-  eleventyConfig.addWatchTarget("src/styles/");
+  // Todo mirar si amb el path 0 ja funciona
+  eleventyConfig.addWatchTarget('**');
 
   // This allows Eleventy to watch for file changes during local development.
   eleventyConfig.setUseGitIgnore(false);
