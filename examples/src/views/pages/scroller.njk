@@ -1,47 +1,54 @@
 ---
-layout: scroller-base
+layout: base
 templateClass: scroller
 eleventyComputed:
   title: "Scroller"
 ---
 
-<section fil-scroller-section class="section-0">
-  <h1>Fil Scroller</h1>
-  <h3>By Fil Studio</h3>
-</section>
 
-<section fil-scroller-section class="section-1">
-  <a href="https://www.google.com/" target="_blank" fil-scroller-pointer><p>Allow scroll over elements with pointer-events: all;</p></a>
-</section>
+{# Todo aquest wrapper ha de venir amb un macro o un filter #}
+<div fil-scroller>
+  <div fil-scroller-holder>
+    <div fil-scroller-container>
+      <div fil-scroller-content>
+        <main>
+          <section fil-scroller-section class="section-0">
+            <h1>Fil Scroller</h1>
+            <h3>By Fil Studio</h3>
+          </section>
 
+          <section fil-scroller-section class="section-1">
+            <a href="https://www.google.com/" target="_blank" fil-scroller-pointer><p>Allow scroll over elements with pointer-events: all;</p></a>
+          </section>
 
-<section fil-scroller-section class="section-2">
-  <h2>Transform by sections</h2>
-  <h3>Performance first</h3>
-</section>
+          <section fil-scroller-section class="section-2">
+            <h2>Scroll by sections</h2>
+            <h3>Performance first</h3>
+            <p>Sections with variable height, no need to 100vh</p>
+          </section>
 
-<section fil-scroller-section="custom-direction-0" class="section-2">
-  <h2>Scroll in any direction</h2>
-</section>
+          <section fil-scroller-section="custom-id" class="section-3">
+            <h2>Animate by scroll force</h2>
+            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quisquam saepe eius reiciendis aut veritatis quod cumque dolores esse ut? Sunt fuga consequuntur dicta eos blanditiis, illo eaque fugiat debitis saepe!</p>
+          </section>
 
-<section fil-scroller-section="custom-id" class="section-3">
-  <h2>Animate by scroll force</h2>
-  <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quisquam saepe eius reiciendis aut veritatis quod cumque dolores esse ut? Sunt fuga consequuntur dicta eos blanditiis, illo eaque fugiat debitis saepe!</p>
-</section>
+          <section fil-scroller-section class="section-4">
+            <h2>Animation In - Out for each section</h2>
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Pariatur nam autem incidunt repudiandae, numquam eius soluta atque nisi hic dolore reprehenderit vitae in magnam explicabo est ad voluptates deleniti temporibus!</p>
+          </section>
 
-<section fil-scroller-section class="section-4">
-  <h2>Animation In - Out for each section</h2>
-  <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Pariatur nam autem incidunt repudiandae, numquam eius soluta atque nisi hic dolore reprehenderit vitae in magnam explicabo est ad voluptates deleniti temporibus!</p>
-</section>
+          <section fil-scroller-section="css-var-section" class="section-5">
+            <h2>Continuous animation by css variable</h2>
+            <p>--fil-scroller-delta: <span css-var="delta"></span></p>
+            <p>--fil-scroller-range: <span css-var="progress"></span></p>
+          </section>
 
-<section fil-scroller-section="css-var-section" class="section-5">
-  <h2>Continuous animation by css variable</h2>
-  <p>--fil-scroller-delta: <span css-var="delta"></span></p>
-  <p>--fil-scroller-progress: <span css-var="progress"></span></p>
-</section>
-
-<section fil-scroller-section class="section-7">
-  <h2>fil.studio</h2>
-  <h2>coming soon</h2>
-</section>
-
+          <section fil-scroller-section class="section-7">
+            <h2>fil.studio</h2>
+            <h2>coming soon</h2>
+          </section>
+        </main>
+      </div>
+    </div>
+  </div>
+</div>

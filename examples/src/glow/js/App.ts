@@ -7,14 +7,14 @@ import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
-const BOX_GEO = new BoxGeometry(1,1,1);
+const BOX_GEO = new BoxGeometry(1, 1, 1);
 const BALL_GEO = new SphereGeometry(1);
-const CYL_GEO = new CylinderGeometry(.1,.1,1,32,8);
-const TOR_GEO = new TorusKnotGeometry(10,2,64,32,2,3);
+const CYL_GEO = new CylinderGeometry(.1, .1, 1, 32, 8);
+const TOR_GEO = new TorusKnotGeometry(10, 2, 64, 32, 2, 3);
 
-export class SelectiveGlowDemo extends WebGLSketch {
-	customRenderer:VFXRenderer;
-	meshes:Array<Mesh> = [];
+export class App extends WebGLSketch {
+	customRenderer: VFXRenderer;
+	meshes: Array<Mesh> = [];
 
 	constructor() {
 		super(window.innerWidth, window.innerHeight, {
@@ -28,7 +28,7 @@ export class SelectiveGlowDemo extends WebGLSketch {
 		ShaderChunk['rgbSplit'] = gfxShaders.rgbSplit;
 
 		const L = new DirectionalLight(0xffffff, .35);
-		L.position.set(-1,1,1);
+		L.position.set(-1, 1, 1);
 		this.scene.add(L);
 
 		const box1 = new Mesh(
@@ -70,7 +70,7 @@ export class SelectiveGlowDemo extends WebGLSketch {
 				})
 			)
 		);
-		cyl.rotation.z = Math.PI/4;
+		cyl.rotation.z = Math.PI / 4;
 		cyl.position.z = 2;
 		cyl.scale.y = 5;
 		this.scene.add(cyl);
@@ -88,8 +88,8 @@ export class SelectiveGlowDemo extends WebGLSketch {
 		torus.scale.setScalar(.1);
 		this.scene.add(torus);
 		this.meshes.push(torus);
-		
-		window.addEventListener('resize', (event)=>{
+
+		window.addEventListener('resize', (event) => {
 			this.resize(window.innerWidth, window.innerHeight);
 		});
 
@@ -179,7 +179,7 @@ export class SelectiveGlowDemo extends WebGLSketch {
 		this.meshes[2].rotation.set(
 			0,
 			0,
-			Math.PI/4 - t * .1
+			Math.PI / 4 - t * .1
 		);
 	}
 

@@ -3,14 +3,18 @@
 
   {% include "head.njk" %}
 
-  <body class="default-base">
+  <body template="{{ templateClass }}">
 
     {% block content %}
+<<<<<<< HEAD
       <div template="{{ templateClass }}">
         {{ content | safe }}
       </div>
+=======
+      {{ content | safe }}
+>>>>>>> 9bc6d85 (Refactor WIP)
     {% endblock %}
-  
+
     <script src="{{ '/' | url }}js/main.js"></script>
   </body>
 

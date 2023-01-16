@@ -1,10 +1,11 @@
-<<<<<<< HEAD
 .scroller-base {
 
 	font-family: $font;
 
 
-	h1, h2, h3 {
+	h1,
+	h2,
+	h3 {
 		font-weight: 900;
 	}
 
@@ -15,33 +16,33 @@
 	h1 {
 		font-size: 10vw;
 	}
+
 	h2 {
 		font-size: 8vw;
 	}
+
 	h3 {
 		font-size: 6vw;
 	}
 
 	p {
-		font-size: 2vw;
-		@include xs {
-			font-size: 5vw;
-		}
+		font-size: max(30px, 2vw);
 	}
 
 	section {
-		width: 100vw;
+		width: 100%;
 		height: 100vh;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
+
 		text-align: center;
-		padding: 10vw;
+		padding: 3vw;
 	}
 
 	.section-0 {
-		
+
 		opacity: 0;
 
 		&.fil-scroller-visible {
@@ -65,14 +66,16 @@
 	}
 
 	.section-3 {
-		h2, p {
+
+		h2,
+		p {
 			transform: rotateZ(calc(-1 * var(--fil-scroller-delta) * 20deg));
+
 			@include xs {
 				transform: rotateZ(calc(-1 * var(--fil-scroller-delta) * 30deg));
 			}
+
 			will-change: transform;
 		}
 	}
 }
-=======
->>>>>>> 9bc6d85 (Refactor WIP)
