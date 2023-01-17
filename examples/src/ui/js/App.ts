@@ -12,25 +12,33 @@ export class App {
 
 		this.ui = new UI();
 
-		const group1 = this.ui.addGroup();
-		group1.addItem();
-		group1.addItem();
-		group1.addItem();
+		// const group1 = this.ui.addGroup({
+		// 	title: 'Group 1'
+		// });
+		// group1.addItem();
+		// group1.addItem();
+		// group1.addItem();
 
-		const group2 = this.ui.addGroup();
-		group2.addItem();
+		// const group2 = this.ui.addGroup({
+		// 	title: 'Group 2'
+		// });
+		// group2.addItem();
 
-		const group3 = this.ui.addGroup();
-		group3.addItem();
-		group3.addItem();
-		group3.addItem();
-		group3.addItem();
+		// const group3 = this.ui.addGroup({
+		// 	title: 'Group 3'
+		// });
+		// group3.addItem();
+		// group3.addItem();
+		// group3.addItem();
+		// group3.addItem();
 
-		const group4 = group3.addGroup();
-		group4.addItem();
-		group4.addItem();
-		group4.addItem();
-		group4.addItem();
+		// const group4 = group3.addGroup({
+		// 	title: 'Group 4'
+		// });
+		// group4.addItem();
+		// group4.addItem();
+		// group4.addItem();
+		// group4.addItem();
 
 		console.log(this.ui);
 

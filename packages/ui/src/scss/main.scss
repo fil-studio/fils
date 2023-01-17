@@ -4,6 +4,8 @@ $fil__background-color: rgba(0,0,0,0.2);
 
 $fil__separation: 3px;
 
+$fil__height: 40px;
+
 .fil__ui {
 	position: fixed;
 	top: 0;
@@ -11,7 +13,6 @@ $fil__separation: 3px;
 }
 
 .fil__ui-element {
-
 	&:not(:last-child) {
 		margin-bottom: $fil__separation;
 	}
@@ -20,17 +21,32 @@ $fil__separation: 3px;
 .fil__ui-group {
 	padding: $fil__separation;
 	position: relative;
-	width: 100%;
-	min-width: 300px;
+	width: 300px;
 	height: auto;
 	border-radius: $fil__border-radius;
 	background-color: $fil__background-color;
 }
 
+.fil__ui-title {
+	position: relative;
+	width: 100%;
+	height: $fil__height;
+
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	padding: 0 $fil__separation;
+	border: 1px solid white;
+}
+
 .fil__ui-item {
 	position: relative;
 	width: 100%;
-	height: 40px;
-	border-radius: $fil__border-radius;
-	background-color: $fil__background-color;
+	height: $fil__height;
+
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+
+	border: 1px solid red;
 }
