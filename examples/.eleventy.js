@@ -4,6 +4,8 @@ const fs = require('fs');
 const process = require('process');
 const esbuild = require('esbuild');
 const alias = require('esbuild-plugin-alias');
+const chokidar = require('chokidar');
+
 
 const isProduction = process.env.ELEVENTY_ENV === 'production';
 
@@ -43,7 +45,7 @@ const compileJs = (example) => {
     minify: isProduction,
     sourcemap: !isProduction,
     define: { DEV_MODE: !isProduction },
-    loader: { '.glsl': 'text', '.vert': 'text', '.frag': 'text' },
+    loader: { '.glsl': 'text', '.vert': 'text', '.frag': 'text', '.css' : 'text' },
     outfile: `public/${example}/js/main.js`,
     plugins: [
       alias({
@@ -63,7 +65,6 @@ const buildAllJS = () => {
 }
 
 if(!isProduction) {
-  const chokidar = require('chokidar');
 
   for(const example of examples) {
 
@@ -83,6 +84,7 @@ if(!isProduction) {
 
   chokidar.watch('../packages').on('change', (eventType, file) => {
     console.log(`Package Updated [${eventType}]`);
+    buildAllCSS();
     buildAllJS();
   });
 
@@ -97,7 +99,7 @@ module.exports = function (eleventyConfig) {
 
   // Todo mirar si amb el path 0 ja funciona
   eleventyConfig.addWatchTarget('**');
-  eleventyConfig.addWatchTarget('../packages/**/*.ts');
+  eleventyConfig.addWatchTarget('../packages/**');
 
   // This allows Eleventy to watch for file changes during local development.
   eleventyConfig.setUseGitIgnore(false);

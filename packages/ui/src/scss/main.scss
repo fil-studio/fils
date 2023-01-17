@@ -1,0 +1,38 @@
+$fil__border-radius: 10px;
+
+$fil__background-color-0: #333333;
+$fil__background-color-1: #202020;
+
+$fil__item-background-color-0: #2e2e2e;
+
+$fil__backdrop: blur(10px);
+$fil__padding: 3px;
+
+.fil__ui {
+	position: fixed;
+	top: 0;
+	right: 0;
+}
+
+.fil__ui-group {
+	padding: $fil__padding;
+	position: relative;
+	width: 100%;
+	min-width: 300px;
+	height: auto;
+	border-radius: $fil__border-radius;
+	background-color: $fil__background-color-0;
+	margin-bottom: $fil__padding;
+}
+
+.fil__ui-item {
+	position: relative;
+	width: 100%;
+	height: 40px;
+	border-radius: $fil__border-radius;
+	background-color: $fil__item-background-color-0;
+	border: 1px solid white;
+	&:not(:last-of-type){
+		margin-bottom: $fil__padding;
+	}
+}

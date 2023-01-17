@@ -9,7 +9,8 @@
 	"license": "Apache-2.0",
 	"scripts": {
 		"prepare": "npm run build",
-		"build": "tsc --build tsconfig.utils.json"
+		"build": "tsc --build tsconfig.ui.json",
+		"dev": "chokidar 'src/scss/*.scss' -c 'sass src/scss/main.scss:src/scss/bundle.css && cleancss -o src/bundle/bundle.min.css src/scss/bundle.css && echo \"scss compiled\"'"
 	},
 	"files": [
 		"lib",
@@ -17,6 +18,12 @@
 		"package.json"
 	],
 	"devDependencies": {
+		"chokidar": "^3.5.3",
+		"chokidar-cli": "^3.0.0",
+		"clean-css-cli": "^5.6.1",
+		"fs": "^0.0.1-security",
+		"sass": "^1.57.1",
 		"typescript": "^4.8.4"
-	}
+	},
+	"dependencies": {}
 }
