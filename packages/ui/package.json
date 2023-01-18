@@ -10,7 +10,7 @@
 	"scripts": {
 		"prepare": "npm run build",
 		"build": "tsc --build tsconfig.ui.json",
-		"dev": "chokidar 'src/scss/*.scss' -c 'sass src/scss/main.scss:src/scss/bundle.css && cleancss -o src/bundle/bundle.min.css src/scss/bundle.css && echo \"scss compiled\"'"
+		"dev": "chokidar 'src/scss/**/*.scss' -c 'sass src/scss/main.scss:src/scss/bundle.css && cleancss -o src/bundle/bundle.min.css src/scss/bundle.css && echo \"scss compiled\"'"
 	},
 	"files": [
 		"lib",

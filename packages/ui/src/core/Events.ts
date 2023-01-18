@@ -47,7 +47,6 @@ export class EventsHandler extends EventTarget implements EventsHandlerInterface
 	// Receiver
 	refresh(e?:CustomEvent): void {}
 
-
 	/**
 	 * Bottom up events
 	 */

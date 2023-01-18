@@ -5,7 +5,8 @@ import { WRAPPER_CLASS } from './globals';
 import styles from '../bundle/bundle.min.css';
 import { Group, GroupParams } from '../components/Group';
 import css from '../utils/css';
-import { EventsHandler } from '../components/Events';
+import { EventsHandler } from './Events';
+import { ItemOptions, ItemParams } from '../components/items/Item';
 css.inject(styles);
 
 
@@ -32,10 +33,10 @@ export class UI extends EventsHandler {
 		this.group = new Group({ parent: this, title, foldable, folded });
 		this.addChildrenListener(this.group);
 
-		this.onChangeCallback = onChangeCallback ? onChangeCallback : () => {};
+		this.onChangeCallback = onChangeCallback ? onChangeCallback : (e) => {};
 	}
 
-	createDom() {
+	private createDom() {
 		this.dom = document.createElement('div');
 		this.dom.classList.add(WRAPPER_CLASS);
 		document.body.appendChild(this.dom);
@@ -49,8 +50,11 @@ export class UI extends EventsHandler {
 		return this.group.addGroup({ title, foldable, folded });
 	}
 
-	addItem() {
-		this.group.addItem();
+	add(object, key, options?:ItemOptions){
+		this.addItem(object, key, options);
+	}
+	addItem(object, key, options?:ItemOptions) {
+		this.group.addItem(object, key, options);
 	}
 
 	onChange(e?: CustomEvent<any>): void {

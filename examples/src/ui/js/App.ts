@@ -10,6 +10,10 @@ export class App {
 	ui: UI;
 	constructor() {
 
+		const obj = {
+			booleanTest: false
+		}
+
 		this.ui = new UI({
 			title: 'UI',
 			onChangeCallback: (e) => {
@@ -20,30 +24,40 @@ export class App {
 		const group1 = this.ui.addGroup({
 			title: 'Group 1'
 		})
-		group1.addItem();
-		group1.addItem();
-		group1.addItem();
 
-		const group2 = this.ui.addGroup({
-			title: 'Group 2'
+		/**
+		 * Object
+		 * Key
+		 * Opcions
+		 *
+		 *
+		 */
+		group1.add(obj, 'booleanTest', {
+			title: 'Boolean Test'
 		});
-		group2.addItem();
+		// group1.addItem();
+		// group1.addItem();
 
-		const group3 = this.ui.addGroup({
-			title: 'Group 3'
-		});
-		group3.addItem();
-		group3.addItem();
-		group3.addItem();
-		group3.addItem();
+		// const group2 = this.ui.addGroup({
+		// 	title: 'Group 2'
+		// });
+		// group2.addItem();
 
-		const group4 = group3.addGroup({
-			title: 'Group 4'
-		});
-		group4.addItem();
-		group4.addItem();
-		group4.addItem();
-		group4.addItem();
+		// const group3 = this.ui.addGroup({
+		// 	title: 'Group 3'
+		// });
+		// group3.addItem();
+		// group3.addItem();
+		// group3.addItem();
+		// group3.addItem();
+
+		// const group4 = group3.addGroup({
+		// 	title: 'Group 4'
+		// });
+		// group4.addItem();
+		// group4.addItem();
+		// group4.addItem();
+		// group4.addItem();
 
 		console.log(this.ui);
 

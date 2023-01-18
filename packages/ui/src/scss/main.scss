@@ -1,6 +1,8 @@
 $fil__border-radius: 5px;
 
 $fil__background-color: rgba(0,0,0,0.3);
+$fil__color--tool: #fff;
+$fil__color--active: #2DB20C;
 
 $fil__separation: 3px;
 
@@ -52,6 +54,6 @@ $fil__height: 40px;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-
-	border: 1px solid greenyellow;
 }
+
+@import "./items/boolean";

@@ -1,7 +1,8 @@
 import { ALL_CLASS, GROUP_CLASS, TAB_CLASS, TITLE_CLASS } from "../core/globals";
 import { UI } from "../main";
-import { EventsHandler } from "./Events";
-import { Item } from "./items/Item";
+import { EventsHandler } from "../core/Events";
+import { Item, ItemOptions, ItemParams } from "./items/Item";
+import ItemFactory from "./ItemFactory";
 
 export interface GroupParams {
 	parent?: Group | UI;
@@ -76,8 +77,11 @@ export class Group extends EventsHandler {
 		return group;
 	}
 
-	addItem() {
-		const item = new Item({ parent: this });
+	add(object, key, options?: ItemOptions){
+		this.addItem(object, key, options);
+	}
+	addItem(object, key, options?: ItemOptions) {
+		const item = ItemFactory({parent: this, object, key}, options);
 		this.children.push(item);
 		this.addChildrenListener(item);
 		this.dom.appendChild(item.dom);

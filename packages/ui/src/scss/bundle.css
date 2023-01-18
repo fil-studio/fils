@@ -40,7 +40,35 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 1px solid greenyellow;
+}
+
+.fil__ui-boolean {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+.fil__ui-boolean div:last-of-type {
+  width: 60px;
+  height: 28px;
+  border-radius: 40px;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: flex-start;
+}
+.fil__ui-boolean div:last-of-type div {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #fff;
+  transition: all 0.2s ease-in-out;
+}
+.fil__ui-boolean.active div:last-of-type {
+  background-color: #2DB20C;
+  justify-content: flex-end;
+}
+.fil__ui-boolean.active div:last-of-type div {
+  background-color: #fff;
 }
 
 /*# sourceMappingURL=bundle.css.map */
