@@ -2,16 +2,21 @@
   position: fixed;
   top: 0;
   right: 0;
+  width: 300px;
 }
 
 .fil__ui-element:not(:last-child) {
   margin-bottom: 10px;
 }
 
+.fil__ui-element.changed {
+  border: 1px solid red !important;
+}
+
 .fil__ui-group {
   padding: 10px;
   position: relative;
-  width: 300px;
+  width: 100%;
   height: auto;
   border-radius: 5px;
   background-color: rgba(0, 0, 0, 0.3);
@@ -35,7 +40,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 1px solid red;
+  border: 1px solid greenyellow;
 }
 
 /*# sourceMappingURL=bundle.css.map */

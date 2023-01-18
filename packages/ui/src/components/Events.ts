@@ -19,24 +19,26 @@ export class EventsListener extends EventTarget implements EventsHandler {
 
 	// Propagator
 	__onChange(e?: CustomEvent<any>): void {
+		this.onChange(e);
+
 		const detail = e ? e.detail : {
 			initiator: this
 		};
 		let event = new CustomEvent("onChange", { detail });
 		this.dispatchEvent(event);
-		this.onChange(e);
 	}
 	// Receiver
 	onChange(e?:CustomEvent): void {}
 
 	// Propagator
 	__onChangeComplete(e?: CustomEvent<any>): void {
+		this.onChangeComplete(e);
+
 		const detail = e ? e.detail : {
 			initiator: this
 		};
 		let event = new CustomEvent("onChangeComplete", { detail });
 		this.dispatchEvent(event);
-		this.onChangeComplete(e);
 	}
 	// Receiver
 	onChangeComplete(e?:CustomEvent): void {}

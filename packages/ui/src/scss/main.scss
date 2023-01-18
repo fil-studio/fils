@@ -10,6 +10,7 @@ $fil__height: 40px;
 	position: fixed;
 	top: 0;
 	right: 0;
+	width: 300px;
 }
 
 .fil__ui-element {
@@ -18,10 +19,14 @@ $fil__height: 40px;
 	}
 }
 
+.fil__ui-element.changed {
+	border: 1px solid red !important;
+}
+
 .fil__ui-group {
 	padding: $fil__separation;
 	position: relative;
-	width: 300px;
+	width: 100%;
 	height: auto;
 	border-radius: $fil__border-radius;
 	background-color: $fil__background-color;
@@ -48,5 +53,5 @@ $fil__height: 40px;
 	justify-content: space-between;
 	align-items: center;
 
-	border: 1px solid red;
+	border: 1px solid greenyellow;
 }

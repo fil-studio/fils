@@ -1,5 +1,5 @@
 
-import { ITEM_CLASS } from '../../core/globals';
+import { ALL_CLASS, ITEM_CLASS } from '../../core/globals';
 import { EventsListener } from '../Events';
 import { Group } from '../Group';
 
@@ -10,6 +10,7 @@ export class Item extends EventsListener {
 	constructor({parent}:{parent?: Group} = {}) {
 		super();
 		this.dom = document.createElement('div');
+		this.dom.classList.add(ALL_CLASS)
 		this.dom.classList.add(ITEM_CLASS);
 		this.parent = parent;
 		this.parent.dom.appendChild(this.dom);
