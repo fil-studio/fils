@@ -73,18 +73,17 @@ export class Group extends EventsListener {
 	} = {}):Group {
 		const group = new Group({ parent: this, title, foldable, folded });
 		this.children.push(group);
-		this.addListeners(group);
+		this.addListener(group);
 		return group;
 	}
 
 	addItem() {
 		const item = new Item({ parent: this });
 		this.children.push(item);
-		this.addListeners(item);
+		this.addListener(item);
 	}
 
 	onChange(e?:CustomEvent): void {
-		console.log('Group - onChange', );
-		super.onChange(e);
+		console.log('Group - onChange');
 	}
 }

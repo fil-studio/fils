@@ -17,17 +17,16 @@ export class Item extends EventsListener {
 
 		// For testing purposes
 		this.dom.addEventListener('click', () => {
-			this.onChange();
+			this.__onChange();
 
 			setTimeout(() => {
-				this.onChangeComplete();
+				this.__onChangeComplete();
 			}, 1000);
 		})
 	}
 
 	onChange(): void {
 		console.log('Item - onChange');
-		super.onChange();
 	}
 
 	/**

@@ -1,36 +1,43 @@
 
 export interface EventsHandler {
-	addListeners(children: EventsListener): void;
-	onChange(): void;
-	onChangeComplete(): void;
+	addListener(children: EventsListener): void;
+	__onChange(e?: CustomEvent): void;
+	__onChangeComplete(e?: CustomEvent): void;
+	onChange(e?: CustomEvent): void;
+	onChangeComplete(e?: CustomEvent): void;
 }
 
 export class EventsListener extends EventTarget implements EventsHandler {
-	addListeners(children: EventsListener): void {
-		console.log('EventsListener - addListeners', children);
-
+	addListener(children: EventsListener): void {
 		children.addEventListener('onChange', (e: CustomEvent) => {
-			this.onChange(e);
+			this.__onChange(e);
 		})
 		children.addEventListener('onChangeComplete', (e: CustomEvent) => {
-			this.onChangeComplete(e);
+			this.__onChangeComplete(e);
 		})
 	}
 
-	onChange(e?:CustomEvent): void {
+	// Propagator
+	__onChange(e?: CustomEvent<any>): void {
 		const detail = e ? e.detail : {
 			initiator: this
 		};
-
 		let event = new CustomEvent("onChange", { detail });
 		this.dispatchEvent(event);
+		this.onChange(e);
 	}
+	// Receiver
+	onChange(e?:CustomEvent): void {}
 
-	onChangeComplete(e?:CustomEvent): void {
+	// Propagator
+	__onChangeComplete(e?: CustomEvent<any>): void {
 		const detail = e ? e.detail : {
 			initiator: this
 		};
 		let event = new CustomEvent("onChangeComplete", { detail });
 		this.dispatchEvent(event);
+		this.onChangeComplete(e);
 	}
+	// Receiver
+	onChangeComplete(e?:CustomEvent): void {}
 }
