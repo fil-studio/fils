@@ -9,22 +9,13 @@ export class Item extends EventsHandler {
 
 	constructor({parent}:{parent?: Group} = {}) {
 		super(parent);
+		this.createDom();
+	}
+
+	createDom(){
 		this.dom = document.createElement('div');
 		this.dom.classList.add(ALL_CLASS)
 		this.dom.classList.add(ITEM_CLASS);
-		this.parent = parent;
-		this.parent.dom.appendChild(this.dom);
-		this.addParentListener(this.parent)
-
-
-		// For testing purposes
-		this.dom.addEventListener('click', () => {
-			this.__onChange();
-
-			setTimeout(() => {
-				this.__onChangeComplete();
-			}, 1000);
-		})
 	}
 
 	onChange(): void {

@@ -3,6 +3,13 @@ import { UI } from "../main";
 import { EventsHandler } from "./Events";
 import { Item } from "./items/Item";
 
+export interface GroupParams {
+	parent?: Group | UI;
+	title?: string;
+	foldable?: boolean;
+	folded?: boolean;
+}
+
 export class Group extends EventsHandler {
 	title: string;
 	parent: Group | UI;
@@ -17,12 +24,7 @@ export class Group extends EventsHandler {
 		title,
 		foldable,
 		folded
-	}: {
-		parent?: Group | UI;
-		title?: string;
-		foldable?: boolean;
-		folded?: boolean;
-	} = {}) {
+	}: GroupParams = {}) {
 		super(parent);
 
 		this.parent = parent;
@@ -66,14 +68,11 @@ export class Group extends EventsHandler {
 		title,
 		foldable,
 		folded
-	}: {
-		title?: string,
-		foldable?:boolean,
-		folded?:boolean
-	} = {}):Group {
+	}: GroupParams = {}): Group {
 		const group = new Group({ parent: this, title, foldable, folded });
 		this.children.push(group);
 		this.addChildrenListener(group);
+		this.dom.appendChild(group.dom);
 		return group;
 	}
 
@@ -81,9 +80,6 @@ export class Group extends EventsHandler {
 		const item = new Item({ parent: this });
 		this.children.push(item);
 		this.addChildrenListener(item);
-	}
-
-	onChange(e?:CustomEvent): void {
-		console.log('Group - onChange');
+		this.dom.appendChild(item.dom);
 	}
 }

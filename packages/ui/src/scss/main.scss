@@ -2,7 +2,7 @@ $fil__border-radius: 5px;
 
 $fil__background-color: rgba(0,0,0,0.3);
 
-$fil__separation: 10px;
+$fil__separation: 3px;
 
 $fil__height: 40px;
 
@@ -13,14 +13,14 @@ $fil__height: 40px;
 	width: 300px;
 }
 
+.fil__ui-tab {
+	margin-bottom: $fil__separation;
+}
+
 .fil__ui-element {
 	&:not(:last-child) {
 		margin-bottom: $fil__separation;
 	}
-}
-
-.fil__ui-element.changed {
-	border: 1px solid red !important;
 }
 
 .fil__ui-group {

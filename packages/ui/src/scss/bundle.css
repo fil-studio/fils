@@ -5,16 +5,16 @@
   width: 300px;
 }
 
-.fil__ui-element:not(:last-child) {
-  margin-bottom: 10px;
+.fil__ui-tab {
+  margin-bottom: 3px;
 }
 
-.fil__ui-element.changed {
-  border: 1px solid red !important;
+.fil__ui-element:not(:last-child) {
+  margin-bottom: 3px;
 }
 
 .fil__ui-group {
-  padding: 10px;
+  padding: 3px;
   position: relative;
   width: 100%;
   height: auto;
@@ -29,7 +29,7 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  padding: 0 10px;
+  padding: 0 3px;
   border: 1px solid white;
 }
 
