@@ -5,10 +5,10 @@ import { WRAPPER_CLASS } from './globals';
 import styles from '../bundle/bundle.min.css';
 import { Group } from '../components/Group';
 import css from '../utils/css';
-import { EventsListener } from '../components/Events';
+import { EventsHandler } from '../components/Events';
 css.inject(styles);
 
-export class UI extends EventsListener {
+export class UI extends EventsHandler {
 	dom: HTMLElement;
 	group: Group;
 
@@ -27,7 +27,14 @@ export class UI extends EventsListener {
 		document.body.appendChild(this.dom);
 
 		this.group = new Group({ parent: this, title, foldable, folded });
-		this.addListener(this.group);
+		this.addChildrenListener(this.group);
+
+
+		// For testing purposes
+		this.dom.addEventListener('click', () => {
+			console.log('UI - click');
+			this.__refresh();
+		});
 	}
 
 	onChange(e?: CustomEvent<any>): void {

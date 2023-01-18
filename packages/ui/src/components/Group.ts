@@ -1,9 +1,9 @@
 import { ALL_CLASS, GROUP_CLASS, TAB_CLASS, TITLE_CLASS } from "../core/globals";
 import { UI } from "../main";
-import { EventsListener } from "./Events";
+import { EventsHandler } from "./Events";
 import { Item } from "./items/Item";
 
-export class Group extends EventsListener {
+export class Group extends EventsHandler {
 	title: string;
 	parent: Group | UI;
 	children: Array<Group | Item> = [];
@@ -23,7 +23,7 @@ export class Group extends EventsListener {
 		foldable?: boolean;
 		folded?: boolean;
 	} = {}) {
-		super();
+		super(parent);
 
 		this.parent = parent;
 		this.title = title;
@@ -73,14 +73,14 @@ export class Group extends EventsListener {
 	} = {}):Group {
 		const group = new Group({ parent: this, title, foldable, folded });
 		this.children.push(group);
-		this.addListener(group);
+		this.addChildrenListener(group);
 		return group;
 	}
 
 	addItem() {
 		const item = new Item({ parent: this });
 		this.children.push(item);
-		this.addListener(item);
+		this.addChildrenListener(item);
 	}
 
 	onChange(e?:CustomEvent): void {
