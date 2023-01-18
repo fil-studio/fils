@@ -1,19 +1,39 @@
 
 import { ITEM_CLASS } from '../../core/globals';
+import { EventsListener } from '../Events';
 import { Group } from '../Group';
 
-export class Item  {
+export class Item extends EventsListener {
 	dom: HTMLElement;
 	parent: Group;
 
-	initialValue: number | string | boolean | Array<any> | Object;
-	value: number | string | boolean | Array<any> | Object;
-	updated: boolean = false;
-
 	constructor({parent}:{parent?: Group} = {}) {
+		super();
 		this.dom = document.createElement('div');
 		this.dom.classList.add(ITEM_CLASS);
 		this.parent = parent;
 		this.parent.dom.appendChild(this.dom);
+
+
+		// For testing purposes
+		this.dom.addEventListener('click', () => {
+			this.onChange();
+
+			setTimeout(() => {
+				this.onChangeComplete();
+			}, 1000);
+		})
+	}
+
+	onChange(): void {
+		console.log('Item - onChange');
+		super.onChange();
+	}
+
+	/**
+	 * Refresh item dom
+	 */
+	refresh() {
+
 	}
 }

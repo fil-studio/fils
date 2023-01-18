@@ -5,16 +5,16 @@
 }
 
 .fil__ui-element:not(:last-child) {
-  margin-bottom: 3px;
+  margin-bottom: 10px;
 }
 
 .fil__ui-group {
-  padding: 3px;
+  padding: 10px;
   position: relative;
   width: 300px;
   height: auto;
   border-radius: 5px;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.3);
 }
 
 .fil__ui-title {
@@ -24,7 +24,7 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  padding: 0 3px;
+  padding: 0 10px;
   border: 1px solid white;
 }
 
