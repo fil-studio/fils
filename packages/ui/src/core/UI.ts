@@ -8,18 +8,22 @@ import css from '../utils/css';
 import { EventsHandler } from '../components/Events';
 css.inject(styles);
 
-interface UIParams extends GroupParams {
 
+interface UIParams extends GroupParams {
+	onChangeCallback?: Function;
 }
 
 export class UI extends EventsHandler {
 	dom: HTMLElement;
 	group: Group;
 
+	onChangeCallback: Function;
+
 	constructor({
 		title,
 		foldable,
-		folded
+		folded,
+		onChangeCallback
 	}: UIParams = {}) {
 		super();
 
@@ -28,6 +32,7 @@ export class UI extends EventsHandler {
 		this.group = new Group({ parent: this, title, foldable, folded });
 		this.addChildrenListener(this.group);
 
+		this.onChangeCallback = onChangeCallback ? onChangeCallback : () => {};
 	}
 
 	createDom() {
@@ -46,6 +51,10 @@ export class UI extends EventsHandler {
 
 	addItem() {
 		this.group.addItem();
+	}
+
+	onChange(e?: CustomEvent<any>): void {
+		this.onChangeCallback(e);
 	}
 
 }

@@ -12,6 +12,9 @@ export class App {
 
 		this.ui = new UI({
 			title: 'UI',
+			onChangeCallback: (e) => {
+				console.log('Callback', e);
+			}
 		});
 
 		const group1 = this.ui.addGroup({
