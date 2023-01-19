@@ -1,6 +1,8 @@
 import check from "../utils/check";
 import { BooleanItem } from "./items/BooleanItem";
 import { Item, ItemParams } from "./items/Item";
+import { NumberItem } from "./items/NumberItem";
+import { StringItem } from "./items/StringItem";
 
 
 const ItemFactory = (params:ItemParams, options) => {
@@ -13,6 +15,12 @@ const ItemFactory = (params:ItemParams, options) => {
 
 	if(check.isBoolean(value)){
 		return new BooleanItem(params, options);
+	}
+	if(check.isString(value)){
+		return new StringItem(params, options);
+	}
+	if(check.isNumber(value)){
+		return new NumberItem(params, options);
 	}
 
 	// For testing purposes

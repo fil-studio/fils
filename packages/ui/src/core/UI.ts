@@ -31,6 +31,7 @@ export class UI extends EventsHandler {
 		this.createDom();
 
 		this.group = new Group({ parent: this, title, foldable, folded });
+		this.dom.appendChild(this.group.dom);
 		this.addChildrenListener(this.group);
 
 		this.onChangeCallback = onChangeCallback ? onChangeCallback : (e) => {};
@@ -40,6 +41,10 @@ export class UI extends EventsHandler {
 		this.dom = document.createElement('div');
 		this.dom.classList.add(WRAPPER_CLASS);
 		document.body.appendChild(this.dom);
+	}
+
+	addButton(options?: ItemOptions) {
+		this.group.addButton(options);
 	}
 
 	addGroup({

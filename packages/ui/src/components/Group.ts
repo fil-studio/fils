@@ -3,6 +3,7 @@ import { UI } from "../main";
 import { EventsHandler } from "../core/Events";
 import { Item, ItemOptions, ItemParams } from "./items/Item";
 import ItemFactory from "./ItemFactory";
+import { Button } from "./Button";
 
 export interface GroupParams {
 	parent?: Group | UI;
@@ -42,10 +43,7 @@ export class Group extends EventsHandler {
 		this.dom = document.createElement('div');
 		this.dom.classList.add(ALL_CLASS)
 
-		if(this.parent){
-			this.parent.dom.appendChild(this.dom);
-			this.dom.classList.add(GROUP_CLASS);
-		}
+		if(this.parent)	this.dom.classList.add(GROUP_CLASS);
 
 	}
 
@@ -65,15 +63,26 @@ export class Group extends EventsHandler {
 		this.dom.appendChild(tab);
 	}
 
+	addChild(child: Group | Item | Button){
+		this.children.push(child);
+		this.addChildrenListener(child);
+		this.dom.appendChild(child.dom);
+	}
+
+	addButton(options){
+		const button = new Button(this, options);
+		this.addChild(button);
+	}
+
 	addGroup({
 		title,
 		foldable,
 		folded
 	}: GroupParams = {}): Group {
 		const group = new Group({ parent: this, title, foldable, folded });
-		this.children.push(group);
-		this.addChildrenListener(group);
-		this.dom.appendChild(group.dom);
+
+		this.addChild(group);
+
 		return group;
 	}
 
@@ -82,8 +91,6 @@ export class Group extends EventsHandler {
 	}
 	addItem(object, key, options?: ItemOptions) {
 		const item = ItemFactory({parent: this, object, key}, options);
-		this.children.push(item);
-		this.addChildrenListener(item);
-		this.dom.appendChild(item.dom);
+		this.addChild(item);
 	}
 }

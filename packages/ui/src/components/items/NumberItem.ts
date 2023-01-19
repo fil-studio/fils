@@ -1,0 +1,34 @@
+import { ITEM_NUMBER } from "../../core/globals";
+import { Item } from "./Item";
+
+
+export class NumberItem extends Item {
+	input:HTMLInputElement;
+
+	addEventListeners(): void {
+
+		this.input.addEventListener('change', () => {
+			console.log('NumberItem - onChange');
+			this.value = this.input.value;
+			this.refresh();
+			this.__onChange();
+		});
+
+	}
+
+	createDom(): void {
+		super.createDom();
+
+		this.dom.classList.add(ITEM_NUMBER);
+
+		const wrapper = document.createElement('div');
+		this.input = document.createElement('input');
+		this.input.type = 'number';
+
+		this.input.value = this.value as string;
+
+		wrapper.appendChild(this.input);
+		this.dom.appendChild(wrapper);
+
+	}
+}

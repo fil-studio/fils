@@ -9,13 +9,21 @@ export class BooleanItem extends Item {
 
 		this.value = params.object[params.key];
 
+		this.addEventListeners();
+	}
+
+	addEventListeners(): void {
+
 		this.dom.addEventListener('click', () => {
 			this.value = !this.value;
+			this.refresh();
 			this.__onChange();
 
 			this.dom.classList.toggle('active');
 		});
+
 	}
+
 	createDom(): void {
 		super.createDom();
 

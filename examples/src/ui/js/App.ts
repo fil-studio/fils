@@ -11,7 +11,10 @@ export class App {
 	constructor() {
 
 		const obj = {
-			booleanTest: false
+			booleanTest: false,
+			stringTest: 'Test',
+			numberTest: 1,
+			numberTestFloat: 0.5
 		}
 
 		this.ui = new UI({
@@ -34,6 +37,21 @@ export class App {
 		 */
 		group1.add(obj, 'booleanTest', {
 			title: 'Boolean Test'
+		});
+		group1.add(obj, 'stringTest', {
+			title: 'String Test'
+		});
+		group1.add(obj, 'numberTest', {
+			title: 'Number Test'
+		});
+		group1.add(obj, 'numberTestFloat', {
+			title: 'Number Test Float'
+		});
+		group1.addButton({
+			title: 'Number Test Float',
+			callback: () => {
+				console.log('Button pressed');
+			}
 		});
 		// group1.addItem();
 		// group1.addItem();

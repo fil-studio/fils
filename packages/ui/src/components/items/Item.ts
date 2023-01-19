@@ -8,7 +8,7 @@ export interface ItemOptions {
 }
 
 export interface ItemParams {
-	object?: any;
+	object?: Object;
 	key?: string;
 	parent?: Group;
 }
@@ -19,6 +19,13 @@ export class Item extends EventsHandler {
 
 	title: string;
 
+	object: Object;
+	key: string;
+
+	value: boolean | number | string;
+
+	options: ItemOptions;
+
 	constructor({ parent, object, key }: ItemParams = {}, options?: ItemOptions) {
 		super(parent);
 
@@ -26,19 +33,23 @@ export class Item extends EventsHandler {
 		if(!object) throw new Error('Item - object is required');
 		if(!key) throw new Error('Item - key is required');
 
-		this.title = options?.title || key;
-		console.log(this.title);
+		this.object = object;
+		this.key = key;
+		this.value = this.object[this.key];
+
+		this.options = options;
+		this.title = this.options?.title || key;
 
 
 		this.createDom();
+		this.addEventListeners();
 	}
 
 	createDom(){
 
 		// Create basic structure
 		this.dom = document.createElement('div');
-		this.dom.classList.add(ALL_CLASS)
-		this.dom.classList.add(ITEM_CLASS);
+		this.dom.classList.add(ALL_CLASS, ITEM_CLASS);
 
 		if(this.title){
 			const titleWrapper = document.createElement('div');
@@ -50,6 +61,10 @@ export class Item extends EventsHandler {
 		}
 	}
 
+	addEventListeners(): void {
+		// Override this method
+	}
+
 	onChange(): void {
 		console.log('Item - onChange');
 	}
@@ -59,6 +74,6 @@ export class Item extends EventsHandler {
 	 */
 	refresh() {
 		console.log('Item - refresh');
-
+		this.object[this.key] = this.value;
 	}
 }
