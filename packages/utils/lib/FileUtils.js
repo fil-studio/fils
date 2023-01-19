@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addFileDropHandler = exports.downloadFile = void 0;
+exports.openFileImportDialog = exports.addFileDropHandler = exports.downloadFile = void 0;
 var downloadFile = function (cnt, filename) {
     var link = document.createElement('a');
     link.style.display = 'none';
@@ -42,3 +42,16 @@ var addFileDropHandler = function (el, dropHandler, overHandler, leaveHandler) {
     });
 };
 exports.addFileDropHandler = addFileDropHandler;
+var openFileImportDialog = function (accept, multiple) {
+    if (accept === void 0) { accept = ""; }
+    if (multiple === void 0) { multiple = false; }
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.accept = accept;
+    input.multiple = multiple;
+    document.body.appendChild(input);
+    input.click();
+    document.body.removeChild(input);
+    return input;
+};
+exports.openFileImportDialog = openFileImportDialog;

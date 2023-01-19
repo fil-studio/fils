@@ -46,3 +46,24 @@ export const addFileDropHandler = (el:HTMLElement, dropHandler:Function, overHan
 		}
 	});
 }
+
+export const openFileImportDialog = (accept:string="", multiple:boolean=false) => {
+	// Create an input element
+	const input = document.createElement('input');
+
+	// Set the type of the input element to "file"
+	input.type = 'file';
+	input.accept = accept;
+	input.multiple = multiple;
+
+	// Append the input element to the body
+	document.body.appendChild(input);
+
+	// Trigger the click event on the input element
+	input.click();
+
+	// Remove the input element from the body
+	document.body.removeChild(input);
+
+	return input;
+}
