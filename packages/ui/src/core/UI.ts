@@ -1,12 +1,9 @@
 
-import { WRAPPER_CLASS } from './globals';
-
 // Import CSS
 import styles from '../bundle/bundle.min.css';
 import { Group, GroupParams } from '../components/Group';
 import css from '../utils/css';
-import { EventsHandler } from './Events';
-import { ItemOptions, ItemParams } from '../components/items/Item';
+import dom, { RowTypes } from '../utils/dom';
 css.inject(styles);
 
 
@@ -14,9 +11,8 @@ interface UIParams extends GroupParams {
 	onChangeCallback?: Function;
 }
 
-export class UI extends EventsHandler {
-	dom: HTMLElement;
-	group: Group;
+export class UI extends Group {
+	domWrapper: HTMLElement;
 
 	onChangeCallback: Function;
 
@@ -26,44 +22,16 @@ export class UI extends EventsHandler {
 		folded,
 		onChangeCallback
 	}: UIParams = {}) {
-		super();
+		super({ title, foldable, folded });
 
-		this.createDom();
-
-		this.group = new Group({ parent: this, title, foldable, folded });
-		this.dom.appendChild(this.group.dom);
-		this.addChildrenListener(this.group);
+		this.domWrapper = dom.createRow(RowTypes.ui);
+		this.domWrapper.appendChild(this.dom);
+		document.body.appendChild(this.domWrapper);
 
 		this.onChangeCallback = onChangeCallback ? onChangeCallback : (e) => {};
-	}
-
-	private createDom() {
-		this.dom = document.createElement('div');
-		this.dom.classList.add(WRAPPER_CLASS);
-		document.body.appendChild(this.dom);
-	}
-
-	addButton(options?: ItemOptions) {
-		this.group.addButton(options);
-	}
-
-	addGroup({
-		title,
-		foldable,
-		folded
-	}: GroupParams = {}): Group {
-		return this.group.addGroup({ title, foldable, folded });
-	}
-
-	add(object, key, options?:ItemOptions){
-		this.addItem(object, key, options);
-	}
-	addItem(object, key, options?:ItemOptions) {
-		this.group.addItem(object, key, options);
 	}
 
 	onChange(e?: CustomEvent<any>): void {
 		this.onChangeCallback(e);
 	}
-
 }

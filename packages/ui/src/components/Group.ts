@@ -1,9 +1,9 @@
-import { ALL_CLASS, GROUP_CLASS, TAB_CLASS, TITLE_CLASS } from "../core/globals";
-import { UI } from "../main";
 import { EventsHandler } from "../core/Events";
-import { Item, ItemOptions, ItemParams } from "./items/Item";
+import { UI } from "../main";
+import dom, { RowTypes } from "../utils/dom";
+import { Button, ButtonOptions } from "./Button";
 import ItemFactory from "./ItemFactory";
-import { Button } from "./Button";
+import { Item, ItemOptions } from "./items/Item";
 
 export interface GroupParams {
 	parent?: Group | UI;
@@ -12,10 +12,20 @@ export interface GroupParams {
 	folded?: boolean;
 }
 
-export class Group extends EventsHandler {
+interface HasChildren {
+	children: Array<Group | Item | Button>;
+	addChild(child: Group | Item | Button): void;
+	addButton(options?: ButtonOptions): void;
+	addGroup(options?: GroupParams): Group;
+	add(object, key, options?: ItemOptions): void;
+	addItem(object, key, options?: ItemOptions): void;
+}
+
+
+export class Group extends EventsHandler implements HasChildren {
 	title: string;
 	parent: Group | UI;
-	children: Array<Group | Item> = [];
+	children: Array<Group | Item | Button> = [];
 	dom: HTMLElement;
 
 	foldable: boolean;
@@ -30,37 +40,11 @@ export class Group extends EventsHandler {
 		super(parent);
 
 		this.parent = parent;
-		this.title = title;
+		this.title = title || '';
 		this.foldable = foldable || true;
 		this.folded = folded || false;
 
-		this.createDom();
-		this.createTab();
-	}
-
-	createDom() {
-
-		this.dom = document.createElement('div');
-		this.dom.classList.add(ALL_CLASS)
-
-		if(this.parent)	this.dom.classList.add(GROUP_CLASS);
-
-	}
-
-	createTab() {
-		if(!this.title && !this.foldable) return;
-
-		const tab = document.createElement('div');
-		tab.classList.add(TAB_CLASS)
-
-		if(this.title){
-			const title = document.createElement('h3');
-			title.innerText = this.title;
-			tab.classList.add(TITLE_CLASS);
-			tab.appendChild(title);
-		}
-
-		this.dom.appendChild(tab);
+		this.dom = dom.createRow(RowTypes.group, this.title);
 	}
 
 	addChild(child: Group | Item | Button){
@@ -68,12 +52,10 @@ export class Group extends EventsHandler {
 		this.addChildrenListener(child);
 		this.dom.appendChild(child.dom);
 	}
-
 	addButton(options){
 		const button = new Button(this, options);
 		this.addChild(button);
 	}
-
 	addGroup({
 		title,
 		foldable,
@@ -85,7 +67,6 @@ export class Group extends EventsHandler {
 
 		return group;
 	}
-
 	add(object, key, options?: ItemOptions){
 		this.addItem(object, key, options);
 	}

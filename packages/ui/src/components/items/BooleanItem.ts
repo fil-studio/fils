@@ -1,4 +1,3 @@
-import { ITEM_BOOLEAN } from "../../core/globals";
 import { Item } from "./Item";
 
 
@@ -8,8 +7,6 @@ export class BooleanItem extends Item {
 		super(params, options);
 
 		this.value = params.object[params.key];
-
-		this.addEventListeners();
 	}
 
 	addEventListeners(): void {
@@ -25,9 +22,6 @@ export class BooleanItem extends Item {
 	}
 
 	createDom(): void {
-		super.createDom();
-
-		this.dom.classList.add(ITEM_BOOLEAN);
 
 		const wrapper = document.createElement('div');
 		const toggle = document.createElement('div');

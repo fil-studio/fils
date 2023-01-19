@@ -1,4 +1,3 @@
-import { ITEM_NUMBER } from "../../core/globals";
 import { Item } from "./Item";
 
 
@@ -17,9 +16,6 @@ export class NumberItem extends Item {
 	}
 
 	createDom(): void {
-		super.createDom();
-
-		this.dom.classList.add(ITEM_NUMBER);
 
 		const wrapper = document.createElement('div');
 		this.input = document.createElement('input');

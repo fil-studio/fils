@@ -1,6 +1,4 @@
-import { ITEM_STRING } from "../../core/globals";
 import { Item } from "./Item";
-
 
 export class StringItem extends Item {
 	input:HTMLInputElement;
@@ -17,9 +15,6 @@ export class StringItem extends Item {
 	}
 
 	createDom(): void {
-		super.createDom();
-
-		this.dom.classList.add(ITEM_STRING);
 
 		const wrapper = document.createElement('div');
 		this.input = document.createElement('input');

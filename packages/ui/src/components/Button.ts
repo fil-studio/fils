@@ -1,7 +1,7 @@
 import { EventsHandler } from "../core/Events";
-import { ALL_CLASS, ITEM_CLASS, ITEM_TITLE_CLASS } from "../core/globals";
+import dom, { RowTypes } from "../utils/dom";
 
-interface ButtonOptions {
+export interface ButtonOptions {
 	title?: string;
 	callback?: Function;
 }
@@ -19,16 +19,14 @@ export class Button extends EventsHandler {
 		this.title = title || 'Button';
 		this.callback = callback || function(){};
 
+		this.dom = dom.createRow(RowTypes.button, this.title);
+
 		this.createDom();
 		this.addEventListeners();
 
 	}
 
 	createDom() {
-		// Create basic structure
-		this.dom = document.createElement('div');
-		this.dom.classList.add(ALL_CLASS, ITEM_CLASS);
-
 		this.button = document.createElement('button');
 		const title = document.createElement('h3');
 		title.innerText = this.title;

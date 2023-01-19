@@ -61,17 +61,17 @@ export class App {
 		// });
 		// group2.addItem();
 
-		// const group3 = this.ui.addGroup({
-		// 	title: 'Group 3'
-		// });
+		const group3 = this.ui.addGroup({
+			title: 'Group 3'
+		});
 		// group3.addItem();
 		// group3.addItem();
 		// group3.addItem();
 		// group3.addItem();
 
-		// const group4 = group3.addGroup({
-		// 	title: 'Group 4'
-		// });
+		const group4 = group3.addGroup({
+			title: 'Group 4'
+		});
 		// group4.addItem();
 		// group4.addItem();
 		// group4.addItem();

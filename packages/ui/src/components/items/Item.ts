@@ -1,6 +1,6 @@
 
-import { ALL_CLASS, ITEM_CLASS, ITEM_TITLE_CLASS } from '../../core/globals';
 import { EventsHandler } from '../../core/Events';
+import dom, { RowTypes } from '../../utils/dom';
 import { Group } from '../Group';
 
 export interface ItemOptions {
@@ -40,25 +40,14 @@ export class Item extends EventsHandler {
 		this.options = options;
 		this.title = this.options?.title || key;
 
+		this.dom = dom.createRow(RowTypes.item, this.title)
 
 		this.createDom();
 		this.addEventListeners();
 	}
 
-	createDom(){
-
-		// Create basic structure
-		this.dom = document.createElement('div');
-		this.dom.classList.add(ALL_CLASS, ITEM_CLASS);
-
-		if(this.title){
-			const titleWrapper = document.createElement('div');
-			titleWrapper.classList.add(ITEM_TITLE_CLASS);
-			const title = document.createElement('h3');
-			title.innerText = this.title;
-			titleWrapper.appendChild(title);
-			this.dom.appendChild(titleWrapper);
-		}
+	createDom() {
+		// Override this method
 	}
 
 	addEventListeners(): void {
@@ -75,5 +64,9 @@ export class Item extends EventsHandler {
 	refresh() {
 		console.log('Item - refresh');
 		this.object[this.key] = this.value;
+		this.refreshDom();
+	}
+	refreshDom(){
+		// Override this method
 	}
 }
