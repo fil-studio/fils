@@ -27,6 +27,7 @@ export class Group extends EventsHandler implements HasChildren {
 	parent: Group | UI;
 	children: Array<Group | Item | Button> = [];
 	dom: HTMLElement;
+	domContentWrapper: HTMLElement;
 	depth: number = 0;
 
 	constructor({
@@ -47,6 +48,8 @@ export class Group extends EventsHandler implements HasChildren {
 			foldable: foldable || true,
 			folded: folded || false,
 		});
+
+		this.domContentWrapper = this.dom.querySelector('._ui-content-wrapper');
 	}
 
 	/**
@@ -55,7 +58,7 @@ export class Group extends EventsHandler implements HasChildren {
 	addChild(child: Group | Item | Button){
 		this.children.push(child);
 		this.addChildrenListener(child);
-		this.dom.appendChild(child.dom);
+		this.domContentWrapper.appendChild(child.dom);
 	}
 
 	/**

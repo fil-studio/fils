@@ -15,6 +15,10 @@ $fil__height: 40px;
 	cursor: pointer;
 }
 
+._ui-folded {
+	height: 0;
+}
+
 ._ui-wrapper {
 	position: fixed;
 	top: 5px;

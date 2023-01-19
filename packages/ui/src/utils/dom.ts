@@ -5,6 +5,7 @@ const ALL_CLASS = `${BASE_CLASS}-element`;
 const GROUP_CLASS = `${BASE_CLASS}-group`;
 export const FIRST_GROUP_CLASS = `${BASE_CLASS}-first-group`;
 const TAB_CLASS = `${BASE_CLASS}-tab`;
+const CONTENT_WRAPPER_CLASS = `${BASE_CLASS}-content-wrapper`;
 const TITLE_CLASS = `${BASE_CLASS}-title`;
 
 const ITEM_CLASS = `${BASE_CLASS}-item`;
@@ -51,11 +52,27 @@ const createTab = (title: string) => {
 	return tab;
 }
 
-const addFoldListener = (tab: HTMLElement) => {
-	if(!tab.classList.contains(FOLDABLE_CLASS)) return;
+const addFoldListener = (row: HTMLElement) => {
+	const tab = row.querySelector(`.${TAB_CLASS}`);
+	const contentWrapper = row.querySelector(`.${CONTENT_WRAPPER_CLASS}`);
 
 	tab.addEventListener('click', () => {
-		tab.classList.toggle(FOLDED_CLASS);
+		row.classList.toggle(FOLDED_CLASS);
+	})
+
+	const setHeight = () => {
+		contentWrapper.style.height = 'auto';
+		const { height } = contentWrapper.getBoundingClientRect();
+		console.log(height);
+
+		contentWrapper.style.setProperty('--h', `${height}px`);
+		contentWrapper.style.height = '';
+	}
+
+	setHeight();
+
+	window.addEventListener('resize', () => {
+		setHeight();
 	})
 
 }
@@ -86,11 +103,14 @@ const dom = {
 		if(type === RowTypes.group) {
 			const tab = createTab(title);
 			tab.classList.add(`${BASE_CLASS}-depth-${depth}`);
-			row.appendChild(tab);
 
-			if(folded) tab.classList.add(FOLDABLE_CLASS, FOLDED_CLASS);
-			if(foldable) tab.classList.add(FOLDABLE_CLASS);
-			addFoldListener(tab);
+			const contentWrapper = document.createElement('div');
+			contentWrapper.classList.add(CONTENT_WRAPPER_CLASS);
+
+			row.appendChild(tab);
+			row.appendChild(contentWrapper);
+
+			addFoldListener(row);
 		}
 
 		/**
