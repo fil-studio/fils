@@ -4,13 +4,12 @@ import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 
 
-export class ScrollerDemo {
+export class App {
 	scroller:Scroller;
 
 	cssVariablesElements: NodeListOf<HTMLElement>;
+	constructor() {
 
-	constructor(){
-		
 		this.scroller = new Scroller();
 		this.scroller.direction = 0;
 		this.scroller.ease = 0.05;
@@ -22,11 +21,9 @@ export class ScrollerDemo {
 		document.body.appendChild(stats.dom);
 
 		const animate = () => {
-
 			stats.begin();
 			this.update();
 			stats.end();
-
 			requestAnimationFrame(animate);
 		}
 		animate();
@@ -44,14 +41,14 @@ export class ScrollerDemo {
 			'ease',
 			0.001, 0.99
 		)
-		
+
 	}
 
-	update(){
+	update() {
 		this.scroller.update();
-			
+
 		const section = this.scroller.sections.find(x => x.id === 'css-var-section');
-		for(let i = 0, len = this.cssVariablesElements.length; i<len; i++){
+		for (let i = 0, len = this.cssVariablesElements.length; i < len; i++) {
 			const el = this.cssVariablesElements[i];
 			const type = el.getAttribute('css-var');
 			if(type === 'delta') el.innerText = `${this.scroller.delta.toFixed(5)}`;

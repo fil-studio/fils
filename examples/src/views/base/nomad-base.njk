@@ -5,6 +5,9 @@
 
   <body class="nomad-base">
 
+    <link rel="stylesheet" href="{{ '/' | url }}default/css/main.css"/>
+    <link rel="stylesheet" href="{{ '/' | url }}{{ templateClass }}/css/main.css"/>
+
 		<div class="nomad-menu">
 			{% for page in nomadPages %}
 				<a href="/{{ lang + '/' + page.slug | url }}">{{ page.title }}</a>
@@ -18,8 +21,10 @@
         </div>
       {% endblock %}
     </div>
-  
-    <script src="{{ '/' | url }}js/main.js"></script>
+
+
+    <script src="{{ '/' | url }}default/js/main.js"></script>
+    <script src="{{ '/' | url }}{{ templateClass }}/js/main.js"></script>
   </body>
 
 </html>

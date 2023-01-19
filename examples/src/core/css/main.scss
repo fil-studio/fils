@@ -1,0 +1,25 @@
+
+// Partials
+@import './partials/resets';
+@import './partials/vars';
+@import './partials/mixins';
+@import './partials/fonts';
+
+[template="core"] {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+
+  font-size: 2vw;
+
+  a {
+    font-weight: 900;
+    text-decoration: underline;
+  }
+}
+
+[template="core"] ul {
+  padding-top: 50px;
+}
