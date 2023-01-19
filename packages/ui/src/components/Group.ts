@@ -28,9 +28,6 @@ export class Group extends EventsHandler implements HasChildren {
 	children: Array<Group | Item | Button> = [];
 	dom: HTMLElement;
 
-	foldable: boolean;
-	folded: boolean;
-
 	constructor({
 		parent,
 		title,
@@ -41,21 +38,34 @@ export class Group extends EventsHandler implements HasChildren {
 
 		this.parent = parent;
 		this.title = title || '';
-		this.foldable = foldable || true;
-		this.folded = folded || false;
 
-		this.dom = dom.createRow(RowTypes.group, this.title);
+		this.dom = dom.createRow(RowTypes.group, {
+			title: this.title,
+			foldable: foldable || true,
+			folded: folded || false
+		});
 	}
 
+	/**
+	 * Enables listeners, add children to childrens array
+	 */
 	addChild(child: Group | Item | Button){
 		this.children.push(child);
 		this.addChildrenListener(child);
 		this.dom.appendChild(child.dom);
 	}
+
+	/**
+	 * Create a button
+	 */
 	addButton(options){
 		const button = new Button(this, options);
 		this.addChild(button);
 	}
+
+	/**
+	 * Create a group
+	 */
 	addGroup({
 		title,
 		foldable,
@@ -67,6 +77,10 @@ export class Group extends EventsHandler implements HasChildren {
 
 		return group;
 	}
+
+	/**
+	 * Create an item
+	 */
 	add(object, key, options?: ItemOptions){
 		this.addItem(object, key, options);
 	}

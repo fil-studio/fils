@@ -8,24 +8,18 @@ $fil__separation: 3px;
 
 $fil__height: 40px;
 
-.fil__ui {
+._ui-wrapper {
 	position: fixed;
 	top: 0;
 	right: 0;
 	width: 300px;
 }
 
-.fil__ui-tab {
+._ui-tab {
 	margin-bottom: $fil__separation;
 }
 
-.fil__ui-element {
-	&:not(:last-child) {
-		margin-bottom: $fil__separation;
-	}
-}
-
-.fil__ui-group {
+._ui-group {
 	padding: $fil__separation;
 	position: relative;
 	width: 100%;
@@ -34,7 +28,13 @@ $fil__height: 40px;
 	background-color: $fil__background-color;
 }
 
-.fil__ui-title {
+._ui-element {
+	&:not(:last-child) {
+		margin-bottom: $fil__separation;
+	}
+}
+
+._ui-title {
 	position: relative;
 	width: 100%;
 	height: $fil__height;
@@ -46,7 +46,7 @@ $fil__height: 40px;
 	border: 1px solid white;
 }
 
-.fil__ui-item {
+._ui-item {
 	position: relative;
 	width: 100%;
 	height: $fil__height;

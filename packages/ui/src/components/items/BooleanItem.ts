@@ -1,3 +1,4 @@
+import { ITEM_BOOLEAN } from "../../utils/dom";
 import { Item } from "./Item";
 
 
@@ -24,6 +25,7 @@ export class BooleanItem extends Item {
 	createDom(): void {
 
 		const wrapper = document.createElement('div');
+		wrapper.classList.add(ITEM_BOOLEAN);
 		const toggle = document.createElement('div');
 		wrapper.appendChild(toggle);
 		this.dom.appendChild(wrapper);

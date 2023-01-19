@@ -1,3 +1,4 @@
+import { ITEM_NUMBER } from "../../utils/dom";
 import { Item } from "./Item";
 
 
@@ -18,6 +19,7 @@ export class NumberItem extends Item {
 	createDom(): void {
 
 		const wrapper = document.createElement('div');
+		wrapper.classList.add(ITEM_NUMBER);
 		this.input = document.createElement('input');
 		this.input.type = 'number';
 

@@ -1,3 +1,4 @@
+import { ITEM_STRING } from "../../utils/dom";
 import { Item } from "./Item";
 
 export class StringItem extends Item {
@@ -17,6 +18,7 @@ export class StringItem extends Item {
 	createDom(): void {
 
 		const wrapper = document.createElement('div');
+		wrapper.classList.add(ITEM_STRING);
 		this.input = document.createElement('input');
 		this.input.type = 'text';
 

@@ -1,16 +1,18 @@
-const ALL_CLASS = 'fil__ui-element';
+const BASE_CLASS = '_ui'
 
-const WRAPPER_CLASS = 'fil__ui';
+const WRAPPER_CLASS = `${BASE_CLASS}-wrapper`;
+const ALL_CLASS = `${BASE_CLASS}-element`;
+const GROUP_CLASS = `${BASE_CLASS}-group`;
+const TAB_CLASS = `${BASE_CLASS}-tab`;
+const TITLE_CLASS = `${BASE_CLASS}-title`;
 
-const GROUP_CLASS = 'fil__ui-group';
-const TAB_CLASS = 'fil__ui-tab';
-const TITLE_CLASS = 'fil__ui-title';
+const ITEM_CLASS = `${BASE_CLASS}-item`;
+export const ITEM_BOOLEAN = `${ITEM_CLASS}-boolean`;
+export const ITEM_STRING = `${ITEM_CLASS}-string`;
+export const ITEM_NUMBER = `${ITEM_CLASS}-number`;
 
-const ITEM_CLASS = 'fil__ui-item';
-
-const ITEM_BOOLEAN = 'fil__ui-boolean';
-const ITEM_STRING = 'fil__ui-string';
-const ITEM_NUMBER = 'fil__ui-number';
+const FOLDABLE_CLASS = `${BASE_CLASS}-foldable`;
+const FOLDED_CLASS = `${BASE_CLASS}-folded`;
 
 
 export enum RowTypes {
@@ -18,6 +20,12 @@ export enum RowTypes {
 	group,
 	item,
 	button
+}
+
+interface DomOptions {
+	title?: string;
+	foldable?: boolean;
+	folded?: boolean;
 }
 
 const createTitle = (title: string) => {
@@ -40,24 +48,63 @@ const createTab = (title: string) => {
 	return tab;
 }
 
-const dom = {
-	createRow: (type: RowTypes, title?:string) => {
-		const row = document.createElement('div');
-		row.classList.add(ALL_CLASS);
+const addFoldListener = (tab: HTMLElement) => {
+	if(!tab.classList.contains(FOLDABLE_CLASS)) return;
 
+	tab.addEventListener('click', () => {
+		tab.classList.toggle(FOLDED_CLASS);
+	})
+
+}
+
+const dom = {
+	createRow: (type: RowTypes, {
+		title,
+		foldable,
+		folded
+	}:DomOptions = {}) => {
+		const row = document.createElement('div');
+
+		/**
+		 * Add Classes to Row
+		 */
+		row.classList.add(ALL_CLASS);
 		if(type === RowTypes.ui) row.classList.add(WRAPPER_CLASS);
 		if(type === RowTypes.group) row.classList.add(GROUP_CLASS);
 		if(type === RowTypes.item) row.classList.add(ITEM_CLASS);
 		if(type === RowTypes.button) row.classList.add(ITEM_CLASS);
 
+
+		/**
+		 * Create a Group Row
+		 */
 		if(type === RowTypes.group) {
 			const tab = createTab(title);
 			row.appendChild(tab);
+
+			if(folded) tab.classList.add(FOLDABLE_CLASS, FOLDED_CLASS);
+			if(foldable) tab.classList.add(FOLDABLE_CLASS);
+			addFoldListener(tab);
 		}
 
+		/**
+		 * Create a Item Row
+		 */
 		if(type === RowTypes.item) {
+			if(title){
+				const h3 = createTitle(title);
+				row.appendChild(h3);
+			}
+		}
+
+		/**
+		 * Create a Button Row
+		 */
+		if(type === RowTypes.button) {
+			const button = document.createElement('button');
 			const h3 = createTitle(title);
-			row.appendChild(h3);
+			button.appendChild(h3);
+			row.appendChild(button);
 		}
 
 		return row;

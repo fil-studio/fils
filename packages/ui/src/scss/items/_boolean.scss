@@ -1,34 +1,27 @@
-.fil__ui-boolean {
+._ui-item-boolean {
+	width: $fil__height * 1.5;
+	height: $fil__height * .70;
+	border-radius: $fil__height;
+	background-color: $fil__background-color;
 	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	cursor: pointer;
+	justify-content: flex-start;
 
-	div:last-of-type {
-		width: $fil__height * 1.5;
+	div {
+		width: $fil__height * .70;
 		height: $fil__height * .70;
-		border-radius: $fil__height;
-		background-color: $fil__background-color;
-		display: flex;
-		justify-content: flex-start;
+		border-radius: 50%;
+		background-color: $fil__color--tool;
+		transition: all .2s ease-in-out;
+	}
+}
+
+.active {
+	.ui__item-boolean {
+		background-color: $fil__color--active;
+		justify-content: flex-end;
 
 		div {
-			width: $fil__height * .70;
-			height: $fil__height * .70;
-			border-radius: 50%;
 			background-color: $fil__color--tool;
-			transition: all .2s ease-in-out;
-		}
-	}
-
-	&.active {
-		div:last-of-type {
-			background-color: $fil__color--active;
-			justify-content: flex-end;
-
-			div {
-				background-color: $fil__color--tool;
-			}
 		}
 	}
 }

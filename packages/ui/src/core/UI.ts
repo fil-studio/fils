@@ -22,12 +22,20 @@ export class UI extends Group {
 		folded,
 		onChangeCallback
 	}: UIParams = {}) {
+
 		super({ title, foldable, folded });
 
+		/*
+		 * Main UI requires an extra wrapper
+		 */
 		this.domWrapper = dom.createRow(RowTypes.ui);
 		this.domWrapper.appendChild(this.dom);
 		document.body.appendChild(this.domWrapper);
 
+		/**
+		 * onChangeCallback is called when a value is changed
+		 * todo - everything needs a callback
+		 */
 		this.onChangeCallback = onChangeCallback ? onChangeCallback : (e) => {};
 	}
 
