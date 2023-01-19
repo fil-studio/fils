@@ -13,6 +13,7 @@ interface UIParams extends GroupParams {
 
 export class UI extends Group {
 	domWrapper: HTMLElement;
+	depth: number = 0;
 
 	onChangeCallback: Function;
 
@@ -28,7 +29,9 @@ export class UI extends Group {
 		/*
 		 * Main UI requires an extra wrapper
 		 */
-		this.domWrapper = dom.createRow(RowTypes.ui);
+		this.domWrapper = dom.createRow(RowTypes.ui, {
+			depth: this.depth
+		});
 		this.domWrapper.appendChild(this.dom);
 		document.body.appendChild(this.domWrapper);
 

@@ -2,7 +2,6 @@
 	width: $fil__height * 1.5;
 	height: $fil__height * .70;
 	border-radius: $fil__height;
-	background-color: $fil__background-color;
 	display: flex;
 	justify-content: flex-start;
 
@@ -10,18 +9,18 @@
 		width: $fil__height * .70;
 		height: $fil__height * .70;
 		border-radius: 50%;
-		background-color: $fil__color--tool;
+		// background-color: $fil__color--tool;
 		transition: all .2s ease-in-out;
 	}
 }
 
 .active {
 	.ui__item-boolean {
-		background-color: $fil__color--active;
+		// background-color: $fil__color--active;
 		justify-content: flex-end;
 
 		div {
-			background-color: $fil__color--tool;
+			// background-color: $fil__color--tool;
 		}
 	}
 }

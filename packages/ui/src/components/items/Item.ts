@@ -16,6 +16,7 @@ export interface ItemParams {
 export class Item extends EventsHandler {
 	dom: HTMLElement;
 	parent: Group;
+	depth: number;
 
 	title: string;
 
@@ -33,6 +34,8 @@ export class Item extends EventsHandler {
 		if(!object) throw new Error('Item - object is required');
 		if(!key) throw new Error('Item - key is required');
 
+		this.depth = parent.depth + 1;
+
 		this.object = object;
 		this.key = key;
 		this.value = this.object[this.key];
@@ -41,6 +44,7 @@ export class Item extends EventsHandler {
 		this.title = this.options?.title || key;
 
 		this.dom = dom.createRow(RowTypes.item, {
+			depth: this.depth,
 			title: this.title,
 		})
 

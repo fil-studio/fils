@@ -24,10 +24,6 @@ export class App {
 			}
 		});
 
-		const group1 = this.ui.addGroup({
-			title: 'Group 1'
-		})
-
 		/**
 		 * Object
 		 * Key
@@ -35,19 +31,19 @@ export class App {
 		 *
 		 *
 		 */
-		group1.add(obj, 'booleanTest', {
+		this.ui.add(obj, 'booleanTest', {
 			title: 'Boolean Test'
 		});
-		group1.add(obj, 'stringTest', {
+		this.ui.add(obj, 'stringTest', {
 			title: 'String Test'
 		});
-		group1.add(obj, 'numberTest', {
+		this.ui.add(obj, 'numberTest', {
 			title: 'Number Test'
 		});
-		group1.add(obj, 'numberTestFloat', {
+		this.ui.add(obj, 'numberTestFloat', {
 			title: 'Number Test Float'
 		});
-		group1.addButton({
+		this.ui.addButton({
 			title: 'Number Test Float',
 			callback: () => {
 				console.log('Button pressed');
@@ -56,12 +52,12 @@ export class App {
 		// group1.addItem();
 		// group1.addItem();
 
-		// const group2 = this.ui.addGroup({
-		// 	title: 'Group 2'
-		// });
+		const group2 = this.ui.addGroup({
+			title: 'Group 2'
+		});
 		// group2.addItem();
 
-		const group3 = this.ui.addGroup({
+		const group3 = group2.addGroup({
 			title: 'Group 3'
 		});
 		// group3.addItem();

@@ -27,6 +27,7 @@ export class Group extends EventsHandler implements HasChildren {
 	parent: Group | UI;
 	children: Array<Group | Item | Button> = [];
 	dom: HTMLElement;
+	depth: number = 0;
 
 	constructor({
 		parent,
@@ -38,11 +39,13 @@ export class Group extends EventsHandler implements HasChildren {
 
 		this.parent = parent;
 		this.title = title || '';
+		this.depth = this.parent?.depth + 1 || this.depth;
 
 		this.dom = dom.createRow(RowTypes.group, {
+			depth: this.depth,
 			title: this.title,
 			foldable: foldable || true,
-			folded: folded || false
+			folded: folded || false,
 		});
 	}
 

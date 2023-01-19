@@ -9,6 +9,7 @@ export interface ButtonOptions {
 export class Button extends EventsHandler {
 	dom: HTMLElement;
 	button: HTMLButtonElement;
+	depth: number;
 	callback: Function;
 
 	constructor(parent, { title, callback }: ButtonOptions = {}) {
@@ -16,7 +17,10 @@ export class Button extends EventsHandler {
 
 		this.callback = callback || function(){};
 
+		this.depth = parent.depth + 1;
+
 		this.dom = dom.createRow(RowTypes.button, {
+			depth: this.depth,
 			title: title || 'Button'
 		});
 		this.button = this.dom.querySelector('button');

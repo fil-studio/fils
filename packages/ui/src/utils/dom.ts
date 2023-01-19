@@ -3,6 +3,7 @@ const BASE_CLASS = '_ui'
 const WRAPPER_CLASS = `${BASE_CLASS}-wrapper`;
 const ALL_CLASS = `${BASE_CLASS}-element`;
 const GROUP_CLASS = `${BASE_CLASS}-group`;
+export const FIRST_GROUP_CLASS = `${BASE_CLASS}-first-group`;
 const TAB_CLASS = `${BASE_CLASS}-tab`;
 const TITLE_CLASS = `${BASE_CLASS}-title`;
 
@@ -10,6 +11,7 @@ const ITEM_CLASS = `${BASE_CLASS}-item`;
 export const ITEM_BOOLEAN = `${ITEM_CLASS}-boolean`;
 export const ITEM_STRING = `${ITEM_CLASS}-string`;
 export const ITEM_NUMBER = `${ITEM_CLASS}-number`;
+const ITEM_SPECIAL_DOM = `${ITEM_CLASS}-special-dom`;
 
 const FOLDABLE_CLASS = `${BASE_CLASS}-foldable`;
 const FOLDED_CLASS = `${BASE_CLASS}-folded`;
@@ -23,6 +25,7 @@ export enum RowTypes {
 }
 
 interface DomOptions {
+	depth?: number;
 	title?: string;
 	foldable?: boolean;
 	folded?: boolean;
@@ -61,9 +64,11 @@ const dom = {
 	createRow: (type: RowTypes, {
 		title,
 		foldable,
-		folded
+		folded,
+		depth
 	}:DomOptions = {}) => {
 		const row = document.createElement('div');
+		row.classList.add(`${BASE_CLASS}-depth-${depth}`);
 
 		/**
 		 * Add Classes to Row
@@ -80,6 +85,7 @@ const dom = {
 		 */
 		if(type === RowTypes.group) {
 			const tab = createTab(title);
+			tab.classList.add(`${BASE_CLASS}-depth-${depth}`);
 			row.appendChild(tab);
 
 			if(folded) tab.classList.add(FOLDABLE_CLASS, FOLDED_CLASS);

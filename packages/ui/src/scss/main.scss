@@ -1,37 +1,51 @@
-$fil__border-radius: 5px;
 
-$fil__background-color: rgba(0,0,0,0.3);
-$fil__color--tool: #fff;
-$fil__color--active: #2DB20C;
 
-$fil__separation: 3px;
+$test_icon: "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDIzLjAuMSwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCAxNSAxNSIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTUgMTU7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHBhdGggaWQ9InBhdGgxMDMxMyIgc3R5bGU9ImZpbGw6I0ZGRkZGRjsiIGQ9Ik0yLjIsNi45VjhIMC4xVjYuOUgyLjJ6IE02LjUsMTEuMmgxLjF2My4ySDYuNVYxMS4yeiBNNi41LDAuNWgxLjF2My4ySDYuNVYwLjV6CgkgTTMuOCw0LjhDMy41LDQuOCwzLjMsNSwzLjMsNS4zdjQuM2MwLDAuMywwLjIsMC41LDAuNSwwLjVoNi40YzAuMywwLDAuNS0wLjIsMC41LTAuNVY4aDAuM2wyLjgsMmMwLjEsMC4xLDAuMiwwLjEsMC4zLDAuMWgwLjIKCWMwLjMsMCwwLjUtMC4yLDAuNS0wLjVWNS4zYzAtMC4zLTAuMi0wLjUtMC41LTAuNWgtMC4yYy0wLjEsMC0wLjIsMC0wLjMsMC4xbC0yLjgsMmgtMC4zVjUuM2MwLTAuMy0wLjItMC41LTAuNS0wLjVIMy44eiBNNC40LDUuOQoJaDUuM3YzLjJINC40VjUuOXogTTE0LDYuMnYyLjZsLTEuOC0xLjNMMTQsNi4yeiIvPgo8L3N2Zz4K";
+
+$fil__border-radius: 8px;
+
+$fil__separation: 2px;
 
 $fil__height: 40px;
 
+@import "./colors";
+@import "./fonts";
+
+._ui-foldable {
+	cursor: pointer;
+}
+
 ._ui-wrapper {
 	position: fixed;
-	top: 0;
-	right: 0;
-	width: 300px;
+	top: 5px;
+	right: 5px;
+	width: 275px;
+}
+
+._ui-element {
+	backdrop-filter: blur(10px);
 }
 
 ._ui-tab {
+	padding: 8px 10px;
+	background-color: var(--secondary-color);
+}
+
+._ui-tab._ui-depth-0 {
+	border-radius: $fil__border-radius $fil__border-radius 0 0;
+	background-color: var(--tertiary-color);
 	margin-bottom: $fil__separation;
 }
 
 ._ui-group {
-	padding: $fil__separation;
 	position: relative;
 	width: 100%;
 	height: auto;
 	border-radius: $fil__border-radius;
-	background-color: $fil__background-color;
+	margin-top: $fil__separation;
 }
-
-._ui-element {
-	&:not(:last-child) {
-		margin-bottom: $fil__separation;
-	}
+._ui-group._ui-depth-0 {
+	margin: 0;
 }
 
 ._ui-title {
@@ -42,11 +56,11 @@ $fil__height: 40px;
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
-	padding: 0 $fil__separation;
-	border: 1px solid white;
 }
 
 ._ui-item {
+	background-color: var(--secondary-color);
+	padding: 8px 10px;
 	position: relative;
 	width: 100%;
 	height: $fil__height;
