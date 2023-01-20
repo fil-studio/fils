@@ -14,6 +14,8 @@ export interface ItemParams {
 }
 
 export class Item extends EventsHandler {
+	type: RowTypes = RowTypes.item;
+
 	dom: HTMLElement;
 	parent: Group;
 	depth: number;
@@ -43,10 +45,12 @@ export class Item extends EventsHandler {
 		this.options = options;
 		this.title = this.options?.title || key;
 
-		this.dom = dom.createRow(RowTypes.item, {
+		this.dom = dom.createRow({
+			type: RowTypes.item,
 			depth: this.depth,
 			title: this.title,
 		})
+
 
 		this.createDom();
 		this.addEventListeners();

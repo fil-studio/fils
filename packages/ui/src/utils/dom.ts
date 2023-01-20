@@ -1,21 +1,21 @@
 const BASE_CLASS = '_ui'
 
 const WRAPPER_CLASS = `${BASE_CLASS}-wrapper`;
-const ALL_CLASS = `${BASE_CLASS}-element`;
-const GROUP_CLASS = `${BASE_CLASS}-group`;
-export const FIRST_GROUP_CLASS = `${BASE_CLASS}-first-group`;
-const TAB_CLASS = `${BASE_CLASS}-tab`;
-const CONTENT_WRAPPER_CLASS = `${BASE_CLASS}-content-wrapper`;
-const TITLE_CLASS = `${BASE_CLASS}-title`;
+// const ALL_CLASS = `${BASE_CLASS}-el`;
+// const GROUP_CLASS = `${BASE_CLASS}-group`;
+// export const FIRST_GROUP_CLASS = `${BASE_CLASS}-first-group`;
+// const TAB_CLASS = `${BASE_CLASS}-tab`;
+const CONTENT_WRAPPER_CLASS = `${BASE_CLASS}-content`;
+// const TITLE_CLASS = `${BASE_CLASS}-title`;
 
-const ITEM_CLASS = `${BASE_CLASS}-item`;
-export const ITEM_BOOLEAN = `${ITEM_CLASS}-boolean`;
-export const ITEM_STRING = `${ITEM_CLASS}-string`;
-export const ITEM_NUMBER = `${ITEM_CLASS}-number`;
-const ITEM_SPECIAL_DOM = `${ITEM_CLASS}-special-dom`;
+// const ITEM_CLASS = `${BASE_CLASS}-item`;
+// export const ITEM_BOOLEAN = `${ITEM_CLASS}-boolean`;
+// export const ITEM_STRING = `${ITEM_CLASS}-string`;
+// export const ITEM_NUMBER = `${ITEM_CLASS}-number`;
+// const ITEM_SPECIAL_DOM = `${ITEM_CLASS}-special-dom`;
 
-const FOLDABLE_CLASS = `${BASE_CLASS}-foldable`;
-const FOLDED_CLASS = `${BASE_CLASS}-folded`;
+// const FOLDABLE_CLASS = `${BASE_CLASS}-foldable`;
+// const FOLDED_CLASS = `${BASE_CLASS}-folded`;
 
 
 export enum RowTypes {
@@ -26,10 +26,10 @@ export enum RowTypes {
 }
 
 interface DomOptions {
-	depth?: number;
+	type: RowTypes;
+	depth: number;
+
 	title?: string;
-	foldable?: boolean;
-	folded?: boolean;
 }
 
 const createTitle = (title: string) => {
@@ -39,88 +39,78 @@ const createTitle = (title: string) => {
 	return h3;
 }
 
-const createTab = (title: string) => {
-	if (!title) return;
+// const addFoldListener = (row: HTMLElement) => {
+// 	const tab = row.querySelector(`.${TAB_CLASS}`);
+// 	const contentWrapper = row.querySelector(`.${CONTENT_WRAPPER_CLASS}`);
 
-	const tab = document.createElement('div');
-	tab.classList.add(TAB_CLASS)
+// 	tab.addEventListener('click', () => {
+// 		row.classList.toggle(FOLDED_CLASS);
+// 	})
 
-	const h3 = createTitle(title);
-	tab.appendChild(h3);
-	tab.classList.add(TITLE_CLASS);
+// }
 
-	return tab;
-}
+// const setHeight = () => {
+// 	contentWrapper.style.height = 'auto';
+// 	const { height } = contentWrapper.getBoundingClientRect();
+// 	console.log(height);
 
-const addFoldListener = (row: HTMLElement) => {
-	const tab = row.querySelector(`.${TAB_CLASS}`);
-	const contentWrapper = row.querySelector(`.${CONTENT_WRAPPER_CLASS}`);
-
-	tab.addEventListener('click', () => {
-		row.classList.toggle(FOLDED_CLASS);
-	})
-
-	const setHeight = () => {
-		contentWrapper.style.height = 'auto';
-		const { height } = contentWrapper.getBoundingClientRect();
-		console.log(height);
-
-		contentWrapper.style.setProperty('--h', `${height}px`);
-		contentWrapper.style.height = '';
-	}
-
-	setHeight();
-
-	window.addEventListener('resize', () => {
-		setHeight();
-	})
-
-}
+// 	contentWrapper.style.setProperty('--h', `${height}px`);
+// 	contentWrapper.style.height = '';
+// }
 
 const dom = {
-	createRow: (type: RowTypes, {
+	foldableItems: [],
+	createRow: ({
+		type,
+		depth,
 		title,
-		foldable,
-		folded,
-		depth
-	}:DomOptions = {}) => {
-		const row = document.createElement('div');
-		row.classList.add(`${BASE_CLASS}-depth-${depth}`);
+	}:DomOptions = {
+		type: RowTypes.ui,
+		depth: 0
+	}) => {
+
+		// Create Row
+		let domEl = 'div';
+		if(type === RowTypes.ui) domEl = 'div';
+		if(type === RowTypes.group) domEl = 'section';
+		if(type === RowTypes.item) domEl = 'fieldset';
+		if(type === RowTypes.button) domEl = 'fieldset';
+
+		const row = document.createElement(domEl);
+		row.setAttribute('ui-depth', `${depth}`);
+
 
 		/**
 		 * Add Classes to Row
 		 */
-		row.classList.add(ALL_CLASS);
+		// row.classList.add(ALL_CLASS);
 		if(type === RowTypes.ui) row.classList.add(WRAPPER_CLASS);
-		if(type === RowTypes.group) row.classList.add(GROUP_CLASS);
-		if(type === RowTypes.item) row.classList.add(ITEM_CLASS);
-		if(type === RowTypes.button) row.classList.add(ITEM_CLASS);
+		// if(type === RowTypes.group) row.classList.add(GROUP_CLASS);
+		// if(type === RowTypes.item) row.classList.add(ITEM_CLASS);
+		// if(type === RowTypes.button) row.classList.add(ITEM_CLASS);
 
 
 		/**
 		 * Create a Group Row
 		 */
-		if(type === RowTypes.group) {
-			const tab = createTab(title);
-			tab.classList.add(`${BASE_CLASS}-depth-${depth}`);
+		if(type === RowTypes.group || type === RowTypes.item) {
+
+			const domEl = type === RowTypes.group ? 'header' : 'legend';
+
+			const titleTab = document.createElement(domEl);
+			const h3 = createTitle(title);
+			titleTab.appendChild(h3);
 
 			const contentWrapper = document.createElement('div');
-			contentWrapper.classList.add(CONTENT_WRAPPER_CLASS);
-
-			row.appendChild(tab);
+			row.appendChild(titleTab);
 			row.appendChild(contentWrapper);
-
-			addFoldListener(row);
 		}
 
 		/**
 		 * Create a Item Row
 		 */
 		if(type === RowTypes.item) {
-			if(title){
-				const h3 = createTitle(title);
-				row.appendChild(h3);
-			}
+
 		}
 
 		/**
@@ -133,8 +123,15 @@ const dom = {
 			row.appendChild(button);
 		}
 
+		console.log(row);
+
 		return row;
-	}
+	},
+	// refresh(){
+	// 	for(const item of this.foldableItems){
+	// 		setHeight(item)
+	// 	}
+	// }
 }
 
 

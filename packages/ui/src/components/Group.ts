@@ -23,6 +23,8 @@ interface HasChildren {
 
 
 export class Group extends EventsHandler implements HasChildren {
+	type: RowTypes = RowTypes.group;
+
 	title: string;
 	parent: Group | UI;
 	children: Array<Group | Item | Button> = [];
@@ -42,14 +44,15 @@ export class Group extends EventsHandler implements HasChildren {
 		this.title = title || '';
 		this.depth = this.parent?.depth + 1 || this.depth;
 
-		this.dom = dom.createRow(RowTypes.group, {
+		this.dom = dom.createRow({
+			type: RowTypes.group,
 			depth: this.depth,
 			title: this.title,
-			foldable: foldable || true,
-			folded: folded || false,
+			// foldable: foldable || true,
+			// folded: folded || false,
 		});
 
-		this.domContentWrapper = this.dom.querySelector('._ui-content-wrapper');
+		this.domContentWrapper = this.dom.querySelector('div');
 	}
 
 	/**

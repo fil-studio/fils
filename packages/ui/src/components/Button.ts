@@ -7,6 +7,8 @@ export interface ButtonOptions {
 }
 
 export class Button extends EventsHandler {
+	type: RowTypes = RowTypes.button;
+
 	dom: HTMLElement;
 	button: HTMLButtonElement;
 	depth: number;
@@ -19,7 +21,8 @@ export class Button extends EventsHandler {
 
 		this.depth = parent.depth + 1;
 
-		this.dom = dom.createRow(RowTypes.button, {
+		this.dom = dom.createRow( {
+			type: RowTypes.button,
 			depth: this.depth,
 			title: title || 'Button'
 		});

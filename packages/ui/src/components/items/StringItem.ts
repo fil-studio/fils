@@ -17,15 +17,13 @@ export class StringItem extends Item {
 
 	createDom(): void {
 
-		const wrapper = document.createElement('div');
-		wrapper.classList.add(ITEM_STRING);
+		const wrapper = this.dom.querySelector('div');
 		this.input = document.createElement('input');
 		this.input.type = 'text';
 
 		this.input.value = this.value as string;
 
 		wrapper.appendChild(this.input);
-		this.dom.appendChild(wrapper);
 
 	}
 }

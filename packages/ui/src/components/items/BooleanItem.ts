@@ -24,11 +24,9 @@ export class BooleanItem extends Item {
 
 	createDom(): void {
 
-		const wrapper = document.createElement('div');
-		wrapper.classList.add(ITEM_BOOLEAN);
+		const wrapper = this.dom.querySelector('div');
 		const toggle = document.createElement('div');
 		wrapper.appendChild(toggle);
-		this.dom.appendChild(wrapper);
 
 	}
 }

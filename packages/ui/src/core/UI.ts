@@ -12,6 +12,8 @@ interface UIParams extends GroupParams {
 }
 
 export class UI extends Group {
+	type: RowTypes = RowTypes.ui;
+
 	domWrapper: HTMLElement;
 	depth: number = 0;
 
@@ -29,7 +31,8 @@ export class UI extends Group {
 		/*
 		 * Main UI requires an extra wrapper
 		 */
-		this.domWrapper = dom.createRow(RowTypes.ui, {
+		this.domWrapper = dom.createRow({
+			type: RowTypes.ui,
 			depth: this.depth
 		});
 		this.domWrapper.appendChild(this.dom);
