@@ -1,0 +1,42 @@
+
+section {
+	padding: 8px 10px;
+	background-color: var(--secondary-color);
+
+	position: relative;
+	width: 100%;
+	height: auto;
+	border-radius: $fil__border-radius;
+	margin-top: $fil__separation;
+}
+
+section[ui-depth="0"] {
+	border-radius: $fil__border-radius $fil__border-radius 0 0;
+	background-color: var(--tertiary-color);
+	margin-bottom: $fil__separation;
+	margin: 0;
+}
+
+header {
+	position: relative;
+	width: 100%;
+	height: $fil__height;
+
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+fieldset {
+	background-color: var(--secondary-color);
+	padding: 8px 10px;
+	position: relative;
+	width: 100%;
+	height: $fil__height;
+
+	border: none;
+
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}

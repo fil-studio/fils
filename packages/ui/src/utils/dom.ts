@@ -1,21 +1,8 @@
 const BASE_CLASS = '_ui'
 
 const WRAPPER_CLASS = `${BASE_CLASS}-wrapper`;
-// const ALL_CLASS = `${BASE_CLASS}-el`;
-// const GROUP_CLASS = `${BASE_CLASS}-group`;
-// export const FIRST_GROUP_CLASS = `${BASE_CLASS}-first-group`;
-// const TAB_CLASS = `${BASE_CLASS}-tab`;
-const CONTENT_WRAPPER_CLASS = `${BASE_CLASS}-content`;
-// const TITLE_CLASS = `${BASE_CLASS}-title`;
 
-// const ITEM_CLASS = `${BASE_CLASS}-item`;
-// export const ITEM_BOOLEAN = `${ITEM_CLASS}-boolean`;
-// export const ITEM_STRING = `${ITEM_CLASS}-string`;
-// export const ITEM_NUMBER = `${ITEM_CLASS}-number`;
-// const ITEM_SPECIAL_DOM = `${ITEM_CLASS}-special-dom`;
 
-// const FOLDABLE_CLASS = `${BASE_CLASS}-foldable`;
-// const FOLDED_CLASS = `${BASE_CLASS}-folded`;
 
 
 export enum RowTypes {
@@ -38,25 +25,6 @@ const createTitle = (title: string) => {
 	h3.innerText = title;
 	return h3;
 }
-
-// const addFoldListener = (row: HTMLElement) => {
-// 	const tab = row.querySelector(`.${TAB_CLASS}`);
-// 	const contentWrapper = row.querySelector(`.${CONTENT_WRAPPER_CLASS}`);
-
-// 	tab.addEventListener('click', () => {
-// 		row.classList.toggle(FOLDED_CLASS);
-// 	})
-
-// }
-
-// const setHeight = () => {
-// 	contentWrapper.style.height = 'auto';
-// 	const { height } = contentWrapper.getBoundingClientRect();
-// 	console.log(height);
-
-// 	contentWrapper.style.setProperty('--h', `${height}px`);
-// 	contentWrapper.style.height = '';
-// }
 
 const dom = {
 	foldableItems: [],
@@ -95,14 +63,19 @@ const dom = {
 		 */
 		if(type === RowTypes.group || type === RowTypes.item) {
 
-			const domEl = type === RowTypes.group ? 'header' : 'legend';
 
-			const titleTab = document.createElement(domEl);
-			const h3 = createTitle(title);
-			titleTab.appendChild(h3);
+			if(type === RowTypes.group){
+				const titleTab = document.createElement('header');
+				const h3 = createTitle(title);
+				titleTab.appendChild(h3);
+				row.appendChild(titleTab);
+			} else {
+				const h3 = createTitle(title);
+				row.appendChild(h3);
+			}
+
 
 			const contentWrapper = document.createElement('div');
-			row.appendChild(titleTab);
 			row.appendChild(contentWrapper);
 		}
 

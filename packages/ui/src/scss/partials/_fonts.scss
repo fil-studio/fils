@@ -1,17 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;700&display=swap');
 $font: 'IBM Plex Sans', sans-serif;
 
-._ui-element {
+* {
 	font-family: $font;
 }
 
-._ui-tab {
+header {
 	font-size: 12px;
 	color: var(--senary-color);
 	font-weight: 700;
 }
 
-._ui-item {
+div {
 	font-size: 12px;
 	color: var(--quaternary-color);
 	font-weight: 400;
