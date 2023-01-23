@@ -1,20 +1,28 @@
 import check from "../utils/check";
 import { Item, ItemOptions, ItemParams } from "./Item";
 import { slugify }from '../../../utils'
+import { BASE_CLASS } from "../utils/dom";
 
-
-const AvailableItems = {
-	items: []
+// Available items array
+export const AvailableItems = {
+	items: [] as AvailabeItem[],
 }
-
 export interface ItemRegisterOptions {
 	name: string,
 	type: string,
+	extendedCSS: string,
 	extendedHTML: string,
-	addEventListeners: () => void
+	addEventListeners?: () => void
 }
 
-export const RegisterItem = (registerOptions:ItemRegisterOptions) => {
+export interface AvailabeItem {
+	name: string,
+	type: string,
+	create: (params: ItemParams, options) => Item,
+	getCSS: () => string
+}
+
+export const ItemRegister = (registerOptions:ItemRegisterOptions) => {
 	class ExtendedItem extends Item {
 		extendedHTML: string;
 		uid: string;
@@ -27,6 +35,8 @@ export const RegisterItem = (registerOptions:ItemRegisterOptions) => {
 			this.extendedHTML = registerOptions.extendedHTML;
 			this.addEventListeners = registerOptions.addEventListeners;
 
+			this.dom.classList.add(`${BASE_CLASS}-${this.uid}`);
+
 			this.createDom();
 			this.addEventListeners();
 		}
@@ -37,13 +47,17 @@ export const RegisterItem = (registerOptions:ItemRegisterOptions) => {
 	}
 
 	const createExtendedItem = (params: ItemParams, options) => {
-		return new ExtendedItem(params, options);
+		return new ExtendedItem(params, options) as Item;
+	}
+	const getCSS = () => {
+		return registerOptions.extendedCSS;
 	}
 
 	AvailableItems.items.push({
 		name: registerOptions.name,
 		type: registerOptions.type,
-		create: createExtendedItem
+		create: createExtendedItem,
+		getCSS: getCSS
 	});
 }
 

@@ -2,16 +2,21 @@
 // Import CSS
 import styles from '../bundle/bundle.min.css';
 import { Group, GroupParams } from '../components/Group';
+import { AvailableItems } from '../components/ItemFactory';
 import { RegisterBaseComponents } from '../components/RegisterBaseItems';
 import css from '../utils/css';
 import dom, { RowTypes } from '../utils/dom';
-css.inject(styles);
+
+RegisterBaseComponents();
+const mergedCss = css.merge(styles, AvailableItems.items);
+console.log(mergedCss);
+
+css.inject(mergedCss);
 
 interface UIParams extends GroupParams {
 	onChangeCallback?: Function;
 }
 
-RegisterBaseComponents();
 
 export class UI extends Group {
 	type: RowTypes = RowTypes.ui;

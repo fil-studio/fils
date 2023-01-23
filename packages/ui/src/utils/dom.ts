@@ -1,4 +1,4 @@
-const BASE_CLASS = '_ui'
+export const BASE_CLASS = '_ui'
 
 const WRAPPER_CLASS = `${BASE_CLASS}-wrapper`;
 

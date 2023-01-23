@@ -48,5 +48,8 @@ export class App {
 			}
 		});
 
+
+		console.log('UI', this.ui);
+
 	}
 }

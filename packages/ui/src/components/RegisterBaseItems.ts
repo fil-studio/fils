@@ -1,11 +1,16 @@
-import { RegisterItem } from "./ItemFactory";
+import { ItemRegister } from "./ItemFactory";
 
 
 export const RegisterBaseComponents = () => {
 
-	RegisterItem({
-		name: 'BooleanItem',
+	ItemRegister({
+		name: 'Boolean Item',
 		type: 'boolean',
+		extendedCSS: `
+			body {
+				background: green !important;
+			}
+		`,
 		extendedHTML: `
 			<div class="toggle">
 				<div class="toggle__handler"></div>
@@ -14,11 +19,11 @@ export const RegisterBaseComponents = () => {
 
 		addEventListeners: function() {
 
-			this.dom.addEventListener('click', () => {
+			const toggle = this.dom.querySelector('.toggle');
+
+			toggle.addEventListener('click', () => {
 				this.value = !this.value;
-				this.refresh();
-				this.__onChange();
-				this.dom.classList.toggle('active');
+				toggle.classList.toggle('active');
 			});
 
 		}

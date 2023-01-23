@@ -77,6 +77,7 @@ export class Item extends EventsHandler {
 	refresh() {
 		console.log('Item - refresh');
 		this.object[this.key] = this.value;
+		this.__onChange();
 		this.refreshDom();
 	}
 	refreshDom(){

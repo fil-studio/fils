@@ -14,7 +14,7 @@ const TOR_GEO = new TorusKnotGeometry(10, 2, 64, 32, 2, 3);
 
 export class App extends WebGLSketch {
 	customRenderer: VFXRenderer;
-	meshes: Array<Mesh> = [];
+	meshes: Mesh[] = [];
 
 	constructor() {
 		super(window.innerWidth, window.innerHeight, {
