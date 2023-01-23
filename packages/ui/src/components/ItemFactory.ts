@@ -79,6 +79,15 @@ const ItemFactory = (params:ItemParams, options) => {
 		return item.create(params, options);
 	}
 
+	if(check.isString(value)) {
+		const item = aItems.find(item => item.type === 'string');
+		return item.create(params, options);
+	}
+	if(check.isNumber(value)) {
+		const item = aItems.find(item => item.type === 'number');
+		return item.create(params, options);
+	}
+
 	throw new Error('ItemFactory - unknown type');
 }
 

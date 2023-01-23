@@ -32,12 +32,12 @@ export class App {
 		this.ui.add(obj, 'booleanTest', {
 			title: 'Boolean Test'
 		});
-		// this.ui.addItem(obj, 'stringTest', {
-		// 	title: 'String Test'
-		// });
-		// this.ui.add(obj, 'numberTest', {
-		// 	title: 'Number Test'
-		// });
+		this.ui.addItem(obj, 'stringTest', {
+			title: 'String Test'
+		});
+		this.ui.add(obj, 'numberTest', {
+			title: 'Number Test'
+		});
 		// this.ui.add(obj, 'numberTestFloat', {
 		// 	title: 'Number Test Float'
 		// });
