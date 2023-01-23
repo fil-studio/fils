@@ -20,6 +20,7 @@ export class Item extends EventsHandler {
 	canHandle: string = 'none';
 
 	dom: HTMLElement;
+	inputWrapper: HTMLElement;
 	parent: Group;
 	depth: number;
 
@@ -53,6 +54,8 @@ export class Item extends EventsHandler {
 			depth: this.depth,
 			title: this.title,
 		})
+
+		this.inputWrapper = this.dom.querySelector('div');
 
 	}
 

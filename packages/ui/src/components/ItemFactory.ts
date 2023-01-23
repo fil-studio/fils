@@ -9,22 +9,27 @@ const AvailableItems = {
 export interface ItemRegisterOptions {
 	name: string,
 	type: string,
-	createDom: () => void,
+	extendedHTML: string,
 	addEventListeners: () => void
 }
 
 export const RegisterItem = (registerOptions:ItemRegisterOptions) => {
 	class ExtendedItem extends Item {
+		extendedHTML: string;
 		constructor({ parent, object, key }: ItemParams = {}, options?: ItemOptions) {
 			super({ parent, object, key }, options);
 
 			this.name = registerOptions.name;
 			this.canHandle = registerOptions.type;
-			this.createDom = registerOptions.createDom;
+			this.extendedHTML = registerOptions.extendedHTML;
 			this.addEventListeners = registerOptions.addEventListeners;
 
 			this.createDom();
 			this.addEventListeners();
+		}
+
+		createDom() {
+			this.inputWrapper.innerHTML = this.extendedHTML;
 		}
 	}
 

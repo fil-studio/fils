@@ -6,14 +6,11 @@ export const RegisterBaseComponents = () => {
 	RegisterItem({
 		name: 'BooleanItem',
 		type: 'boolean',
-		createDom: function() {
-
-			const wrapper = this.dom.querySelector('div');
-			const toggle = document.createElement('div');
-			toggle.classList.add('toggle');
-			wrapper.appendChild(toggle);
-
-		},
+		extendedHTML: `
+			<div class="toggle">
+				<div class="toggle__handler"></div>
+			</div>
+		`,
 
 		addEventListeners: function() {
 
