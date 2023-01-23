@@ -1,5 +1,6 @@
 import check from "../utils/check";
 import { Item, ItemOptions, ItemParams } from "./Item";
+import { slugify }from '../../../utils'
 
 
 const AvailableItems = {
@@ -16,10 +17,12 @@ export interface ItemRegisterOptions {
 export const RegisterItem = (registerOptions:ItemRegisterOptions) => {
 	class ExtendedItem extends Item {
 		extendedHTML: string;
+		uid: string;
 		constructor({ parent, object, key }: ItemParams = {}, options?: ItemOptions) {
 			super({ parent, object, key }, options);
 
 			this.name = registerOptions.name;
+			this.uid = slugify(this.name);
 			this.canHandle = registerOptions.type;
 			this.extendedHTML = registerOptions.extendedHTML;
 			this.addEventListeners = registerOptions.addEventListeners;
@@ -34,7 +37,6 @@ export const RegisterItem = (registerOptions:ItemRegisterOptions) => {
 	}
 
 	const createExtendedItem = (params: ItemParams, options) => {
-		console.log('create', params.parent);
 		return new ExtendedItem(params, options);
 	}
 
