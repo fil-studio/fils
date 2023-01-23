@@ -9,8 +9,6 @@ import dom, { RowTypes } from '../utils/dom';
 
 RegisterBaseComponents();
 const mergedCss = css.merge(styles, AvailableItems.items);
-console.log(mergedCss);
-
 css.inject(mergedCss);
 
 interface UIParams extends GroupParams {

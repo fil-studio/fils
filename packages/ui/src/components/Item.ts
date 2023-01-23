@@ -5,6 +5,7 @@ import { Group } from './Group';
 
 export interface ItemOptions {
 	title?: string;
+	force?: string
 }
 
 export interface ItemParams {

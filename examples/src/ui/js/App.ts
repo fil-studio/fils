@@ -1,3 +1,4 @@
+import { ItemRegister } from '../../../../packages/ui/src/components/ItemFactory';
 import { UI } from '../../../../packages/ui/src/main';
 
 /**
@@ -17,6 +18,16 @@ export class App {
 			numberTestFloat: 0.5
 		}
 
+		// ItemRegister({
+		// 	name: 'test',
+		// 	type: 'boolean',
+		// 	extendedHTML: '<div>Test</div>',
+		// 	extendedCSS: '',
+		// 	addEventListeners: function() {
+		// 		console.log('test');
+		// 	}
+		// })
+
 		this.ui = new UI({
 			title: 'UI',
 			onChangeCallback: (e) => {
@@ -30,7 +41,8 @@ export class App {
 		 * Options
 		 */
 		this.ui.add(obj, 'booleanTest', {
-			title: 'Boolean Test'
+			title: 'Boolean Test',
+			// force: 'test'
 		});
 		this.ui.addItem(obj, 'stringTest', {
 			title: 'String Test'

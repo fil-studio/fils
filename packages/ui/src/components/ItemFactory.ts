@@ -67,6 +67,11 @@ const ItemFactory = (params:ItemParams, options) => {
 	if(!params.object) throw new Error('ItemFactory - object is required');
 	if(!params.key) throw new Error('ItemFactory - key is required');
 
+	if(options.force){
+		const item = AvailableItems.items.find(item => item.name === options.force);
+		return item.create(params, options);
+	}
+
 
 	const aItems = AvailableItems.items;
 
