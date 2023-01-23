@@ -1,5 +1,4 @@
-import { ITEM_STRING } from "../../utils/dom";
-import { Item } from "./Item";
+import { Item } from "../Item";
 
 export class StringItem extends Item {
 	input:HTMLInputElement;

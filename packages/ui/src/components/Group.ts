@@ -3,13 +3,11 @@ import { UI } from "../main";
 import dom, { RowTypes } from "../utils/dom";
 import { Button, ButtonOptions } from "./Button";
 import ItemFactory from "./ItemFactory";
-import { Item, ItemOptions } from "./items/Item";
+import { Item, ItemOptions } from "./Item";
 
 export interface GroupParams {
 	parent?: Group | UI;
 	title?: string;
-	foldable?: boolean;
-	folded?: boolean;
 }
 
 interface HasChildren {
@@ -35,8 +33,6 @@ export class Group extends EventsHandler implements HasChildren {
 	constructor({
 		parent,
 		title,
-		foldable,
-		folded
 	}: GroupParams = {}) {
 		super(parent);
 
@@ -48,8 +44,6 @@ export class Group extends EventsHandler implements HasChildren {
 			type: RowTypes.group,
 			depth: this.depth,
 			title: this.title,
-			// foldable: foldable || true,
-			// folded: folded || false,
 		});
 
 		this.domContentWrapper = this.dom.querySelector('div');
@@ -77,10 +71,8 @@ export class Group extends EventsHandler implements HasChildren {
 	 */
 	addGroup({
 		title,
-		foldable,
-		folded
 	}: GroupParams = {}): Group {
-		const group = new Group({ parent: this, title, foldable, folded });
+		const group = new Group({ parent: this, title });
 
 		this.addChild(group);
 

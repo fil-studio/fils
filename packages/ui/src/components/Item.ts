@@ -1,7 +1,7 @@
 
-import { EventsHandler } from '../../core/Events';
-import dom, { RowTypes } from '../../utils/dom';
-import { Group } from '../Group';
+import { EventsHandler } from '../core/Events';
+import dom, { RowTypes } from '../utils/dom';
+import { Group } from './Group';
 
 export interface ItemOptions {
 	title?: string;
@@ -16,6 +16,9 @@ export interface ItemParams {
 export class Item extends EventsHandler {
 	type: RowTypes = RowTypes.item;
 
+	name: string = 'empty';
+	canHandle: string = 'none';
+
 	dom: HTMLElement;
 	parent: Group;
 	depth: number;
@@ -25,7 +28,7 @@ export class Item extends EventsHandler {
 	object: Object;
 	key: string;
 
-	value: boolean | number | string;
+	value: any;
 
 	options: ItemOptions;
 
@@ -51,9 +54,6 @@ export class Item extends EventsHandler {
 			title: this.title,
 		})
 
-
-		this.createDom();
-		this.addEventListeners();
 	}
 
 	createDom() {

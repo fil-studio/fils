@@ -2,14 +2,16 @@
 // Import CSS
 import styles from '../bundle/bundle.min.css';
 import { Group, GroupParams } from '../components/Group';
+import { RegisterBaseComponents } from '../components/RegisterBaseItems';
 import css from '../utils/css';
 import dom, { RowTypes } from '../utils/dom';
 css.inject(styles);
 
-
 interface UIParams extends GroupParams {
 	onChangeCallback?: Function;
 }
+
+RegisterBaseComponents();
 
 export class UI extends Group {
 	type: RowTypes = RowTypes.ui;
@@ -21,12 +23,10 @@ export class UI extends Group {
 
 	constructor({
 		title,
-		foldable,
-		folded,
 		onChangeCallback
 	}: UIParams = {}) {
 
-		super({ title, foldable, folded });
+		super({ title });
 
 		/*
 		 * Main UI requires an extra wrapper

@@ -1,5 +1,4 @@
-import { ITEM_NUMBER } from "../../utils/dom";
-import { Item } from "./Item";
+import { Item } from "../Item";
 
 
 export class NumberItem extends Item {
