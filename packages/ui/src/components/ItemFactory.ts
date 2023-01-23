@@ -12,7 +12,8 @@ export interface ItemRegisterOptions {
 	type: string,
 	extendedCSS: string,
 	extendedHTML: string,
-	addEventListeners?: () => void
+	addEventListeners?: () => void,
+	refresh?: () => void,
 }
 
 export interface AvailabeItem {
@@ -25,6 +26,7 @@ export interface AvailabeItem {
 export const ItemRegister = (registerOptions:ItemRegisterOptions) => {
 	class ExtendedItem extends Item {
 		extendedHTML: string;
+		refreshFunction: () => void;
 		uid: string;
 		constructor({ parent, object, key }: ItemParams = {}, options?: ItemOptions) {
 			super({ parent, object, key }, options);
@@ -34,15 +36,22 @@ export const ItemRegister = (registerOptions:ItemRegisterOptions) => {
 			this.canHandle = registerOptions.type;
 			this.extendedHTML = registerOptions.extendedHTML;
 			this.addEventListeners = registerOptions.addEventListeners;
+			this.refreshFunction = registerOptions.refresh || (() => {});
 
 			this.dom.classList.add(`${BASE_CLASS}-${this.uid}`);
 
 			this.createDom();
 			this.addEventListeners();
+			this.refresh();
 		}
 
 		createDom() {
 			this.inputWrapper.innerHTML = this.extendedHTML;
+		}
+
+		refresh(){
+			super.refresh();
+			this.refreshFunction();
 		}
 	}
 
@@ -67,6 +76,8 @@ const ItemFactory = (params:ItemParams, options) => {
 	if(!params.object) throw new Error('ItemFactory - object is required');
 	if(!params.key) throw new Error('ItemFactory - key is required');
 
+
+	// Force item type
 	if(options.force){
 		const item = AvailableItems.items.find(item => item.name === options.force);
 		return item.create(params, options);
@@ -76,8 +87,6 @@ const ItemFactory = (params:ItemParams, options) => {
 	const aItems = AvailableItems.items;
 
 	const value = params.object[params.key];
-
-	// Todo s'ha de poder forçar per nom
 
 	if(check.isBoolean(value)) {
 		const item = aItems.find(item => item.type === 'boolean');

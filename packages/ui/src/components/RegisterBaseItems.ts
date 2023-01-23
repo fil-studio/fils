@@ -9,20 +9,29 @@ export const RegisterBaseComponents = () => {
 		type: 'boolean',
 		extendedCSS: ``,
 		extendedHTML: `
-			<div class="toggle">
-				<div class="toggle__handler"></div>
+			<div class="_ui-toggle">
+				<div></div>
 			</div>
 		`,
-
 		addEventListeners: function() {
 
-			const toggle = this.dom.querySelector('.toggle');
+			const toggle = this.dom.querySelector('._ui-toggle');
 
 			toggle.addEventListener('click', () => {
 				this.value = !this.value;
 				toggle.classList.toggle('active');
+				this.refresh();
 			});
 
+		},
+		refresh: function() {
+			const toggle = this.dom.querySelector('._ui-toggle');
+
+			if (this.value) {
+				toggle.classList.add('active');
+			} else {
+				toggle.classList.remove('active');
+			}
 		}
 	})
 
@@ -42,6 +51,11 @@ export const RegisterBaseComponents = () => {
 				this.value = input.value;
 				this.refresh();
 			});
+		},
+
+		refresh: function () {
+			const input = this.dom.querySelector('input');
+			input.value = this.value;
 		}
 	})
 
@@ -61,6 +75,10 @@ export const RegisterBaseComponents = () => {
 				this.value = input.value;
 				this.refresh();
 			});
+		},
+		refresh: function () {
+			const input = this.dom.querySelector('input');
+			input.value = this.value;
 		}
 	})
 

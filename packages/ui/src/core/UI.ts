@@ -14,8 +14,6 @@ css.inject(mergedCss);
 interface UIParams extends GroupParams {
 	onChangeCallback?: Function;
 }
-
-
 export class UI extends Group {
 	type: RowTypes = RowTypes.ui;
 
