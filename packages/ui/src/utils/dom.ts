@@ -2,9 +2,6 @@ const BASE_CLASS = '_ui'
 
 const WRAPPER_CLASS = `${BASE_CLASS}-wrapper`;
 
-
-
-
 export enum RowTypes {
 	ui,
 	group,
@@ -44,31 +41,19 @@ const dom = {
 		/**
 		 * Add Classes to Row
 		 */
-		// row.classList.add(ALL_CLASS);
 		if(type === RowTypes.ui) row.classList.add(WRAPPER_CLASS);
-		// if(type === RowTypes.group) row.classList.add(GROUP_CLASS);
-		// if(type === RowTypes.item) row.classList.add(ITEM_CLASS);
-		// if(type === RowTypes.button) row.classList.add(ITEM_CLASS);
 
 
 		/**
 		 * Create a Group Row
 		 */
-		if(type === RowTypes.group || type === RowTypes.item) {
+		if(type === RowTypes.group) {
 
-
-			if(type === RowTypes.group){
-				const titleTab = document.createElement('header');
-				const h3 = document.createElement('h3');
-				h3.innerText = title;
-				titleTab.appendChild(h3);
-				row.appendChild(titleTab);
-			} else {
-				const h4 = document.createElement('h4');
-				h4.innerText = title;
-				row.appendChild(h4);
-			}
-
+			const titleTab = document.createElement('header');
+			const h3 = document.createElement('h3');
+			h3.innerText = title;
+			titleTab.appendChild(h3);
+			row.appendChild(titleTab);
 
 			const contentWrapper = document.createElement('div');
 			row.appendChild(contentWrapper);
@@ -78,7 +63,12 @@ const dom = {
 		 * Create a Item Row
 		 */
 		if(type === RowTypes.item) {
+				const h4 = document.createElement('h4');
+				h4.innerText = title;
+				row.appendChild(h4);
 
+				const contentWrapper = document.createElement('div');
+				row.appendChild(contentWrapper);
 		}
 
 		/**
@@ -92,15 +82,8 @@ const dom = {
 			row.appendChild(button);
 		}
 
-		console.log(row);
-
 		return row;
 	},
-	// refresh(){
-	// 	for(const item of this.foldableItems){
-	// 		setHeight(item)
-	// 	}
-	// }
 }
 
 
