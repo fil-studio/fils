@@ -6,13 +6,17 @@ $font: 'IBM Plex Sans', sans-serif;
 
 header {
 	font-size: 12px;
-	color: var(--senary-color);
+	color: var(--color-0);
 	font-weight: 700;
 }
 
-div {
+fieldset {
 	font-size: 12px;
-	color: var(--quaternary-color);
+	color: var(--color-1);
 	font-weight: 400;
+
+	h4 {
+		color: var(--color-2);
+	}
 }
 

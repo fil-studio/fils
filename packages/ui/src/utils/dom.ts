@@ -19,13 +19,6 @@ interface DomOptions {
 	title?: string;
 }
 
-const createTitle = (title: string) => {
-	if (!title) return;
-	const h3 = document.createElement('h3');
-	h3.innerText = title;
-	return h3;
-}
-
 const dom = {
 	foldableItems: [],
 	createRow: ({
@@ -66,12 +59,14 @@ const dom = {
 
 			if(type === RowTypes.group){
 				const titleTab = document.createElement('header');
-				const h3 = createTitle(title);
+				const h3 = document.createElement('h3');
+				h3.innerText = title;
 				titleTab.appendChild(h3);
 				row.appendChild(titleTab);
 			} else {
-				const h3 = createTitle(title);
-				row.appendChild(h3);
+				const h4 = document.createElement('h4');
+				h4.innerText = title;
+				row.appendChild(h4);
 			}
 
 
@@ -91,7 +86,8 @@ const dom = {
 		 */
 		if(type === RowTypes.button) {
 			const button = document.createElement('button');
-			const h3 = createTitle(title);
+			const h3 = document.createElement('h3');
+			h3.innerText = title;
 			button.appendChild(h3);
 			row.appendChild(button);
 		}
