@@ -73,7 +73,7 @@ export class App {
 
 
 		this.ui.addButton({
-			title: 'Number Test Float',
+			title: 'Button Test',
 			callback: () => {
 				console.log('Button pressed');
 			}

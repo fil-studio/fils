@@ -1,4 +1,5 @@
 export const BASE_CLASS = '_ui'
+export const VERTICAL_ROW = '_ui-vertical-row'
 
 const WRAPPER_CLASS = `${BASE_CLASS}-wrapper`;
 
