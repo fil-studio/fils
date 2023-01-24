@@ -2,6 +2,7 @@ export const BASE_CLASS = '_ui'
 export const VERTICAL_ROW = '_ui-vertical-row'
 
 const WRAPPER_CLASS = `${BASE_CLASS}-wrapper`;
+export const EMBED_WRAPPER_CLASS = `${BASE_CLASS}-embed-wrapper`;
 
 export enum RowTypes {
 	ui,

@@ -56,6 +56,11 @@ export class Group extends EventsHandler implements HasChildren {
 		this.contentWrapper.appendChild(child.dom);
 	}
 
+	destroy(): void {
+		for(const child of this.children) child.destroy();
+		this.dom.remove();
+	}
+
 	/**
 	 * Create a button
 	 */
@@ -87,4 +92,6 @@ export class Group extends EventsHandler implements HasChildren {
 		const item = ItemFactory({parent: this, object, key}, options);
 		this.addChild(item);
 	}
+
+
 }

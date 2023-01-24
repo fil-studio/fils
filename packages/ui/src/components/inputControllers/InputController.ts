@@ -18,7 +18,7 @@ export class InputController  {
 	addEventListeners(): void {
 		console.log('InputController - addEventListeners');
 
-		this.parent.dom.addEventListener('click', () => {
+		this.parent.inputWrapper.addEventListener('click', () => {
 			this.create();
 		});
 

@@ -62,6 +62,10 @@ export class Item extends EventsHandler {
 		if(this.created) this.refresh();
 	}
 
+	destroy(): void {
+		this.dom.remove();
+	}
+
 	createDom() {
 		// Override this method
 	}

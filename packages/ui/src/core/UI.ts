@@ -5,13 +5,14 @@ import { Group, GroupParams } from '../components/Group';
 import { AvailableItems } from '../components/ItemFactory';
 import { RegisterBaseComponents } from '../components/RegisterBaseItems';
 import css from '../utils/css';
-import dom, { RowTypes } from '../utils/dom';
+import dom, { EMBED_WRAPPER_CLASS, RowTypes } from '../utils/dom';
 
 RegisterBaseComponents();
 const mergedCss = css.merge(styles, AvailableItems.items);
 css.inject(mergedCss);
 
 interface UIParams extends GroupParams {
+	embed?: HTMLElement,
 	onChangeCallback?: Function;
 }
 export class UI extends Group {
@@ -22,6 +23,7 @@ export class UI extends Group {
 
 	constructor({
 		title,
+		embed,
 		onChangeCallback
 	}: UIParams = {}) {
 
@@ -37,7 +39,12 @@ export class UI extends Group {
 			depth: this.depth
 		});
 		this.domWrapper.appendChild(this.dom);
-		document.body.appendChild(this.domWrapper);
+		if(embed){
+			this.domWrapper.classList.add(EMBED_WRAPPER_CLASS);
+			embed.appendChild(this.domWrapper);
+		} else {
+			document.body.appendChild(this.domWrapper);
+		}
 
 		/**
 		 * onChangeCallback is called when a value is changed
@@ -49,4 +56,6 @@ export class UI extends Group {
 	onChange(e?: CustomEvent<any>): void {
 		this.onChangeCallback(e);
 	}
+
+
 }

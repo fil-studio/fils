@@ -52,7 +52,7 @@ export const ItemRegister = (registerOptions:ItemRegisterOptions) => {
 export const ItemClassRegister = (registerOptions:ItemClassRegisterOptions) => {
 
 		const createItem = (itemParams: ItemParams, options: ItemOptions) => {
-			return new registerOptions.item(itemParams, options) as Item;
+			return new registerOptions.item(registerOptions, itemParams, options) as Item;
 		}
 
 		const getCSS = () => {

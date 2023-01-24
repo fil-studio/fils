@@ -16,6 +16,13 @@ $fil__height: 40px;
 	right: 5px;
 	width: 275px;
 
+	&._ui-embed-wrapper {
+		position: relative;
+		top: unset;
+		right: unset;
+		width: 100%;
+	}
+
 	@import "./partials/fonts";
 	@import "./partials/structure";
 
