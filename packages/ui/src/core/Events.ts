@@ -26,10 +26,7 @@ export class EventsHandler extends EventTarget {
 	// Propagator
 	__refresh(e?: CustomEvent): void {
 		this.refresh(e);
-		const detail = e ? e.detail : {
-			initiator: this
-		};
-		let event = new CustomEvent("refresh", { detail });
+		let event = new CustomEvent("refresh");
 		this.dispatchEvent(event);
 	}
 	// Receiver
@@ -41,11 +38,7 @@ export class EventsHandler extends EventTarget {
 	// Propagator
 	__onChange(e?: CustomEvent): void {
 		this.onChange(e);
-
-		const detail = e ? e.detail : {
-			initiator: this
-		};
-		let event = new CustomEvent("onChange", { detail });
+		let event = new CustomEvent("onChange");
 		this.dispatchEvent(event);
 	}
 	// Receiver

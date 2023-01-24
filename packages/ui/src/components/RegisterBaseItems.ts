@@ -56,7 +56,7 @@ export const RegisterBaseComponents = () => {
 		},
 		refresh: function () {
 			const input = this.dom.querySelector('input');
-			input.value = this.value;
+			this.value = input.value;
 		}
 	})
 
@@ -112,7 +112,7 @@ export const RegisterBaseComponents = () => {
 
 		refresh: function () {
 			const input = this.dom.querySelector('input');
-			input.value = this.value;
+			this.value = input.value;
 		}
 	})
 

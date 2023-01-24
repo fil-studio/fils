@@ -31,7 +31,6 @@ export class ExtendedItem extends Item {
 
 	setValue(value: any) {
 		let v = this.parseValue(value);
-		console.log(v);
 		super.setValue(v);
 	}
 
