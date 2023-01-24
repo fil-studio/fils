@@ -2,10 +2,11 @@ import check from "../utils/check";
 import { Item, ItemOptions, ItemParams } from "./Item";
 import { slugify }from '../../../utils'
 import { BASE_CLASS } from "../utils/dom";
+import { Popup } from "./popups/Popup";
 
 // Available items array
 export interface AvailableItem {
-	name: string,
+	view: string,
 	type: string,
 	create: (params: ItemParams, options) => Item,
 	getCSS: () => string
@@ -14,10 +15,11 @@ export const AvailableItems = {
 	items: [] as AvailableItem[],
 }
 export interface ItemRegisterOptions {
-	name: string,
+	view: string,
 	type: string,
 	extendedCSS: string,
 	extendedHTML: string,
+	popup?: typeof Popup,
 	addEventListeners?: () => void,
 	refresh?: () => void,
 }
@@ -26,18 +28,21 @@ export const ItemRegister = (registerOptions:ItemRegisterOptions) => {
 	class ExtendedItem extends Item {
 		extendedHTML: string;
 		refreshFunction: () => void;
-		uid: string;
+		popup: Popup;
 		constructor({ parent, object, key }: ItemParams = {}, options?: ItemOptions) {
 			super({ parent, object, key }, options);
 
-			this.name = registerOptions.name;
-			this.uid = slugify(this.name);
+			//
+			this.view = registerOptions.view;
 			this.canHandle = registerOptions.type;
 			this.extendedHTML = registerOptions.extendedHTML;
 			this.addEventListeners = registerOptions.addEventListeners;
 			this.refreshFunction = registerOptions.refresh || (() => {});
 
-			this.dom.classList.add(`${BASE_CLASS}-${this.uid}`);
+			this.dom.classList.add(`${BASE_CLASS}-${slugify(this.view) }`);
+
+			// Popup
+			this.popup = registerOptions.popup ? new registerOptions.popup(this) : null || null;
 
 			this.createDom();
 			this.addEventListeners();
@@ -63,7 +68,7 @@ export const ItemRegister = (registerOptions:ItemRegisterOptions) => {
 	}
 
 	AvailableItems.items.push({
-		name: registerOptions.name,
+		view: registerOptions.view,
 		type: registerOptions.type,
 		create: createExtendedItem,
 		getCSS: getCSS
@@ -78,7 +83,7 @@ export const ItemFactory = (params:ItemParams, options) => {
 
 	// Force item type
 	if(options.view){
-		const item = AvailableItems.items.find(item => item.name === options.view);
+		const item = AvailableItems.items.find(item => item.view === options.view);
 		return item.create(params, options);
 	}
 

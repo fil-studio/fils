@@ -2,6 +2,7 @@
 import { EventsHandler } from '../core/Events';
 import dom, { RowTypes } from '../utils/dom';
 import { Group } from './Group';
+import { Popup } from './popups/Popup';
 
 export interface ItemOptions {
 	title?: string;
@@ -17,8 +18,8 @@ export interface ItemParams {
 export class Item extends EventsHandler {
 	type: RowTypes = RowTypes.item;
 
-	name: string = 'empty';
-	canHandle: string = 'none';
+	view: string = null;
+	canHandle: string = null;
 
 	dom: HTMLElement;
 	inputWrapper: HTMLElement;
@@ -57,7 +58,6 @@ export class Item extends EventsHandler {
 		})
 
 		this.inputWrapper = this.dom.querySelector('div');
-
 	}
 
 	createDom() {

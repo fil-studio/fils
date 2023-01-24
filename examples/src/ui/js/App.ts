@@ -12,6 +12,7 @@ export class App {
 	constructor() {
 
 		const obj = {
+			colorTest: '#ff0000',
 			booleanTest: false,
 			stringTest: 'Test',
 			numberTest: 1,
@@ -19,17 +20,23 @@ export class App {
 		}
 
 		let obj1 = {
-			name: 'test',
+			view: 'test',
 			type: 'boolean',
-			extendedHTML: '<div>HOLA</div>',
+			extendedHTML: '<div>Frontend injected</div>',
 			extendedCSS: '',
 			addEventListeners: function () {
 				console.log('test');
 			}
 		}
+		let obj2 = {
+			...obj1,
+			view: 'test2',
+			extendedHTML: '<div>Frontend extended injected</div>',
+		}
 
 
 		ItemRegister(obj1);
+		ItemRegister(obj2);
 
 		this.ui = new UI({
 			title: 'UI',
@@ -43,9 +50,17 @@ export class App {
 		 * Key
 		 * Options
 		 */
+		this.ui.add(obj, 'colorTest', {
+			title: 'Color Test',
+			view: 'color'
+		});
 		this.ui.add(obj, 'booleanTest', {
 			title: 'Boolean Test',
 			view: 'test'
+		});
+		this.ui.add(obj, 'booleanTest', {
+			title: 'Boolean Test',
+			view: 'test2'
 		});
 		this.ui.addItem(obj, 'stringTest', {
 			title: 'String Test'

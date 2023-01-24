@@ -11,6 +11,7 @@ interface EventsHandlerInterface {
 export class EventsHandler extends EventTarget implements EventsHandlerInterface {
 	parent: EventsHandler;
 
+
 	constructor({parent}:{parent?: EventsHandler} = {}) {
 		super();
 		this.parent = parent;

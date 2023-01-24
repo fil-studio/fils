@@ -1,16 +1,14 @@
 import { ItemRegister } from "./ItemFactory";
+import { ColorPicker } from "./popups/ColorPicker";
 
 
 export const RegisterBaseComponents = () => {
 
 	// Boolean Item
 	ItemRegister({
-		name: 'Boolean Item',
+		view: 'boolean',
 		type: 'boolean',
-		extendedCSS: `
-		body{
-			background: green !important;
-		}`,
+		extendedCSS: ``,
 		extendedHTML: `
 			<div class="_ui-toggle">
 				<div></div>
@@ -40,7 +38,7 @@ export const RegisterBaseComponents = () => {
 
 	// String Item
 	ItemRegister({
-		name: 'String Item',
+		view: 'string',
 		type: 'string',
 		extendedCSS: ``,
 		extendedHTML: `
@@ -63,7 +61,7 @@ export const RegisterBaseComponents = () => {
 
 	// Number Item
 	ItemRegister({
-		name: 'Number Item',
+		view: 'number',
 		type: 'number',
 		extendedCSS: ``,
 		extendedHTML: `
@@ -75,6 +73,31 @@ export const RegisterBaseComponents = () => {
 
 			input.addEventListener('change', () => {
 				input.value = this.value;
+				this.refresh();
+			});
+
+		},
+
+		refresh: function () {
+			const input = this.dom.querySelector('input');
+			input.value = this.value;
+		}
+	})
+
+	// Color Item
+	ItemRegister({
+		view: 'color',
+		type: 'number',
+		popup: ColorPicker,
+		extendedCSS: ``,
+		extendedHTML: `
+			<input type="string" />
+		`,
+		addEventListeners: function () {
+
+			const input = this.dom.querySelector('input');
+
+			input.addEventListener('change', () => {
 				this.refresh();
 			});
 
