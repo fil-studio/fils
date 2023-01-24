@@ -2,8 +2,8 @@ import { EventsHandler } from "../core/Events";
 import { UI } from "../main";
 import dom, { RowTypes } from "../utils/dom";
 import { Button, ButtonOptions } from "./Button";
-import ItemFactory from "./ItemFactory";
 import { Item, ItemOptions } from "./Item";
+import { ItemFactory } from "./ItemFactory";
 
 export interface GroupParams {
 	parent?: Group | UI;

@@ -7,7 +7,10 @@ export const RegisterBaseComponents = () => {
 	ItemRegister({
 		name: 'Boolean Item',
 		type: 'boolean',
-		extendedCSS: ``,
+		extendedCSS: `
+		body{
+			background: green !important;
+		}`,
 		extendedHTML: `
 			<div class="_ui-toggle">
 				<div></div>
@@ -48,11 +51,10 @@ export const RegisterBaseComponents = () => {
 			const input = this.dom.querySelector('input');
 
 			input.addEventListener('change', () => {
-				this.value = input.value;
 				this.refresh();
 			});
-		},
 
+		},
 		refresh: function () {
 			const input = this.dom.querySelector('input');
 			input.value = this.value;
@@ -72,10 +74,12 @@ export const RegisterBaseComponents = () => {
 			const input = this.dom.querySelector('input');
 
 			input.addEventListener('change', () => {
-				this.value = input.value;
+				input.value = this.value;
 				this.refresh();
 			});
+
 		},
+
 		refresh: function () {
 			const input = this.dom.querySelector('input');
 			input.value = this.value;

@@ -18,15 +18,18 @@ export class App {
 			numberTestFloat: 0.5
 		}
 
-		// ItemRegister({
-		// 	name: 'test',
-		// 	type: 'boolean',
-		// 	extendedHTML: '<div>Test</div>',
-		// 	extendedCSS: '',
-		// 	addEventListeners: function() {
-		// 		console.log('test');
-		// 	}
-		// })
+		let obj1 = {
+			name: 'test',
+			type: 'boolean',
+			extendedHTML: '<div>HOLA</div>',
+			extendedCSS: '',
+			addEventListeners: function () {
+				console.log('test');
+			}
+		}
+
+
+		ItemRegister(obj1);
 
 		this.ui = new UI({
 			title: 'UI',
@@ -42,7 +45,7 @@ export class App {
 		 */
 		this.ui.add(obj, 'booleanTest', {
 			title: 'Boolean Test',
-			// force: 'test'
+			view: 'test'
 		});
 		this.ui.addItem(obj, 'stringTest', {
 			title: 'String Test'

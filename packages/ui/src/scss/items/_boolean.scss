@@ -1,4 +1,4 @@
-._ui-item-boolean {
+._ui-boolean-item {
 	width: $fil__height * 1.5;
 	height: $fil__height * .70;
 	border-radius: $fil__height;
@@ -14,13 +14,13 @@
 	}
 }
 
-.active {
-	.ui__item-boolean {
-		// background-color: $fil__color--active;
-		justify-content: flex-end;
+// .active {
+// 	._ui-boolean-item {
+// 		// background-color: $fil__color--active;
+// 		justify-content: flex-end;
 
-		div {
-			// background-color: $fil__color--tool;
-		}
-	}
-}
+// 		div {
+// 			// background-color: $fil__color--tool;
+// 		}
+// 	}
+// }

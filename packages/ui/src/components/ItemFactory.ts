@@ -4,8 +4,14 @@ import { slugify }from '../../../utils'
 import { BASE_CLASS } from "../utils/dom";
 
 // Available items array
+export interface AvailableItem {
+	name: string,
+	type: string,
+	create: (params: ItemParams, options) => Item,
+	getCSS: () => string
+}
 export const AvailableItems = {
-	items: [] as AvailabeItem[],
+	items: [] as AvailableItem[],
 }
 export interface ItemRegisterOptions {
 	name: string,
@@ -14,13 +20,6 @@ export interface ItemRegisterOptions {
 	extendedHTML: string,
 	addEventListeners?: () => void,
 	refresh?: () => void,
-}
-
-export interface AvailabeItem {
-	name: string,
-	type: string,
-	create: (params: ItemParams, options) => Item,
-	getCSS: () => string
 }
 
 export const ItemRegister = (registerOptions:ItemRegisterOptions) => {
@@ -58,6 +57,7 @@ export const ItemRegister = (registerOptions:ItemRegisterOptions) => {
 	const createExtendedItem = (params: ItemParams, options) => {
 		return new ExtendedItem(params, options) as Item;
 	}
+
 	const getCSS = () => {
 		return registerOptions.extendedCSS;
 	}
@@ -70,19 +70,17 @@ export const ItemRegister = (registerOptions:ItemRegisterOptions) => {
 	});
 }
 
-const ItemFactory = (params:ItemParams, options) => {
+export const ItemFactory = (params:ItemParams, options) => {
 
 	if(!params.parent) throw new Error('ItemFactory - parent is required');
 	if(!params.object) throw new Error('ItemFactory - object is required');
 	if(!params.key) throw new Error('ItemFactory - key is required');
 
-
 	// Force item type
-	if(options.force){
-		const item = AvailableItems.items.find(item => item.name === options.force);
+	if(options.view){
+		const item = AvailableItems.items.find(item => item.name === options.view);
 		return item.create(params, options);
 	}
-
 
 	const aItems = AvailableItems.items;
 
@@ -92,7 +90,6 @@ const ItemFactory = (params:ItemParams, options) => {
 		const item = aItems.find(item => item.type === 'boolean');
 		return item.create(params, options);
 	}
-
 	if(check.isString(value)) {
 		const item = aItems.find(item => item.type === 'string');
 		return item.create(params, options);
@@ -104,5 +101,3 @@ const ItemFactory = (params:ItemParams, options) => {
 
 	throw new Error('ItemFactory - unknown type');
 }
-
-export default ItemFactory;
