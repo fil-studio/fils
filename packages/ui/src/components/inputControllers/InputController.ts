@@ -37,19 +37,18 @@ export class InputController  {
 		if (this.created) return;
 		this.created = true;
 
-		// const position = this.parent.dom.getBoundingClientRect();
 		this.dom = document.createElement('div');
 		this.dom.classList.add(`${BASE_CLASS}-input-controller`);
 
 		this.parent.dom.appendChild(this.dom);
-
-
 	}
+
 	destroy(): void {
 		if (!this.created) return;
 		this.created = false;
 		this.dom.remove();
 	}
+
 	onChange(): void {
 	}
 }

@@ -1,5 +1,6 @@
-import { ItemRegister } from "./ItemFactory";
-import { ColorPicker } from "./input/ColorPicker";
+import { ItemClassRegister, ItemRegister } from "./ItemFactory";
+import { ColorPicker } from "./inputControllers/ColorPicker";
+import { TextureItem } from "./customItems/TexureItem";
 
 
 export const RegisterBaseComponents = () => {
@@ -47,7 +48,7 @@ export const RegisterBaseComponents = () => {
 		addEventListeners: function() {
 
 			const input = this.dom.querySelector('input');
-
+			input.value = this.value;
 			input.addEventListener('change', () => {
 				this.refresh();
 			});
@@ -71,8 +72,9 @@ export const RegisterBaseComponents = () => {
 
 			const input = this.dom.querySelector('input');
 
+			input.value = this.value;
+
 			input.addEventListener('change', () => {
-				input.value = this.value;
 				this.refresh();
 			});
 
@@ -80,7 +82,7 @@ export const RegisterBaseComponents = () => {
 
 		refresh: function () {
 			const input = this.dom.querySelector('input');
-			input.value = this.value;
+			this.value = input.value;
 		}
 	})
 
@@ -88,7 +90,7 @@ export const RegisterBaseComponents = () => {
 	ItemRegister({
 		view: 'color',
 		type: 'number',
-		popup: ColorPicker,
+		inputController: ColorPicker,
 		extendedCSS: ``,
 		extendedHTML: `
 			<input type="string" />
@@ -100,6 +102,8 @@ export const RegisterBaseComponents = () => {
 
 			const input = this.dom.querySelector('input');
 
+			input.value = this.value;
+
 			input.addEventListener('change', () => {
 				this.refresh();
 			});
@@ -110,6 +114,13 @@ export const RegisterBaseComponents = () => {
 			const input = this.dom.querySelector('input');
 			input.value = this.value;
 		}
+	})
+
+	// Texture Item
+	ItemClassRegister({
+		view: 'texture',
+		type: 'texture',
+		item: TextureItem
 	})
 
 }

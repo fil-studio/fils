@@ -17,7 +17,14 @@ interface DomOptions {
 }
 
 const dom = {
-	foldableItems: [],
+	createButton: (title:string) => {
+		const button = document.createElement('button');
+		const h3 = document.createElement('h3');
+		h3.innerText = title;
+		button.appendChild(h3);
+
+		return button;
+	},
 	createRow: ({
 		type,
 		depth,
@@ -75,10 +82,7 @@ const dom = {
 		 * Create a Button Row
 		 */
 		if(type === RowTypes.button) {
-			const button = document.createElement('button');
-			const h3 = document.createElement('h3');
-			h3.innerText = title;
-			button.appendChild(h3);
+			const button = dom.createButton(title);
 			row.appendChild(button);
 		}
 

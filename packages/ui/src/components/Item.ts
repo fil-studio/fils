@@ -2,7 +2,6 @@
 import { EventsHandler } from '../core/Events';
 import dom, { RowTypes } from '../utils/dom';
 import { Group } from './Group';
-import { Popup } from './input/InputController';
 
 export interface ItemOptions {
 	title?: string;
@@ -17,9 +16,6 @@ export interface ItemParams {
 
 export class Item extends EventsHandler {
 	type: RowTypes = RowTypes.item;
-
-	view: string = null;
-	canHandle: string = null;
 
 	dom: HTMLElement;
 	inputWrapper: HTMLElement;
@@ -63,7 +59,7 @@ export class Item extends EventsHandler {
 
 	setValue(value: any) {
 		this.value = value;
-		this.refresh();
+		if(this.created) this.refresh();
 	}
 
 	createDom() {
@@ -75,15 +71,15 @@ export class Item extends EventsHandler {
 	}
 
 	onChange(): void {
-		console.log('Item - onChange');
+		console.log('Item - onChange:', this.title);
  	}
 
 	/**
 	 * Refresh item dom
 	 */
 	refresh() {
-		console.log('Item - refresh');
+		console.log('Item - refresh:', this.title);
 		this.object[this.key] = this.value;
-		if(this.created) this.__onChange();
+		this.__onChange();
 	}
 }

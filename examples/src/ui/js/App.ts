@@ -16,7 +16,8 @@ export class App {
 			booleanTest: false,
 			stringTest: 'Test',
 			numberTest: 1,
-			numberTestFloat: 0.5
+			numberTestFloat: 0.5,
+			textureTest: 'asdapewoiewitureoiwoie09013oiasd'
 		}
 
 		let obj1 = {
@@ -24,9 +25,6 @@ export class App {
 			type: 'boolean',
 			extendedHTML: '<div>Frontend injected</div>',
 			extendedCSS: '',
-			addEventListeners: function () {
-				console.log('test');
-			}
 		}
 		let obj2 = {
 			...obj1,
@@ -68,9 +66,12 @@ export class App {
 		this.ui.add(obj, 'numberTest', {
 			title: 'Number Test'
 		});
-		// this.ui.add(obj, 'numberTestFloat', {
-		// 	title: 'Number Test Float'
-		// });
+		this.ui.add(obj, 'textureTest', {
+			title: 'Texture Test',
+			view: 'texture'
+		});
+
+
 		this.ui.addButton({
 			title: 'Number Test Float',
 			callback: () => {

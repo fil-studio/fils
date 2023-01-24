@@ -1,21 +1,8 @@
 
-interface EventsHandlerInterface {
-	addParentListener(parent: EventsHandler): void;
-	addChildrenListener(children: EventsHandler): void;
-	__onChange(e?: CustomEvent): void;
-	__onChangeComplete(e?: CustomEvent): void;
-	onChange(e?: CustomEvent): void;
-	onChangeComplete(e?: CustomEvent): void;
-}
-
-export class EventsHandler extends EventTarget implements EventsHandlerInterface {
-	parent: EventsHandler;
-
-
-	constructor({parent}:{parent?: EventsHandler} = {}) {
+export class EventsHandler extends EventTarget {
+	constructor(parent?:EventsHandler) {
 		super();
-		this.parent = parent;
-		if(this.parent) this.addParentListener(this.parent);
+		if (parent) this.addParentListener(parent);
 	}
 
 	addParentListener(parent: EventsHandler): void {
