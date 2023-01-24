@@ -15,10 +15,10 @@ export interface ItemParams {
 }
 
 export class Item extends EventsHandler {
-	type: RowTypes = RowTypes.item;
 
 	dom: HTMLElement;
 	inputWrapper: HTMLElement;
+
 	parent: Group;
 	depth: number;
 

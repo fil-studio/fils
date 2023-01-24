@@ -15,8 +15,6 @@ interface UIParams extends GroupParams {
 	onChangeCallback?: Function;
 }
 export class UI extends Group {
-	type: RowTypes = RowTypes.ui;
-
 	domWrapper: HTMLElement;
 	depth: number = 0;
 
@@ -28,6 +26,8 @@ export class UI extends Group {
 	}: UIParams = {}) {
 
 		super({ title });
+
+		this.parent = null;
 
 		/*
 		 * Main UI requires an extra wrapper

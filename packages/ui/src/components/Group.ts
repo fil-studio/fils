@@ -21,13 +21,11 @@ interface HasChildren {
 
 
 export class Group extends EventsHandler implements HasChildren {
-	type: RowTypes = RowTypes.group;
-
 	title: string;
 	parent: Group | UI;
 	children: Array<Group | Item | Button> = [];
 	dom: HTMLElement;
-	domContentWrapper: HTMLElement;
+	contentWrapper: HTMLElement;
 	depth: number = 0;
 
 	constructor({
@@ -46,7 +44,7 @@ export class Group extends EventsHandler implements HasChildren {
 			title: this.title,
 		});
 
-		this.domContentWrapper = this.dom.querySelector('div');
+		this.contentWrapper = this.dom.querySelector('div');
 	}
 
 	/**
@@ -55,7 +53,7 @@ export class Group extends EventsHandler implements HasChildren {
 	addChild(child: Group | Item | Button){
 		this.children.push(child);
 		this.addChildrenListener(child);
-		this.domContentWrapper.appendChild(child.dom);
+		this.contentWrapper.appendChild(child.dom);
 	}
 
 	/**
