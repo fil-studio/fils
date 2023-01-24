@@ -1,13 +1,7 @@
 import { BASE_CLASS } from "../../utils/dom";
 import { Item } from "../Item";
 
-export interface _Popup {
-	create(): void;
-	destroy(): void;
-	onChange(): void;
-}
-
-export class Popup implements _Popup {
+export class InputController  {
 	parent: Item;
 
 	dom: HTMLElement;
@@ -16,17 +10,20 @@ export class Popup implements _Popup {
 
 	constructor(parent: Item) {
 		this.parent = parent;
-		console.log('Popup - init');
+		console.log('InputController - init');
 
 		this.addEventListeners();
 	}
 
 	addEventListeners(): void {
+		console.log('InputController - addEventListeners');
+
 		this.parent.dom.addEventListener('click', () => {
 			this.create();
 		});
 
 		document.addEventListener('click', (e) => {
+			if(!this.created) return;
 			const target = e.target;
 			if (this.parent.dom.contains(target as Node)) return;
 			if (this.dom.contains(target as Node)) return;
@@ -42,11 +39,9 @@ export class Popup implements _Popup {
 
 		// const position = this.parent.dom.getBoundingClientRect();
 		this.dom = document.createElement('div');
-		this.dom.classList.add(`${BASE_CLASS}-popup`);
+		this.dom.classList.add(`${BASE_CLASS}-input-controller`);
 
 		this.parent.dom.appendChild(this.dom);
-
-		// console.log(position);
 
 
 	}

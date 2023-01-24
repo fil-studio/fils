@@ -2,7 +2,7 @@ import check from "../utils/check";
 import { Item, ItemOptions, ItemParams } from "./Item";
 import { slugify }from '../../../utils'
 import { BASE_CLASS } from "../utils/dom";
-import { Popup } from "./popups/Popup";
+import { Popup } from "./input/InputController";
 
 // Available items array
 export interface AvailableItem {
@@ -20,6 +20,7 @@ export interface ItemRegisterOptions {
 	extendedCSS: string,
 	extendedHTML: string,
 	popup?: typeof Popup,
+	parseValue?: (value: any) => any,
 	addEventListeners?: () => void,
 	refresh?: () => void,
 }
@@ -27,6 +28,7 @@ export interface ItemRegisterOptions {
 export const ItemRegister = (registerOptions:ItemRegisterOptions) => {
 	class ExtendedItem extends Item {
 		extendedHTML: string;
+		parseValue: (v:any) => any;
 		refreshFunction: () => void;
 		popup: Popup;
 		constructor({ parent, object, key }: ItemParams = {}, options?: ItemOptions) {
@@ -36,6 +38,7 @@ export const ItemRegister = (registerOptions:ItemRegisterOptions) => {
 			this.view = registerOptions.view;
 			this.canHandle = registerOptions.type;
 			this.extendedHTML = registerOptions.extendedHTML;
+			this.parseValue = registerOptions.parseValue || ((v) => { return v });
 			this.addEventListeners = registerOptions.addEventListeners;
 			this.refreshFunction = registerOptions.refresh || (() => {});
 
@@ -46,7 +49,13 @@ export const ItemRegister = (registerOptions:ItemRegisterOptions) => {
 
 			this.createDom();
 			this.addEventListeners();
-			this.refresh();
+			this.setValue(this.object[this.key]);
+			this.created = true;
+		}
+
+		setValue(value: any) {
+			let v = this.parseValue(value);
+			super.setValue(v);
 		}
 
 		createDom() {

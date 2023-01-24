@@ -1,5 +1,5 @@
 import { ItemRegister } from "./ItemFactory";
-import { ColorPicker } from "./popups/ColorPicker";
+import { ColorPicker } from "./input/ColorPicker";
 
 
 export const RegisterBaseComponents = () => {
@@ -93,6 +93,9 @@ export const RegisterBaseComponents = () => {
 		extendedHTML: `
 			<input type="string" />
 		`,
+		parseValue: function (value) {
+			return value + 'hola';
+		},
 		addEventListeners: function () {
 
 			const input = this.dom.querySelector('input');

@@ -2,7 +2,7 @@
 import { EventsHandler } from '../core/Events';
 import dom, { RowTypes } from '../utils/dom';
 import { Group } from './Group';
-import { Popup } from './popups/Popup';
+import { Popup } from './input/InputController';
 
 export interface ItemOptions {
 	title?: string;
@@ -35,6 +35,8 @@ export class Item extends EventsHandler {
 
 	options: ItemOptions;
 
+	protected created: boolean = false;
+
 	constructor({ parent, object, key }: ItemParams = {}, options?: ItemOptions) {
 		super(parent);
 
@@ -46,7 +48,6 @@ export class Item extends EventsHandler {
 
 		this.object = object;
 		this.key = key;
-		this.value = this.object[this.key];
 
 		this.options = options;
 		this.title = this.options?.title || key;
@@ -60,6 +61,11 @@ export class Item extends EventsHandler {
 		this.inputWrapper = this.dom.querySelector('div');
 	}
 
+	setValue(value: any) {
+		this.value = value;
+		this.refresh();
+	}
+
 	createDom() {
 		// Override this method
 	}
@@ -70,7 +76,7 @@ export class Item extends EventsHandler {
 
 	onChange(): void {
 		console.log('Item - onChange');
-	}
+ 	}
 
 	/**
 	 * Refresh item dom
@@ -78,10 +84,6 @@ export class Item extends EventsHandler {
 	refresh() {
 		console.log('Item - refresh');
 		this.object[this.key] = this.value;
-		this.__onChange();
-		this.refreshDom();
-	}
-	refreshDom(){
-		// Override this method
+		if(this.created) this.__onChange();
 	}
 }
