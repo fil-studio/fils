@@ -37,4 +37,8 @@ export class Button extends EventsHandler {
 			this.__onChange();
 		});
 	}
+
+	destroy(){
+		this.button.remove();
+	}
 }

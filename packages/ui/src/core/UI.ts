@@ -24,10 +24,9 @@ export class UI extends Group {
 	constructor({
 		title,
 		embed,
-		onChangeCallback
-	}: UIParams = {}) {
-
-		super({ title });
+		onChangeCallback = () => {}
+	}: UIParams) {
+		super({...arguments[0]});
 
 		this.parent = null;
 

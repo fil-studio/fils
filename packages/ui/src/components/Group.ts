@@ -1,6 +1,6 @@
 import { EventsHandler } from "../core/Events";
 import { UI } from "../main";
-import dom, { RowTypes } from "../utils/dom";
+import dom, { FOLDABLE, RowTypes } from "../utils/dom";
 import { Button, ButtonOptions } from "./Button";
 import { Item, ItemOptions } from "./Item";
 import { ItemFactory } from "./ItemFactory";
@@ -8,6 +8,9 @@ import { ItemFactory } from "./ItemFactory";
 export interface GroupParams {
 	parent?: Group | UI;
 	title?: string;
+
+	folded?: boolean;
+	foldable?: boolean;
 }
 
 interface HasChildren {
@@ -28,10 +31,15 @@ export class Group extends EventsHandler implements HasChildren {
 	contentWrapper: HTMLElement;
 	depth: number = 0;
 
+	folded: boolean;
+	foldable: boolean;
+
 	constructor({
 		parent,
 		title,
-	}: GroupParams = {}) {
+		folded = true,
+		foldable = true
+	}: GroupParams) {
 		super(parent);
 
 		this.parent = parent;
@@ -45,6 +53,41 @@ export class Group extends EventsHandler implements HasChildren {
 		});
 
 		this.contentWrapper = this.dom.querySelector('div');
+
+		// Is it folded or not? If it's not foldable, it's not folded
+		this.folded = foldable ? folded : false;
+		this.foldable = foldable;
+		this.addFoldListeners();
+		this.foldHandler();
+
+
+	}
+
+	addFoldListeners(){
+		if(!this.foldable) return;
+
+		this.dom.classList.add(FOLDABLE);
+
+		const header = this.dom.querySelector('header');
+		header.style.cursor = 'pointer';
+		header.addEventListener('click', () => {
+			this.folded = !this.folded;
+			this.foldHandler();
+		});
+
+		window.addEventListener('resize', () => {
+			this.foldHandler();
+		});
+
+	}
+
+	foldHandler(){
+		if(!this.foldable) return;
+		this.contentWrapper.style.height = 'auto';
+		const r = this.contentWrapper.getBoundingClientRect();
+		this.contentWrapper.style.setProperty('--ui-height', `${r.height}px`);
+		if(this.folded) this.contentWrapper.style.height = '0px';
+		else this.contentWrapper.style.height = 'var(--ui-height)';
 	}
 
 	/**
@@ -54,6 +97,7 @@ export class Group extends EventsHandler implements HasChildren {
 		this.children.push(child);
 		this.addChildrenListener(child);
 		this.contentWrapper.appendChild(child.dom);
+		this.foldHandler();
 	}
 
 	destroy(): void {

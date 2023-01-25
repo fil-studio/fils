@@ -94,5 +94,14 @@ body {
   align-items: center;
   padding: 8px 10px;
 }
+._ui-wrapper ._ui-foldable > header {
+  cursor: pointer;
+}
+._ui-wrapper ._ui-foldable > div {
+  overflow: hidden;
+  transition-duration: 0.4s;
+  transition-timing-function: cubic-bezier(0.29, 0.86, 0.97, 0.8);
+  transition-property: height;
+}
 
 /*# sourceMappingURL=bundle.css.map */

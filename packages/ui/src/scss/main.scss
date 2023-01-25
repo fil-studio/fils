@@ -8,6 +8,9 @@ $fil__separation: 2px;
 
 $fil__height: 40px;
 
+$ui_transition-duration: 0.4s;
+$ui_transition-timing-function: cubic-bezier(.29, .86, .97, .8);
+
 @import "./partials/colors";
 
 ._ui-wrapper {
@@ -25,6 +28,7 @@ $fil__height: 40px;
 
 	@import "./partials/fonts";
 	@import "./partials/structure";
+	@import "./partials/fold";
 
 }
 
