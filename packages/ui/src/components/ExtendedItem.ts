@@ -34,7 +34,7 @@ export class ExtendedItem extends Item {
 		super.setValue(v);
 	}
 
-	createDom() {
+	protected createDom() {
 		this.inputWrapper.innerHTML = this.extendedHTML;
 		super.createDom();
 	}

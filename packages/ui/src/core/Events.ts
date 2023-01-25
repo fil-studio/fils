@@ -5,13 +5,13 @@ export class EventsHandler extends EventTarget {
 		if (parent) this.addParentListener(parent);
 	}
 
-	addParentListener(parent: EventsHandler): void {
+	private addParentListener(parent: EventsHandler): void {
 		parent.addEventListener('refresh', (e: CustomEvent) => {
 			this.__refresh();
 		})
 	}
 
-	addChildrenListener(children: EventsHandler): void {
+	protected addChildrenListener(children: EventsHandler): void {
 		children.addEventListener('onChange', (e: CustomEvent) => {
 			this.__onChange(e);
 		})
@@ -24,7 +24,7 @@ export class EventsHandler extends EventTarget {
 	 * Top down events
 	 */
 	// Propagator
-	__refresh(e?: CustomEvent): void {
+	private __refresh(e?: CustomEvent): void {
 		this.refresh(e);
 		let event = new CustomEvent("refresh");
 		this.dispatchEvent(event);
@@ -36,7 +36,7 @@ export class EventsHandler extends EventTarget {
 	 * Bottom up events
 	 */
 	// Propagator
-	__onChange(e?: CustomEvent): void {
+	protected __onChange(e?: CustomEvent): void {
 		this.onChange(e);
 		let event = new CustomEvent("onChange");
 		this.dispatchEvent(event);
@@ -45,7 +45,7 @@ export class EventsHandler extends EventTarget {
 	onChange(e?:CustomEvent): void {}
 
 	// Propagator
-	__onChangeComplete(e?: CustomEvent<any>): void {
+	private __onChangeComplete(e?: CustomEvent<any>): void {
 		this.onChangeComplete(e);
 
 		const detail = e ? e.detail : {

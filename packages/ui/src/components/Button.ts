@@ -31,7 +31,7 @@ export class Button extends EventsHandler {
 		this.addEventListeners();
 	}
 
-	addEventListeners(){
+	private addEventListeners(){
 		this.button.addEventListener('click', (e) => {
 			this.callback(e);
 			this.__onChange();

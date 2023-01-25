@@ -13,17 +13,7 @@ export interface GroupParams {
 	foldable?: boolean;
 }
 
-interface HasChildren {
-	children: Array<Group | Item | Button>;
-	addChild(child: Group | Item | Button): void;
-	addButton(options?: ButtonOptions): void;
-	addGroup(options?: GroupParams): Group;
-	add(object, key, options?: ItemOptions): void;
-	addItem(object, key, options?: ItemOptions): void;
-}
-
-
-export class Group extends EventsHandler implements HasChildren {
+export class Group extends EventsHandler {
 	title: string;
 	parent: Group | UI;
 	children: Array<Group | Item | Button> = [];
@@ -63,7 +53,7 @@ export class Group extends EventsHandler implements HasChildren {
 		this.addFoldListeners();
 	}
 
-	addFoldListeners(){
+	protected addFoldListeners(){
 		if(!this.foldable) return;
 
 		this.dom.classList.add(FOLDABLE);
@@ -80,7 +70,7 @@ export class Group extends EventsHandler implements HasChildren {
 		});
 	}
 
-	onFold(){
+	protected onFold(){
 		if(!this.foldable) return;
 		const h = this.contentWrapper.getBoundingClientRect().height;
 
@@ -99,7 +89,7 @@ export class Group extends EventsHandler implements HasChildren {
 	/**
 	 * Enables listeners, add children to childrens array
 	 */
-	addChild(child: Group | Item | Button){
+	protected addChild(child: Group | Item | Button){
 		this.children.push(child);
 		this.addChildrenListener(child);
 		this.contentWrapper.appendChild(child.dom);

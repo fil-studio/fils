@@ -17,19 +17,19 @@ export interface ItemParams {
 export class Item extends EventsHandler {
 
 	dom: HTMLElement;
-	inputWrapper: HTMLElement;
+	protected inputWrapper: HTMLElement;
 
-	parent: Group;
-	depth: number;
+	protected parent: Group;
+	protected depth: number;
 
 	title: string;
 
-	object: Object;
-	key: string;
+	protected object: Object;
+	protected key: string;
 
 	value: any;
 
-	options: ItemOptions;
+	protected options: ItemOptions;
 
 	protected created: boolean = false;
 
@@ -66,11 +66,11 @@ export class Item extends EventsHandler {
 		this.dom.remove();
 	}
 
-	createDom() {
+	protected createDom() {
 		// Override this method
 	}
 
-	addEventListeners(): void {
+	protected addEventListeners(): void {
 		// Override this method
 	}
 
