@@ -35,6 +35,8 @@ export class App {
 				const name = target.getAttribute('data-name') as string;
 				copyToClipboard(name);
 
+				console.log('copied', name);
+
 				element.classList.add('copied');
 				setTimeout(() => {
 					element.classList.remove('copied');
