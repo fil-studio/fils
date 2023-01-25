@@ -1,0 +1,71 @@
+
+body {
+	--accent-color: #2871C7;
+	--bg-0: #303030;
+	--bg-1: #191919;
+	--color-0: #CCCCCC;
+	--color-1: #999999;
+	--color-2: #666666;
+
+	background-color: var(--bg-0);
+}
+
+h2 {
+	color: var(--color-0);
+	font: 400 5rem 'Roboto', sans-serif;
+	text-align: center;
+	padding: 100px 100px 0;
+}
+
+.wrapper {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+
+	padding: 100px;
+}
+
+.icon {
+	width: 50px;
+	height: 50px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 10px;
+	margin: 5px;
+	flex-direction: column;
+
+	cursor: pointer;
+
+	color: var(--color-0);
+	border: 2px solid var(--color-1);
+	background-color: var(--bg-1);
+
+	transition-timing-function: ease-in-out;
+	transition: 0.8s transform, 0.8s border-color, 0.8s color;
+
+	&:hover {
+		transform: scale3d(2,2,2);
+		transform-origin: center;
+		transition: 0.1s transform;
+		z-index: 1;
+	}
+
+	&.copied {
+		transform: scale3d(2,2,2);
+		transform-origin: center;
+		border-color: var(--accent-color);
+		color: var(--accent-color);
+		transition: 0.1s border-color, 0.1s color;
+	}
+
+	* {
+		pointer-events: none;
+	}
+
+	svg {
+		width: 70%;
+		height: 70%;
+	}
+}

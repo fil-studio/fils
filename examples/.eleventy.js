@@ -13,6 +13,7 @@ const examples = [
   'scroller',
   'selective-glow',
   'ui',
+  'ui-icons',
   'nomad',
   'core',
 ];
