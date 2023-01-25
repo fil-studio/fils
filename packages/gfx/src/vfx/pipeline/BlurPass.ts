@@ -1,9 +1,9 @@
 import { Mesh, OrthographicCamera, PlaneGeometry, RawShaderMaterial, Scene, Texture, Vector2, WebGLRenderer, WebGLRenderTarget } from "three";
-import { RenderComposer } from "./RenderComposer";
 import { RenderPass } from "./RenderPass";
 
-import vert from '../glsl/fbo.vert';
-import frag from '../glsl/vfx/blur.frag';
+import vert from '../../glsl/fbo.vert';
+import frag from '../../glsl/vfx/blur.frag';
+import { VFXPipeline } from "../VFXPipeline";
 
 export type BlurQuality = 0|1|2;
 
@@ -26,8 +26,8 @@ export class BlurPass extends RenderPass{
 	iterations:number = 4;
 	quality:BlurQuality = 0;
 	scale:number;
-	ping:WebGLRenderTarget;
-	pong:WebGLRenderTarget;
+	read:WebGLRenderTarget;
+	write:WebGLRenderTarget;
 	scene:Scene;
 	camera:OrthographicCamera;
 	quad:Mesh;
@@ -42,8 +42,8 @@ export class BlurPass extends RenderPass{
 		const iterations = settings.iterations || BlurDefaults.iterations;
 		const quality = settings.quality || BlurDefaults.quality;
 
-		this.ping = new WebGLRenderTarget(width, height);
-		this.pong = this.ping.clone();
+		this.read = new WebGLRenderTarget(width, height);
+		this.write = this.read.clone();
 
 		this.radius = radius;
 		this.iterations = iterations;
@@ -88,14 +88,14 @@ export class BlurPass extends RenderPass{
 	}
 
 	private swapBuffers () {
-		const tmp = this.pong;
-		this.pong = this.ping;
-		this.ping = tmp;
+		const tmp = this.write;
+		this.write = this.read;
+		this.read = tmp;
 	}
 
 	setSize(width:number, height:number) {
-		this.ping.setSize(width*this.scale, height*this.scale);
-		this.pong.setSize(width*this.scale, height*this.scale);
+		this.read.setSize(width*this.scale, height*this.scale);
+		this.write.setSize(width*this.scale, height*this.scale);
 		
 		const w = this.scale * width/2;
 		const h = this.scale * height/2;
@@ -117,27 +117,29 @@ export class BlurPass extends RenderPass{
 		renderer.render(this.scene, this.camera);
 	}
 
-	render(renderer:WebGLRenderer, composer:RenderComposer, toScreen:boolean=false) {
-		this.blurPass(renderer, this.source != null ? this.source : composer.read.texture, this.ping, this.radius, 0);
+	render(renderer:WebGLRenderer, composer:VFXPipeline, target:WebGLRenderTarget = null) {
+		this.blurPass(renderer, this.source != null ? this.source : composer.read.texture, this.write, this.radius, 0);
+		this.swapBuffers();
 		for(let i=1;i<this.iterations-1;i++) {
-			this.blurPass(renderer, this.ping.texture, this.pong, i%2==0? this.radius : 0, i%2==0? 0 : this.radius);
+			this.blurPass(renderer, this.read.texture, this.write, i%2==0? this.radius : 0, i%2==0? 0 : this.radius);
 			this.swapBuffers();
 		}
 		const i = this.iterations-1;
-		this.blurPass(renderer, this.ping.texture, toScreen ? null : composer.write, i%2==0? this.radius : 0, i%2==0? 0 : this.radius);
+		this.blurPass(renderer, this.read.texture, target, i%2==0? this.radius : 0, i%2==0? 0 : this.radius);
 	}
 
 	// render internal
 	renderInternal(renderer:WebGLRenderer) {
 		if(this.source == null) return console.warn("Internal rendering needs a source texture!");
-		this.blurPass(renderer, this.source, this.ping, this.radius, 0);
+		this.blurPass(renderer, this.source, this.write, this.radius, 0);
+		this.swapBuffers();
 		for(let i=1;i<this.iterations;i++) {
-			this.blurPass(renderer, this.ping.texture, this.pong, i%2==0? this.radius : 0, i%2==0? 0 : this.radius);
+			this.blurPass(renderer, this.read.texture, this.write, i%2==0? this.radius : 0, i%2==0? 0 : this.radius);
 			this.swapBuffers();
 		}
 	}
 
 	get texture ():Texture {
-		return this.pong.texture;
+		return this.read.texture;
 	}
 }

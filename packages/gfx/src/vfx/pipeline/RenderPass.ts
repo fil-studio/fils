@@ -1,5 +1,5 @@
-import { RawShaderMaterial, WebGLRenderer } from "three";
-import { RenderComposer } from "./RenderComposer";
+import { RawShaderMaterial, WebGLRenderer, WebGLRenderTarget } from "three";
+import { VFXPipeline } from "../VFXPipeline";
 
 export class RenderPass {
 	shader: RawShaderMaterial
@@ -7,11 +7,15 @@ export class RenderPass {
 
 	}
 
-	render(renderer:WebGLRenderer, composer:RenderComposer, toScreen:Boolean=false) {
-		renderer.setRenderTarget(toScreen ? null : composer.write);
+	render(renderer:WebGLRenderer, composer:VFXPipeline, target:WebGLRenderTarget = null) {
+		renderer.setRenderTarget(target);
 		composer.quad.material = this.shader;
 		if(this.shader.uniforms.tInput) this.shader.uniforms.tInput.value = composer.read.texture;
 		if(this.shader.uniforms.tDepth) this.shader.uniforms.tDepth.value = composer.read.depthTexture;
 		renderer.render(composer.scene, composer.camera);
+	}
+
+	setSize(width:number, height:number) {
+		
 	}
 }

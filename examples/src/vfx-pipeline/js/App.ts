@@ -7,6 +7,8 @@ import { WebGLSketch, gfxShaders } from '../../../../packages/gfx';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { VFXPipeline } from '../../../../packages/gfx/src/main';
+import { FinalPass } from '../../../../packages/gfx/src/vfx/pipeline/FinalPass';
 
 const BOX_GEO = new BoxGeometry(1, 1, 1);
 const BALL_GEO = new SphereGeometry(1);
@@ -14,7 +16,7 @@ const CYL_GEO = new CylinderGeometry(.1, .1, 1, 32, 8);
 const TOR_GEO = new TorusKnotGeometry(10, 2, 64, 32, 2, 3);
 
 export class App extends WebGLSketch {
-	customRenderer: VFXRenderer;
+	customRenderer: VFXPipeline;
 	meshes: Mesh[] = [];
 
 	constructor() {
@@ -22,11 +24,12 @@ export class App extends WebGLSketch {
 			alpha: false,
 			antialias: true
 		});
-		this.renderer.setClearColor(0x000000, 1);
+		this.renderer.setClearColor(0x666666, 1);
 		document.body.appendChild(this.domElement);
 		this.domElement.className = 'view';
 
 		ShaderChunk['rgbSplit'] = gfxShaders.rgbSplit;
+		ShaderChunk['dithering'] = gfxShaders.dithering;
 
 		const L = new DirectionalLight(0xffffff, .35);
 		L.position.set(-1, 1, 1);
@@ -96,22 +99,33 @@ export class App extends WebGLSketch {
 
 		this.camera.position.z = 15;
 
-		this.customRenderer = new VFXRenderer(
+		const rnd = new VFXRenderer(
 			this.renderer,
 			window.innerWidth,
 			window.innerHeight,
 			{
-				exposure: 2,
-				gamma: 1.8,
-				samples: 4,
+				exposure: 1.25,
+				gamma: 1,
+				samples: 1,
 				glowSettings: {
 					scale: .5,
-					radius: 1,
+					radius: 2,
 					iterations: 8,
 					quality: 2
 				}
 			}
 		);
+
+		// this.customRenderer = new VFXPipeline(this.renderer);
+		this.customRenderer = new VFXPipeline(rnd);
+		const pass = new FinalPass({
+			caAmount: .0025,
+			enableDithering: true,
+			dither: 8,
+			enableVignette: true,
+			vignette: .16
+		});
+		this.customRenderer.addPass(pass);
 
 		const stats = Stats();
 		document.body.appendChild(stats.domElement);
@@ -129,35 +143,23 @@ export class App extends WebGLSketch {
 
 		// GUI
 		const gui = new GUI();
-		gui.add(
-			this.customRenderer,
-			'showGlow'
-		);
-		gui.add(
-			this.customRenderer,
-			'showScene'
-		);
-		gui.add(this.customRenderer, 'exposure', 1, 5, .1);
-		gui.add(this.customRenderer, 'gamma', 1, 3.2, .1);
 
-		const blur = gui.addFolder('Blur Options');
-		blur.add(this.customRenderer.glow, 'iterations', 2, 32, 1);
-		blur.add(this.customRenderer.glow, 'quality', {
-			BLUR5: 0,
-			BLUR9: 1,
-			BLUR13: 2,
-		});
-		blur.add(this.customRenderer.glow, 'radius', {
-			'1': 1,
-			'1/2': 0.5,
-			'1/4': 0.25,
-		});
-		blur.add(this.customRenderer.glow, 'scale', {
-			'100%': 1,
-			'50%': 0.5,
-			'25%': 0.25,
+		const r = {
+			type: 1 
+		}
+
+		gui.add(r, "type", {
+			"WebGLRenderer": 0,
+			"VFXRenderer": 1
 		}).onFinishChange(()=>{
-			this.customRenderer.glow.setSize(window.innerWidth, window.innerHeight);
+			this.customRenderer.setRenderer(
+				r.type === 0 ? this.renderer : rnd
+			)
+		});
+
+		const f1 = gui.addFolder("Final Pass");
+		f1.add(pass.shader.uniforms.enableCA, 'value', {
+			label: "Chromatic Aberration"
 		});
 
 		this.start(customRaf);

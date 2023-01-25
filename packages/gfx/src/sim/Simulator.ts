@@ -2,7 +2,7 @@ import { AssetsBundle, GLTFAsset, TextureAsset } from '@fils/io';
 import { ACESFilmicToneMapping, Mesh, MeshPhysicalMaterial, PerspectiveCamera, PlaneGeometry, Scene, ShaderLib, Vector2, WebGLRenderer, WebGLRenderTarget } from 'three';
 import { BlurPass, RTUtils, getHDRI } from '../main';
 import { Reflector } from 'three/examples/jsm/objects/Reflector.js'
-import { BlurSettings } from '../composer/BlurPass';
+import { BlurSettings } from '../vfx/pipeline/BlurPass';
 
 const floor = new Mesh(
 	new PlaneGeometry(1, 1),

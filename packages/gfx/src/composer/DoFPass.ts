@@ -1,6 +1,6 @@
 import { RawShaderMaterial, ShaderChunk, WebGLRenderer } from "three";
-import { BlurPass, BlurSettings } from './BlurPass';
-import { RenderPass } from './RenderPass';
+import { BlurPass, BlurSettings } from '../vfx/pipeline/BlurPass';
+import { RenderPass } from '../vfx/pipeline/RenderPass';
 import { RenderComposer } from "./RenderComposer";
 
 import vert from '../glsl/fbo.vert';

@@ -1,13 +1,13 @@
-import { OrthographicCamera, PerspectiveCamera, Scene, ShaderMaterial, Vector2, WebGLMultipleRenderTargets, WebGLRenderer, WebGLRenderTarget } from "three";
+import { OrthographicCamera, PerspectiveCamera, Scene, ShaderMaterial, UniformsGroup, WebGLMultipleRenderTargets, WebGLRenderer, WebGLRenderTarget } from "three";
 import { BlurPass, BlurSettings } from "../main";
 export declare type VFXCompSettings = {
-    blurSettings?: BlurSettings;
-    rgbStrength?: number;
-    rgbDelta?: Vector2;
-    maxRGBDisp?: Vector2;
-    rgbRadial?: boolean;
+    glowSettings?: BlurSettings;
     exposure?: number;
     gamma?: number;
+    samples?: number;
+    useDepth?: boolean;
+    customFargment?: string;
+    customUniforms?: UniformsGroup;
 };
 export declare class VFXRenderer {
     rnd: WebGLRenderer;
@@ -17,9 +17,9 @@ export declare class VFXRenderer {
     showScene: boolean;
     exposure: number;
     gamma: number;
+    shader: ShaderMaterial;
     constructor(renderer: WebGLRenderer, width: number, height: number, settings?: VFXCompSettings);
-    get shader(): ShaderMaterial;
-    resize(width: number, height: number): void;
+    setSize(width: number, height: number): void;
     private updateUniforms;
     render(scene: Scene, camera: PerspectiveCamera | OrthographicCamera, target?: WebGLRenderTarget): void;
 }

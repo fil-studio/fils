@@ -1,5 +1,5 @@
-import pars from '../glsl/vfx/material/pars.frag';
 import output from '../glsl/vfx/material/output.frag';
+import pars from '../glsl/vfx/material/pars.frag';
 export function initMaterial(mat) {
     mat.onBeforeCompile = (shader, renderer) => {
         if (!mat['emissive']) {

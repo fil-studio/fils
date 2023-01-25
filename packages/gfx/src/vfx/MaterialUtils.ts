@@ -1,9 +1,11 @@
-import { Material, MeshBasicMaterial, MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial, Shader, WebGLRenderer } from "three";
+import { MeshBasicMaterial, MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial, Shader, WebGLRenderer } from "three";
 
-import pars from '../glsl/vfx/material/pars.frag';
 import output from '../glsl/vfx/material/output.frag';
+import pars from '../glsl/vfx/material/pars.frag';
 
-export function initMaterial(mat:Material) {
+type SupportedMaterial = MeshBasicMaterial|MeshPhongMaterial|MeshStandardMaterial|MeshPhysicalMaterial;
+
+export function initMaterial(mat:SupportedMaterial) {
     mat.onBeforeCompile = (shader:Shader, renderer:WebGLRenderer) => {
         if(!mat['emissive']) {
             let fs = shader.fragmentShader;

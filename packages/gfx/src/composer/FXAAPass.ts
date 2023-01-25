@@ -1,4 +1,4 @@
-import { RenderPass } from "./RenderPass";
+import { RenderPass } from "../vfx/pipeline/RenderPass";
 import { RawShaderMaterial, Vector2 } from "three";
 
 import vert from '../glsl/vfx/fxaa.vert';

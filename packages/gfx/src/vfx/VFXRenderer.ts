@@ -1,16 +1,22 @@
-import { OrthographicCamera, PerspectiveCamera, RawShaderMaterial, RGBAFormat, Scene, ShaderMaterial, UnsignedByteType, Vector2, WebGLMultipleRenderTargets, WebGLRenderer, WebGLRenderTarget } from "three";
+import { DepthFormat, DepthTexture, FloatType, OrthographicCamera, PerspectiveCamera, RawShaderMaterial, RGBAFormat, Scene, ShaderMaterial, UniformsGroup, UnsignedByteType, Vector2, WebGLMultipleRenderTargets, WebGLRenderer, WebGLRenderTarget } from "three";
 import { BlurPass, BlurSettings, RTUtils } from "../main";
 
 /**
  * This class encapsulates MRT renderer with
  * scene + glow pass (output location 1).
- * It also includes rgb split (requires
- * RGB_SPLIT define).
  * Typical use when extending threejs materials
  * to get selective glow:
  * 1 - Inject: layout(location = 1) out vec4 gGlow;
  * 2 - gGlow = vec4(totalEmissiveRadiance, 1.0);
  */
+
+/**
+ * UPDATE: Removing RGB split from the base renderer.
+ * Integrating VFX Renderer with new VFXPipeline
+ * When aiming at having a more complex renderer with
+ * a single pass, we must provide a custom shader
+ * as explained below.
+*/
 
 import vert from '../glsl/fbo.vert';
 import frag from '../glsl/vfx/comp.frag';
@@ -21,27 +27,34 @@ const COMP = new RawShaderMaterial({
     uniforms: {
         tScene: {value: null},
         tGlow: {value: null},
-        exposure: {value: 1.2},
-        gamma: {value: 1.8},
-        rgbStrength: {value: 0.5},
+        exposure: {value: 1},
+        gamma: {value: 1},
+        /* rgbStrength: {value: 0.5},
         maxRGBDisp: {value: new Vector2(1,1)},
         rgbDelta: {value: new Vector2()},
-        rgb: {value: false},
+        rgb: {value: false}, */
         renderGlow: {value: true},
-        rgbRadial: {value: true},
         renderScene: {value: true}
+        // rgbRadial: {value: true}
     },
     transparent: true
 });
 
 export type VFXCompSettings = {
-    blurSettings?:BlurSettings;
-    rgbStrength?:number;
-    rgbDelta?:Vector2;
-    maxRGBDisp?:Vector2;
-    rgbRadial?:boolean;
+    glowSettings?:BlurSettings;
     exposure?:number;
     gamma?:number;
+    samples?:number;
+    useDepth?:boolean;
+    customFargment?:string;
+    customUniforms?:UniformsGroup
+}
+
+const GLOW_DEFAULTS:BlurSettings = {
+    scale: .3,
+    radius: 1,
+    iterations: 8,
+    quality: 0
 }
 
 export class VFXRenderer {
@@ -52,6 +65,7 @@ export class VFXRenderer {
     showScene:boolean = true;
     exposure:number = COMP.uniforms.exposure.value;
     gamma:number =  COMP.uniforms.gamma.value;
+    shader:ShaderMaterial = COMP.clone();
 
     constructor(renderer:WebGLRenderer, width:number, height:number, settings?:VFXCompSettings) {
         this.rnd = renderer;
@@ -64,20 +78,17 @@ export class VFXRenderer {
             type: UnsignedByteType
         });
 
-        this.sceneRT['samples'] = 4;
+        this.sceneRT['samples'] = settings.samples || 4;
         this.sceneRT.texture[ 0 ].name = 'diffuse';
         this.sceneRT.texture[ 1 ].name = 'glow';
 
-        /* this.sceneRT['depthTexture'] = new DepthTexture(w, h, FloatType);
-        this.sceneRT['depthTexture'].format = DepthFormat; */
-
-        const bs:BlurSettings = settings && settings.blurSettings ?
-        settings.blurSettings : {
-            scale: .3,
-            radius: 1,
-            iterations: 8,
-            quality: 0
+        if(settings.useDepth) {
+            this.sceneRT['depthTexture'] = new DepthTexture(w, h, FloatType);
+            this.sceneRT['depthTexture'].format = DepthFormat;
         }
+
+        const bs:BlurSettings = settings && settings.glowSettings ?
+        settings.glowSettings : GLOW_DEFAULTS;
 
         this.glow = new BlurPass(this.sceneRT.texture[1], w, h, bs);
 
@@ -89,7 +100,18 @@ export class VFXRenderer {
             this.gamma = settings.gamma;
         }
 
-        if(settings && settings.rgbStrength) {
+        // custom shader injection
+        if(settings.customFargment !== undefined) {
+            this.shader.vertexShader = settings.customFargment;
+            if(settings.customUniforms !== undefined) {
+                const u = settings.customUniforms;
+                for(const key in u) {
+                    this.shader.uniforms[key] = u[key];
+                }
+            }
+        }
+
+        /* if(settings && settings.rgbStrength) {
             COMP.uniforms.rgb.value = true;
             COMP.uniforms.rgbStrength.value = settings.rgbStrength;
         }
@@ -106,15 +128,10 @@ export class VFXRenderer {
         if(settings && settings.rgbRadial != undefined) {
             COMP.uniforms.rgb.value = true;
             COMP.uniforms.rgbRadial.value = settings.rgbRadial;
-        }
+        } */
     }
 
-    // expose shader material
-    get shader():ShaderMaterial {
-        return COMP;
-    }
-
-    resize(width:number, height:number) {
+    setSize(width:number, height:number) {
         const w = width * window.devicePixelRatio;
         const h = height * window.devicePixelRatio;
 
@@ -123,7 +140,7 @@ export class VFXRenderer {
     }
 
     private updateUniforms() {
-        const u = COMP.uniforms;
+        const u = this.shader.uniforms;
         u.exposure.value = this.exposure;
         u.gamma.value = this.gamma;
         u.renderGlow.value = this.showGlow;
@@ -149,8 +166,8 @@ export class VFXRenderer {
         this.updateUniforms();
 
         if(target) {
-            RTUtils.renderToRT(target, this.rnd, COMP);
-        } else RTUtils.renderToViewport(this.rnd, COMP);
+            RTUtils.renderToRT(target, this.rnd, this.shader);
+        } else RTUtils.renderToViewport(this.rnd, this.shader);
         // FboUtils.drawTexture(this.glow.texture, this.rnd, 0, 0, window.innerWidth, window.innerHeight);
 
         this.rnd.setRenderTarget(null);
