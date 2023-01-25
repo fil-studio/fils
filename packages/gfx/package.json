@@ -10,7 +10,8 @@
 	"private": false,
 	"scripts": {
 		"prepare": "yarn build",
-		"build": "tsc --build tsconfig.gfx.json && cp -r src/glsl lib/"
+		"build": "tsc --build tsconfig.gfx.json",
+		"postbuild": "node postbuild.js"
 	},
 	"files": [
 		"lib",
