@@ -6,10 +6,14 @@ import { AvailableItems } from '../partials/ItemFactory';
 import { RegisterBaseComponents } from '../partials/RegisterBaseItems';
 import css from '../utils/css';
 import dom, { EMBED_WRAPPER_CLASS, RowTypes } from '../utils/dom';
+import { uiAdd } from '../../../ui-icons/lib/Icons';
 
 RegisterBaseComponents();
 const mergedCss = css.merge(styles, AvailableItems.items);
 css.inject(mergedCss);
+
+console.log(uiAdd);
+
 
 interface UIParams extends GroupParams {
 	embed?: HTMLElement,
