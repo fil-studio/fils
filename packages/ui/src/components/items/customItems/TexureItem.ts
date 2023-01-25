@@ -1,8 +1,8 @@
-import dom, { VERTICAL_ROW } from "../../utils/dom";
+import dom, { VERTICAL_ROW } from "../../../utils/dom";
 import { CustomExtendedItem } from "../CustomExtendedItem";
-import { InputController } from "../inputControllers/InputController";
-import { ItemOptions, ItemParams } from "../Item";
-import { ItemClassRegisterOptions } from "../ItemFactory";
+import { InputController } from "../../inputControllers/InputController";
+import { ItemOptions, ItemParams } from "../../Item";
+import { ItemClassRegisterOptions } from "../../../partials/ItemFactory";
 
 export class TextureItem extends CustomExtendedItem {
 	emptyButton: HTMLButtonElement;

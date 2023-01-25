@@ -1,8 +1,8 @@
 import { ItemClassRegister, ItemRegister } from "./ItemFactory";
-import { ColorPicker } from "./inputControllers/ColorPicker";
-import { TextureItem } from "./customItems/TexureItem";
-import { TextureList } from "./inputControllers/TextureList";
-import { MaterialItem } from "./customItems/MaterialItem";
+import { ColorPicker } from "../components/inputControllers/ColorPicker";
+import { TextureItem } from "../components/items/customItems/TexureItem";
+import { TextureList } from "../components/inputControllers/TextureList";
+import { MaterialItem } from "../components/items/customItems/MaterialItem";
 
 
 export const RegisterBaseComponents = () => {

@@ -1,4 +1,4 @@
-import { AvailabeItem } from "../components/ItemFactory";
+import { AvailableItem } from "../partials/ItemFactory";
 
 const css = {
 	inject: (css: string) => {
@@ -6,7 +6,7 @@ const css = {
 		style.innerHTML = css;
 		document.head.appendChild(style);
 	},
-	merge: (css: string, items: Array<AvailabeItem>):string => {
+	merge: (css: string, items: Array<AvailableItem>):string => {
 		let style = css;
 		for(const item of items){
 			const itemCss = item.getCSS();

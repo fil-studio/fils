@@ -1,6 +1,6 @@
 import { CustomExtendedItem } from "../CustomExtendedItem";
-import { ItemOptions, ItemParams } from "../Item";
-import { ItemClassRegisterOptions } from "../ItemFactory";
+import { ItemOptions, ItemParams } from "../../Item";
+import { ItemClassRegisterOptions } from "../../../partials/ItemFactory";
 
 export class MaterialItem extends CustomExtendedItem {
 

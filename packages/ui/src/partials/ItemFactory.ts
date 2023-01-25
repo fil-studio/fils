@@ -1,8 +1,8 @@
 import check from "../utils/check";
-import { CustomExtendedItem } from "./CustomExtendedItem";
-import { ExtendedItem } from "./ExtendedItem";
-import { InputController } from "./inputControllers/InputController";
-import { Item, ItemOptions, ItemParams } from "./Item";
+import { InputController } from "../components/inputControllers/InputController";
+import { Item, ItemOptions, ItemParams } from "../components/Item";
+import { CustomExtendedItem } from "../components/items/CustomExtendedItem";
+import { ExtendedItem } from "../components/items/ExtendedItem";
 
 // Available items array
 export interface AvailableItem {

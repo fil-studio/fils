@@ -1,4 +1,4 @@
-import { ItemRegister } from '../../../../packages/ui/src/components/ItemFactory';
+import { ItemRegister } from '../../../../packages/ui/src/partials/ItemFactory';
 import { UI } from '../../../../packages/ui/src/main';
 
 /**

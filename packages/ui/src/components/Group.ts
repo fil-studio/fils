@@ -1,9 +1,9 @@
-import { EventsHandler } from "../core/Events";
+import { EventsHandler } from "../partials/Events";
 import { UI } from "../main";
 import dom, { FOLDABLE, FOLDABLE_ELEMENT, RowTypes, WRAPPER_CLASS } from "../utils/dom";
 import { Button, ButtonOptions } from "./Button";
 import { Item, ItemOptions } from "./Item";
-import { ItemFactory } from "./ItemFactory";
+import { ItemFactory } from "../partials/ItemFactory";
 
 export interface GroupParams {
 	parent?: Group | UI;

@@ -1,5 +1,5 @@
 
-import { EventsHandler } from '../core/Events';
+import { EventsHandler } from '../partials/Events';
 import dom, { RowTypes } from '../utils/dom';
 import { Group } from './Group';
 

@@ -1,9 +1,9 @@
 
 // Import CSS
 import styles from '../bundle/bundle.min.css';
-import { Group, GroupParams } from '../components/Group';
-import { AvailableItems } from '../components/ItemFactory';
-import { RegisterBaseComponents } from '../components/RegisterBaseItems';
+import { Group, GroupParams } from './Group';
+import { AvailableItems } from '../partials/ItemFactory';
+import { RegisterBaseComponents } from '../partials/RegisterBaseItems';
 import css from '../utils/css';
 import dom, { EMBED_WRAPPER_CLASS, RowTypes } from '../utils/dom';
 

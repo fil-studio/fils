@@ -1,8 +1,8 @@
-import { slugify } from "../../../utils/lib/Utils";
-import { BASE_CLASS } from "../utils/dom";
-import { InputController } from "./inputControllers/InputController";
-import { Item, ItemOptions, ItemParams } from "./Item";
-import { ItemRegisterOptions } from "./ItemFactory";
+import { BASE_CLASS } from "../../utils/dom";
+import { InputController } from "../inputControllers/InputController";
+import { ItemRegisterOptions } from "../../partials/ItemFactory";
+import { Item, ItemOptions, ItemParams } from "../Item";
+import { slugify } from "../../../../utils/lib/Utils";
 
 export class ExtendedItem extends Item {
 	extendedHTML: string;
