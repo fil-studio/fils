@@ -1,22 +1,20 @@
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;700&display=swap");
-body {
-  background: #554343;
+._ui-wrapper {
+  position: fixed;
+  top: 5px;
+  right: 5px;
+  width: 275px;
 }
-
-:root {
+._ui-wrapper {
+  --height: 40px;
+  --duration: 0.2s;
+  --timing-function: linear;
   --accent-color: #2871C7;
   --bg-0: #303030;
   --bg-1: #191919;
   --color-0: #CCCCCC;
   --color-1: #999999;
   --color-2: #666666;
-}
-
-._ui-wrapper {
-  position: fixed;
-  top: 5px;
-  right: 5px;
-  width: 275px;
 }
 ._ui-wrapper._ui-embed-wrapper {
   position: relative;
@@ -50,7 +48,7 @@ body {
   background-color: var(--bg-0);
   position: relative;
   width: 100%;
-  height: 40px;
+  height: var(--height);
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -61,7 +59,7 @@ body {
   padding: 8px 10px;
   position: relative;
   width: 100%;
-  min-height: 40px;
+  min-height: var(--height);
   border: none;
   display: flex;
   justify-content: space-between;
@@ -94,13 +92,17 @@ body {
   align-items: center;
   padding: 8px 10px;
 }
+._ui-wrapper ._ui-foldable {
+  transition-duration: var(--duration);
+  transition-timing-function: var(--timing-function);
+}
 ._ui-wrapper ._ui-foldable > header {
   cursor: pointer;
 }
-._ui-wrapper ._ui-foldable > div {
+._ui-wrapper ._ui-foldable ._ui-foldable-el {
   overflow: hidden;
-  transition-duration: 0.4s;
-  transition-timing-function: cubic-bezier(0.29, 0.86, 0.97, 0.8);
+  transition-duration: inherit;
+  transition-timing-function: inherit;
   transition-property: height;
 }
 

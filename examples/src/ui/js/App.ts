@@ -44,34 +44,39 @@ export class App {
 			}
 		});
 
+		const group = this.ui.addGroup({
+			title: 'Group Test',
+		});
+		// const group = this.ui;
+
 		/**
 		 * Object
 		 * Key
 		 * Options
 		 */
-		this.ui.add(obj, 'colorTest', {
+		group.add(obj, 'colorTest', {
 			title: 'Color Test',
 			view: 'color'
 		});
-		this.ui.add(obj, 'booleanTest', {
+		group.add(obj, 'booleanTest', {
 			title: 'Boolean Test',
 			view: 'test'
 		});
-		this.ui.add(obj, 'booleanTest', {
+		group.add(obj, 'booleanTest', {
 			title: 'Boolean Test',
 			view: 'test2'
 		});
-		this.ui.addItem(obj, 'stringTest', {
+		group.addItem(obj, 'stringTest', {
 			title: 'String Test'
 		});
-		this.ui.add(obj, 'numberTest', {
+		group.add(obj, 'numberTest', {
 			title: 'Number Test'
 		});
-		this.ui.add(obj, 'textureTest', {
+		group.add(obj, 'textureTest', {
 			title: 'Texture Test',
 			view: 'texture'
 		});
-		this.ui.add(obj, 'materialTest', {
+		group.add(obj, 'materialTest', {
 			title: 'Material Test',
 			view: 'material'
 		});

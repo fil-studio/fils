@@ -1,8 +1,9 @@
 export const BASE_CLASS = '_ui'
 export const VERTICAL_ROW = '_ui-vertical-row'
 export const FOLDABLE = '_ui-foldable'
+export const FOLDABLE_ELEMENT = '_ui-foldable-el'
 
-const WRAPPER_CLASS = `${BASE_CLASS}-wrapper`;
+export const WRAPPER_CLASS = `${BASE_CLASS}-wrapper`;
 export const EMBED_WRAPPER_CLASS = `${BASE_CLASS}-embed-wrapper`;
 
 export enum RowTypes {

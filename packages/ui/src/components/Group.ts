@@ -1,6 +1,6 @@
 import { EventsHandler } from "../core/Events";
 import { UI } from "../main";
-import dom, { FOLDABLE, RowTypes } from "../utils/dom";
+import dom, { FOLDABLE, FOLDABLE_ELEMENT, RowTypes, WRAPPER_CLASS } from "../utils/dom";
 import { Button, ButtonOptions } from "./Button";
 import { Item, ItemOptions } from "./Item";
 import { ItemFactory } from "./ItemFactory";
@@ -33,11 +33,14 @@ export class Group extends EventsHandler implements HasChildren {
 
 	folded: boolean;
 	foldable: boolean;
+	foldableWrapper: HTMLElement;
+	height: number = 0;
+	timer: NodeJS.Timeout = null;
 
 	constructor({
 		parent,
 		title,
-		folded = true,
+		folded = false,
 		foldable = true
 	}: GroupParams) {
 		super(parent);
@@ -58,36 +61,39 @@ export class Group extends EventsHandler implements HasChildren {
 		this.folded = foldable ? folded : false;
 		this.foldable = foldable;
 		this.addFoldListeners();
-		this.foldHandler();
-
-
 	}
 
 	addFoldListeners(){
 		if(!this.foldable) return;
 
 		this.dom.classList.add(FOLDABLE);
-
 		const header = this.dom.querySelector('header');
-		header.style.cursor = 'pointer';
+
+		this.foldableWrapper = document.createElement('div');
+		this.foldableWrapper.classList.add(FOLDABLE_ELEMENT);
+		this.dom.appendChild(this.foldableWrapper);
+		this.foldableWrapper.appendChild(this.contentWrapper);
+
 		header.addEventListener('click', () => {
 			this.folded = !this.folded;
-			this.foldHandler();
+			this.onFold();
 		});
-
-		window.addEventListener('resize', () => {
-			this.foldHandler();
-		});
-
 	}
 
-	foldHandler(){
+	onFold(){
 		if(!this.foldable) return;
-		this.contentWrapper.style.height = 'auto';
-		const r = this.contentWrapper.getBoundingClientRect();
-		this.contentWrapper.style.setProperty('--ui-height', `${r.height}px`);
-		if(this.folded) this.contentWrapper.style.height = '0px';
-		else this.contentWrapper.style.height = 'var(--ui-height)';
+		const h = this.contentWrapper.getBoundingClientRect().height;
+
+		this.foldableWrapper.style.height = this.folded ? `0px` : `${h}px`;
+
+		if(this.timer) clearTimeout(this.timer);
+
+		if(!this.folded) {
+			const d = parseFloat(getComputedStyle(this.foldableWrapper).transitionDuration) * 1000;
+			this.timer = setTimeout(() => {
+				this.foldableWrapper.style.height = 'auto';
+			}, d);
+		}
 	}
 
 	/**
@@ -97,7 +103,6 @@ export class Group extends EventsHandler implements HasChildren {
 		this.children.push(child);
 		this.addChildrenListener(child);
 		this.contentWrapper.appendChild(child.dom);
-		this.foldHandler();
 	}
 
 	destroy(): void {

@@ -1,11 +1,14 @@
 ._ui-foldable {
+	transition-duration: var(--duration);
+	transition-timing-function: var(--timing-function);
+
 	> header {
 		cursor: pointer;
 	}
-	> div {
+	._ui-foldable-el {
 		overflow: hidden;
-		transition-duration: $ui_transition-duration;
-		transition-timing-function: $ui_transition-timing-function;
+		transition-duration: inherit;
+		transition-timing-function: inherit;
 		transition-property: height;
 	}
 }

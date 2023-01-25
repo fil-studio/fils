@@ -11,7 +11,7 @@ header {
 
 	position: relative;
 	width: 100%;
-	height: $fil__height;
+	height: var(--height);
 
 	display: flex;
 	justify-content: flex-start;
@@ -26,7 +26,7 @@ fieldset {
 	padding: 8px 10px;
 	position: relative;
 	width: 100%;
-	min-height: $fil__height;
+	min-height: var(--height);
 
 	border: none;
 

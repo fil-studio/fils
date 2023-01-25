@@ -2,18 +2,11 @@
 
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;700&display=swap');
 
-$fil__border-radius: 8px;
-
-$fil__separation: 2px;
-
-$fil__height: 40px;
-
-$ui_transition-duration: 0.4s;
-$ui_transition-timing-function: cubic-bezier(.29, .86, .97, .8);
-
-@import "./partials/colors";
 
 ._ui-wrapper {
+
+	@import "./partials/vars";
+
 	position: fixed;
 	top: 5px;
 	right: 5px;
