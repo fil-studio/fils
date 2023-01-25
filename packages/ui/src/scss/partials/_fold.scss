@@ -1,0 +1,11 @@
+._ui-foldable {
+	> header {
+		cursor: pointer;
+	}
+	> div {
+		overflow: hidden;
+		transition-duration: $ui_transition-duration;
+		transition-timing-function: $ui_transition-timing-function;
+		transition-property: height;
+	}
+}

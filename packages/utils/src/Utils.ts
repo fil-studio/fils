@@ -1,6 +1,6 @@
 /*
  * Utils
- * 
+ *
  */
 
 export function el (type:string, className?:string, parent?:HTMLElement):HTMLElement {
@@ -75,7 +75,7 @@ export function isDesktop():boolean {
 }
 
 export function isTouchDevice ():boolean {
-	return ( 'ontouchstart' in window ) || ( navigator.maxTouchPoints > 0 ); 
+	return ( 'ontouchstart' in window ) || ( navigator.maxTouchPoints > 0 );
 }
 
 export function hasGetUserMedia():boolean {
@@ -84,6 +84,15 @@ export function hasGetUserMedia():boolean {
 
 export function copyToClipboard(str:string):void {
 	if(navigator.clipboard && navigator.clipboard.writeText){
-		navigator.clipboard.writeText(str) 
+		navigator.clipboard.writeText(str)
 	}
+}
+
+export function slugify(str: string): string {
+	return str
+		.toLowerCase()
+		.replace(/[^a-z0-9-]/g, '-')
+		.replace(/-+/g, '-')
+		.replace(/^-+/, '')
+		.replace(/-+$/, '');
 }

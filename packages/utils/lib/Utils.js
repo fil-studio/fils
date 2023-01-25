@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.copyToClipboard = exports.hasGetUserMedia = exports.isTouchDevice = exports.isDesktop = exports.getIOSVersion = exports.isIpad = exports.isIphone = exports.getAndroidVersion = exports.isSafari = exports.isBrowser = exports.isMobile = exports.getDocumentHeight = exports.webgl = exports.webgl2 = exports.el = void 0;
+exports.slugify = exports.copyToClipboard = exports.hasGetUserMedia = exports.isTouchDevice = exports.isDesktop = exports.getIOSVersion = exports.isIpad = exports.isIphone = exports.getAndroidVersion = exports.isSafari = exports.isBrowser = exports.isMobile = exports.getDocumentHeight = exports.webgl = exports.webgl2 = exports.el = void 0;
 function el(type, className, parent) {
     var e = document.createElement(type);
     if (className != undefined)
@@ -86,3 +86,12 @@ function copyToClipboard(str) {
     }
 }
 exports.copyToClipboard = copyToClipboard;
+function slugify(str) {
+    return str
+        .toLowerCase()
+        .replace(/[^a-z0-9-]/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-+/, '')
+        .replace(/-+$/, '');
+}
+exports.slugify = slugify;
