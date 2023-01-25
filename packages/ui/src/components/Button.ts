@@ -3,7 +3,7 @@ import dom, { RowTypes } from "../utils/dom";
 
 export interface ButtonOptions {
 	title?: string;
-	callback?: Function;
+	onChangeCallback?: Function;
 }
 
 export class Button extends EventsHandler {
@@ -12,12 +12,14 @@ export class Button extends EventsHandler {
 	dom: HTMLElement;
 	button: HTMLButtonElement;
 	depth: number;
-	callback: Function;
+	onChangeCallback: Function;
 
-	constructor(parent, { title, callback }: ButtonOptions = {}) {
+	constructor(parent, { title, onChangeCallback }: ButtonOptions = {}) {
 		super(parent);
 
-		this.callback = callback || function(){};
+		this.onChangeCallback = onChangeCallback || function(e){
+			console.log('Button - onChangeCallback:', e);
+		};
 
 		this.depth = parent.depth + 1;
 
@@ -33,7 +35,7 @@ export class Button extends EventsHandler {
 
 	private addEventListeners(){
 		this.button.addEventListener('click', (e) => {
-			this.callback(e);
+			this.onChangeCallback(e);
 			this.__onChange();
 		});
 	}

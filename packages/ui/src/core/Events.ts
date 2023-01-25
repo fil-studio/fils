@@ -37,8 +37,8 @@ export class EventsHandler extends EventTarget {
 	 */
 	// Propagator
 	protected __onChange(e?: CustomEvent): void {
-		this.onChange(e);
 		let event = new CustomEvent("onChange");
+		this.onChange(e ? e : event);
 		this.dispatchEvent(event);
 	}
 	// Receiver

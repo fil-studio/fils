@@ -24,7 +24,7 @@ export class UI extends Group {
 	constructor({
 		title,
 		embed,
-		onChangeCallback = () => {}
+		onChangeCallback
 	}: UIParams) {
 		super({...arguments[0]});
 
@@ -49,10 +49,12 @@ export class UI extends Group {
 		 * onChangeCallback is called when a value is changed
 		 * todo - everything needs a callback
 		 */
-		this.onChangeCallback = onChangeCallback ? onChangeCallback : (e) => {};
+		this.onChangeCallback = onChangeCallback ? onChangeCallback : function(e?:CustomEvent){
+			console.log('UI onChangeCallback', e);
+		};
 	}
 
-	onChange(e?: CustomEvent<any>): void {
+	onChange(e?: CustomEvent): void {
 		this.onChangeCallback(e);
 	}
 

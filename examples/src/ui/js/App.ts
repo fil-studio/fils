@@ -39,9 +39,6 @@ export class App {
 
 		this.ui = new UI({
 			title: 'UI',
-			onChangeCallback: (e) => {
-				console.log('Callback', e);
-			}
 		});
 
 		const group = this.ui.addGroup({
@@ -70,7 +67,7 @@ export class App {
 			title: 'String Test'
 		});
 		group.add(obj, 'numberTest', {
-			title: 'Number Test'
+			title: 'Number Test',
 		});
 		group.add(obj, 'textureTest', {
 			title: 'Texture Test',
@@ -84,9 +81,6 @@ export class App {
 
 		this.ui.addButton({
 			title: 'Button Test',
-			callback: () => {
-				console.log('Button pressed');
-			}
 		});
 
 
