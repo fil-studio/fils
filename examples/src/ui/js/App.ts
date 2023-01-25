@@ -17,7 +17,8 @@ export class App {
 			stringTest: 'Test',
 			numberTest: 1,
 			numberTestFloat: 0.5,
-			textureTest: 'asdapewoiewitureoiwoie09013oiasd'
+			textureTest: 'asdapewoiewitureoiwoie09013oiasd',
+			materialTest: 'asdapewoiewitureoiwoie09013oiasd'
 		}
 
 		let obj1 = {
@@ -69,6 +70,10 @@ export class App {
 		this.ui.add(obj, 'textureTest', {
 			title: 'Texture Test',
 			view: 'texture'
+		});
+		this.ui.add(obj, 'materialTest', {
+			title: 'Material Test',
+			view: 'material'
 		});
 
 

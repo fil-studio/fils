@@ -2,6 +2,7 @@ import { ItemClassRegister, ItemRegister } from "./ItemFactory";
 import { ColorPicker } from "./inputControllers/ColorPicker";
 import { TextureItem } from "./customItems/TexureItem";
 import { TextureList } from "./inputControllers/TextureList";
+import { MaterialItem } from "./customItems/MaterialItem";
 
 
 export const RegisterBaseComponents = () => {
@@ -123,6 +124,13 @@ export const RegisterBaseComponents = () => {
 		type: 'texture',
 		item: TextureItem,
 		inputController: TextureList
+	})
+
+	ItemClassRegister({
+		view: 'material',
+		type: 'material',
+		item: MaterialItem,
+		// inputController: TextureList
 	})
 
 }

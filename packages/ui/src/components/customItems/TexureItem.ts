@@ -1,18 +1,20 @@
-import dom, { BASE_CLASS, VERTICAL_ROW } from "../../utils/dom";
+import dom, { VERTICAL_ROW } from "../../utils/dom";
+import { CustomExtendedItem } from "../CustomExtendedItem";
 import { InputController } from "../inputControllers/InputController";
-import { Item, ItemOptions, ItemParams } from "../Item";
+import { ItemOptions, ItemParams } from "../Item";
 import { ItemClassRegisterOptions } from "../ItemFactory";
 
-export class TextureItem extends Item {
+export class TextureItem extends CustomExtendedItem {
 	emptyButton: HTMLButtonElement;
 	inputController: InputController;
 
+	test: string = 'empty string test';
+	test2: number = 15;
+
 	constructor(registerOptions: ItemClassRegisterOptions, itemParams: ItemParams, options?: ItemOptions) {
-		super(itemParams, options);
+		super(registerOptions, itemParams, options);
 
-		this.dom.classList.add(`${BASE_CLASS}-texture`);
 		this.dom.classList.add(VERTICAL_ROW);
-
 
 		this.emptyButton = dom.createButton('Add');
 		this.inputWrapper.appendChild(this.emptyButton);

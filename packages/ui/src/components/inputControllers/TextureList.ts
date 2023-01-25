@@ -25,6 +25,15 @@ export class TextureList extends InputController {
 			embed: this.dom,
 			title: 'Texture List',
 		});
+		const g1 = this.ui.addGroup({
+			title: 'Group 1',
+		})
+		g1.add(this.parent, 'test', {
+			view: 'string',
+		})
+		g1.add(this.parent, 'test2', {
+			view: 'number',
+		})
 	}
 
 	destroy(): void {

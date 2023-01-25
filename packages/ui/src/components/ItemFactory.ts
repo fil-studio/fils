@@ -1,4 +1,5 @@
 import check from "../utils/check";
+import { CustomExtendedItem } from "./CustomExtendedItem";
 import { ExtendedItem } from "./ExtendedItem";
 import { InputController } from "./inputControllers/InputController";
 import { Item, ItemOptions, ItemParams } from "./Item";
@@ -27,7 +28,7 @@ export interface ItemRegisterOptions {
 export interface ItemClassRegisterOptions extends ItemRegisterOptions {
 	view: string,
 	type: string,
-	item: typeof Item,
+	item: typeof CustomExtendedItem,
 	inputController?: typeof InputController,
 }
 
@@ -52,7 +53,7 @@ export const ItemRegister = (registerOptions:ItemRegisterOptions) => {
 export const ItemClassRegister = (registerOptions:ItemClassRegisterOptions) => {
 
 		const createItem = (itemParams: ItemParams, options: ItemOptions) => {
-			return new registerOptions.item(registerOptions, itemParams, options) as Item;
+			return new registerOptions.item(registerOptions, itemParams, options) as CustomExtendedItem;
 		}
 
 		const getCSS = () => {
