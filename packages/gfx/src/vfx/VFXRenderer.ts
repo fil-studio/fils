@@ -1,4 +1,4 @@
-import { DepthFormat, DepthTexture, FloatType, OrthographicCamera, PerspectiveCamera, RawShaderMaterial, RGBAFormat, Scene, ShaderMaterial, UniformsGroup, UnsignedByteType, Vector2, WebGLMultipleRenderTargets, WebGLRenderer, WebGLRenderTarget } from "three";
+import { DepthFormat, DepthTexture, FloatType, OrthographicCamera, PerspectiveCamera, RawShaderMaterial, RGBAFormat, Scene, ShaderMaterial, UniformsGroup, UnsignedByteType, WebGLMultipleRenderTargets, WebGLRenderer, WebGLRenderTarget } from "three";
 import { BlurPass, BlurSettings, RTUtils } from "../main";
 
 /**
@@ -25,6 +25,7 @@ const COMP = new RawShaderMaterial({
     vertexShader: vert,
     fragmentShader: frag,
     uniforms: {
+        tBackground: {value: null},
         tScene: {value: null},
         tGlow: {value: null},
         exposure: {value: 1},
@@ -61,6 +62,8 @@ export class VFXRenderer {
     exposure:number = COMP.uniforms.exposure.value;
     gamma:number =  COMP.uniforms.gamma.value;
     shader:ShaderMaterial = COMP.clone();
+    bgScene:Scene;
+    bgRT:WebGLRenderTarget;
 
     constructor(renderer:WebGLRenderer, width:number, height:number, settings?:VFXCompSettings) {
         this.rnd = renderer;
@@ -88,7 +91,7 @@ export class VFXRenderer {
 
         this.glow = new BlurPass(this.sceneRT.texture[1], w, h, bs);
 
-        if(settings && settings.exposure) {
+        if(settings && settings.exposure !== undefined) {
             this.exposure = settings.exposure;
         }
 
@@ -106,6 +109,10 @@ export class VFXRenderer {
                 }
             }
         }
+
+        // BG stuff
+        this.bgRT = new WebGLRenderTarget(width, height);
+        this.bgScene = new Scene();
     }
 
     get depthTexture():DepthTexture {
@@ -117,6 +124,7 @@ export class VFXRenderer {
         const h = height * window.devicePixelRatio;
 
         this.sceneRT.setSize(w, h);
+        this.bgRT.setSize(w, h);
         this.glow.setSize(w, h);
     }
 
@@ -133,9 +141,25 @@ export class VFXRenderer {
 
     render(scene:Scene, camera:PerspectiveCamera|OrthographicCamera, target:WebGLRenderTarget=null) {
         this.rnd.autoClear = true;
-        
+
+        const bg = scene.background;
+        scene.background = null;
+
+        if(bg) {
+            // render background
+            this.rnd.setRenderTarget(this.bgRT);
+            this.bgScene.background = bg;
+            this.rnd.render(this.bgScene, camera);
+            this.rnd.setRenderTarget(null);
+            this.shader.uniforms.tBackground.value = this.bgRT.texture;
+        } else {
+            this.shader.uniforms.tBackground.value = null;
+        }
+
         this.rnd.setRenderTarget(this.sceneRT);
         this.rnd.render(scene, camera);
+
+        scene.background = bg;
 
         // glow
         this.glow.renderInternal(this.rnd);

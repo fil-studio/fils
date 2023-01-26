@@ -101,7 +101,7 @@ export class App extends WebGLSketch {
 			window.innerWidth,
 			window.innerHeight,
 			{
-				exposure: 2,
+				exposure: .1,
 				gamma: 1.8,
 				samples: 4,
 				glowSettings: {
@@ -137,7 +137,7 @@ export class App extends WebGLSketch {
 			this.customRenderer,
 			'showScene'
 		);
-		gui.add(this.customRenderer, 'exposure', 1, 5, .1);
+		gui.add(this.customRenderer, 'exposure', 0, 1, .1);
 		gui.add(this.customRenderer, 'gamma', 1, 3.2, .1);
 
 		const blur = gui.addFolder('Blur Options');

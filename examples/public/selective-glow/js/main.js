@@ -12988,7 +12988,7 @@ oGlow = vec4(0.);`);
   var blur_default;
   var init_blur = __esm({
     "../packages/gfx/src/glsl/vfx/blur.frag"() {
-      blur_default = "#version 100\nprecision highp float;\n\n/*\n * Algorithms By Matt DesLauriers: https://github.com/Jam3/glsl-fast-gaussian-blur\n */\n\nvec4 blur5(sampler2D image, vec2 uv, vec2 resolution, vec2 direction) {\n	vec4 color = vec4(0.0);\n	vec2 off1 = vec2(1.3333333333333333) * direction;\n	color += texture2D(image, uv) * 0.29411764705882354;\n	color += texture2D(image, uv + (off1 / resolution)) * 0.35294117647058826;\n	color += texture2D(image, uv - (off1 / resolution)) * 0.35294117647058826;\n	return color; \n}\n\nvec4 blur9(sampler2D image, vec2 uv, vec2 resolution, vec2 direction) {\n	vec4 color = vec4(0.0);\n	vec2 off1 = vec2(1.3846153846) * direction;\n	vec2 off2 = vec2(3.2307692308) * direction;\n	color += texture2D(image, uv) * 0.2270270270;\n	color += texture2D(image, uv + (off1 / resolution)) * 0.3162162162;\n	color += texture2D(image, uv - (off1 / resolution)) * 0.3162162162;\n	color += texture2D(image, uv + (off2 / resolution)) * 0.0702702703;\n	color += texture2D(image, uv - (off2 / resolution)) * 0.0702702703;\n	return color;\n}\n\nvec4 blur13(sampler2D image, vec2 uv, vec2 resolution, vec2 direction) {\n	vec4 color = vec4(0.0);\n	vec2 off1 = vec2(1.411764705882353) * direction;\n	vec2 off2 = vec2(3.2941176470588234) * direction;\n	vec2 off3 = vec2(5.176470588235294) * direction;\n	color += texture2D(image, uv) * 0.1964825501511404;\n	color += texture2D(image, uv + (off1 / resolution)) * 0.2969069646728344;\n	color += texture2D(image, uv - (off1 / resolution)) * 0.2969069646728344;\n	color += texture2D(image, uv + (off2 / resolution)) * 0.09447039785044732;\n	color += texture2D(image, uv - (off2 / resolution)) * 0.09447039785044732;\n	color += texture2D(image, uv + (off3 / resolution)) * 0.010381362401148057;\n	color += texture2D(image, uv - (off3 / resolution)) * 0.010381362401148057;\n	return color;\n}\n\nuniform vec2 resolution;\nuniform vec2 direction;\nuniform sampler2D tMap;\nuniform float scale;\nuniform int mode;\nuniform bool isGlow;\n\nvarying vec2 vUv;\n\nconst float threshold = .64;\n\nvec4 blur() {\n	if(mode == 0) return blur5(tMap, vUv, resolution*scale, direction);\n	else if(mode == 1) return blur9(tMap, vUv, resolution*scale, direction);\n	else return blur13(tMap, vUv, resolution*scale, direction);\n}\n\nvoid main () {\n	vec4 b = blur();\n\n	if(isGlow) {\n		if(length(b.rgb) < threshold) discard;\n	}\n\n	gl_FragColor = b;\n}";
+      blur_default = "#version 100\nprecision highp float;\n\n/*\n * Algorithms By Matt DesLauriers: https://github.com/Jam3/glsl-fast-gaussian-blur\n */\n\nvec4 blur5(sampler2D image, vec2 uv, vec2 resolution, vec2 direction) {\n	vec4 color = vec4(0.0);\n	vec2 off1 = vec2(1.3333333333333333) * direction;\n	color += texture2D(image, uv) * 0.29411764705882354;\n	color += texture2D(image, uv + (off1 / resolution)) * 0.35294117647058826;\n	color += texture2D(image, uv - (off1 / resolution)) * 0.35294117647058826;\n	return color; \n}\n\nvec4 blur9(sampler2D image, vec2 uv, vec2 resolution, vec2 direction) {\n	vec4 color = vec4(0.0);\n	vec2 off1 = vec2(1.3846153846) * direction;\n	vec2 off2 = vec2(3.2307692308) * direction;\n	color += texture2D(image, uv) * 0.2270270270;\n	color += texture2D(image, uv + (off1 / resolution)) * 0.3162162162;\n	color += texture2D(image, uv - (off1 / resolution)) * 0.3162162162;\n	color += texture2D(image, uv + (off2 / resolution)) * 0.0702702703;\n	color += texture2D(image, uv - (off2 / resolution)) * 0.0702702703;\n	return color;\n}\n\nvec4 blur13(sampler2D image, vec2 uv, vec2 resolution, vec2 direction) {\n	vec4 color = vec4(0.0);\n	vec2 off1 = vec2(1.411764705882353) * direction;\n	vec2 off2 = vec2(3.2941176470588234) * direction;\n	vec2 off3 = vec2(5.176470588235294) * direction;\n	color += texture2D(image, uv) * 0.1964825501511404;\n	color += texture2D(image, uv + (off1 / resolution)) * 0.2969069646728344;\n	color += texture2D(image, uv - (off1 / resolution)) * 0.2969069646728344;\n	color += texture2D(image, uv + (off2 / resolution)) * 0.09447039785044732;\n	color += texture2D(image, uv - (off2 / resolution)) * 0.09447039785044732;\n	color += texture2D(image, uv + (off3 / resolution)) * 0.010381362401148057;\n	color += texture2D(image, uv - (off3 / resolution)) * 0.010381362401148057;\n	return color;\n}\n\nuniform vec2 resolution;\nuniform vec2 direction;\nuniform sampler2D tMap;\nuniform float scale;\nuniform int mode;\nuniform bool isGlow;\n\nvarying vec2 vUv;\n\nconst float threshold = .1;\n\nvec4 blur() {\n	if(mode == 0) return blur5(tMap, vUv, resolution*scale, direction);\n	else if(mode == 1) return blur9(tMap, vUv, resolution*scale, direction);\n	else return blur13(tMap, vUv, resolution*scale, direction);\n}\n\nvoid main () {\n	vec4 b = blur();\n\n	/* if(isGlow) {\n		if(length(b.rgb) < threshold) discard;\n	} */\n\n	gl_FragColor = b;\n}";
     }
   });
 
@@ -13244,7 +13244,7 @@ oGlow = vec4(0.);`);
   var comp_default;
   var init_comp = __esm({
     "../packages/gfx/src/glsl/vfx/comp.frag"() {
-      comp_default = "precision highp float;\n\nvarying vec2 vUv;\nuniform sampler2D tScene;\nuniform sampler2D tGlow;\nuniform float exposure;\nuniform float gamma;\n\nuniform bool renderGlow;\nuniform bool renderScene;\n\nvoid main () {\n    vec4 scene = vec4(0.0);\n    if(renderScene) {\n        scene = texture2D(tScene, vUv);\n    }\n    vec4 glow = vec4(0.0);\n    if(renderGlow) {\n        glow = texture2D(tGlow, vUv);\n        // glow.rgb -= vec3(.2);\n    }\n    \n    float glowA = length(glow.rgb);\n\n    scene.rgb += glow.rgb * glowA;\n    \n    // tone mapping\n    vec3 result = vec3(1.0) - exp(-scene.rgb * exposure);\n    // also gamma correct while we're at it       \n    result = pow(result, vec3(1.0 / gamma));\n\n    gl_FragColor = vec4(result, scene.a + glowA);\n    // gl_FragColor = vec4(scene.rgb, scene.a + glow.a);\n    // gl_FragColor = glow;\n    // gl_FragColor = scene;\n}";
+      comp_default = "precision highp float;\n\nvarying vec2 vUv;\nuniform sampler2D tBackground;\nuniform sampler2D tScene;\nuniform sampler2D tGlow;\nuniform float exposure;\nuniform float gamma;\n\nuniform bool renderGlow;\nuniform bool renderScene;\n\nvoid main () {\n    vec4 bg = texture2D(tBackground, vUv);\n    vec4 scene;\n    if(renderScene) {\n        scene = texture2D(tScene, vUv);\n    }\n    vec4 glow = vec4(0.0);\n    if(renderGlow) {\n        glow = texture2D(tGlow, vUv);\n        // glow.rgb -= vec3(.2);\n    }\n    \n    float glowA = glow.a;\n\n    scene = mix(bg, scene, scene.a);\n\n    scene.rgb += glow.rgb;\n\n    // scene = mix(bg, scene, scene.a + glowA);\n    \n    // tone mapping\n    vec3 result = scene.rgb * pow(2.0, exposure);\n    // also gamma correct while we're at it       \n    result = pow(result, vec3(1.0 / gamma));\n\n    gl_FragColor = vec4(result, scene.a + glowA);\n    // gl_FragColor = vec4(scene.rgb, scene.a + glow.a);\n    // gl_FragColor = glow;\n    // gl_FragColor = scene;\n}";
     }
   });
 
@@ -13260,6 +13260,7 @@ oGlow = vec4(0.);`);
         vertexShader: fbo_default2,
         fragmentShader: comp_default,
         uniforms: {
+          tBackground: { value: null },
           tScene: { value: null },
           tGlow: { value: null },
           exposure: { value: 1 },
@@ -13299,7 +13300,7 @@ oGlow = vec4(0.);`);
           const bs = settings && settings.glowSettings ? settings.glowSettings : GLOW_DEFAULTS;
           bs.isGlow = true;
           this.glow = new BlurPass(this.sceneRT.texture[1], w, h2, bs);
-          if (settings && settings.exposure) {
+          if (settings && settings.exposure !== void 0) {
             this.exposure = settings.exposure;
           }
           if (settings && settings.gamma) {
@@ -13314,6 +13315,8 @@ oGlow = vec4(0.);`);
               }
             }
           }
+          this.bgRT = new import_three12.WebGLRenderTarget(width, height);
+          this.bgScene = new import_three12.Scene();
         }
         get depthTexture() {
           return this.sceneRT["depthTexture"];
@@ -13322,6 +13325,7 @@ oGlow = vec4(0.);`);
           const w = width * window.devicePixelRatio;
           const h2 = height * window.devicePixelRatio;
           this.sceneRT.setSize(w, h2);
+          this.bgRT.setSize(w, h2);
           this.glow.setSize(w, h2);
         }
         updateUniforms() {
@@ -13335,8 +13339,20 @@ oGlow = vec4(0.);`);
         }
         render(scene, camera, target = null) {
           this.rnd.autoClear = true;
+          const bg = scene.background;
+          scene.background = null;
+          if (bg) {
+            this.rnd.setRenderTarget(this.bgRT);
+            this.bgScene.background = bg;
+            this.rnd.render(this.bgScene, camera);
+            this.rnd.setRenderTarget(null);
+            this.shader.uniforms.tBackground.value = this.bgRT.texture;
+          } else {
+            this.shader.uniforms.tBackground.value = null;
+          }
           this.rnd.setRenderTarget(this.sceneRT);
           this.rnd.render(scene, camera);
+          scene.background = bg;
           this.glow.renderInternal(this.rnd);
           this.rnd.setRenderTarget(null);
           this.updateUniforms();
@@ -18852,7 +18868,7 @@ oGlow = vec4(0.);`);
             window.innerWidth,
             window.innerHeight,
             {
-              exposure: 2,
+              exposure: 0.1,
               gamma: 1.8,
               samples: 4,
               glowSettings: {
@@ -18883,7 +18899,7 @@ oGlow = vec4(0.);`);
             this.customRenderer,
             "showScene"
           );
-          gui.add(this.customRenderer, "exposure", 1, 5, 0.1);
+          gui.add(this.customRenderer, "exposure", 0, 1, 0.1);
           gui.add(this.customRenderer, "gamma", 1, 3.2, 0.1);
           const blur = gui.addFolder("Blur Options");
           blur.add(this.customRenderer.glow, "iterations", 2, 32, 1);

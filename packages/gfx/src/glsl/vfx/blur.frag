@@ -50,7 +50,7 @@ uniform bool isGlow;
 
 varying vec2 vUv;
 
-const float threshold = .64;
+const float threshold = .1;
 
 vec4 blur() {
 	if(mode == 0) return blur5(tMap, vUv, resolution*scale, direction);
@@ -61,9 +61,9 @@ vec4 blur() {
 void main () {
 	vec4 b = blur();
 
-	if(isGlow) {
+	/* if(isGlow) {
 		if(length(b.rgb) < threshold) discard;
-	}
+	} */
 
 	gl_FragColor = b;
 }

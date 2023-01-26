@@ -1,6 +1,6 @@
 // import { WebGLSketch, initMaterial, VFXRenderer, gfxShaders } from '@fils/gfx'
 // import { WebGLSketch, initMaterial, VFXRenderer, gfxShaders } from '../../../../packages/gfx/lib/main'
-import { BoxGeometry, CylinderGeometry, DirectionalLight, Mesh, MeshPhongMaterial, ShaderChunk, SphereGeometry, TorusKnotGeometry } from 'three';
+import { BoxGeometry, CylinderGeometry, DirectionalLight, EquirectangularReflectionMapping, Mesh, MeshPhongMaterial, ShaderChunk, SphereGeometry, TorusKnotGeometry, WebGLRenderTarget } from 'three';
 import { initMaterial } from '../../../../packages/gfx/src/vfx/MaterialUtils';
 import { VFXRenderer } from '../../../../packages/gfx/src/vfx/VFXRenderer';
 import { WebGLSketch, gfxShaders } from '../../../../packages/gfx';
@@ -16,18 +16,37 @@ const BALL_GEO = new SphereGeometry(1);
 const CYL_GEO = new CylinderGeometry(.1, .1, 1, 32, 8);
 const TOR_GEO = new TorusKnotGeometry(10, 2, 64, 32, 2, 3);
 
+/**
+ * VFXRenderer works best with black clear color and 0 clear alpha 
+ * if we want to render color + glow passes in one MRT.
+ * We recommend using a Scene background and leave renderer with
+ * clear color 0x000000, 0 and set the background to
+ * the scene as is done in this example. VFXRenderer will take
+ * care of compositing things correctly.
+ */
+
 export class App extends WebGLSketch {
 	customRenderer: VFXPipeline;
 	meshes: Mesh[] = [];
+	background:WebGLRenderTarget;
 
 	constructor() {
 		super(window.innerWidth, window.innerHeight, {
 			alpha: false,
 			antialias: true
 		});
-		this.renderer.setClearColor(0x666666, 1);
 		document.body.appendChild(this.domElement);
 		this.domElement.className = 'view';
+
+		this.background = new WebGLRenderTarget(1024, 512);
+		this.renderer.setClearColor(0x666666, 1);
+		this.renderer.setRenderTarget(this.background);
+		this.renderer.render(this.scene, this.camera);
+		this.renderer.setRenderTarget(null);
+		this.renderer.setClearColor(0x000000, 0);
+
+		this.background.texture.mapping = EquirectangularReflectionMapping;
+		this.scene.background = this.background.texture;
 
 		ShaderChunk['rgbSplit'] = gfxShaders.rgbSplit;
 		ShaderChunk['dithering'] = gfxShaders.dithering;
@@ -105,8 +124,8 @@ export class App extends WebGLSketch {
 			window.innerWidth,
 			window.innerHeight,
 			{
-				exposure: 1.5,
-				gamma: 1,
+				exposure: 0.1,
+				gamma: 1.2,
 				samples: 1,
 				glowSettings: {
 					scale: .5,
@@ -158,9 +177,9 @@ export class App extends WebGLSketch {
 		this.customRenderer.addPass(dof);
 		this.customRenderer.addPass(final);
 
-		dof.enabled = false;
+		/* dof.enabled = false;
 		fxaa.enabled = false;
-		final.enabled = false;
+		final.enabled = false; */
 
 		const stats = Stats();
 		document.body.appendChild(stats.domElement);
