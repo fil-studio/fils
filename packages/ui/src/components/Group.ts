@@ -90,7 +90,7 @@ export class Group extends EventsHandler {
 		setTimeout(() => {
 			if(this.folded) this.dom.classList.add(FOLDED);
 			else this.dom.classList.remove(FOLDED);
-		}, 10);
+		}, 5);
 
 		if(!this.folded) {
 			const d = parseFloat(getComputedStyle(this.foldableWrapper).transitionDuration) * 1000;
