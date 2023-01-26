@@ -1,11 +1,11 @@
-import { RawShaderMaterial, ShaderChunk, WebGLRenderer } from "three";
-import { BlurPass, BlurSettings } from '../vfx/pipeline/BlurPass';
-import { RenderPass } from '../vfx/pipeline/RenderPass';
-import { RenderComposer } from "./RenderComposer";
+import { RawShaderMaterial, ShaderChunk, WebGLRenderer, WebGLRenderTarget } from "three";
+import { BlurPass, BlurSettings } from './BlurPass';
+import { RenderPass } from './RenderPass';
 
-import vert from '../glsl/fbo.vert';
-import frag from '../glsl/vfx/dof.frag';
-import depth from '../glsl/lib/depth.glsl';
+import vert from '../../glsl/fbo.vert';
+import frag from '../../glsl/vfx/dof.frag';
+import depth from '../../glsl/lib/depth.glsl';
+import { VFXPipeline } from "../VFXPipeline";
 
 const SHADER = new RawShaderMaterial({
 	vertexShader: vert,
@@ -44,7 +44,7 @@ const DEFAULTS:DoFSettings = {
 }
 
 export class DoFPass extends RenderPass {
-	private blurPass: BlurPass;
+	blurPass: BlurPass;
 	
 	constructor(width:number, height:number, settings:DoFSettings={}) {
 		super();
@@ -67,10 +67,11 @@ export class DoFPass extends RenderPass {
 		this.blurPass.setSize(width, height);
 	}
 
-	render(renderer:WebGLRenderer, composer:RenderComposer, toScreen:boolean=false) {
+	render(renderer:WebGLRenderer, composer:VFXPipeline, target:WebGLRenderTarget=null) {
+		if(!this.enabled) return;
 		this.blurPass.source = composer.read.texture;
 		this.blurPass.renderInternal(renderer);
 		SHADER.uniforms.tBlur.value = this.blurPass.texture;
-		super.render(renderer, composer, toScreen);
+		super.render(renderer, composer, target);
 	}
 }

@@ -12950,6 +12950,730 @@ oGlow = vec4(0.);`);
     }
   });
 
+  // ../packages/gfx/src/utils/EquirectangularToCubemap.ts
+  var import_three6, GEO;
+  var init_EquirectangularToCubemap = __esm({
+    "../packages/gfx/src/utils/EquirectangularToCubemap.ts"() {
+      import_three6 = __toESM(require_three_min());
+      GEO = new import_three6.SphereGeometry(100, 64, 64);
+    }
+  });
+
+  // ../packages/gfx/src/vfx/pipeline/RenderPass.ts
+  var RenderPass;
+  var init_RenderPass = __esm({
+    "../packages/gfx/src/vfx/pipeline/RenderPass.ts"() {
+      RenderPass = class {
+        constructor() {
+          this.enabled = true;
+        }
+        render(renderer, composer, target = null) {
+          if (!this.enabled)
+            return;
+          renderer.setRenderTarget(target);
+          composer.quad.material = this.shader;
+          if (this.shader.uniforms.tInput)
+            this.shader.uniforms.tInput.value = composer.read.texture;
+          if (this.shader.uniforms.tDepth)
+            this.shader.uniforms.tDepth.value = composer.depthTexture;
+          renderer.render(composer.scene, composer.camera);
+        }
+        setSize(width, height) {
+        }
+      };
+    }
+  });
+
+  // ../packages/gfx/src/glsl/vfx/blur.frag
+  var blur_default;
+  var init_blur = __esm({
+    "../packages/gfx/src/glsl/vfx/blur.frag"() {
+      blur_default = "#version 100\nprecision highp float;\n\n/*\n * Algorithms By Matt DesLauriers: https://github.com/Jam3/glsl-fast-gaussian-blur\n */\n\nvec4 blur5(sampler2D image, vec2 uv, vec2 resolution, vec2 direction) {\n	vec4 color = vec4(0.0);\n	vec2 off1 = vec2(1.3333333333333333) * direction;\n	color += texture2D(image, uv) * 0.29411764705882354;\n	color += texture2D(image, uv + (off1 / resolution)) * 0.35294117647058826;\n	color += texture2D(image, uv - (off1 / resolution)) * 0.35294117647058826;\n	return color; \n}\n\nvec4 blur9(sampler2D image, vec2 uv, vec2 resolution, vec2 direction) {\n	vec4 color = vec4(0.0);\n	vec2 off1 = vec2(1.3846153846) * direction;\n	vec2 off2 = vec2(3.2307692308) * direction;\n	color += texture2D(image, uv) * 0.2270270270;\n	color += texture2D(image, uv + (off1 / resolution)) * 0.3162162162;\n	color += texture2D(image, uv - (off1 / resolution)) * 0.3162162162;\n	color += texture2D(image, uv + (off2 / resolution)) * 0.0702702703;\n	color += texture2D(image, uv - (off2 / resolution)) * 0.0702702703;\n	return color;\n}\n\nvec4 blur13(sampler2D image, vec2 uv, vec2 resolution, vec2 direction) {\n	vec4 color = vec4(0.0);\n	vec2 off1 = vec2(1.411764705882353) * direction;\n	vec2 off2 = vec2(3.2941176470588234) * direction;\n	vec2 off3 = vec2(5.176470588235294) * direction;\n	color += texture2D(image, uv) * 0.1964825501511404;\n	color += texture2D(image, uv + (off1 / resolution)) * 0.2969069646728344;\n	color += texture2D(image, uv - (off1 / resolution)) * 0.2969069646728344;\n	color += texture2D(image, uv + (off2 / resolution)) * 0.09447039785044732;\n	color += texture2D(image, uv - (off2 / resolution)) * 0.09447039785044732;\n	color += texture2D(image, uv + (off3 / resolution)) * 0.010381362401148057;\n	color += texture2D(image, uv - (off3 / resolution)) * 0.010381362401148057;\n	return color;\n}\n\nuniform vec2 resolution;\nuniform vec2 direction;\nuniform sampler2D tMap;\nuniform float scale;\nuniform int mode;\nuniform bool isGlow;\n\nvarying vec2 vUv;\n\nconst float threshold = .64;\n\nvec4 blur() {\n	if(mode == 0) return blur5(tMap, vUv, resolution*scale, direction);\n	else if(mode == 1) return blur9(tMap, vUv, resolution*scale, direction);\n	else return blur13(tMap, vUv, resolution*scale, direction);\n}\n\nvoid main () {\n	vec4 b = blur();\n\n	if(isGlow) {\n		if(length(b.rgb) < threshold) discard;\n	}\n\n	gl_FragColor = b;\n}";
+    }
+  });
+
+  // ../packages/gfx/src/vfx/pipeline/BlurPass.ts
+  var import_three7, BlurDefaults, BlurPass;
+  var init_BlurPass = __esm({
+    "../packages/gfx/src/vfx/pipeline/BlurPass.ts"() {
+      import_three7 = __toESM(require_three_min());
+      init_RenderPass();
+      init_fbo2();
+      init_blur();
+      BlurDefaults = {
+        scale: 1,
+        radius: 1,
+        iterations: 4,
+        quality: 0
+      };
+      BlurPass = class extends RenderPass {
+        constructor(src, width, height, settings = BlurDefaults) {
+          super();
+          this.radius = 2;
+          this.iterations = 4;
+          this.quality = 0;
+          this.source = src;
+          const scale = settings.scale || BlurDefaults.scale;
+          const radius = settings.radius || BlurDefaults.radius;
+          const iterations = settings.iterations || BlurDefaults.iterations;
+          const quality = settings.quality || BlurDefaults.quality;
+          this.read = new import_three7.WebGLRenderTarget(width, height);
+          this.write = this.read.clone();
+          this.radius = radius;
+          this.iterations = iterations;
+          this.scale = scale;
+          this.quality = quality;
+          this.shader = new import_three7.RawShaderMaterial({
+            vertexShader: fbo_default2,
+            fragmentShader: blur_default,
+            uniforms: {
+              resolution: {
+                value: new import_three7.Vector2(width, height)
+              },
+              direction: {
+                value: new import_three7.Vector2()
+              },
+              scale: {
+                value: scale
+              },
+              tMap: {
+                value: null
+              },
+              mode: {
+                value: quality
+              },
+              isGlow: {
+                value: settings.isGlow === true
+              }
+            }
+          });
+          this.scene = new import_three7.Scene();
+          const w = scale * width / 2;
+          const h2 = scale * height / 2;
+          this.camera = new import_three7.OrthographicCamera(-w, w, h2, -h2, 0, 100);
+          this.camera.position.z = 1;
+          this.scene.add(this.camera);
+          this.quad = new import_three7.Mesh(
+            new import_three7.PlaneGeometry(1, 1),
+            this.shader
+          );
+          this.quad.scale.set(width * scale, height * scale, 1);
+          this.scene.add(this.quad);
+        }
+        swapBuffers() {
+          const tmp2 = this.write;
+          this.write = this.read;
+          this.read = tmp2;
+        }
+        setSize(width, height) {
+          this.read.setSize(width * this.scale, height * this.scale);
+          this.write.setSize(width * this.scale, height * this.scale);
+          const w = this.scale * width / 2;
+          const h2 = this.scale * height / 2;
+          this.camera.left = -w;
+          this.camera.right = w;
+          this.camera.top = h2;
+          this.camera.bottom = -h2;
+          this.camera.updateProjectionMatrix();
+          this.quad.scale.set(width * this.scale, height * this.scale, 1);
+          this.shader.uniforms.resolution.value.set(width, height);
+        }
+        blurPass(renderer, src, dst, dx, dy) {
+          renderer.setRenderTarget(dst);
+          this.shader.uniforms.mode.value = this.quality;
+          this.shader.uniforms.direction.value.set(dx, dy);
+          this.shader.uniforms.tMap.value = src;
+          renderer.render(this.scene, this.camera);
+        }
+        render(renderer, composer, target = null) {
+          this.blurPass(renderer, this.source != null ? this.source : composer.read.texture, this.write, this.radius, 0);
+          this.swapBuffers();
+          for (let i3 = 1; i3 < this.iterations - 1; i3++) {
+            this.blurPass(renderer, this.read.texture, this.write, i3 % 2 == 0 ? this.radius : 0, i3 % 2 == 0 ? 0 : this.radius);
+            this.swapBuffers();
+          }
+          const i2 = this.iterations - 1;
+          this.blurPass(renderer, this.read.texture, target, i2 % 2 == 0 ? this.radius : 0, i2 % 2 == 0 ? 0 : this.radius);
+        }
+        renderInternal(renderer) {
+          if (this.source == null)
+            return console.warn("Internal rendering needs a source texture!");
+          this.blurPass(renderer, this.source, this.write, this.radius, 0);
+          this.swapBuffers();
+          for (let i2 = 1; i2 < this.iterations; i2++) {
+            this.blurPass(renderer, this.read.texture, this.write, i2 % 2 == 0 ? this.radius : 0, i2 % 2 == 0 ? 0 : this.radius);
+            this.swapBuffers();
+          }
+        }
+        get texture() {
+          return this.read.texture;
+        }
+      };
+    }
+  });
+
+  // ../packages/gfx/src/glsl/vfx/final.frag
+  var final_default;
+  var init_final = __esm({
+    "../packages/gfx/src/glsl/vfx/final.frag"() {
+      final_default = "precision highp float;\n\nvarying vec2 vUv;\nuniform sampler2D tInput;\n\nuniform float chromatic_aberration;\nuniform bool enableCA;\n\nuniform float dither;\nuniform bool enableDithering;\n\nuniform bool enableVignette;\nuniform float vIntensity;\n\n#include <dithering>\n\nfloat vignette(vec2 texCoords, float strength) {\n    vec2 uv = texCoords;\n\n    uv *=  1.0 - uv.yx;   //vec2(1.0)- uv.yx; -> 1.-u.yx; Thanks FabriceNeyret !\n\n    float vig = uv.x*uv.y * 15.0; // multiply with sth for intensity\n\n    vig = pow(vig, strength);\n\n    return vig;\n}\n\nvec4 ca (sampler2D tex, vec2 texCoord, float ca_amount) {\n    vec2 red_offset = vec2(ca_amount, 0.0);\n    vec2 green_offset = vec2(0.0, 0.0);\n    vec2 blue_offset = vec2(-ca_amount, 0.0);\n\n    vec4 red_color = texture2D(tex, texCoord + red_offset);\n    vec4 green_color = texture2D(tex, texCoord + green_offset);\n    vec4 blue_color = texture2D(tex, texCoord + blue_offset);\n\n    return vec4(red_color.r, green_color.g, blue_color.b, 1.0);\n}\n\nvoid main () {\n    vec4 color;\n    if(enableCA) {\n         color = ca(tInput, vUv, chromatic_aberration);\n    } else {\n        color = texture2D(tInput, vUv);\n    }\n    if(enableDithering) {\n        color += dithering(vUv, dither);\n    }\n\n    if(enableVignette) {\n        color.rgb *= vignette(vUv, vIntensity);\n    }\n    gl_FragColor = color;\n}";
+    }
+  });
+
+  // ../packages/gfx/src/vfx/pipeline/FinalPass.ts
+  var import_three8, SHADER;
+  var init_FinalPass = __esm({
+    "../packages/gfx/src/vfx/pipeline/FinalPass.ts"() {
+      init_fbo2();
+      init_final();
+      init_RenderPass();
+      import_three8 = __toESM(require_three_min());
+      SHADER = new import_three8.RawShaderMaterial({
+        vertexShader: fbo_default2,
+        fragmentShader: final_default,
+        uniforms: {
+          tInput: { value: null },
+          enableCA: {
+            value: true
+          },
+          chromatic_aberration: {
+            value: 1e-3
+          },
+          enableDithering: {
+            value: false
+          },
+          dither: {
+            value: 10
+          },
+          enableVignette: {
+            value: false
+          },
+          vIntensity: {
+            value: 1
+          }
+        }
+      });
+    }
+  });
+
+  // ../packages/gfx/src/glsl/vfx/dof.frag
+  var dof_default;
+  var init_dof = __esm({
+    "../packages/gfx/src/glsl/vfx/dof.frag"() {
+      dof_default = "#version 100\nprecision highp float;\n\n#include <depth>\n\nuniform sampler2D tDepth;\nuniform sampler2D tInput;\nuniform sampler2D tBlur;\nuniform bool debug;\nvarying vec2 vUv;\n\nuniform float aperture;\nuniform float focalDistance;\n\nvoid main () {\n	float depth = smoothstep(0., 1., readDepth (tDepth, vUv));\n	vec3 noBlur = texture2D(tInput, vUv).rgb;\n	vec3 blur = texture2D(tBlur, vUv).rgb;\n\n	float distanceToCamera = mix(cameraNear, cameraFar, depth);\n\n	float CoC = distance(distanceToCamera, focalDistance);\n	float st = smoothstep(0.0, aperture, CoC);\n\n	vec3 color = mix(noBlur, blur, st);\n	\n	if(debug) {\n		gl_FragColor = vec4(vec3(depth), 1.0);\n	}\n	else {\n		gl_FragColor = vec4(color, 1.0);\n	}\n}";
+    }
+  });
+
+  // ../packages/gfx/src/vfx/pipeline/DoFPass.ts
+  var import_three9, SHADER2;
+  var init_DoFPass = __esm({
+    "../packages/gfx/src/vfx/pipeline/DoFPass.ts"() {
+      import_three9 = __toESM(require_three_min());
+      init_BlurPass();
+      init_RenderPass();
+      init_fbo2();
+      init_dof();
+      SHADER2 = new import_three9.RawShaderMaterial({
+        vertexShader: fbo_default2,
+        fragmentShader: dof_default,
+        uniforms: {
+          tInput: { value: null },
+          tBlur: { value: null },
+          tDepth: { value: null },
+          cameraNear: { value: 0 },
+          cameraFar: { value: 100 },
+          aperture: { value: 1.5 },
+          focalDistance: { value: 1 },
+          debug: { value: false }
+        }
+      });
+    }
+  });
+
+  // ../packages/gfx/src/vfx/pipeline/FXAAPass.ts
+  var import_three10;
+  var init_FXAAPass = __esm({
+    "../packages/gfx/src/vfx/pipeline/FXAAPass.ts"() {
+      init_RenderPass();
+      import_three10 = __toESM(require_three_min());
+    }
+  });
+
+  // ../packages/gfx/src/vfx/VFXPipeline.ts
+  var import_three11, TO_SCREEN;
+  var init_VFXPipeline = __esm({
+    "../packages/gfx/src/vfx/VFXPipeline.ts"() {
+      import_three11 = __toESM(require_three_min());
+      init_fbo();
+      init_fbo2();
+      TO_SCREEN = new import_three11.RawShaderMaterial({
+        vertexShader: fbo_default2,
+        fragmentShader: fbo_default,
+        uniforms: {
+          tInput: {
+            value: null
+          }
+        }
+      });
+    }
+  });
+
+  // ../packages/gfx/src/main.ts
+  var init_main = __esm({
+    "../packages/gfx/src/main.ts"() {
+      init_glInfo();
+      init_RTHelper();
+      init_RTUtils();
+      init_Sketch();
+      init_WebGLSketch();
+      init_SceneUtils();
+      init_GfxUtils();
+      init_EquirectangularToCubemap();
+      init_VFXRenderer();
+      init_RenderPass();
+      init_BlurPass();
+      init_FinalPass();
+      init_DoFPass();
+      init_FXAAPass();
+      init_VFXPipeline();
+      init_MaterialUtils();
+    }
+  });
+
+  // ../packages/gfx/src/glsl/vfx/comp.frag
+  var comp_default;
+  var init_comp = __esm({
+    "../packages/gfx/src/glsl/vfx/comp.frag"() {
+      comp_default = "precision highp float;\n\nvarying vec2 vUv;\nuniform sampler2D tScene;\nuniform sampler2D tGlow;\nuniform float exposure;\nuniform float gamma;\n\nuniform bool renderGlow;\nuniform bool renderScene;\n\nvoid main () {\n    vec4 scene = vec4(0.0);\n    if(renderScene) {\n        scene = texture2D(tScene, vUv);\n    }\n    vec4 glow = vec4(0.0);\n    if(renderGlow) {\n        glow = texture2D(tGlow, vUv);\n        // glow.rgb -= vec3(.2);\n    }\n    \n    float glowA = length(glow.rgb);\n\n    scene.rgb += glow.rgb * glowA;\n    \n    // tone mapping\n    vec3 result = vec3(1.0) - exp(-scene.rgb * exposure);\n    // also gamma correct while we're at it       \n    result = pow(result, vec3(1.0 / gamma));\n\n    gl_FragColor = vec4(result, scene.a + glowA);\n    // gl_FragColor = vec4(scene.rgb, scene.a + glow.a);\n    // gl_FragColor = glow;\n    // gl_FragColor = scene;\n}";
+    }
+  });
+
+  // ../packages/gfx/src/vfx/VFXRenderer.ts
+  var import_three12, COMP, GLOW_DEFAULTS, VFXRenderer;
+  var init_VFXRenderer = __esm({
+    "../packages/gfx/src/vfx/VFXRenderer.ts"() {
+      import_three12 = __toESM(require_three_min());
+      init_main();
+      init_fbo2();
+      init_comp();
+      COMP = new import_three12.RawShaderMaterial({
+        vertexShader: fbo_default2,
+        fragmentShader: comp_default,
+        uniforms: {
+          tScene: { value: null },
+          tGlow: { value: null },
+          exposure: { value: 1 },
+          gamma: { value: 1 },
+          renderGlow: { value: true },
+          renderScene: { value: true }
+        },
+        transparent: true
+      });
+      GLOW_DEFAULTS = {
+        scale: 0.3,
+        radius: 1,
+        iterations: 8,
+        quality: 0
+      };
+      VFXRenderer = class {
+        constructor(renderer, width, height, settings) {
+          this.showGlow = true;
+          this.showScene = true;
+          this.exposure = COMP.uniforms.exposure.value;
+          this.gamma = COMP.uniforms.gamma.value;
+          this.shader = COMP.clone();
+          this.rnd = renderer;
+          const w = width * window.devicePixelRatio;
+          const h2 = height * window.devicePixelRatio;
+          this.sceneRT = new import_three12.WebGLMultipleRenderTargets(w, h2, 2, {
+            format: import_three12.RGBAFormat,
+            type: import_three12.UnsignedByteType
+          });
+          this.sceneRT["samples"] = settings.samples || 4;
+          this.sceneRT.texture[0].name = "diffuse";
+          this.sceneRT.texture[1].name = "glow";
+          if (settings.useDepth) {
+            this.sceneRT["depthTexture"] = new import_three12.DepthTexture(w, h2, import_three12.FloatType);
+            this.sceneRT["depthTexture"].format = import_three12.DepthFormat;
+          }
+          const bs = settings && settings.glowSettings ? settings.glowSettings : GLOW_DEFAULTS;
+          bs.isGlow = true;
+          this.glow = new BlurPass(this.sceneRT.texture[1], w, h2, bs);
+          if (settings && settings.exposure) {
+            this.exposure = settings.exposure;
+          }
+          if (settings && settings.gamma) {
+            this.gamma = settings.gamma;
+          }
+          if (settings.customFargment !== void 0) {
+            this.shader.vertexShader = settings.customFargment;
+            if (settings.customUniforms !== void 0) {
+              const u2 = settings.customUniforms;
+              for (const key in u2) {
+                this.shader.uniforms[key] = u2[key];
+              }
+            }
+          }
+        }
+        get depthTexture() {
+          return this.sceneRT["depthTexture"];
+        }
+        setSize(width, height) {
+          const w = width * window.devicePixelRatio;
+          const h2 = height * window.devicePixelRatio;
+          this.sceneRT.setSize(w, h2);
+          this.glow.setSize(w, h2);
+        }
+        updateUniforms() {
+          const u2 = this.shader.uniforms;
+          u2.exposure.value = this.exposure;
+          u2.gamma.value = this.gamma;
+          u2.renderGlow.value = this.showGlow;
+          u2.renderScene.value = this.showScene;
+          u2.tScene.value = this.sceneRT.texture[0];
+          u2.tGlow.value = this.glow.texture;
+        }
+        render(scene, camera, target = null) {
+          this.rnd.autoClear = true;
+          this.rnd.setRenderTarget(this.sceneRT);
+          this.rnd.render(scene, camera);
+          this.glow.renderInternal(this.rnd);
+          this.rnd.setRenderTarget(null);
+          this.updateUniforms();
+          if (target) {
+            RTUtils.renderToRT(target, this.rnd, this.shader);
+          } else
+            RTUtils.renderToViewport(this.rnd, this.shader);
+          this.rnd.setRenderTarget(null);
+        }
+      };
+    }
+  });
+
+  // ../packages/gfx/lib/utils/glInfo.js
+  var init_glInfo2 = __esm({
+    "../packages/gfx/lib/utils/glInfo.js"() {
+    }
+  });
+
+  // ../packages/gfx/lib/glsl/fbo.frag
+  var fbo_default3;
+  var init_fbo3 = __esm({
+    "../packages/gfx/lib/glsl/fbo.frag"() {
+      fbo_default3 = "#version 100\nprecision lowp float;\n\nuniform sampler2D tInput;\nuniform float opacity;\n\nvarying vec2 vUv;\n\nvoid main() {\n	gl_FragColor = texture2D(tInput, vUv) * opacity;\n}";
+    }
+  });
+
+  // ../packages/gfx/lib/glsl/fbo.vert
+  var fbo_default4;
+  var init_fbo4 = __esm({
+    "../packages/gfx/lib/glsl/fbo.vert"() {
+      fbo_default4 = "#version 100\n\nprecision lowp float;\n\nattribute vec3 position;\nattribute vec2 uv;\n\nuniform mat4 projectionMatrix;\nuniform mat4 modelViewMatrix;\nuniform mat4 viewMatrix;\nuniform mat4 modelMatrix;\n\nuniform float time;\n\nvarying vec2 vUv;\n\nvoid main () {\n	vec3 pos = position;\n	vUv = uv;\n	vec4 mvPos = modelViewMatrix * vec4(pos, 1.0);\n	gl_Position = projectionMatrix * mvPos;\n}";
+    }
+  });
+
+  // ../packages/gfx/lib/utils/RTHelper.js
+  var import_three13, TMP2, MAT2, RTHelper2;
+  var init_RTHelper2 = __esm({
+    "../packages/gfx/lib/utils/RTHelper.js"() {
+      import_three13 = __toESM(require_three_min());
+      init_fbo3();
+      init_fbo4();
+      TMP2 = new import_three13.Vector2();
+      MAT2 = new import_three13.RawShaderMaterial({
+        vertexShader: fbo_default4,
+        fragmentShader: fbo_default3,
+        uniforms: {
+          tInput: { value: null },
+          opacity: { value: 1 }
+        }
+      });
+      RTHelper2 = class {
+        constructor() {
+          this.camera = new import_three13.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+          this.material = MAT2;
+          var postPlane = new import_three13.PlaneGeometry(1, 1);
+          this.quad = new import_three13.Mesh(postPlane, this.material);
+          this.scene = new import_three13.Scene();
+          this.scene.add(this.quad);
+        }
+        render(target, renderer, x2 = 0, y = 0, width = 0, height = 0, opacity = 1) {
+          if (width == 0 || height == 0) {
+            width = target.width;
+            height = target.height;
+          }
+          this.drawTexture(target.texture, renderer, x2, y, width, height, opacity);
+        }
+        renderMRT(target, renderer, index, x2 = 0, y = 0, width = 0, height = 0) {
+          if (width == 0 || height == 0) {
+            width = target.width;
+            height = target.height;
+          }
+          this.drawTexture(target.texture[index], renderer, x2, y, width, height);
+        }
+        drawTexture(texture, renderer, x2 = 0, y = 0, width = 0, height = 0, opacity = 1) {
+          const s2 = new import_three13.Vector2();
+          renderer.getSize(s2);
+          this.camera.left = -s2.width / 2;
+          this.camera.right = s2.width / 2;
+          this.camera.top = s2.height / 2;
+          this.camera.bottom = -s2.height / 2;
+          this.camera.updateProjectionMatrix();
+          this.quad.scale.set(width, height, 1);
+          this.quad.position.set(-s2.width / 2 + width / 2 + x2, s2.height / 2 - height / 2 - y, 0);
+          this.quad.material = this.material;
+          this.material.uniforms.tInput.value = texture;
+          this.material.transparent = texture.format == import_three13.RGBAFormat;
+          this.material.uniforms.opacity.value = opacity;
+          renderer.render(this.scene, this.camera);
+        }
+        renderToTarget(target, renderer, material) {
+          let s2 = new import_three13.Vector2(target.width, target.height);
+          this.camera.left = -s2.width / 2;
+          this.camera.right = s2.width / 2;
+          this.camera.top = s2.height / 2;
+          this.camera.bottom = -s2.height / 2;
+          this.camera.updateProjectionMatrix();
+          this.quad.scale.set(s2.width, s2.height, 1);
+          this.quad.position.set(0, 0, 0);
+          this.quad.material = material;
+          renderer.setRenderTarget(target);
+          renderer.render(this.scene, this.camera);
+          renderer.setRenderTarget(null);
+        }
+        renderToViewport(renderer, material) {
+          renderer.getSize(TMP2);
+          this.camera.left = -TMP2.x / 2;
+          this.camera.right = TMP2.x / 2;
+          this.camera.top = TMP2.y / 2;
+          this.camera.bottom = -TMP2.y / 2;
+          this.camera.updateProjectionMatrix();
+          this.quad.scale.set(TMP2.x, TMP2.y, 1);
+          this.quad.position.set(0, 0, 0);
+          this.quad.material = material;
+          renderer.setRenderTarget(null);
+          renderer.render(this.scene, this.camera);
+        }
+        dispose() {
+          this.quad.geometry.dispose();
+        }
+      };
+    }
+  });
+
+  // ../packages/gfx/lib/utils/RTUtils.js
+  var import_three14, RTUtils2;
+  var init_RTUtils2 = __esm({
+    "../packages/gfx/lib/utils/RTUtils.js"() {
+      import_three14 = __toESM(require_three_min());
+      init_RTHelper2();
+      RTUtils2 = class {
+        static getRenderTarget(width, height, settings = {}, depth = false) {
+          const target = new import_three14.WebGLRenderTarget(width, height, {
+            minFilter: settings.minFilter !== void 0 ? settings.minFilter : import_three14.LinearFilter,
+            magFilter: settings.magFilter !== void 0 ? settings.magFilter : import_three14.LinearFilter,
+            wrapS: settings.wrapS !== void 0 ? settings.wrapS : import_three14.ClampToEdgeWrapping,
+            wrapT: settings.wrapT !== void 0 ? settings.wrapT : import_three14.ClampToEdgeWrapping,
+            format: settings.format ? settings.format : import_three14.RGBAFormat,
+            type: settings.type !== void 0 ? settings.type : import_three14.UnsignedByteType,
+            stencilBuffer: settings.stencilBuffer !== void 0 ? settings.stencilBuffer : true
+          });
+          if (depth) {
+            target.depthTexture = new import_three14.DepthTexture(width, height, import_three14.UnsignedShortType);
+          }
+          return target;
+        }
+        static drawRT(rt, renderer, x2 = 0, y = 0, width = 0, height = 0, opacity = 1) {
+          RTUtils2.helper.render(rt, renderer, x2, y, width, height, opacity);
+        }
+        static drawMRT(mrt, renderer, index, x2 = 0, y = 0, width = 0, height = 0) {
+          RTUtils2.helper.renderMRT(mrt, renderer, index, x2, y, width, height);
+        }
+        static drawTexture(texture, renderer, x2 = 0, y = 0, width = 0, height = 0, opacity = 1) {
+          RTUtils2.helper.drawTexture(texture, renderer, x2, y, width, height, opacity);
+        }
+        static renderToRT(rt, renderer, material) {
+          RTUtils2.helper.renderToTarget(rt, renderer, material);
+        }
+        static renderToViewport(renderer, material) {
+          RTUtils2.helper.renderToViewport(renderer, material);
+        }
+      };
+      RTUtils2.helper = new RTHelper2();
+    }
+  });
+
+  // ../packages/gfx/lib/prototype/Sketch.js
+  var Sketch2;
+  var init_Sketch2 = __esm({
+    "../packages/gfx/lib/prototype/Sketch.js"() {
+      Sketch2 = class {
+        constructor() {
+          this._paused = false;
+          this._raf = null;
+          this._rafId = -1;
+          this._startTime = 0;
+          this._started = false;
+        }
+        get started() {
+          return this._started;
+        }
+        start(customRaf = null) {
+          if (this._started)
+            return;
+          this._started = true;
+          const animate = () => {
+            this.update();
+            this.render();
+            requestAnimationFrame(animate);
+          };
+          if (customRaf == null) {
+            this._raf = animate;
+          } else {
+            this._raf = customRaf;
+          }
+          this.addEventListeners();
+          this._startTime = performance.now();
+          this._rafId = requestAnimationFrame(this._raf);
+          return this._rafId;
+        }
+        addEventListeners() {
+        }
+        pause() {
+          if (!this._started)
+            return;
+          if (this._paused)
+            return;
+          this._paused = true;
+          cancelAnimationFrame(this._rafId);
+        }
+        resume() {
+          if (!this._started)
+            return;
+          if (!this._paused)
+            return;
+          this._paused = false;
+          this._rafId = requestAnimationFrame(this._raf);
+        }
+        update() {
+          const time = performance.now() - this._startTime;
+          this.manualUpdate(time);
+        }
+        manualUpdate(time) {
+        }
+        render() {
+        }
+      };
+    }
+  });
+
+  // ../packages/gfx/lib/prototype/WebGLSketch.js
+  var import_three15, WebGLSketch;
+  var init_WebGLSketch2 = __esm({
+    "../packages/gfx/lib/prototype/WebGLSketch.js"() {
+      import_three15 = __toESM(require_three_min());
+      init_Sketch2();
+      WebGLSketch = class extends Sketch2 {
+        constructor(width = window.innerWidth, height = window.innerHeight, opts = {}, autoStart = false) {
+          super();
+          this.vrMode = false;
+          this.size = new import_three15.Vector2();
+          this.scene = new import_three15.Scene();
+          if (opts.ortho) {
+            this.camera = new import_three15.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, opts.near != void 0 ? opts.near : 0.1, opts.far != void 0 ? opts.far : 1e3);
+          } else {
+            this.camera = new import_three15.PerspectiveCamera(opts.fov != void 0 ? opts.fov : 35, width / height, opts.near != void 0 ? opts.near : 0.1, opts.far != void 0 ? opts.far : 1e3);
+          }
+          this.scene.add(this.camera);
+          this.renderer = new import_three15.WebGLRenderer({
+            antialias: opts.antialias != void 0 ? opts.antialias : true,
+            alpha: opts.alpha != void 0 ? opts.alpha : true
+          });
+          this.renderer.setSize(width, height);
+          if (autoStart)
+            this.start();
+        }
+        start(customRaf = null) {
+          if (this.started)
+            return;
+          this.clock = new import_three15.Clock(true);
+          if (this.vrMode) {
+            this._started = true;
+            this._raf = customRaf ? customRaf : () => {
+              this.update();
+              this.render();
+            };
+            this.renderer.setAnimationLoop(this._raf);
+            return 1;
+          }
+          return super.start(customRaf);
+        }
+        pause() {
+          if (!this._started)
+            return;
+          if (this._paused)
+            return;
+          this._paused = true;
+          if (!this.vrMode)
+            cancelAnimationFrame(this._rafId);
+          else {
+            this.renderer.setAnimationLoop(null);
+          }
+        }
+        resume() {
+          if (!this._started)
+            return;
+          if (!this._paused)
+            return;
+          this._paused = false;
+          if (!this.vrMode)
+            this._rafId = requestAnimationFrame(this._raf);
+          else
+            this.renderer.setAnimationLoop(this._raf);
+        }
+        get domElement() {
+          return this.renderer.domElement;
+        }
+        resize(width, height) {
+          if (width === this.size.x && height === this.size.y)
+            return;
+          this.size.set(width, height);
+          this.renderer.setSize(this.size.x, this.size.y);
+          if (this.camera.type == "PerspectiveCamera") {
+            this.camera.aspect = this.size.x / this.size.y;
+          } else {
+            this.camera.left = -width / 2;
+            this.camera.right = width / 2;
+            this.camera.top = height / 2;
+            this.camera.bottom = -height / 2;
+          }
+          this.camera.updateProjectionMatrix();
+        }
+        render() {
+          this.renderer.render(this.scene, this.camera);
+        }
+      };
+    }
+  });
+
+  // ../packages/gfx/lib/utils/SceneUtils.js
+  var import_three16;
+  var init_SceneUtils2 = __esm({
+    "../packages/gfx/lib/utils/SceneUtils.js"() {
+      import_three16 = __toESM(require_three_min());
+    }
+  });
+
+  // ../packages/gfx/lib/utils/GfxUtils.js
+  var import_three17, RAD2DEG2, DEG2RAD2;
+  var init_GfxUtils2 = __esm({
+    "../packages/gfx/lib/utils/GfxUtils.js"() {
+      import_three17 = __toESM(require_three_min());
+      RAD2DEG2 = 180 / Math.PI;
+      DEG2RAD2 = Math.PI / 180;
+    }
+  });
+
   // ../packages/gfx/node_modules/@fils/io/lib/io.js
   var init_io = __esm({
     "../packages/gfx/node_modules/@fils/io/lib/io.js"() {
@@ -13080,10 +13804,10 @@ oGlow = vec4(0.);`);
   });
 
   // ../packages/gfx/node_modules/@fils/io/lib/utils/TextureUtils.js
-  var import_three6, TextureUtils;
+  var import_three18, TextureUtils;
   var init_TextureUtils = __esm({
     "../packages/gfx/node_modules/@fils/io/lib/utils/TextureUtils.js"() {
-      import_three6 = __toESM(require_three_min());
+      import_three18 = __toESM(require_three_min());
       TextureUtils = class {
         static applyTextureOptions(tex, opts) {
           const d2 = TextureUtils.TextureDefaults;
@@ -13097,25 +13821,25 @@ oGlow = vec4(0.);`);
         }
       };
       TextureUtils.TextureDefaults = {
-        format: import_three6.RGBAFormat,
-        wrapS: import_three6.ClampToEdgeWrapping,
-        wrapT: import_three6.ClampToEdgeWrapping,
-        repeat: new import_three6.Vector2(1, 1),
-        magFilter: import_three6.LinearFilter,
-        minFilter: import_three6.LinearMipmapLinearFilter,
+        format: import_three18.RGBAFormat,
+        wrapS: import_three18.ClampToEdgeWrapping,
+        wrapT: import_three18.ClampToEdgeWrapping,
+        repeat: new import_three18.Vector2(1, 1),
+        magFilter: import_three18.LinearFilter,
+        minFilter: import_three18.LinearMipmapLinearFilter,
         flipY: true
       };
     }
   });
 
   // ../packages/gfx/node_modules/@fils/io/lib/assets/TextureAsset.js
-  var import_three7, loader, TextureAsset;
+  var import_three19, loader, TextureAsset;
   var init_TextureAsset = __esm({
     "../packages/gfx/node_modules/@fils/io/lib/assets/TextureAsset.js"() {
-      import_three7 = __toESM(require_three_min());
+      import_three19 = __toESM(require_three_min());
       init_TextureUtils();
       init_Asset();
-      loader = new import_three7.TextureLoader();
+      loader = new import_three19.TextureLoader();
       TextureAsset = class extends Asset {
         constructor(url, opts = null) {
           super(url);
@@ -13149,21 +13873,21 @@ oGlow = vec4(0.);`);
   });
 
   // ../packages/gfx/node_modules/@fils/io/lib/assets/CubeTextureAsset.js
-  var import_three8, loader2;
+  var import_three20, loader2;
   var init_CubeTextureAsset = __esm({
     "../packages/gfx/node_modules/@fils/io/lib/assets/CubeTextureAsset.js"() {
       init_Asset();
-      import_three8 = __toESM(require_three_min());
+      import_three20 = __toESM(require_three_min());
       init_TextureUtils();
-      loader2 = new import_three8.CubeTextureLoader();
+      loader2 = new import_three20.CubeTextureLoader();
     }
   });
 
   // ../packages/gfx/node_modules/@fils/io/lib/assets/VideoTextureAsset.js
-  var import_three9;
+  var import_three21;
   var init_VideoTextureAsset = __esm({
     "../packages/gfx/node_modules/@fils/io/lib/assets/VideoTextureAsset.js"() {
-      import_three9 = __toESM(require_three_min());
+      import_three21 = __toESM(require_three_min());
       init_TextureUtils();
       init_Asset();
     }
@@ -13189,14 +13913,14 @@ oGlow = vec4(0.);`);
   }
   function createDefaultMaterial(cache) {
     if (cache["DefaultMaterial"] === void 0) {
-      cache["DefaultMaterial"] = new import_three10.MeshStandardMaterial({
+      cache["DefaultMaterial"] = new import_three22.MeshStandardMaterial({
         color: 16777215,
         emissive: 0,
         metalness: 1,
         roughness: 1,
         transparent: false,
         depthTest: true,
-        side: import_three10.FrontSide
+        side: import_three22.FrontSide
       });
     }
     return cache["DefaultMaterial"];
@@ -13352,7 +14076,7 @@ oGlow = vec4(0.);`);
             const jointNode = jointNodes[j];
             if (jointNode) {
               bones.push(jointNode);
-              const mat = new import_three10.Matrix4();
+              const mat = new import_three22.Matrix4();
               if (skinEntry.inverseBindMatrices !== void 0) {
                 mat.fromArray(skinEntry.inverseBindMatrices.array, j * 16);
               }
@@ -13361,7 +14085,7 @@ oGlow = vec4(0.);`);
               console.warn('THREE.GLTFLoader: Joint "%s" could not be found.', skinEntry.joints[j]);
             }
           }
-          mesh.bind(new import_three10.Skeleton(bones, boneInverses), mesh.matrixWorld);
+          mesh.bind(new import_three22.Skeleton(bones, boneInverses), mesh.matrixWorld);
         });
         return node;
       });
@@ -13380,15 +14104,15 @@ oGlow = vec4(0.);`);
   }
   function computeBounds(geometry, primitiveDef, parser) {
     const attributes = primitiveDef.attributes;
-    const box = new import_three10.Box3();
+    const box = new import_three22.Box3();
     if (attributes.POSITION !== void 0) {
       const accessor = parser.json.accessors[attributes.POSITION];
       const min = accessor.min;
       const max = accessor.max;
       if (min !== void 0 && max !== void 0) {
         box.set(
-          new import_three10.Vector3(min[0], min[1], min[2]),
-          new import_three10.Vector3(max[0], max[1], max[2])
+          new import_three22.Vector3(min[0], min[1], min[2]),
+          new import_three22.Vector3(max[0], max[1], max[2])
         );
         if (accessor.normalized) {
           const boxScale = getNormalizedComponentScale(WEBGL_COMPONENT_TYPES[accessor.componentType]);
@@ -13404,8 +14128,8 @@ oGlow = vec4(0.);`);
     }
     const targets = primitiveDef.targets;
     if (targets !== void 0) {
-      const maxDisplacement = new import_three10.Vector3();
-      const vector = new import_three10.Vector3();
+      const maxDisplacement = new import_three22.Vector3();
+      const vector = new import_three22.Vector3();
       for (let i2 = 0, il = targets.length; i2 < il; i2++) {
         const target = targets[i2];
         if (target.POSITION !== void 0) {
@@ -13429,7 +14153,7 @@ oGlow = vec4(0.);`);
       box.expandByVector(maxDisplacement);
     }
     geometry.boundingBox = box;
-    const sphere = new import_three10.Sphere();
+    const sphere = new import_three22.Sphere();
     box.getCenter(sphere.center);
     sphere.radius = box.min.distanceTo(box.max) / 2;
     geometry.boundingSphere = sphere;
@@ -13478,7 +14202,7 @@ oGlow = vec4(0.);`);
     }
     const numberOfTriangles = index.count - 2;
     const newIndices = [];
-    if (drawMode === import_three10.TriangleFanDrawMode) {
+    if (drawMode === import_three22.TriangleFanDrawMode) {
       for (let i2 = 1; i2 <= numberOfTriangles; i2++) {
         newIndices.push(index.getX(0));
         newIndices.push(index.getX(i2));
@@ -13504,11 +14228,11 @@ oGlow = vec4(0.);`);
     newGeometry.setIndex(newIndices);
     return newGeometry;
   }
-  var import_three10, GLTFLoader, EXTENSIONS, GLTFLightsExtension, GLTFMaterialsUnlitExtension, GLTFMaterialsEmissiveStrengthExtension, GLTFMaterialsClearcoatExtension, GLTFMaterialsIridescenceExtension, GLTFMaterialsSheenExtension, GLTFMaterialsTransmissionExtension, GLTFMaterialsVolumeExtension, GLTFMaterialsIorExtension, GLTFMaterialsSpecularExtension, GLTFTextureBasisUExtension, GLTFTextureWebPExtension, GLTFMeshoptCompression, BINARY_EXTENSION_HEADER_MAGIC, BINARY_EXTENSION_HEADER_LENGTH, BINARY_EXTENSION_CHUNK_TYPES, GLTFBinaryExtension, GLTFDracoMeshCompressionExtension, GLTFTextureTransformExtension, GLTFMeshStandardSGMaterial, GLTFMaterialsPbrSpecularGlossinessExtension, GLTFMeshQuantizationExtension, GLTFCubicSplineInterpolant, _q, GLTFCubicSplineQuaternionInterpolant, WEBGL_CONSTANTS, WEBGL_COMPONENT_TYPES, WEBGL_FILTERS, WEBGL_WRAPPINGS, WEBGL_TYPE_SIZES, ATTRIBUTES, PATH_PROPERTIES, INTERPOLATION, ALPHA_MODES, GLTFParser;
+  var import_three22, GLTFLoader, EXTENSIONS, GLTFLightsExtension, GLTFMaterialsUnlitExtension, GLTFMaterialsEmissiveStrengthExtension, GLTFMaterialsClearcoatExtension, GLTFMaterialsIridescenceExtension, GLTFMaterialsSheenExtension, GLTFMaterialsTransmissionExtension, GLTFMaterialsVolumeExtension, GLTFMaterialsIorExtension, GLTFMaterialsSpecularExtension, GLTFTextureBasisUExtension, GLTFTextureWebPExtension, GLTFMeshoptCompression, BINARY_EXTENSION_HEADER_MAGIC, BINARY_EXTENSION_HEADER_LENGTH, BINARY_EXTENSION_CHUNK_TYPES, GLTFBinaryExtension, GLTFDracoMeshCompressionExtension, GLTFTextureTransformExtension, GLTFMeshStandardSGMaterial, GLTFMaterialsPbrSpecularGlossinessExtension, GLTFMeshQuantizationExtension, GLTFCubicSplineInterpolant, _q, GLTFCubicSplineQuaternionInterpolant, WEBGL_CONSTANTS, WEBGL_COMPONENT_TYPES, WEBGL_FILTERS, WEBGL_WRAPPINGS, WEBGL_TYPE_SIZES, ATTRIBUTES, PATH_PROPERTIES, INTERPOLATION, ALPHA_MODES, GLTFParser;
   var init_GLTFLoader = __esm({
     "../packages/gfx/node_modules/three/examples/jsm/loaders/GLTFLoader.js"() {
-      import_three10 = __toESM(require_three_min(), 1);
-      GLTFLoader = class extends import_three10.Loader {
+      import_three22 = __toESM(require_three_min(), 1);
+      GLTFLoader = class extends import_three22.Loader {
         constructor(manager) {
           super(manager);
           this.dracoLoader = null;
@@ -13560,7 +14284,7 @@ oGlow = vec4(0.);`);
           } else if (this.path !== "") {
             resourcePath = this.path;
           } else {
-            resourcePath = import_three10.LoaderUtils.extractUrlBase(url);
+            resourcePath = import_three22.LoaderUtils.extractUrlBase(url);
           }
           this.manager.itemStart(url);
           const _onError = function(e2) {
@@ -13572,7 +14296,7 @@ oGlow = vec4(0.);`);
             scope.manager.itemError(url);
             scope.manager.itemEnd(url);
           };
-          const loader4 = new import_three10.FileLoader(this.manager);
+          const loader4 = new import_three22.FileLoader(this.manager);
           loader4.setPath(this.path);
           loader4.setResponseType("arraybuffer");
           loader4.setRequestHeader(this.requestHeader);
@@ -13624,7 +14348,7 @@ oGlow = vec4(0.);`);
           if (typeof data === "string") {
             content = data;
           } else {
-            const magic = import_three10.LoaderUtils.decodeText(new Uint8Array(data, 0, 4));
+            const magic = import_three22.LoaderUtils.decodeText(new Uint8Array(data, 0, 4));
             if (magic === BINARY_EXTENSION_HEADER_MAGIC) {
               try {
                 extensions[EXTENSIONS.KHR_BINARY_GLTF] = new GLTFBinaryExtension(data);
@@ -13635,7 +14359,7 @@ oGlow = vec4(0.);`);
               }
               content = extensions[EXTENSIONS.KHR_BINARY_GLTF].content;
             } else {
-              content = import_three10.LoaderUtils.decodeText(new Uint8Array(data));
+              content = import_three22.LoaderUtils.decodeText(new Uint8Array(data));
             }
           }
           const json = JSON.parse(content);
@@ -13743,22 +14467,22 @@ oGlow = vec4(0.);`);
           const lightDefs = extensions.lights || [];
           const lightDef = lightDefs[lightIndex];
           let lightNode;
-          const color = new import_three10.Color(16777215);
+          const color = new import_three22.Color(16777215);
           if (lightDef.color !== void 0)
             color.fromArray(lightDef.color);
           const range = lightDef.range !== void 0 ? lightDef.range : 0;
           switch (lightDef.type) {
             case "directional":
-              lightNode = new import_three10.DirectionalLight(color);
+              lightNode = new import_three22.DirectionalLight(color);
               lightNode.target.position.set(0, 0, -1);
               lightNode.add(lightNode.target);
               break;
             case "point":
-              lightNode = new import_three10.PointLight(color);
+              lightNode = new import_three22.PointLight(color);
               lightNode.distance = range;
               break;
             case "spot":
-              lightNode = new import_three10.SpotLight(color);
+              lightNode = new import_three22.SpotLight(color);
               lightNode.distance = range;
               lightDef.spot = lightDef.spot || {};
               lightDef.spot.innerConeAngle = lightDef.spot.innerConeAngle !== void 0 ? lightDef.spot.innerConeAngle : 0;
@@ -13799,11 +14523,11 @@ oGlow = vec4(0.);`);
           this.name = EXTENSIONS.KHR_MATERIALS_UNLIT;
         }
         getMaterialType() {
-          return import_three10.MeshBasicMaterial;
+          return import_three22.MeshBasicMaterial;
         }
         extendParams(materialParams, materialDef, parser) {
           const pending = [];
-          materialParams.color = new import_three10.Color(1, 1, 1);
+          materialParams.color = new import_three22.Color(1, 1, 1);
           materialParams.opacity = 1;
           const metallicRoughness = materialDef.pbrMetallicRoughness;
           if (metallicRoughness) {
@@ -13813,7 +14537,7 @@ oGlow = vec4(0.);`);
               materialParams.opacity = array[3];
             }
             if (metallicRoughness.baseColorTexture !== void 0) {
-              pending.push(parser.assignTexture(materialParams, "map", metallicRoughness.baseColorTexture, import_three10.sRGBEncoding));
+              pending.push(parser.assignTexture(materialParams, "map", metallicRoughness.baseColorTexture, import_three22.sRGBEncoding));
             }
           }
           return Promise.all(pending);
@@ -13847,7 +14571,7 @@ oGlow = vec4(0.);`);
           const materialDef = parser.json.materials[materialIndex];
           if (!materialDef.extensions || !materialDef.extensions[this.name])
             return null;
-          return import_three10.MeshPhysicalMaterial;
+          return import_three22.MeshPhysicalMaterial;
         }
         extendMaterialParams(materialIndex, materialParams) {
           const parser = this.parser;
@@ -13873,7 +14597,7 @@ oGlow = vec4(0.);`);
             pending.push(parser.assignTexture(materialParams, "clearcoatNormalMap", extension.clearcoatNormalTexture));
             if (extension.clearcoatNormalTexture.scale !== void 0) {
               const scale = extension.clearcoatNormalTexture.scale;
-              materialParams.clearcoatNormalScale = new import_three10.Vector2(scale, scale);
+              materialParams.clearcoatNormalScale = new import_three22.Vector2(scale, scale);
             }
           }
           return Promise.all(pending);
@@ -13889,7 +14613,7 @@ oGlow = vec4(0.);`);
           const materialDef = parser.json.materials[materialIndex];
           if (!materialDef.extensions || !materialDef.extensions[this.name])
             return null;
-          return import_three10.MeshPhysicalMaterial;
+          return import_three22.MeshPhysicalMaterial;
         }
         extendMaterialParams(materialIndex, materialParams) {
           const parser = this.parser;
@@ -13933,7 +14657,7 @@ oGlow = vec4(0.);`);
           const materialDef = parser.json.materials[materialIndex];
           if (!materialDef.extensions || !materialDef.extensions[this.name])
             return null;
-          return import_three10.MeshPhysicalMaterial;
+          return import_three22.MeshPhysicalMaterial;
         }
         extendMaterialParams(materialIndex, materialParams) {
           const parser = this.parser;
@@ -13942,7 +14666,7 @@ oGlow = vec4(0.);`);
             return Promise.resolve();
           }
           const pending = [];
-          materialParams.sheenColor = new import_three10.Color(0, 0, 0);
+          materialParams.sheenColor = new import_three22.Color(0, 0, 0);
           materialParams.sheenRoughness = 0;
           materialParams.sheen = 1;
           const extension = materialDef.extensions[this.name];
@@ -13953,7 +14677,7 @@ oGlow = vec4(0.);`);
             materialParams.sheenRoughness = extension.sheenRoughnessFactor;
           }
           if (extension.sheenColorTexture !== void 0) {
-            pending.push(parser.assignTexture(materialParams, "sheenColorMap", extension.sheenColorTexture, import_three10.sRGBEncoding));
+            pending.push(parser.assignTexture(materialParams, "sheenColorMap", extension.sheenColorTexture, import_three22.sRGBEncoding));
           }
           if (extension.sheenRoughnessTexture !== void 0) {
             pending.push(parser.assignTexture(materialParams, "sheenRoughnessMap", extension.sheenRoughnessTexture));
@@ -13971,7 +14695,7 @@ oGlow = vec4(0.);`);
           const materialDef = parser.json.materials[materialIndex];
           if (!materialDef.extensions || !materialDef.extensions[this.name])
             return null;
-          return import_three10.MeshPhysicalMaterial;
+          return import_three22.MeshPhysicalMaterial;
         }
         extendMaterialParams(materialIndex, materialParams) {
           const parser = this.parser;
@@ -14000,7 +14724,7 @@ oGlow = vec4(0.);`);
           const materialDef = parser.json.materials[materialIndex];
           if (!materialDef.extensions || !materialDef.extensions[this.name])
             return null;
-          return import_three10.MeshPhysicalMaterial;
+          return import_three22.MeshPhysicalMaterial;
         }
         extendMaterialParams(materialIndex, materialParams) {
           const parser = this.parser;
@@ -14016,7 +14740,7 @@ oGlow = vec4(0.);`);
           }
           materialParams.attenuationDistance = extension.attenuationDistance || Infinity;
           const colorArray = extension.attenuationColor || [1, 1, 1];
-          materialParams.attenuationColor = new import_three10.Color(colorArray[0], colorArray[1], colorArray[2]);
+          materialParams.attenuationColor = new import_three22.Color(colorArray[0], colorArray[1], colorArray[2]);
           return Promise.all(pending);
         }
       };
@@ -14030,7 +14754,7 @@ oGlow = vec4(0.);`);
           const materialDef = parser.json.materials[materialIndex];
           if (!materialDef.extensions || !materialDef.extensions[this.name])
             return null;
-          return import_three10.MeshPhysicalMaterial;
+          return import_three22.MeshPhysicalMaterial;
         }
         extendMaterialParams(materialIndex, materialParams) {
           const parser = this.parser;
@@ -14053,7 +14777,7 @@ oGlow = vec4(0.);`);
           const materialDef = parser.json.materials[materialIndex];
           if (!materialDef.extensions || !materialDef.extensions[this.name])
             return null;
-          return import_three10.MeshPhysicalMaterial;
+          return import_three22.MeshPhysicalMaterial;
         }
         extendMaterialParams(materialIndex, materialParams) {
           const parser = this.parser;
@@ -14068,9 +14792,9 @@ oGlow = vec4(0.);`);
             pending.push(parser.assignTexture(materialParams, "specularIntensityMap", extension.specularTexture));
           }
           const colorArray = extension.specularColorFactor || [1, 1, 1];
-          materialParams.specularColor = new import_three10.Color(colorArray[0], colorArray[1], colorArray[2]);
+          materialParams.specularColor = new import_three22.Color(colorArray[0], colorArray[1], colorArray[2]);
           if (extension.specularColorTexture !== void 0) {
-            pending.push(parser.assignTexture(materialParams, "specularColorMap", extension.specularColorTexture, import_three10.sRGBEncoding));
+            pending.push(parser.assignTexture(materialParams, "specularColorMap", extension.specularColorTexture, import_three22.sRGBEncoding));
           }
           return Promise.all(pending);
         }
@@ -14195,7 +14919,7 @@ oGlow = vec4(0.);`);
           this.body = null;
           const headerView = new DataView(data, 0, BINARY_EXTENSION_HEADER_LENGTH);
           this.header = {
-            magic: import_three10.LoaderUtils.decodeText(new Uint8Array(data.slice(0, 4))),
+            magic: import_three22.LoaderUtils.decodeText(new Uint8Array(data.slice(0, 4))),
             version: headerView.getUint32(4, true),
             length: headerView.getUint32(8, true)
           };
@@ -14214,7 +14938,7 @@ oGlow = vec4(0.);`);
             chunkIndex += 4;
             if (chunkType === BINARY_EXTENSION_CHUNK_TYPES.JSON) {
               const contentArray = new Uint8Array(data, BINARY_EXTENSION_HEADER_LENGTH + chunkIndex, chunkLength);
-              this.content = import_three10.LoaderUtils.decodeText(contentArray);
+              this.content = import_three22.LoaderUtils.decodeText(contentArray);
             } else if (chunkType === BINARY_EXTENSION_CHUNK_TYPES.BIN) {
               const byteOffset = BINARY_EXTENSION_HEADER_LENGTH + chunkIndex;
               this.body = data.slice(byteOffset, byteOffset + chunkLength);
@@ -14297,7 +15021,7 @@ oGlow = vec4(0.);`);
           return texture;
         }
       };
-      GLTFMeshStandardSGMaterial = class extends import_three10.MeshStandardMaterial {
+      GLTFMeshStandardSGMaterial = class extends import_three22.MeshStandardMaterial {
         constructor(params) {
           super();
           this.isGLTFSpecularGlossinessMaterial = true;
@@ -14338,7 +15062,7 @@ oGlow = vec4(0.);`);
             "material.specularColor = specularFactor;"
           ].join("\n");
           const uniforms = {
-            specular: { value: new import_three10.Color().setHex(16777215) },
+            specular: { value: new import_three22.Color().setHex(16777215) },
             glossiness: { value: 1 },
             specularMap: { value: null },
             glossinessMap: { value: null }
@@ -14449,7 +15173,7 @@ oGlow = vec4(0.);`);
         }
         extendParams(materialParams, materialDef, parser) {
           const pbrSpecularGlossiness = materialDef.extensions[this.name];
-          materialParams.color = new import_three10.Color(1, 1, 1);
+          materialParams.color = new import_three22.Color(1, 1, 1);
           materialParams.opacity = 1;
           const pending = [];
           if (Array.isArray(pbrSpecularGlossiness.diffuseFactor)) {
@@ -14458,18 +15182,18 @@ oGlow = vec4(0.);`);
             materialParams.opacity = array[3];
           }
           if (pbrSpecularGlossiness.diffuseTexture !== void 0) {
-            pending.push(parser.assignTexture(materialParams, "map", pbrSpecularGlossiness.diffuseTexture, import_three10.sRGBEncoding));
+            pending.push(parser.assignTexture(materialParams, "map", pbrSpecularGlossiness.diffuseTexture, import_three22.sRGBEncoding));
           }
-          materialParams.emissive = new import_three10.Color(0, 0, 0);
+          materialParams.emissive = new import_three22.Color(0, 0, 0);
           materialParams.glossiness = pbrSpecularGlossiness.glossinessFactor !== void 0 ? pbrSpecularGlossiness.glossinessFactor : 1;
-          materialParams.specular = new import_three10.Color(1, 1, 1);
+          materialParams.specular = new import_three22.Color(1, 1, 1);
           if (Array.isArray(pbrSpecularGlossiness.specularFactor)) {
             materialParams.specular.fromArray(pbrSpecularGlossiness.specularFactor);
           }
           if (pbrSpecularGlossiness.specularGlossinessTexture !== void 0) {
             const specGlossMapDef = pbrSpecularGlossiness.specularGlossinessTexture;
             pending.push(parser.assignTexture(materialParams, "glossinessMap", specGlossMapDef));
-            pending.push(parser.assignTexture(materialParams, "specularMap", specGlossMapDef, import_three10.sRGBEncoding));
+            pending.push(parser.assignTexture(materialParams, "specularMap", specGlossMapDef, import_three22.sRGBEncoding));
           }
           return Promise.all(pending);
         }
@@ -14488,7 +15212,7 @@ oGlow = vec4(0.);`);
           material.bumpMap = materialParams.bumpMap === void 0 ? null : materialParams.bumpMap;
           material.bumpScale = 1;
           material.normalMap = materialParams.normalMap === void 0 ? null : materialParams.normalMap;
-          material.normalMapType = import_three10.TangentSpaceNormalMap;
+          material.normalMapType = import_three22.TangentSpaceNormalMap;
           if (materialParams.normalScale)
             material.normalScale = materialParams.normalScale;
           material.displacementMap = null;
@@ -14509,7 +15233,7 @@ oGlow = vec4(0.);`);
           this.name = EXTENSIONS.KHR_MESH_QUANTIZATION;
         }
       };
-      GLTFCubicSplineInterpolant = class extends import_three10.Interpolant {
+      GLTFCubicSplineInterpolant = class extends import_three22.Interpolant {
         constructor(parameterPositions, sampleValues, sampleSize, resultBuffer) {
           super(parameterPositions, sampleValues, sampleSize, resultBuffer);
         }
@@ -14546,7 +15270,7 @@ oGlow = vec4(0.);`);
           return result;
         }
       };
-      _q = new import_three10.Quaternion();
+      _q = new import_three22.Quaternion();
       GLTFCubicSplineQuaternionInterpolant = class extends GLTFCubicSplineInterpolant {
         interpolate_(i1, t0, t3, t1) {
           const result = super.interpolate_(i1, t0, t3, t1);
@@ -14583,17 +15307,17 @@ oGlow = vec4(0.);`);
         5126: Float32Array
       };
       WEBGL_FILTERS = {
-        9728: import_three10.NearestFilter,
-        9729: import_three10.LinearFilter,
-        9984: import_three10.NearestMipmapNearestFilter,
-        9985: import_three10.LinearMipmapNearestFilter,
-        9986: import_three10.NearestMipmapLinearFilter,
-        9987: import_three10.LinearMipmapLinearFilter
+        9728: import_three22.NearestFilter,
+        9729: import_three22.LinearFilter,
+        9984: import_three22.NearestMipmapNearestFilter,
+        9985: import_three22.LinearMipmapNearestFilter,
+        9986: import_three22.NearestMipmapLinearFilter,
+        9987: import_three22.LinearMipmapLinearFilter
       };
       WEBGL_WRAPPINGS = {
-        33071: import_three10.ClampToEdgeWrapping,
-        33648: import_three10.MirroredRepeatWrapping,
-        10497: import_three10.RepeatWrapping
+        33071: import_three22.ClampToEdgeWrapping,
+        33648: import_three22.MirroredRepeatWrapping,
+        10497: import_three22.RepeatWrapping
       };
       WEBGL_TYPE_SIZES = {
         "SCALAR": 1,
@@ -14622,8 +15346,8 @@ oGlow = vec4(0.);`);
       };
       INTERPOLATION = {
         CUBICSPLINE: void 0,
-        LINEAR: import_three10.InterpolateLinear,
-        STEP: import_three10.InterpolateDiscrete
+        LINEAR: import_three22.InterpolateLinear,
+        STEP: import_three22.InterpolateDiscrete
       };
       ALPHA_MODES = {
         OPAQUE: "OPAQUE",
@@ -14649,13 +15373,13 @@ oGlow = vec4(0.);`);
           const isFirefox = navigator.userAgent.indexOf("Firefox") > -1;
           const firefoxVersion = isFirefox ? navigator.userAgent.match(/Firefox\/([0-9]+)\./)[1] : -1;
           if (typeof createImageBitmap === "undefined" || isSafari || isFirefox && firefoxVersion < 98) {
-            this.textureLoader = new import_three10.TextureLoader(this.options.manager);
+            this.textureLoader = new import_three22.TextureLoader(this.options.manager);
           } else {
-            this.textureLoader = new import_three10.ImageBitmapLoader(this.options.manager);
+            this.textureLoader = new import_three22.ImageBitmapLoader(this.options.manager);
           }
           this.textureLoader.setCrossOrigin(this.options.crossOrigin);
           this.textureLoader.setRequestHeader(this.options.requestHeader);
-          this.fileLoader = new import_three10.FileLoader(this.options.manager);
+          this.fileLoader = new import_three22.FileLoader(this.options.manager);
           this.fileLoader.setResponseType("arraybuffer");
           if (this.options.crossOrigin === "use-credentials") {
             this.fileLoader.setWithCredentials(true);
@@ -14849,7 +15573,7 @@ oGlow = vec4(0.);`);
           }
           const options = this.options;
           return new Promise(function(resolve, reject) {
-            loader4.load(import_three10.LoaderUtils.resolveURL(bufferDef.uri, options.path), resolve, void 0, function() {
+            loader4.load(import_three22.LoaderUtils.resolveURL(bufferDef.uri, options.path), resolve, void 0, function() {
               reject(new Error('THREE.GLTFLoader: Failed to load buffer "' + bufferDef.uri + '".'));
             });
           });
@@ -14895,17 +15619,17 @@ oGlow = vec4(0.);`);
               let ib = parser.cache.get(ibCacheKey);
               if (!ib) {
                 array = new TypedArray(bufferView, ibSlice * byteStride, accessorDef.count * byteStride / elementBytes);
-                ib = new import_three10.InterleavedBuffer(array, byteStride / elementBytes);
+                ib = new import_three22.InterleavedBuffer(array, byteStride / elementBytes);
                 parser.cache.add(ibCacheKey, ib);
               }
-              bufferAttribute = new import_three10.InterleavedBufferAttribute(ib, itemSize, byteOffset % byteStride / elementBytes, normalized);
+              bufferAttribute = new import_three22.InterleavedBufferAttribute(ib, itemSize, byteOffset % byteStride / elementBytes, normalized);
             } else {
               if (bufferView === null) {
                 array = new TypedArray(accessorDef.count * itemSize);
               } else {
                 array = new TypedArray(bufferView, byteOffset, accessorDef.count * itemSize);
               }
-              bufferAttribute = new import_three10.BufferAttribute(array, itemSize, normalized);
+              bufferAttribute = new import_three22.BufferAttribute(array, itemSize, normalized);
             }
             if (accessorDef.sparse !== void 0) {
               const itemSizeIndices = WEBGL_TYPE_SIZES.SCALAR;
@@ -14915,7 +15639,7 @@ oGlow = vec4(0.);`);
               const sparseIndices = new TypedArrayIndices(bufferViews[1], byteOffsetIndices, accessorDef.sparse.count * itemSizeIndices);
               const sparseValues = new TypedArray(bufferViews[2], byteOffsetValues, accessorDef.sparse.count * itemSize);
               if (bufferView !== null) {
-                bufferAttribute = new import_three10.BufferAttribute(bufferAttribute.array.slice(), bufferAttribute.itemSize, bufferAttribute.normalized);
+                bufferAttribute = new import_three22.BufferAttribute(bufferAttribute.array.slice(), bufferAttribute.itemSize, bufferAttribute.normalized);
               }
               for (let i2 = 0, il = sparseIndices.length; i2 < il; i2++) {
                 const index = sparseIndices[i2];
@@ -14962,10 +15686,10 @@ oGlow = vec4(0.);`);
               texture.name = textureDef.name;
             const samplers = json.samplers || {};
             const sampler = samplers[textureDef.sampler] || {};
-            texture.magFilter = WEBGL_FILTERS[sampler.magFilter] || import_three10.LinearFilter;
-            texture.minFilter = WEBGL_FILTERS[sampler.minFilter] || import_three10.LinearMipmapLinearFilter;
-            texture.wrapS = WEBGL_WRAPPINGS[sampler.wrapS] || import_three10.RepeatWrapping;
-            texture.wrapT = WEBGL_WRAPPINGS[sampler.wrapT] || import_three10.RepeatWrapping;
+            texture.magFilter = WEBGL_FILTERS[sampler.magFilter] || import_three22.LinearFilter;
+            texture.minFilter = WEBGL_FILTERS[sampler.minFilter] || import_three22.LinearMipmapLinearFilter;
+            texture.wrapS = WEBGL_WRAPPINGS[sampler.wrapS] || import_three22.RepeatWrapping;
+            texture.wrapT = WEBGL_WRAPPINGS[sampler.wrapT] || import_three22.RepeatWrapping;
             parser.associations.set(texture, { textures: textureIndex });
             return texture;
           }).catch(function() {
@@ -15000,12 +15724,12 @@ oGlow = vec4(0.);`);
               let onLoad = resolve;
               if (loader4.isImageBitmapLoader === true) {
                 onLoad = function(imageBitmap) {
-                  const texture = new import_three10.Texture(imageBitmap);
+                  const texture = new import_three22.Texture(imageBitmap);
                   texture.needsUpdate = true;
                   resolve(texture);
                 };
               }
-              loader4.load(import_three10.LoaderUtils.resolveURL(sourceURI2, options.path), onLoad, void 0, reject);
+              loader4.load(import_three22.LoaderUtils.resolveURL(sourceURI2, options.path), onLoad, void 0, reject);
             });
           }).then(function(texture) {
             if (isObjectURL === true) {
@@ -15051,8 +15775,8 @@ oGlow = vec4(0.);`);
             const cacheKey = "PointsMaterial:" + material.uuid;
             let pointsMaterial = this.cache.get(cacheKey);
             if (!pointsMaterial) {
-              pointsMaterial = new import_three10.PointsMaterial();
-              import_three10.Material.prototype.copy.call(pointsMaterial, material);
+              pointsMaterial = new import_three22.PointsMaterial();
+              import_three22.Material.prototype.copy.call(pointsMaterial, material);
               pointsMaterial.color.copy(material.color);
               pointsMaterial.map = material.map;
               pointsMaterial.sizeAttenuation = false;
@@ -15063,8 +15787,8 @@ oGlow = vec4(0.);`);
             const cacheKey = "LineBasicMaterial:" + material.uuid;
             let lineMaterial = this.cache.get(cacheKey);
             if (!lineMaterial) {
-              lineMaterial = new import_three10.LineBasicMaterial();
-              import_three10.Material.prototype.copy.call(lineMaterial, material);
+              lineMaterial = new import_three22.LineBasicMaterial();
+              import_three22.Material.prototype.copy.call(lineMaterial, material);
               lineMaterial.color.copy(material.color);
               this.cache.add(cacheKey, lineMaterial);
             }
@@ -15104,7 +15828,7 @@ oGlow = vec4(0.);`);
           mesh.material = material;
         }
         getMaterialType() {
-          return import_three10.MeshStandardMaterial;
+          return import_three22.MeshStandardMaterial;
         }
         loadMaterial(materialIndex) {
           const parser = this;
@@ -15125,7 +15849,7 @@ oGlow = vec4(0.);`);
             pending.push(kmuExtension.extendParams(materialParams, materialDef, parser));
           } else {
             const metallicRoughness = materialDef.pbrMetallicRoughness || {};
-            materialParams.color = new import_three10.Color(1, 1, 1);
+            materialParams.color = new import_three22.Color(1, 1, 1);
             materialParams.opacity = 1;
             if (Array.isArray(metallicRoughness.baseColorFactor)) {
               const array = metallicRoughness.baseColorFactor;
@@ -15133,7 +15857,7 @@ oGlow = vec4(0.);`);
               materialParams.opacity = array[3];
             }
             if (metallicRoughness.baseColorTexture !== void 0) {
-              pending.push(parser.assignTexture(materialParams, "map", metallicRoughness.baseColorTexture, import_three10.sRGBEncoding));
+              pending.push(parser.assignTexture(materialParams, "map", metallicRoughness.baseColorTexture, import_three22.sRGBEncoding));
             }
             materialParams.metalness = metallicRoughness.metallicFactor !== void 0 ? metallicRoughness.metallicFactor : 1;
             materialParams.roughness = metallicRoughness.roughnessFactor !== void 0 ? metallicRoughness.roughnessFactor : 1;
@@ -15149,7 +15873,7 @@ oGlow = vec4(0.);`);
             })));
           }
           if (materialDef.doubleSided === true) {
-            materialParams.side = import_three10.DoubleSide;
+            materialParams.side = import_three22.DoubleSide;
           }
           const alphaMode = materialDef.alphaMode || ALPHA_MODES.OPAQUE;
           if (alphaMode === ALPHA_MODES.BLEND) {
@@ -15161,25 +15885,25 @@ oGlow = vec4(0.);`);
               materialParams.alphaTest = materialDef.alphaCutoff !== void 0 ? materialDef.alphaCutoff : 0.5;
             }
           }
-          if (materialDef.normalTexture !== void 0 && materialType !== import_three10.MeshBasicMaterial) {
+          if (materialDef.normalTexture !== void 0 && materialType !== import_three22.MeshBasicMaterial) {
             pending.push(parser.assignTexture(materialParams, "normalMap", materialDef.normalTexture));
-            materialParams.normalScale = new import_three10.Vector2(1, 1);
+            materialParams.normalScale = new import_three22.Vector2(1, 1);
             if (materialDef.normalTexture.scale !== void 0) {
               const scale = materialDef.normalTexture.scale;
               materialParams.normalScale.set(scale, scale);
             }
           }
-          if (materialDef.occlusionTexture !== void 0 && materialType !== import_three10.MeshBasicMaterial) {
+          if (materialDef.occlusionTexture !== void 0 && materialType !== import_three22.MeshBasicMaterial) {
             pending.push(parser.assignTexture(materialParams, "aoMap", materialDef.occlusionTexture));
             if (materialDef.occlusionTexture.strength !== void 0) {
               materialParams.aoMapIntensity = materialDef.occlusionTexture.strength;
             }
           }
-          if (materialDef.emissiveFactor !== void 0 && materialType !== import_three10.MeshBasicMaterial) {
-            materialParams.emissive = new import_three10.Color().fromArray(materialDef.emissiveFactor);
+          if (materialDef.emissiveFactor !== void 0 && materialType !== import_three22.MeshBasicMaterial) {
+            materialParams.emissive = new import_three22.Color().fromArray(materialDef.emissiveFactor);
           }
-          if (materialDef.emissiveTexture !== void 0 && materialType !== import_three10.MeshBasicMaterial) {
-            pending.push(parser.assignTexture(materialParams, "emissiveMap", materialDef.emissiveTexture, import_three10.sRGBEncoding));
+          if (materialDef.emissiveTexture !== void 0 && materialType !== import_three22.MeshBasicMaterial) {
+            pending.push(parser.assignTexture(materialParams, "emissiveMap", materialDef.emissiveTexture, import_three22.sRGBEncoding));
           }
           return Promise.all(pending).then(function() {
             let material;
@@ -15198,7 +15922,7 @@ oGlow = vec4(0.);`);
           });
         }
         createUniqueName(originalName) {
-          const sanitizedName = import_three10.PropertyBinding.sanitizeNodeName(originalName || "");
+          const sanitizedName = import_three22.PropertyBinding.sanitizeNodeName(originalName || "");
           let name = sanitizedName;
           for (let i2 = 1; this.nodeNamesUsed[name]; ++i2) {
             name = sanitizedName + "_" + i2;
@@ -15227,7 +15951,7 @@ oGlow = vec4(0.);`);
               if (primitive.extensions && primitive.extensions[EXTENSIONS.KHR_DRACO_MESH_COMPRESSION]) {
                 geometryPromise = createDracoPrimitive(primitive);
               } else {
-                geometryPromise = addPrimitiveAttributes(new import_three10.BufferGeometry(), primitive, parser);
+                geometryPromise = addPrimitiveAttributes(new import_three22.BufferGeometry(), primitive, parser);
               }
               cache[cacheKey] = { primitive, promise: geometryPromise };
               pending.push(geometryPromise);
@@ -15257,23 +15981,23 @@ oGlow = vec4(0.);`);
               let mesh;
               const material = materials[i2];
               if (primitive.mode === WEBGL_CONSTANTS.TRIANGLES || primitive.mode === WEBGL_CONSTANTS.TRIANGLE_STRIP || primitive.mode === WEBGL_CONSTANTS.TRIANGLE_FAN || primitive.mode === void 0) {
-                mesh = meshDef.isSkinnedMesh === true ? new import_three10.SkinnedMesh(geometry, material) : new import_three10.Mesh(geometry, material);
+                mesh = meshDef.isSkinnedMesh === true ? new import_three22.SkinnedMesh(geometry, material) : new import_three22.Mesh(geometry, material);
                 if (mesh.isSkinnedMesh === true && !mesh.geometry.attributes.skinWeight.normalized) {
                   mesh.normalizeSkinWeights();
                 }
                 if (primitive.mode === WEBGL_CONSTANTS.TRIANGLE_STRIP) {
-                  mesh.geometry = toTrianglesDrawMode(mesh.geometry, import_three10.TriangleStripDrawMode);
+                  mesh.geometry = toTrianglesDrawMode(mesh.geometry, import_three22.TriangleStripDrawMode);
                 } else if (primitive.mode === WEBGL_CONSTANTS.TRIANGLE_FAN) {
-                  mesh.geometry = toTrianglesDrawMode(mesh.geometry, import_three10.TriangleFanDrawMode);
+                  mesh.geometry = toTrianglesDrawMode(mesh.geometry, import_three22.TriangleFanDrawMode);
                 }
               } else if (primitive.mode === WEBGL_CONSTANTS.LINES) {
-                mesh = new import_three10.LineSegments(geometry, material);
+                mesh = new import_three22.LineSegments(geometry, material);
               } else if (primitive.mode === WEBGL_CONSTANTS.LINE_STRIP) {
-                mesh = new import_three10.Line(geometry, material);
+                mesh = new import_three22.Line(geometry, material);
               } else if (primitive.mode === WEBGL_CONSTANTS.LINE_LOOP) {
-                mesh = new import_three10.LineLoop(geometry, material);
+                mesh = new import_three22.LineLoop(geometry, material);
               } else if (primitive.mode === WEBGL_CONSTANTS.POINTS) {
-                mesh = new import_three10.Points(geometry, material);
+                mesh = new import_three22.Points(geometry, material);
               } else {
                 throw new Error("THREE.GLTFLoader: Primitive mode unsupported: " + primitive.mode);
               }
@@ -15296,7 +16020,7 @@ oGlow = vec4(0.);`);
             if (meshes.length === 1) {
               return meshes[0];
             }
-            const group = new import_three10.Group();
+            const group = new import_three22.Group();
             parser.associations.set(group, { meshes: meshIndex });
             for (let i2 = 0, il = meshes.length; i2 < il; i2++) {
               group.add(meshes[i2]);
@@ -15313,9 +16037,9 @@ oGlow = vec4(0.);`);
             return;
           }
           if (cameraDef.type === "perspective") {
-            camera = new import_three10.PerspectiveCamera(import_three10.MathUtils.radToDeg(params.yfov), params.aspectRatio || 1, params.znear || 1, params.zfar || 2e6);
+            camera = new import_three22.PerspectiveCamera(import_three22.MathUtils.radToDeg(params.yfov), params.aspectRatio || 1, params.znear || 1, params.zfar || 2e6);
           } else if (cameraDef.type === "orthographic") {
-            camera = new import_three10.OrthographicCamera(-params.xmag, params.xmag, params.ymag, -params.ymag, params.znear, params.zfar);
+            camera = new import_three22.OrthographicCamera(-params.xmag, params.xmag, params.ymag, -params.ymag, params.znear, params.zfar);
           }
           if (cameraDef.name)
             camera.name = this.createUniqueName(cameraDef.name);
@@ -15379,19 +16103,19 @@ oGlow = vec4(0.);`);
               let TypedKeyframeTrack;
               switch (PATH_PROPERTIES[target.path]) {
                 case PATH_PROPERTIES.weights:
-                  TypedKeyframeTrack = import_three10.NumberKeyframeTrack;
+                  TypedKeyframeTrack = import_three22.NumberKeyframeTrack;
                   break;
                 case PATH_PROPERTIES.rotation:
-                  TypedKeyframeTrack = import_three10.QuaternionKeyframeTrack;
+                  TypedKeyframeTrack = import_three22.QuaternionKeyframeTrack;
                   break;
                 case PATH_PROPERTIES.position:
                 case PATH_PROPERTIES.scale:
                 default:
-                  TypedKeyframeTrack = import_three10.VectorKeyframeTrack;
+                  TypedKeyframeTrack = import_three22.VectorKeyframeTrack;
                   break;
               }
               const targetName = node.name ? node.name : node.uuid;
-              const interpolation = sampler.interpolation !== void 0 ? INTERPOLATION[sampler.interpolation] : import_three10.InterpolateLinear;
+              const interpolation = sampler.interpolation !== void 0 ? INTERPOLATION[sampler.interpolation] : import_three22.InterpolateLinear;
               const targetNames = [];
               if (PATH_PROPERTIES[target.path] === PATH_PROPERTIES.weights) {
                 node.traverse(function(object) {
@@ -15420,7 +16144,7 @@ oGlow = vec4(0.);`);
                 );
                 if (sampler.interpolation === "CUBICSPLINE") {
                   track.createInterpolant = function InterpolantFactoryMethodGLTFCubicSpline(result) {
-                    const interpolantType = this instanceof import_three10.QuaternionKeyframeTrack ? GLTFCubicSplineQuaternionInterpolant : GLTFCubicSplineInterpolant;
+                    const interpolantType = this instanceof import_three22.QuaternionKeyframeTrack ? GLTFCubicSplineQuaternionInterpolant : GLTFCubicSplineInterpolant;
                     return new interpolantType(this.times, this.values, this.getValueSize() / 3, result);
                   };
                   track.createInterpolant.isInterpolantFactoryMethodGLTFCubicSpline = true;
@@ -15429,7 +16153,7 @@ oGlow = vec4(0.);`);
               }
             }
             const name = animationDef.name ? animationDef.name : "animation_" + animationIndex;
-            return new import_three10.AnimationClip(name, void 0, tracks);
+            return new import_three22.AnimationClip(name, void 0, tracks);
           });
         }
         createNodeMesh(nodeIndex) {
@@ -15480,13 +16204,13 @@ oGlow = vec4(0.);`);
           }().then(function(objects) {
             let node;
             if (nodeDef.isBone === true) {
-              node = new import_three10.Bone();
+              node = new import_three22.Bone();
             } else if (objects.length > 1) {
-              node = new import_three10.Group();
+              node = new import_three22.Group();
             } else if (objects.length === 1) {
               node = objects[0];
             } else {
-              node = new import_three10.Object3D();
+              node = new import_three22.Object3D();
             }
             if (node !== objects[0]) {
               for (let i2 = 0, il = objects.length; i2 < il; i2++) {
@@ -15501,7 +16225,7 @@ oGlow = vec4(0.);`);
             if (nodeDef.extensions)
               addUnknownExtensionsToUserData(extensions, node, nodeDef);
             if (nodeDef.matrix !== void 0) {
-              const matrix = new import_three10.Matrix4();
+              const matrix = new import_three22.Matrix4();
               matrix.fromArray(nodeDef.matrix);
               node.applyMatrix4(matrix);
             } else {
@@ -15527,7 +16251,7 @@ oGlow = vec4(0.);`);
           const extensions = this.extensions;
           const sceneDef = this.json.scenes[sceneIndex];
           const parser = this;
-          const scene = new import_three10.Group();
+          const scene = new import_three22.Group();
           if (sceneDef.name)
             scene.name = parser.createUniqueName(sceneDef.name);
           assignExtrasToUserData(scene, sceneDef);
@@ -15542,7 +16266,7 @@ oGlow = vec4(0.);`);
             const reduceAssociations = (node) => {
               const reducedAssociations = /* @__PURE__ */ new Map();
               for (const [key, value] of parser.associations) {
-                if (key instanceof import_three10.Material || key instanceof import_three10.Texture) {
+                if (key instanceof import_three22.Material || key instanceof import_three22.Texture) {
                   reducedAssociations.set(key, value);
                 }
               }
@@ -15829,13 +16553,13 @@ oGlow = vec4(0.);`);
     } else {
       throw new Error("THREE.KTX2Loader: Unsupported supercompressionScheme.");
     }
-    if (TYPE_MAP[vkFormat] === import_three11.FloatType) {
+    if (TYPE_MAP[vkFormat] === import_three23.FloatType) {
       view = new Float32Array(
         levelData.buffer,
         levelData.byteOffset,
         levelData.byteLength / Float32Array.BYTES_PER_ELEMENT
       );
-    } else if (TYPE_MAP[vkFormat] === import_three11.HalfFloatType) {
+    } else if (TYPE_MAP[vkFormat] === import_three23.HalfFloatType) {
       view = new Uint16Array(
         levelData.buffer,
         levelData.byteOffset,
@@ -15844,23 +16568,23 @@ oGlow = vec4(0.);`);
     } else {
       view = levelData;
     }
-    const texture = pixelDepth === 0 ? new import_three11.DataTexture(view, pixelWidth, pixelHeight) : new import_three11.Data3DTexture(view, pixelWidth, pixelHeight, pixelDepth);
+    const texture = pixelDepth === 0 ? new import_three23.DataTexture(view, pixelWidth, pixelHeight) : new import_three23.Data3DTexture(view, pixelWidth, pixelHeight, pixelDepth);
     texture.type = TYPE_MAP[vkFormat];
     texture.format = FORMAT_MAP[vkFormat];
-    texture.encoding = ENCODING_MAP[vkFormat] || import_three11.LinearEncoding;
+    texture.encoding = ENCODING_MAP[vkFormat] || import_three23.LinearEncoding;
     texture.needsUpdate = true;
     return Promise.resolve(texture);
   }
-  var import_three11, _taskCache, _activeLoaders, _zstd, KTX2Loader, FORMAT_MAP, TYPE_MAP, ENCODING_MAP;
+  var import_three23, _taskCache, _activeLoaders, _zstd, KTX2Loader, FORMAT_MAP, TYPE_MAP, ENCODING_MAP;
   var init_KTX2Loader = __esm({
     "../packages/gfx/node_modules/three/examples/jsm/loaders/KTX2Loader.js"() {
-      import_three11 = __toESM(require_three_min(), 1);
+      import_three23 = __toESM(require_three_min(), 1);
       init_WorkerPool();
       init_ktx_parse_module();
       init_zstddec_module();
       _taskCache = /* @__PURE__ */ new WeakMap();
       _activeLoaders = 0;
-      KTX2Loader = class extends import_three11.Loader {
+      KTX2Loader = class extends import_three23.Loader {
         constructor(manager) {
           super(manager);
           this.transcoderPath = "";
@@ -15899,11 +16623,11 @@ oGlow = vec4(0.);`);
         }
         init() {
           if (!this.transcoderPending) {
-            const jsLoader = new import_three11.FileLoader(this.manager);
+            const jsLoader = new import_three23.FileLoader(this.manager);
             jsLoader.setPath(this.transcoderPath);
             jsLoader.setWithCredentials(this.withCredentials);
             const jsContent = jsLoader.loadAsync("basis_transcoder.js");
-            const binaryLoader = new import_three11.FileLoader(this.manager);
+            const binaryLoader = new import_three23.FileLoader(this.manager);
             binaryLoader.setPath(this.transcoderPath);
             binaryLoader.setResponseType("arraybuffer");
             binaryLoader.setWithCredentials(this.withCredentials);
@@ -15942,7 +16666,7 @@ oGlow = vec4(0.);`);
           if (this.workerConfig === null) {
             throw new Error("THREE.KTX2Loader: Missing initialization with `.detectSupport( renderer )`.");
           }
-          const loader4 = new import_three11.FileLoader(this.manager);
+          const loader4 = new import_three23.FileLoader(this.manager);
           loader4.setResponseType("arraybuffer");
           loader4.setWithCredentials(this.withCredentials);
           loader4.load(url, (buffer) => {
@@ -15957,12 +16681,12 @@ oGlow = vec4(0.);`);
           const { mipmaps, width, height, format, type, error, dfdTransferFn, dfdFlags } = transcodeResult;
           if (type === "error")
             return Promise.reject(error);
-          const texture = new import_three11.CompressedTexture(mipmaps, width, height, format, import_three11.UnsignedByteType);
-          texture.minFilter = mipmaps.length === 1 ? import_three11.LinearFilter : import_three11.LinearMipmapLinearFilter;
-          texture.magFilter = import_three11.LinearFilter;
+          const texture = new import_three23.CompressedTexture(mipmaps, width, height, format, import_three23.UnsignedByteType);
+          texture.minFilter = mipmaps.length === 1 ? import_three23.LinearFilter : import_three23.LinearMipmapLinearFilter;
+          texture.magFilter = import_three23.LinearFilter;
           texture.generateMipmaps = false;
           texture.needsUpdate = true;
-          texture.encoding = dfdTransferFn === x ? import_three11.sRGBEncoding : import_three11.LinearEncoding;
+          texture.encoding = dfdTransferFn === x ? import_three23.sRGBEncoding : import_three23.LinearEncoding;
           texture.premultiplyAlpha = !!(dfdFlags & p);
           return texture;
         }
@@ -16010,16 +16734,16 @@ oGlow = vec4(0.);`);
         RGBA4444: 16
       };
       KTX2Loader.EngineFormat = {
-        RGBAFormat: import_three11.RGBAFormat,
-        RGBA_ASTC_4x4_Format: import_three11.RGBA_ASTC_4x4_Format,
-        RGBA_BPTC_Format: import_three11.RGBA_BPTC_Format,
-        RGBA_ETC2_EAC_Format: import_three11.RGBA_ETC2_EAC_Format,
-        RGBA_PVRTC_4BPPV1_Format: import_three11.RGBA_PVRTC_4BPPV1_Format,
-        RGBA_S3TC_DXT5_Format: import_three11.RGBA_S3TC_DXT5_Format,
-        RGB_ETC1_Format: import_three11.RGB_ETC1_Format,
-        RGB_ETC2_Format: import_three11.RGB_ETC2_Format,
-        RGB_PVRTC_4BPPV1_Format: import_three11.RGB_PVRTC_4BPPV1_Format,
-        RGB_S3TC_DXT1_Format: import_three11.RGB_S3TC_DXT1_Format
+        RGBAFormat: import_three23.RGBAFormat,
+        RGBA_ASTC_4x4_Format: import_three23.RGBA_ASTC_4x4_Format,
+        RGBA_BPTC_Format: import_three23.RGBA_BPTC_Format,
+        RGBA_ETC2_EAC_Format: import_three23.RGBA_ETC2_EAC_Format,
+        RGBA_PVRTC_4BPPV1_Format: import_three23.RGBA_PVRTC_4BPPV1_Format,
+        RGBA_S3TC_DXT5_Format: import_three23.RGBA_S3TC_DXT5_Format,
+        RGB_ETC1_Format: import_three23.RGB_ETC1_Format,
+        RGB_ETC2_Format: import_three23.RGB_ETC2_Format,
+        RGB_PVRTC_4BPPV1_Format: import_three23.RGB_PVRTC_4BPPV1_Format,
+        RGB_S3TC_DXT1_Format: import_three23.RGB_S3TC_DXT1_Format
       };
       KTX2Loader.BasisWorker = function() {
         let config;
@@ -16206,37 +16930,37 @@ oGlow = vec4(0.);`);
         }
       };
       FORMAT_MAP = {
-        [Ae]: import_three11.RGBAFormat,
-        [pe]: import_three11.RGBAFormat,
-        [Ot]: import_three11.RGBAFormat,
-        [Ft]: import_three11.RGBAFormat,
-        [de]: import_three11.RGFormat,
-        [se]: import_three11.RGFormat,
-        [yt]: import_three11.RGFormat,
-        [dt]: import_three11.RGFormat,
-        [xe]: import_three11.RedFormat,
-        [$t]: import_three11.RedFormat,
-        [gt]: import_three11.RedFormat,
-        [ct]: import_three11.RedFormat
+        [Ae]: import_three23.RGBAFormat,
+        [pe]: import_three23.RGBAFormat,
+        [Ot]: import_three23.RGBAFormat,
+        [Ft]: import_three23.RGBAFormat,
+        [de]: import_three23.RGFormat,
+        [se]: import_three23.RGFormat,
+        [yt]: import_three23.RGFormat,
+        [dt]: import_three23.RGFormat,
+        [xe]: import_three23.RedFormat,
+        [$t]: import_three23.RedFormat,
+        [gt]: import_three23.RedFormat,
+        [ct]: import_three23.RedFormat
       };
       TYPE_MAP = {
-        [Ae]: import_three11.FloatType,
-        [pe]: import_three11.HalfFloatType,
-        [Ot]: import_three11.UnsignedByteType,
-        [Ft]: import_three11.UnsignedByteType,
-        [de]: import_three11.FloatType,
-        [se]: import_three11.HalfFloatType,
-        [yt]: import_three11.UnsignedByteType,
-        [dt]: import_three11.UnsignedByteType,
-        [xe]: import_three11.FloatType,
-        [$t]: import_three11.HalfFloatType,
-        [gt]: import_three11.UnsignedByteType,
-        [ct]: import_three11.UnsignedByteType
+        [Ae]: import_three23.FloatType,
+        [pe]: import_three23.HalfFloatType,
+        [Ot]: import_three23.UnsignedByteType,
+        [Ft]: import_three23.UnsignedByteType,
+        [de]: import_three23.FloatType,
+        [se]: import_three23.HalfFloatType,
+        [yt]: import_three23.UnsignedByteType,
+        [dt]: import_three23.UnsignedByteType,
+        [xe]: import_three23.FloatType,
+        [$t]: import_three23.HalfFloatType,
+        [gt]: import_three23.UnsignedByteType,
+        [ct]: import_three23.UnsignedByteType
       };
       ENCODING_MAP = {
-        [Ft]: import_three11.sRGBEncoding,
-        [dt]: import_three11.sRGBEncoding,
-        [gt]: import_three11.sRGBEncoding
+        [Ft]: import_three23.sRGBEncoding,
+        [dt]: import_three23.sRGBEncoding,
+        [gt]: import_three23.sRGBEncoding
       };
     }
   });
@@ -16253,7 +16977,7 @@ oGlow = vec4(0.);`);
   });
 
   // ../packages/gfx/node_modules/@fils/io/lib/main.js
-  var init_main = __esm({
+  var init_main2 = __esm({
     "../packages/gfx/node_modules/@fils/io/lib/main.js"() {
       init_io();
       init_AssetsBundle();
@@ -16268,38 +16992,38 @@ oGlow = vec4(0.);`);
   });
 
   // ../packages/gfx/node_modules/three/examples/jsm/objects/Reflector.js
-  var import_three12, Reflector;
+  var import_three24, Reflector;
   var init_Reflector = __esm({
     "../packages/gfx/node_modules/three/examples/jsm/objects/Reflector.js"() {
-      import_three12 = __toESM(require_three_min(), 1);
-      Reflector = class extends import_three12.Mesh {
+      import_three24 = __toESM(require_three_min(), 1);
+      Reflector = class extends import_three24.Mesh {
         constructor(geometry, options = {}) {
           super(geometry);
           this.isReflector = true;
           this.type = "Reflector";
-          this.camera = new import_three12.PerspectiveCamera();
+          this.camera = new import_three24.PerspectiveCamera();
           const scope = this;
-          const color = options.color !== void 0 ? new import_three12.Color(options.color) : new import_three12.Color(8355711);
+          const color = options.color !== void 0 ? new import_three24.Color(options.color) : new import_three24.Color(8355711);
           const textureWidth = options.textureWidth || 512;
           const textureHeight = options.textureHeight || 512;
           const clipBias = options.clipBias || 0;
           const shader = options.shader || Reflector.ReflectorShader;
           const multisample = options.multisample !== void 0 ? options.multisample : 4;
-          const reflectorPlane = new import_three12.Plane();
-          const normal = new import_three12.Vector3();
-          const reflectorWorldPosition = new import_three12.Vector3();
-          const cameraWorldPosition = new import_three12.Vector3();
-          const rotationMatrix = new import_three12.Matrix4();
-          const lookAtPosition = new import_three12.Vector3(0, 0, -1);
-          const clipPlane = new import_three12.Vector4();
-          const view = new import_three12.Vector3();
-          const target = new import_three12.Vector3();
-          const q = new import_three12.Vector4();
-          const textureMatrix = new import_three12.Matrix4();
+          const reflectorPlane = new import_three24.Plane();
+          const normal = new import_three24.Vector3();
+          const reflectorWorldPosition = new import_three24.Vector3();
+          const cameraWorldPosition = new import_three24.Vector3();
+          const rotationMatrix = new import_three24.Matrix4();
+          const lookAtPosition = new import_three24.Vector3(0, 0, -1);
+          const clipPlane = new import_three24.Vector4();
+          const view = new import_three24.Vector3();
+          const target = new import_three24.Vector3();
+          const q = new import_three24.Vector4();
+          const textureMatrix = new import_three24.Matrix4();
           const virtualCamera = this.camera;
-          const renderTarget = new import_three12.WebGLRenderTarget(textureWidth, textureHeight, { samples: multisample, type: import_three12.HalfFloatType });
-          const material = new import_three12.ShaderMaterial({
-            uniforms: import_three12.UniformsUtils.clone(shader.uniforms),
+          const renderTarget = new import_three24.WebGLRenderTarget(textureWidth, textureHeight, { samples: multisample, type: import_three24.HalfFloatType });
+          const material = new import_three24.ShaderMaterial({
+            uniforms: import_three24.UniformsUtils.clone(shader.uniforms),
             fragmentShader: shader.fragmentShader,
             vertexShader: shader.vertexShader
           });
@@ -16375,8 +17099,8 @@ oGlow = vec4(0.);`);
             const currentToneMapping = renderer.toneMapping;
             renderer.xr.enabled = false;
             renderer.shadowMap.autoUpdate = false;
-            renderer.outputEncoding = import_three12.LinearEncoding;
-            renderer.toneMapping = import_three12.NoToneMapping;
+            renderer.outputEncoding = import_three24.LinearEncoding;
+            renderer.toneMapping = import_three24.NoToneMapping;
             renderer.setRenderTarget(renderTarget);
             renderer.state.buffers.depth.setMask(true);
             if (renderer.autoClear === false)
@@ -16464,24 +17188,21 @@ oGlow = vec4(0.);`);
     }
   });
 
-  // ../packages/gfx/src/sim/Simulator.ts
-  var import_three13, floor, groundMirror, bundle, Figures;
+  // ../packages/gfx/lib/sim/Simulator.js
+  var import_three25, floor, groundMirror, bundle, Figures;
   var init_Simulator = __esm({
-    "../packages/gfx/src/sim/Simulator.ts"() {
-      init_main();
-      import_three13 = __toESM(require_three_min());
-      init_main3();
+    "../packages/gfx/lib/sim/Simulator.js"() {
+      init_main2();
+      import_three25 = __toESM(require_three_min());
+      init_main4();
       init_Reflector();
-      floor = new import_three13.Mesh(
-        new import_three13.PlaneGeometry(1, 1),
-        new import_three13.MeshPhysicalMaterial({
-          color: 10066329,
-          roughness: 0.3,
-          metalness: 0.1,
-          envMapIntensity: 0.1
-        })
-      );
-      groundMirror = new Reflector(new import_three13.PlaneGeometry(1, 1), {
+      floor = new import_three25.Mesh(new import_three25.PlaneGeometry(1, 1), new import_three25.MeshPhysicalMaterial({
+        color: 10066329,
+        roughness: 0.3,
+        metalness: 0.1,
+        envMapIntensity: 0.1
+      }));
+      groundMirror = new Reflector(new import_three25.PlaneGeometry(1, 1), {
         clipBias: 3e-3,
         textureWidth: window.innerWidth,
         textureHeight: window.innerHeight,
@@ -16655,7 +17376,7 @@ oGlow = vec4(0.);`);
   });
 
   // ../packages/gfx/node_modules/@fils/math/lib/main.js
-  var init_main2 = __esm({
+  var init_main3 = __esm({
     "../packages/gfx/node_modules/@fils/math/lib/main.js"() {
       init_Random();
       init_MathUtils();
@@ -16663,768 +17384,17 @@ oGlow = vec4(0.);`);
     }
   });
 
-  // ../packages/gfx/src/sim/LEDScreenTile.ts
-  var import_three14, SCREEN_MAT, SCREEN_MAT_2, BASE_MAT, BASE_GEO, tmp;
-  var init_LEDScreenTile = __esm({
-    "../packages/gfx/src/sim/LEDScreenTile.ts"() {
-      init_main2();
-      import_three14 = __toESM(require_three_min());
-      SCREEN_MAT = new import_three14.MeshBasicMaterial({
-        map: new import_three14.Texture(),
-        color: 16777215
-      });
-      SCREEN_MAT.onBeforeCompile = (shader) => {
-        shader.vertexShader = shader.vertexShader.replace(
-          "#include <uv2_pars_vertex>",
-          `#include <uv2_pars_vertex>
-        attribute vec2 cuv;
-        varying vec2 vCUv;`
-        );
-        shader.vertexShader = shader.vertexShader.replace(
-          "#include <fog_vertex>",
-          `vCUv = cuv;`
-        );
-        shader.fragmentShader = shader.fragmentShader.replace(
-          "#include <clipping_planes_pars_fragment>",
-          `#include <clipping_planes_pars_fragment>
-        varying vec2 vCUv;`
-        );
-        shader.fragmentShader = shader.fragmentShader.replace(
-          "#include <map_fragment>",
-          `diffuseColor.rgb = texture2D(map, vCUv).rgb;`
-        );
-      };
-      SCREEN_MAT_2 = new import_three14.MeshBasicMaterial({
-        map: SCREEN_MAT.map,
-        color: 16777215,
-        opacity: 1,
-        transparent: true
-      });
-      BASE_MAT = new import_three14.MeshStandardMaterial({
-        color: 3355443,
-        roughness: 0.6,
-        metalness: 0.4
-      });
-      BASE_GEO = new import_three14.BoxGeometry(1, 1, 1);
-      tmp = new import_three14.Vector3();
-    }
-  });
-
-  // ../packages/gfx/src/utils/EquirectangularToCubemap.ts
-  var import_three15, GEO;
-  var init_EquirectangularToCubemap = __esm({
-    "../packages/gfx/src/utils/EquirectangularToCubemap.ts"() {
-      import_three15 = __toESM(require_three_min());
-      GEO = new import_three15.SphereGeometry(100, 64, 64);
-    }
-  });
-
-  // ../packages/gfx/src/vfx/pipeline/RenderPass.ts
-  var RenderPass;
-  var init_RenderPass = __esm({
-    "../packages/gfx/src/vfx/pipeline/RenderPass.ts"() {
-      RenderPass = class {
-        constructor() {
-        }
-        render(renderer, composer, target = null) {
-          renderer.setRenderTarget(target);
-          composer.quad.material = this.shader;
-          if (this.shader.uniforms.tInput)
-            this.shader.uniforms.tInput.value = composer.read.texture;
-          if (this.shader.uniforms.tDepth)
-            this.shader.uniforms.tDepth.value = composer.read.depthTexture;
-          renderer.render(composer.scene, composer.camera);
-        }
-        setSize(width, height) {
-        }
-      };
-    }
-  });
-
-  // ../packages/gfx/src/glsl/vfx/blur.frag
-  var blur_default;
-  var init_blur = __esm({
-    "../packages/gfx/src/glsl/vfx/blur.frag"() {
-      blur_default = "#version 100\nprecision highp float;\n\n/*\n * Algorithms By Matt DesLauriers: https://github.com/Jam3/glsl-fast-gaussian-blur\n */\n\nvec4 blur5(sampler2D image, vec2 uv, vec2 resolution, vec2 direction) {\n	vec4 color = vec4(0.0);\n	vec2 off1 = vec2(1.3333333333333333) * direction;\n	color += texture2D(image, uv) * 0.29411764705882354;\n	color += texture2D(image, uv + (off1 / resolution)) * 0.35294117647058826;\n	color += texture2D(image, uv - (off1 / resolution)) * 0.35294117647058826;\n	return color; \n}\n\nvec4 blur9(sampler2D image, vec2 uv, vec2 resolution, vec2 direction) {\n	vec4 color = vec4(0.0);\n	vec2 off1 = vec2(1.3846153846) * direction;\n	vec2 off2 = vec2(3.2307692308) * direction;\n	color += texture2D(image, uv) * 0.2270270270;\n	color += texture2D(image, uv + (off1 / resolution)) * 0.3162162162;\n	color += texture2D(image, uv - (off1 / resolution)) * 0.3162162162;\n	color += texture2D(image, uv + (off2 / resolution)) * 0.0702702703;\n	color += texture2D(image, uv - (off2 / resolution)) * 0.0702702703;\n	return color;\n}\n\nvec4 blur13(sampler2D image, vec2 uv, vec2 resolution, vec2 direction) {\n	vec4 color = vec4(0.0);\n	vec2 off1 = vec2(1.411764705882353) * direction;\n	vec2 off2 = vec2(3.2941176470588234) * direction;\n	vec2 off3 = vec2(5.176470588235294) * direction;\n	color += texture2D(image, uv) * 0.1964825501511404;\n	color += texture2D(image, uv + (off1 / resolution)) * 0.2969069646728344;\n	color += texture2D(image, uv - (off1 / resolution)) * 0.2969069646728344;\n	color += texture2D(image, uv + (off2 / resolution)) * 0.09447039785044732;\n	color += texture2D(image, uv - (off2 / resolution)) * 0.09447039785044732;\n	color += texture2D(image, uv + (off3 / resolution)) * 0.010381362401148057;\n	color += texture2D(image, uv - (off3 / resolution)) * 0.010381362401148057;\n	return color;\n}\n\nuniform vec2 resolution;\nuniform vec2 direction;\nuniform sampler2D tMap;\nuniform float scale;\nuniform int mode;\n\nvarying vec2 vUv;\n\nvoid main () {\n	if(mode == 0) gl_FragColor = blur5(tMap, vUv, resolution*scale, direction);\n	else if(mode == 1) gl_FragColor = blur9(tMap, vUv, resolution*scale, direction);\n	else gl_FragColor = blur13(tMap, vUv, resolution*scale, direction);\n}";
-    }
-  });
-
-  // ../packages/gfx/src/vfx/pipeline/BlurPass.ts
-  var import_three16, BlurDefaults, BlurPass;
-  var init_BlurPass = __esm({
-    "../packages/gfx/src/vfx/pipeline/BlurPass.ts"() {
-      import_three16 = __toESM(require_three_min());
-      init_RenderPass();
-      init_fbo2();
-      init_blur();
-      BlurDefaults = {
-        scale: 1,
-        radius: 1,
-        iterations: 4,
-        quality: 0
-      };
-      BlurPass = class extends RenderPass {
-        constructor(src, width, height, settings = BlurDefaults) {
-          super();
-          this.radius = 2;
-          this.iterations = 4;
-          this.quality = 0;
-          this.source = src;
-          const scale = settings.scale || BlurDefaults.scale;
-          const radius = settings.radius || BlurDefaults.radius;
-          const iterations = settings.iterations || BlurDefaults.iterations;
-          const quality = settings.quality || BlurDefaults.quality;
-          this.read = new import_three16.WebGLRenderTarget(width, height);
-          this.write = this.read.clone();
-          this.radius = radius;
-          this.iterations = iterations;
-          this.scale = scale;
-          this.quality = quality;
-          this.shader = new import_three16.RawShaderMaterial({
-            vertexShader: fbo_default2,
-            fragmentShader: blur_default,
-            uniforms: {
-              resolution: {
-                value: new import_three16.Vector2(width, height)
-              },
-              direction: {
-                value: new import_three16.Vector2()
-              },
-              scale: {
-                value: scale
-              },
-              tMap: {
-                value: null
-              },
-              mode: {
-                value: quality
-              }
-            }
-          });
-          this.scene = new import_three16.Scene();
-          const w = scale * width / 2;
-          const h2 = scale * height / 2;
-          this.camera = new import_three16.OrthographicCamera(-w, w, h2, -h2, 0, 100);
-          this.camera.position.z = 1;
-          this.scene.add(this.camera);
-          this.quad = new import_three16.Mesh(
-            new import_three16.PlaneGeometry(1, 1),
-            this.shader
-          );
-          this.quad.scale.set(width * scale, height * scale, 1);
-          this.scene.add(this.quad);
-        }
-        swapBuffers() {
-          const tmp3 = this.write;
-          this.write = this.read;
-          this.read = tmp3;
-        }
-        setSize(width, height) {
-          this.read.setSize(width * this.scale, height * this.scale);
-          this.write.setSize(width * this.scale, height * this.scale);
-          const w = this.scale * width / 2;
-          const h2 = this.scale * height / 2;
-          this.camera.left = -w;
-          this.camera.right = w;
-          this.camera.top = h2;
-          this.camera.bottom = -h2;
-          this.camera.updateProjectionMatrix();
-          this.quad.scale.set(width * this.scale, height * this.scale, 1);
-          this.shader.uniforms.resolution.value.set(width, height);
-        }
-        blurPass(renderer, src, dst, dx, dy) {
-          renderer.setRenderTarget(dst);
-          this.shader.uniforms.mode.value = this.quality;
-          this.shader.uniforms.direction.value.set(dx, dy);
-          this.shader.uniforms.tMap.value = src;
-          renderer.render(this.scene, this.camera);
-        }
-        render(renderer, composer, target = null) {
-          this.blurPass(renderer, this.source != null ? this.source : composer.read.texture, this.write, this.radius, 0);
-          this.swapBuffers();
-          for (let i3 = 1; i3 < this.iterations - 1; i3++) {
-            this.blurPass(renderer, this.read.texture, this.write, i3 % 2 == 0 ? this.radius : 0, i3 % 2 == 0 ? 0 : this.radius);
-            this.swapBuffers();
-          }
-          const i2 = this.iterations - 1;
-          this.blurPass(renderer, this.read.texture, target, i2 % 2 == 0 ? this.radius : 0, i2 % 2 == 0 ? 0 : this.radius);
-        }
-        renderInternal(renderer) {
-          if (this.source == null)
-            return console.warn("Internal rendering needs a source texture!");
-          this.blurPass(renderer, this.source, this.write, this.radius, 0);
-          this.swapBuffers();
-          for (let i2 = 1; i2 < this.iterations; i2++) {
-            this.blurPass(renderer, this.read.texture, this.write, i2 % 2 == 0 ? this.radius : 0, i2 % 2 == 0 ? 0 : this.radius);
-            this.swapBuffers();
-          }
-        }
-        get texture() {
-          return this.read.texture;
-        }
-      };
-    }
-  });
-
-  // ../packages/gfx/src/glsl/vfx/final.frag
-  var final_default;
-  var init_final = __esm({
-    "../packages/gfx/src/glsl/vfx/final.frag"() {
-      final_default = "precision highp float;\n\nvarying vec2 vUv;\nuniform sampler2D tInput;\n\nuniform float chromatic_aberration;\nuniform bool enableCA;\n\nuniform float dither;\nuniform bool enableDithering;\n\nuniform bool enableVignette;\nuniform float vIntensity;\n\n#include <dithering>\n\nfloat vignette(vec2 texCoords, float strength) {\n    vec2 uv = texCoords;\n\n    uv *=  1.0 - uv.yx;   //vec2(1.0)- uv.yx; -> 1.-u.yx; Thanks FabriceNeyret !\n\n    float vig = uv.x*uv.y * 15.0; // multiply with sth for intensity\n\n    vig = pow(vig, strength);\n\n    return vig;\n}\n\nvec4 ca (sampler2D tex, vec2 texCoord, float ca_amount) {\n    vec2 red_offset = vec2(ca_amount, 0.0);\n    vec2 green_offset = vec2(0.0, 0.0);\n    vec2 blue_offset = vec2(-ca_amount, 0.0);\n\n    vec4 red_color = texture2D(tex, texCoord + red_offset);\n    vec4 green_color = texture2D(tex, texCoord + green_offset);\n    vec4 blue_color = texture2D(tex, texCoord + blue_offset);\n\n    return vec4(red_color.r, green_color.g, blue_color.b, 1.0);\n}\n\nvoid main () {\n    vec4 color;\n    if(enableCA) {\n         color = ca(tInput, vUv, chromatic_aberration);\n    } else {\n        color = texture2D(tInput, vUv);\n    }\n    if(enableDithering) {\n        color += dithering(vUv, dither);\n    }\n\n    if(enableVignette) {\n        color.rgb *= vignette(vUv, vIntensity);\n    }\n    gl_FragColor = color;\n}";
-    }
-  });
-
-  // ../packages/gfx/src/vfx/pipeline/FinalPass.ts
-  var import_three17, SHADER;
-  var init_FinalPass = __esm({
-    "../packages/gfx/src/vfx/pipeline/FinalPass.ts"() {
-      init_fbo2();
-      init_final();
-      init_RenderPass();
-      import_three17 = __toESM(require_three_min());
-      SHADER = new import_three17.RawShaderMaterial({
-        vertexShader: fbo_default2,
-        fragmentShader: final_default,
-        uniforms: {
-          tInput: { value: null },
-          enableCA: {
-            value: true
-          },
-          chromatic_aberration: {
-            value: 1e-3
-          },
-          enableDithering: {
-            value: false
-          },
-          dither: {
-            value: 10
-          },
-          enableVignette: {
-            value: false
-          },
-          vIntensity: {
-            value: 1
-          }
-        }
-      });
-    }
-  });
-
-  // ../packages/gfx/src/vfx/VFXPipeline.ts
-  var import_three18, TO_SCREEN;
-  var init_VFXPipeline = __esm({
-    "../packages/gfx/src/vfx/VFXPipeline.ts"() {
-      import_three18 = __toESM(require_three_min());
-      init_fbo();
-      init_fbo2();
-      TO_SCREEN = new import_three18.RawShaderMaterial({
-        vertexShader: fbo_default2,
-        fragmentShader: fbo_default,
-        uniforms: {
-          tInput: {
-            value: null
-          }
-        }
-      });
-    }
-  });
-
-  // ../packages/gfx/src/main.ts
-  var init_main3 = __esm({
-    "../packages/gfx/src/main.ts"() {
-      init_glInfo();
-      init_RTHelper();
-      init_RTUtils();
-      init_Sketch();
-      init_WebGLSketch();
-      init_SceneUtils();
-      init_GfxUtils();
-      init_Simulator();
-      init_LEDScreenTile();
-      init_EquirectangularToCubemap();
-      init_VFXRenderer();
-      init_RenderPass();
-      init_BlurPass();
-      init_FinalPass();
-      init_VFXPipeline();
-      init_MaterialUtils();
-    }
-  });
-
-  // ../packages/gfx/src/glsl/vfx/comp.frag
-  var comp_default;
-  var init_comp = __esm({
-    "../packages/gfx/src/glsl/vfx/comp.frag"() {
-      comp_default = "precision highp float;\n\nvarying vec2 vUv;\nuniform sampler2D tScene;\nuniform sampler2D tGlow;\nuniform float exposure;\nuniform float gamma;\n\nuniform bool renderGlow;\nuniform bool renderScene;\n\nvoid main () {\n    vec4 scene = vec4(0.0);\n    if(renderScene) {\n        scene = texture2D(tScene, vUv);\n    }\n    vec4 glow = vec4(0.0);\n    if(renderGlow) {\n        glow = texture2D(tGlow, vUv);\n    }\n\n    scene.rgb += glow.rgb;\n    \n    // tone mapping\n    vec3 result = vec3(1.0) - exp(-scene.rgb * exposure);\n    // also gamma correct while we're at it       \n    result = pow(result, vec3(1.0 / gamma));\n\n    gl_FragColor = vec4(result, scene.a + glow.a);\n}";
-    }
-  });
-
-  // ../packages/gfx/src/vfx/VFXRenderer.ts
-  var import_three19, COMP, GLOW_DEFAULTS, VFXRenderer;
-  var init_VFXRenderer = __esm({
-    "../packages/gfx/src/vfx/VFXRenderer.ts"() {
-      import_three19 = __toESM(require_three_min());
-      init_main3();
-      init_fbo2();
-      init_comp();
-      COMP = new import_three19.RawShaderMaterial({
-        vertexShader: fbo_default2,
-        fragmentShader: comp_default,
-        uniforms: {
-          tScene: { value: null },
-          tGlow: { value: null },
-          exposure: { value: 1 },
-          gamma: { value: 1 },
-          renderGlow: { value: true },
-          renderScene: { value: true }
-        },
-        transparent: true
-      });
-      GLOW_DEFAULTS = {
-        scale: 0.3,
-        radius: 1,
-        iterations: 8,
-        quality: 0
-      };
-      VFXRenderer = class {
-        constructor(renderer, width, height, settings) {
-          this.showGlow = true;
-          this.showScene = true;
-          this.exposure = COMP.uniforms.exposure.value;
-          this.gamma = COMP.uniforms.gamma.value;
-          this.shader = COMP.clone();
-          this.rnd = renderer;
-          const w = width * window.devicePixelRatio;
-          const h2 = height * window.devicePixelRatio;
-          this.sceneRT = new import_three19.WebGLMultipleRenderTargets(w, h2, 2, {
-            format: import_three19.RGBAFormat,
-            type: import_three19.UnsignedByteType
-          });
-          this.sceneRT["samples"] = settings.samples || 4;
-          this.sceneRT.texture[0].name = "diffuse";
-          this.sceneRT.texture[1].name = "glow";
-          if (settings.useDepth) {
-            this.sceneRT["depthTexture"] = new import_three19.DepthTexture(w, h2, import_three19.FloatType);
-            this.sceneRT["depthTexture"].format = import_three19.DepthFormat;
-          }
-          const bs = settings && settings.glowSettings ? settings.glowSettings : GLOW_DEFAULTS;
-          this.glow = new BlurPass(this.sceneRT.texture[1], w, h2, bs);
-          if (settings && settings.exposure) {
-            this.exposure = settings.exposure;
-          }
-          if (settings && settings.gamma) {
-            this.gamma = settings.gamma;
-          }
-          if (settings.customFargment !== void 0) {
-            this.shader.vertexShader = settings.customFargment;
-            if (settings.customUniforms !== void 0) {
-              const u2 = settings.customUniforms;
-              for (const key in u2) {
-                this.shader.uniforms[key] = u2[key];
-              }
-            }
-          }
-        }
-        setSize(width, height) {
-          const w = width * window.devicePixelRatio;
-          const h2 = height * window.devicePixelRatio;
-          this.sceneRT.setSize(w, h2);
-          this.glow.setSize(w, h2);
-        }
-        updateUniforms() {
-          const u2 = this.shader.uniforms;
-          u2.exposure.value = this.exposure;
-          u2.gamma.value = this.gamma;
-          u2.renderGlow.value = this.showGlow;
-          u2.renderScene.value = this.showScene;
-          u2.tScene.value = this.sceneRT.texture[0];
-          u2.tGlow.value = this.glow.texture;
-        }
-        render(scene, camera, target = null) {
-          this.rnd.autoClear = true;
-          this.rnd.setRenderTarget(this.sceneRT);
-          this.rnd.render(scene, camera);
-          this.glow.renderInternal(this.rnd);
-          this.rnd.setRenderTarget(null);
-          this.updateUniforms();
-          if (target) {
-            RTUtils.renderToRT(target, this.rnd, this.shader);
-          } else
-            RTUtils.renderToViewport(this.rnd, this.shader);
-          this.rnd.setRenderTarget(null);
-        }
-      };
-    }
-  });
-
-  // ../packages/gfx/lib/utils/glInfo.js
-  var init_glInfo2 = __esm({
-    "../packages/gfx/lib/utils/glInfo.js"() {
-    }
-  });
-
-  // ../packages/gfx/lib/glsl/fbo.frag
-  var fbo_default3;
-  var init_fbo3 = __esm({
-    "../packages/gfx/lib/glsl/fbo.frag"() {
-      fbo_default3 = "#version 100\nprecision lowp float;\n\nuniform sampler2D tInput;\nuniform float opacity;\n\nvarying vec2 vUv;\n\nvoid main() {\n	gl_FragColor = texture2D(tInput, vUv) * opacity;\n}";
-    }
-  });
-
-  // ../packages/gfx/lib/glsl/fbo.vert
-  var fbo_default4;
-  var init_fbo4 = __esm({
-    "../packages/gfx/lib/glsl/fbo.vert"() {
-      fbo_default4 = "#version 100\n\nprecision lowp float;\n\nattribute vec3 position;\nattribute vec2 uv;\n\nuniform mat4 projectionMatrix;\nuniform mat4 modelViewMatrix;\nuniform mat4 viewMatrix;\nuniform mat4 modelMatrix;\n\nuniform float time;\n\nvarying vec2 vUv;\n\nvoid main () {\n	vec3 pos = position;\n	vUv = uv;\n	vec4 mvPos = modelViewMatrix * vec4(pos, 1.0);\n	gl_Position = projectionMatrix * mvPos;\n}";
-    }
-  });
-
-  // ../packages/gfx/lib/utils/RTHelper.js
-  var import_three20, TMP2, MAT2, RTHelper2;
-  var init_RTHelper2 = __esm({
-    "../packages/gfx/lib/utils/RTHelper.js"() {
-      import_three20 = __toESM(require_three_min());
-      init_fbo3();
-      init_fbo4();
-      TMP2 = new import_three20.Vector2();
-      MAT2 = new import_three20.RawShaderMaterial({
-        vertexShader: fbo_default4,
-        fragmentShader: fbo_default3,
-        uniforms: {
-          tInput: { value: null },
-          opacity: { value: 1 }
-        }
-      });
-      RTHelper2 = class {
-        constructor() {
-          this.camera = new import_three20.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-          this.material = MAT2;
-          var postPlane = new import_three20.PlaneGeometry(1, 1);
-          this.quad = new import_three20.Mesh(postPlane, this.material);
-          this.scene = new import_three20.Scene();
-          this.scene.add(this.quad);
-        }
-        render(target, renderer, x2 = 0, y = 0, width = 0, height = 0, opacity = 1) {
-          if (width == 0 || height == 0) {
-            width = target.width;
-            height = target.height;
-          }
-          this.drawTexture(target.texture, renderer, x2, y, width, height, opacity);
-        }
-        renderMRT(target, renderer, index, x2 = 0, y = 0, width = 0, height = 0) {
-          if (width == 0 || height == 0) {
-            width = target.width;
-            height = target.height;
-          }
-          this.drawTexture(target.texture[index], renderer, x2, y, width, height);
-        }
-        drawTexture(texture, renderer, x2 = 0, y = 0, width = 0, height = 0, opacity = 1) {
-          const s2 = new import_three20.Vector2();
-          renderer.getSize(s2);
-          this.camera.left = -s2.width / 2;
-          this.camera.right = s2.width / 2;
-          this.camera.top = s2.height / 2;
-          this.camera.bottom = -s2.height / 2;
-          this.camera.updateProjectionMatrix();
-          this.quad.scale.set(width, height, 1);
-          this.quad.position.set(-s2.width / 2 + width / 2 + x2, s2.height / 2 - height / 2 - y, 0);
-          this.quad.material = this.material;
-          this.material.uniforms.tInput.value = texture;
-          this.material.transparent = texture.format == import_three20.RGBAFormat;
-          this.material.uniforms.opacity.value = opacity;
-          renderer.render(this.scene, this.camera);
-        }
-        renderToTarget(target, renderer, material) {
-          let s2 = new import_three20.Vector2(target.width, target.height);
-          this.camera.left = -s2.width / 2;
-          this.camera.right = s2.width / 2;
-          this.camera.top = s2.height / 2;
-          this.camera.bottom = -s2.height / 2;
-          this.camera.updateProjectionMatrix();
-          this.quad.scale.set(s2.width, s2.height, 1);
-          this.quad.position.set(0, 0, 0);
-          this.quad.material = material;
-          renderer.setRenderTarget(target);
-          renderer.render(this.scene, this.camera);
-          renderer.setRenderTarget(null);
-        }
-        renderToViewport(renderer, material) {
-          renderer.getSize(TMP2);
-          this.camera.left = -TMP2.x / 2;
-          this.camera.right = TMP2.x / 2;
-          this.camera.top = TMP2.y / 2;
-          this.camera.bottom = -TMP2.y / 2;
-          this.camera.updateProjectionMatrix();
-          this.quad.scale.set(TMP2.x, TMP2.y, 1);
-          this.quad.position.set(0, 0, 0);
-          this.quad.material = material;
-          renderer.setRenderTarget(null);
-          renderer.render(this.scene, this.camera);
-        }
-        dispose() {
-          this.quad.geometry.dispose();
-        }
-      };
-    }
-  });
-
-  // ../packages/gfx/lib/utils/RTUtils.js
-  var import_three21, RTUtils2;
-  var init_RTUtils2 = __esm({
-    "../packages/gfx/lib/utils/RTUtils.js"() {
-      import_three21 = __toESM(require_three_min());
-      init_RTHelper2();
-      RTUtils2 = class {
-        static getRenderTarget(width, height, settings = {}, depth = false) {
-          const target = new import_three21.WebGLRenderTarget(width, height, {
-            minFilter: settings.minFilter !== void 0 ? settings.minFilter : import_three21.LinearFilter,
-            magFilter: settings.magFilter !== void 0 ? settings.magFilter : import_three21.LinearFilter,
-            wrapS: settings.wrapS !== void 0 ? settings.wrapS : import_three21.ClampToEdgeWrapping,
-            wrapT: settings.wrapT !== void 0 ? settings.wrapT : import_three21.ClampToEdgeWrapping,
-            format: settings.format ? settings.format : import_three21.RGBAFormat,
-            type: settings.type !== void 0 ? settings.type : import_three21.UnsignedByteType,
-            stencilBuffer: settings.stencilBuffer !== void 0 ? settings.stencilBuffer : true
-          });
-          if (depth) {
-            target.depthTexture = new import_three21.DepthTexture(width, height, import_three21.UnsignedShortType);
-          }
-          return target;
-        }
-        static drawRT(rt, renderer, x2 = 0, y = 0, width = 0, height = 0, opacity = 1) {
-          RTUtils2.helper.render(rt, renderer, x2, y, width, height, opacity);
-        }
-        static drawMRT(mrt, renderer, index, x2 = 0, y = 0, width = 0, height = 0) {
-          RTUtils2.helper.renderMRT(mrt, renderer, index, x2, y, width, height);
-        }
-        static drawTexture(texture, renderer, x2 = 0, y = 0, width = 0, height = 0, opacity = 1) {
-          RTUtils2.helper.drawTexture(texture, renderer, x2, y, width, height, opacity);
-        }
-        static renderToRT(rt, renderer, material) {
-          RTUtils2.helper.renderToTarget(rt, renderer, material);
-        }
-        static renderToViewport(renderer, material) {
-          RTUtils2.helper.renderToViewport(renderer, material);
-        }
-      };
-      RTUtils2.helper = new RTHelper2();
-    }
-  });
-
-  // ../packages/gfx/lib/prototype/Sketch.js
-  var Sketch2;
-  var init_Sketch2 = __esm({
-    "../packages/gfx/lib/prototype/Sketch.js"() {
-      Sketch2 = class {
-        constructor() {
-          this._paused = false;
-          this._raf = null;
-          this._rafId = -1;
-          this._startTime = 0;
-          this._started = false;
-        }
-        get started() {
-          return this._started;
-        }
-        start(customRaf = null) {
-          if (this._started)
-            return;
-          this._started = true;
-          const animate = () => {
-            this.update();
-            this.render();
-            requestAnimationFrame(animate);
-          };
-          if (customRaf == null) {
-            this._raf = animate;
-          } else {
-            this._raf = customRaf;
-          }
-          this.addEventListeners();
-          this._startTime = performance.now();
-          this._rafId = requestAnimationFrame(this._raf);
-          return this._rafId;
-        }
-        addEventListeners() {
-        }
-        pause() {
-          if (!this._started)
-            return;
-          if (this._paused)
-            return;
-          this._paused = true;
-          cancelAnimationFrame(this._rafId);
-        }
-        resume() {
-          if (!this._started)
-            return;
-          if (!this._paused)
-            return;
-          this._paused = false;
-          this._rafId = requestAnimationFrame(this._raf);
-        }
-        update() {
-          const time = performance.now() - this._startTime;
-          this.manualUpdate(time);
-        }
-        manualUpdate(time) {
-        }
-        render() {
-        }
-      };
-    }
-  });
-
-  // ../packages/gfx/lib/prototype/WebGLSketch.js
-  var import_three22, WebGLSketch2;
-  var init_WebGLSketch2 = __esm({
-    "../packages/gfx/lib/prototype/WebGLSketch.js"() {
-      import_three22 = __toESM(require_three_min());
-      init_Sketch2();
-      WebGLSketch2 = class extends Sketch2 {
-        constructor(width = window.innerWidth, height = window.innerHeight, opts = {}, autoStart = false) {
-          super();
-          this.vrMode = false;
-          this.size = new import_three22.Vector2();
-          this.scene = new import_three22.Scene();
-          if (opts.ortho) {
-            this.camera = new import_three22.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, opts.near != void 0 ? opts.near : 0.1, opts.far != void 0 ? opts.far : 1e3);
-          } else {
-            this.camera = new import_three22.PerspectiveCamera(opts.fov != void 0 ? opts.fov : 35, width / height, opts.near != void 0 ? opts.near : 0.1, opts.far != void 0 ? opts.far : 1e3);
-          }
-          this.scene.add(this.camera);
-          this.renderer = new import_three22.WebGLRenderer({
-            antialias: opts.antialias != void 0 ? opts.antialias : true,
-            alpha: opts.alpha != void 0 ? opts.alpha : true
-          });
-          this.renderer.setSize(width, height);
-          if (autoStart)
-            this.start();
-        }
-        start(customRaf = null) {
-          if (this.started)
-            return;
-          this.clock = new import_three22.Clock(true);
-          if (this.vrMode) {
-            this._started = true;
-            this._raf = customRaf ? customRaf : () => {
-              this.update();
-              this.render();
-            };
-            this.renderer.setAnimationLoop(this._raf);
-            return 1;
-          }
-          return super.start(customRaf);
-        }
-        pause() {
-          if (!this._started)
-            return;
-          if (this._paused)
-            return;
-          this._paused = true;
-          if (!this.vrMode)
-            cancelAnimationFrame(this._rafId);
-          else {
-            this.renderer.setAnimationLoop(null);
-          }
-        }
-        resume() {
-          if (!this._started)
-            return;
-          if (!this._paused)
-            return;
-          this._paused = false;
-          if (!this.vrMode)
-            this._rafId = requestAnimationFrame(this._raf);
-          else
-            this.renderer.setAnimationLoop(this._raf);
-        }
-        get domElement() {
-          return this.renderer.domElement;
-        }
-        resize(width, height) {
-          if (width === this.size.x && height === this.size.y)
-            return;
-          this.size.set(width, height);
-          this.renderer.setSize(this.size.x, this.size.y);
-          if (this.camera.type == "PerspectiveCamera") {
-            this.camera.aspect = this.size.x / this.size.y;
-          } else {
-            this.camera.left = -width / 2;
-            this.camera.right = width / 2;
-            this.camera.top = height / 2;
-            this.camera.bottom = -height / 2;
-          }
-          this.camera.updateProjectionMatrix();
-        }
-        render() {
-          this.renderer.render(this.scene, this.camera);
-        }
-      };
-    }
-  });
-
-  // ../packages/gfx/lib/utils/SceneUtils.js
-  var import_three23;
-  var init_SceneUtils2 = __esm({
-    "../packages/gfx/lib/utils/SceneUtils.js"() {
-      import_three23 = __toESM(require_three_min());
-    }
-  });
-
-  // ../packages/gfx/lib/utils/GfxUtils.js
-  var import_three24, RAD2DEG2, DEG2RAD2;
-  var init_GfxUtils2 = __esm({
-    "../packages/gfx/lib/utils/GfxUtils.js"() {
-      import_three24 = __toESM(require_three_min());
-      RAD2DEG2 = 180 / Math.PI;
-      DEG2RAD2 = Math.PI / 180;
-    }
-  });
-
-  // ../packages/gfx/lib/sim/Simulator.js
-  var import_three25, floor2, groundMirror2, bundle2, Figures2;
-  var init_Simulator2 = __esm({
-    "../packages/gfx/lib/sim/Simulator.js"() {
-      init_main();
-      import_three25 = __toESM(require_three_min());
-      init_main4();
-      init_Reflector();
-      floor2 = new import_three25.Mesh(new import_three25.PlaneGeometry(1, 1), new import_three25.MeshPhysicalMaterial({
-        color: 10066329,
-        roughness: 0.3,
-        metalness: 0.1,
-        envMapIntensity: 0.1
-      }));
-      groundMirror2 = new Reflector(new import_three25.PlaneGeometry(1, 1), {
-        clipBias: 3e-3,
-        textureWidth: window.innerWidth,
-        textureHeight: window.innerHeight,
-        color: 3355443
-      });
-      bundle2 = new AssetsBundle();
-      bundle2.add(new TextureAsset("https://assets.eduprats.com/textures/sim/env/hdri.jpg"));
-      bundle2.add(new TextureAsset("https://assets.eduprats.com/textures/sim/floor/noise2.png"));
-      Figures2 = {
-        boy: new GLTFAsset("https://assets.eduprats.com/models/sim/figures/boy.glb"),
-        girl: new GLTFAsset("https://assets.eduprats.com/models/sim/figures/girl.glb"),
-        female: new GLTFAsset("https://assets.eduprats.com/models/sim/figures/female.glb"),
-        male: new GLTFAsset("https://assets.eduprats.com/models/sim/figures/male.glb"),
-        male2: new GLTFAsset("https://assets.eduprats.com/models/sim/figures/male2.glb")
-      };
-    }
-  });
-
   // ../packages/gfx/lib/sim/LEDScreenTile.js
-  var import_three26, SCREEN_MAT2, SCREEN_MAT_22, BASE_MAT2, BASE_GEO2, tmp2;
-  var init_LEDScreenTile2 = __esm({
+  var import_three26, SCREEN_MAT, SCREEN_MAT_2, BASE_MAT, BASE_GEO, tmp;
+  var init_LEDScreenTile = __esm({
     "../packages/gfx/lib/sim/LEDScreenTile.js"() {
-      init_main2();
+      init_main3();
       import_three26 = __toESM(require_three_min());
-      SCREEN_MAT2 = new import_three26.MeshBasicMaterial({
+      SCREEN_MAT = new import_three26.MeshBasicMaterial({
         map: new import_three26.Texture(),
         color: 16777215
       });
-      SCREEN_MAT2.onBeforeCompile = (shader) => {
+      SCREEN_MAT.onBeforeCompile = (shader) => {
         shader.vertexShader = shader.vertexShader.replace("#include <uv2_pars_vertex>", `#include <uv2_pars_vertex>
         attribute vec2 cuv;
         varying vec2 vCUv;`);
@@ -17433,19 +17403,19 @@ oGlow = vec4(0.);`);
         varying vec2 vCUv;`);
         shader.fragmentShader = shader.fragmentShader.replace("#include <map_fragment>", `diffuseColor.rgb = texture2D(map, vCUv).rgb;`);
       };
-      SCREEN_MAT_22 = new import_three26.MeshBasicMaterial({
-        map: SCREEN_MAT2.map,
+      SCREEN_MAT_2 = new import_three26.MeshBasicMaterial({
+        map: SCREEN_MAT.map,
         color: 16777215,
         opacity: 1,
         transparent: true
       });
-      BASE_MAT2 = new import_three26.MeshStandardMaterial({
+      BASE_MAT = new import_three26.MeshStandardMaterial({
         color: 3355443,
         roughness: 0.6,
         metalness: 0.4
       });
-      BASE_GEO2 = new import_three26.BoxGeometry(1, 1, 1);
-      tmp2 = new import_three26.Vector3();
+      BASE_GEO = new import_three26.BoxGeometry(1, 1, 1);
+      tmp = new import_three26.Vector3();
     }
   });
 
@@ -17514,14 +17484,14 @@ oGlow = vec4(0.);`);
   });
 
   // ../packages/gfx/lib/vfx/pipeline/FinalPass.js
-  var import_three30, SHADER2;
+  var import_three30, SHADER3;
   var init_FinalPass2 = __esm({
     "../packages/gfx/lib/vfx/pipeline/FinalPass.js"() {
       init_fbo4();
       init_final2();
       init_RenderPass2();
       import_three30 = __toESM(require_three_min());
-      SHADER2 = new import_three30.RawShaderMaterial({
+      SHADER3 = new import_three30.RawShaderMaterial({
         vertexShader: fbo_default4,
         fragmentShader: final_default2,
         uniforms: {
@@ -17589,8 +17559,8 @@ oGlow = vec4(0.);`);
       init_WebGLSketch2();
       init_SceneUtils2();
       init_GfxUtils2();
-      init_Simulator2();
-      init_LEDScreenTile2();
+      init_Simulator();
+      init_LEDScreenTile();
       init_EquirectangularToCubemap2();
       init_VFXRenderer2();
       init_RenderPass2();
@@ -18805,7 +18775,7 @@ oGlow = vec4(0.);`);
       BALL_GEO = new import_three33.SphereGeometry(1);
       CYL_GEO = new import_three33.CylinderGeometry(0.1, 0.1, 1, 32, 8);
       TOR_GEO = new import_three33.TorusKnotGeometry(10, 2, 64, 32, 2, 3);
-      App = class extends WebGLSketch2 {
+      App = class extends WebGLSketch {
         constructor() {
           super(window.innerWidth, window.innerHeight, {
             alpha: false,

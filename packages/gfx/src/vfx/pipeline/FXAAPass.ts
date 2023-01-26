@@ -1,8 +1,8 @@
-import { RenderPass } from "../vfx/pipeline/RenderPass";
+import { RenderPass } from "./RenderPass";
 import { RawShaderMaterial, Vector2 } from "three";
 
-import vert from '../glsl/vfx/fxaa.vert';
-import frag from '../glsl/vfx/fxaa.frag'
+import vert from '../../glsl/vfx/fxaa.vert';
+import frag from '../../glsl/vfx/fxaa.frag'
 
 export class FXAAPass extends RenderPass {
 	constructor(width:number, height:number) {
@@ -21,7 +21,8 @@ export class FXAAPass extends RenderPass {
 		})
 	}
 
-	resize(width, height) {
+	setSize(width: number, height: number): void {
+		super.setSize(width, height)
 		this.shader.uniforms.resolution.value.set(width,height);
 	}
 }

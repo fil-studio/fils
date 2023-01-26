@@ -7,8 +7,9 @@ import { WebGLSketch, gfxShaders } from '../../../../packages/gfx';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { VFXPipeline } from '../../../../packages/gfx/src/main';
+import { FXAAPass, VFXPipeline } from '../../../../packages/gfx/src/main';
 import { FinalPass } from '../../../../packages/gfx/src/vfx/pipeline/FinalPass';
+import { DoFPass } from '../../../../packages/gfx/src/vfx/pipeline/DoFPass';
 
 const BOX_GEO = new BoxGeometry(1, 1, 1);
 const BALL_GEO = new SphereGeometry(1);
@@ -104,7 +105,7 @@ export class App extends WebGLSketch {
 			window.innerWidth,
 			window.innerHeight,
 			{
-				exposure: 1.25,
+				exposure: 1.5,
 				gamma: 1,
 				samples: 1,
 				glowSettings: {
@@ -112,20 +113,54 @@ export class App extends WebGLSketch {
 					radius: 2,
 					iterations: 8,
 					quality: 2
-				}
+				},
+				useDepth: true
 			}
 		);
 
+		const dof = new DoFPass(
+			window.innerWidth,
+			window.innerHeight,
+			{
+				blur: {
+					scale: 1,
+					iterations: 8,
+					quality: 2,
+					radius: 1
+				},
+				camNear: this.camera.near,
+				camFar: this.camera.far,
+				focalDistance: .5,
+				aperture: .2
+			}
+		);
+
+		const fxaa = new FXAAPass(
+			window.innerWidth,
+			window.innerHeight,
+		);
+
 		// this.customRenderer = new VFXPipeline(this.renderer);
-		this.customRenderer = new VFXPipeline(rnd);
-		const pass = new FinalPass({
+		this.customRenderer = new VFXPipeline(rnd,{
+			width: window.innerWidth,
+			height: window.innerHeight,
+			useDepth: true,
+			samples: 1
+		});
+		const final = new FinalPass({
 			caAmount: .0025,
 			enableDithering: true,
 			dither: 8,
 			enableVignette: true,
 			vignette: .16
 		});
-		this.customRenderer.addPass(pass);
+		this.customRenderer.addPass(fxaa);
+		this.customRenderer.addPass(dof);
+		this.customRenderer.addPass(final);
+
+		dof.enabled = false;
+		fxaa.enabled = false;
+		final.enabled = false;
 
 		const stats = Stats();
 		document.body.appendChild(stats.domElement);
@@ -151,19 +186,32 @@ export class App extends WebGLSketch {
 		gui.add(r, "type", {
 			"WebGLRenderer": 0,
 			"VFXRenderer": 1
-		}).onFinishChange(()=>{
+		}).name("Renderer").onFinishChange(()=>{
 			this.customRenderer.setRenderer(
 				r.type === 0 ? this.renderer : rnd
 			)
 		});
 
+		const f3 = gui.addFolder("FXAA").close();
+		f3.add(fxaa, 'enabled');
+
+		const f2 = gui.addFolder("Depth of Field").close();
+		f2.add(dof, 'enabled');
+		f2.add(dof.shader.uniforms.focalDistance, 'value', 0, 2).name("Focal Distance");
+		f2.add(dof.shader.uniforms.aperture, 'value', 0, 2).name("Aperture");
+
+		const f21 = f2.addFolder("Blur Settings");
+		f21.add(dof.blurPass, 'iterations', 1, 32, 1);
+		f21.add(dof.blurPass, 'radius', .1, 5);
+
 		const f1 = gui.addFolder("Final Pass").close();
-		f1.add(pass.shader.uniforms.enableCA, 'value').name('Chromatic Aberration');
-		f1.add(pass.shader.uniforms.chromatic_aberration, 'value', 0, .05).name('Intensity');
-		f1.add(pass.shader.uniforms.enableDithering, 'value').name('Dithering');
-		f1.add(pass.shader.uniforms.dither, 'value', 0, 100).name('Intensity');
-		f1.add(pass.shader.uniforms.enableVignette, 'value').name('Vignette');
-		f1.add(pass.shader.uniforms.vIntensity, 'value', 0, 1).name('Intensity');
+		f1.add(final, 'enabled');
+		f1.add(final.shader.uniforms.enableCA, 'value').name('Chromatic Aberration');
+		f1.add(final.shader.uniforms.chromatic_aberration, 'value', 0, .05).name('Intensity');
+		f1.add(final.shader.uniforms.enableDithering, 'value').name('Dithering');
+		f1.add(final.shader.uniforms.dither, 'value', 0, 100).name('Intensity');
+		f1.add(final.shader.uniforms.enableVignette, 'value').name('Vignette');
+		f1.add(final.shader.uniforms.vIntensity, 'value', 0, 1).name('Intensity');
 
 		this.start(customRaf);
 	}

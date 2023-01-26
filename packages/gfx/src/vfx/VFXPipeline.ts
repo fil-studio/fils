@@ -141,6 +141,14 @@ export class VFXPipeline {
         return this.front.texture;
     }
 
+    get depthTexture():DepthTexture {
+        if(this.type === "WebGLRenderer") {
+            return this.read.depthTexture;
+        }
+        const rnd = this.renderer as VFXRenderer;
+        return rnd.depthTexture;
+    }
+
     protected getRenderer():WebGLRenderer {
         if(this.type === "WebGLRenderer") {
             return this.renderer as WebGLRenderer;
@@ -157,7 +165,9 @@ export class VFXPipeline {
     }
 
     render(scene:Scene, camera:PerspectiveCamera|OrthographicCamera) {
-        if(!this.stack.length && !this.blockScreen) {
+        const stack = this.stack.filter(obj=>obj.enabled);
+
+        if(!stack.length && !this.blockScreen) {
             this.renderer.render(scene, camera, null);
             
         } else {
@@ -167,8 +177,8 @@ export class VFXPipeline {
                 rnd.render(scene, camera);
             } else this.renderer.render(scene, camera, this.write);
             this.swapBuffers();
-            for(let k=0;k<this.stack.length;k++) {
-                this.renderPass(this.stack[k], k === this.stack.length-1);
+            for(let k=0;k<stack.length;k++) {
+                this.renderPass(stack[k], k === stack.length-1);
             }
         }
     }

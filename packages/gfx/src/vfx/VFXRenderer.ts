@@ -29,13 +29,8 @@ const COMP = new RawShaderMaterial({
         tGlow: {value: null},
         exposure: {value: 1},
         gamma: {value: 1},
-        /* rgbStrength: {value: 0.5},
-        maxRGBDisp: {value: new Vector2(1,1)},
-        rgbDelta: {value: new Vector2()},
-        rgb: {value: false}, */
         renderGlow: {value: true},
         renderScene: {value: true}
-        // rgbRadial: {value: true}
     },
     transparent: true
 });
@@ -89,6 +84,7 @@ export class VFXRenderer {
 
         const bs:BlurSettings = settings && settings.glowSettings ?
         settings.glowSettings : GLOW_DEFAULTS;
+        bs.isGlow = true;
 
         this.glow = new BlurPass(this.sceneRT.texture[1], w, h, bs);
 
@@ -110,25 +106,10 @@ export class VFXRenderer {
                 }
             }
         }
+    }
 
-        /* if(settings && settings.rgbStrength) {
-            COMP.uniforms.rgb.value = true;
-            COMP.uniforms.rgbStrength.value = settings.rgbStrength;
-        }
-        if(settings && settings.rgbDelta) {
-            COMP.uniforms.rgb.value = true;
-            COMP.uniforms.rgbDelta.value.copy(settings.rgbDelta);
-        }
-
-        if(settings && settings.maxRGBDisp) {
-            COMP.uniforms.rgb.value = true;
-            COMP.uniforms.rgbDelta.value.copy(settings.maxRGBDisp);
-        }
-
-        if(settings && settings.rgbRadial != undefined) {
-            COMP.uniforms.rgb.value = true;
-            COMP.uniforms.rgbRadial.value = settings.rgbRadial;
-        } */
+    get depthTexture():DepthTexture {
+        return this.sceneRT['depthTexture'];
     }
 
     setSize(width:number, height:number) {
@@ -152,13 +133,11 @@ export class VFXRenderer {
 
     render(scene:Scene, camera:PerspectiveCamera|OrthographicCamera, target:WebGLRenderTarget=null) {
         this.rnd.autoClear = true;
-        // this.rnd.setClearColor(0x000000, 1);
-
+        
         this.rnd.setRenderTarget(this.sceneRT);
         this.rnd.render(scene, camera);
 
         // glow
-        // this.rnd.setClearColor(0x000000, 1);
         this.glow.renderInternal(this.rnd);
         this.rnd.setRenderTarget(null);
 
@@ -168,7 +147,6 @@ export class VFXRenderer {
         if(target) {
             RTUtils.renderToRT(target, this.rnd, this.shader);
         } else RTUtils.renderToViewport(this.rnd, this.shader);
-        // FboUtils.drawTexture(this.glow.texture, this.rnd, 0, 0, window.innerWidth, window.innerHeight);
 
         this.rnd.setRenderTarget(null);
     }

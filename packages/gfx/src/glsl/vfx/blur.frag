@@ -46,11 +46,24 @@ uniform vec2 direction;
 uniform sampler2D tMap;
 uniform float scale;
 uniform int mode;
+uniform bool isGlow;
 
 varying vec2 vUv;
 
+const float threshold = .64;
+
+vec4 blur() {
+	if(mode == 0) return blur5(tMap, vUv, resolution*scale, direction);
+	else if(mode == 1) return blur9(tMap, vUv, resolution*scale, direction);
+	else return blur13(tMap, vUv, resolution*scale, direction);
+}
+
 void main () {
-	if(mode == 0) gl_FragColor = blur5(tMap, vUv, resolution*scale, direction);
-	else if(mode == 1) gl_FragColor = blur9(tMap, vUv, resolution*scale, direction);
-	else gl_FragColor = blur13(tMap, vUv, resolution*scale, direction);
+	vec4 b = blur();
+
+	if(isGlow) {
+		if(length(b.rgb) < threshold) discard;
+	}
+
+	gl_FragColor = b;
 }

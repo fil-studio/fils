@@ -12,6 +12,7 @@ export type BlurSettings = {
 	radius?: number;
 	iterations?: number;
 	quality?:BlurQuality;
+	isGlow?:boolean;
 }
 
 const BlurDefaults:BlurSettings = {
@@ -68,6 +69,9 @@ export class BlurPass extends RenderPass{
 				},
 				mode: {
 					value: quality
+				},
+				isGlow: {
+					value: settings.isGlow === true
 				}
 			}
 		});
