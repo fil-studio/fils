@@ -19,23 +19,14 @@ export const RegisterBaseComponents = () => {
 		`,
 		addEventListeners: function() {
 
-			const toggle = this.dom.querySelector('._ui-toggle');
-
-			toggle.addEventListener('click', () => {
+			this.dom.addEventListener('click', () => {
 				this.value = !this.value;
-				toggle.classList.toggle('active');
 				this.refresh();
 			});
 
 		},
 		refresh: function() {
-			const toggle = this.dom.querySelector('._ui-toggle');
-
-			if (this.value) {
-				toggle.classList.add('active');
-			} else {
-				toggle.classList.remove('active');
-			}
+			this.dom.classList.toggle('_ui-active', this.value);
 		}
 	})
 

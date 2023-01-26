@@ -13354,6 +13354,7 @@
         constructor(url) {
           this._loaded = false;
           this._failed = false;
+          this._destroying = false;
           this.content = null;
           this.url = url;
         }
@@ -13363,6 +13364,7 @@
           this.content = null;
           this._loaded = false;
           this._failed = false;
+          this._destroying = false;
         }
         get loaded() {
           return this._loaded;
@@ -13424,6 +13426,8 @@
             if (callback != null)
               callback();
             this._loaded = true;
+            if (this._destroying)
+              this.destroy();
           }, (event) => {
           }, (event) => {
             console.warn("Error Loading Image Asset");
@@ -13431,6 +13435,9 @@
           });
         }
         destroy() {
+          this._destroying = true;
+          if (!this.loaded)
+            return;
           this.content.dispose();
           super.destroy();
         }
@@ -15873,6 +15880,8 @@
             gltf.asset;
             this.content = gltf;
             this._loaded = true;
+            if (this._destroying)
+              this.destroy();
             if (callback != null)
               callback();
           }, function(xhr) {
@@ -15882,6 +15891,9 @@
           });
         }
         destroy() {
+          this._destroying = true;
+          if (!this.loaded)
+            return;
           const dispose = (scene) => {
             for (let c2 of scene.children) {
               if (c2.geometry)
@@ -16993,7 +17005,7 @@
   var comp_default;
   var init_comp = __esm({
     "node_modules/@fils/gfx/lib/glsl/vfx/comp.frag"() {
-      comp_default = "precision highp float;\n\nvarying vec2 vUv;\nuniform sampler2D tScene;\nuniform sampler2D tGlow;\nuniform float exposure;\nuniform float gamma;\nuniform bool rgb;\nuniform float rgbStrength;\nuniform vec2 rgbDelta;\n\nuniform bool renderGlow;\nuniform bool renderScene;\n\n#include <rgbSplit>\n\nvoid main () {\n    vec4 scene = vec4(0.0, 0.0, 0.0, 1.0);\n    if(renderScene) {\n        if(rgb) scene = rgbSplit(tScene, vUv, rgbStrength, rgbDelta);\n        else scene = texture2D(tScene, vUv);\n    }\n    vec4 glow = vec4(0.0);\n    if(renderGlow) {\n        glow = texture2D(tGlow, vUv);\n    }\n\n    scene.rgb += glow.rgb;\n    \n    // tone mapping\n    vec3 result = vec3(1.0) - exp(-scene.rgb * exposure);\n    // also gamma correct while we're at it       \n    result = pow(result, vec3(1.0 / gamma));\n\n    /* vec3 color = scene.rgb;\n    color += glow.rgb * glowStrength * glow.a; */\n\n    gl_FragColor = vec4(result, scene.a + glow.a);\n}";
+      comp_default = "precision highp float;\n\nvarying vec2 vUv;\nuniform sampler2D tScene;\nuniform sampler2D tGlow;\nuniform float exposure;\nuniform float gamma;\nuniform bool rgb;\nuniform float rgbStrength;\nuniform vec2 maxRGBDisp;\nuniform vec2 rgbDelta;\nuniform bool rgbRadial;\n\nuniform bool renderGlow;\nuniform bool renderScene;\n\n#include <rgbSplit>\n\nvoid main () {\n    vec4 scene = vec4(0.0, 0.0, 0.0, 1.0);\n    if(renderScene) {\n        if(rgb) {\n            scene = rgbSplit(tScene, vUv, rgbStrength, rgbDelta, maxRGBDisp, rgbRadial);\n        }\n        else scene = texture2D(tScene, vUv);\n    }\n    vec4 glow = vec4(0.0);\n    if(renderGlow) {\n        glow = texture2D(tGlow, vUv);\n    }\n\n    scene.rgb += glow.rgb;\n    \n    // tone mapping\n    vec3 result = vec3(1.0) - exp(-scene.rgb * exposure);\n    // also gamma correct while we're at it       \n    result = pow(result, vec3(1.0 / gamma));\n\n    /* vec3 color = scene.rgb;\n    color += glow.rgb * glowStrength * glow.a; */\n\n    gl_FragColor = vec4(result, scene.a + glow.a);\n}";
     }
   });
 
@@ -17014,9 +17026,11 @@
           exposure: { value: 1.2 },
           gamma: { value: 1.8 },
           rgbStrength: { value: 0.5 },
+          maxRGBDisp: { value: new import_three20.Vector2(1, 1) },
           rgbDelta: { value: new import_three20.Vector2() },
           rgb: { value: false },
           renderGlow: { value: true },
+          rgbRadial: { value: true },
           renderScene: { value: true }
         },
         transparent: true
@@ -17057,6 +17071,14 @@
           if (settings && settings.rgbDelta) {
             COMP.uniforms.rgb.value = true;
             COMP.uniforms.rgbDelta.value.copy(settings.rgbDelta);
+          }
+          if (settings && settings.maxRGBDisp) {
+            COMP.uniforms.rgb.value = true;
+            COMP.uniforms.rgbDelta.value.copy(settings.maxRGBDisp);
+          }
+          if (settings && settings.rgbRadial != void 0) {
+            COMP.uniforms.rgb.value = true;
+            COMP.uniforms.rgbRadial.value = settings.rgbRadial;
           }
         }
         get shader() {
@@ -17113,10 +17135,19 @@
   // node_modules/@fils/gfx/lib/vfx/MaterialUtils.js
   function initMaterial(mat) {
     mat.onBeforeCompile = (shader, renderer) => {
-      let fs = shader.fragmentShader;
-      fs = fs.replace("#include <clipping_planes_pars_fragment>", pars_default);
-      fs = fs.replace("#include <output_fragment>", output_default);
-      shader.fragmentShader = fs;
+      if (!mat["emissive"]) {
+        let fs = shader.fragmentShader;
+        fs = fs.replace(`#include <clipping_planes_pars_fragment>`, `#include <clipping_planes_pars_fragment>
+layout(location = 1) out vec4 oGlow;`);
+        fs = fs.replace(`#include <output_fragment>`, `#include <output_fragment>
+oGlow = vec4(0.);`);
+        shader.fragmentShader = fs;
+      } else {
+        let fs = shader.fragmentShader;
+        fs = fs.replace("#include <clipping_planes_pars_fragment>", pars_default);
+        fs = fs.replace("#include <output_fragment>", output_default);
+        shader.fragmentShader = fs;
+      }
     };
     return mat;
   }
@@ -17131,7 +17162,7 @@
   var rgbSplit_default;
   var init_rgbSplit = __esm({
     "node_modules/@fils/gfx/lib/glsl/lib/rgbSplit.glsl"() {
-      rgbSplit_default = "vec4 rgbSplit(sampler2D tex, vec2 uv, float strength, vec2 delta) {\n    vec2 dir = uv - vec2( .5 );\n    float d = strength * length( dir );\n    normalize( dir );\n    vec2 value = d * dir * delta;\n    \n    vec4 c1 = texture2D( tex, uv - value );\n    vec4 c2 = texture2D( tex, uv );\n    vec4 c3 = texture2D( tex, uv + value );\n\n    return vec4( c1.r, c2.g, c3.b, c1.a + c2.a + c3.a );\n}";
+      rgbSplit_default = "vec4 rgbSplit(sampler2D tex, vec2 uv, float strength, vec2 delta, vec2 maxV, bool radial) {\n    vec2 dir = radial ? uv - vec2( .5 ) : vec2(1.);\n    float d = strength * length( dir );\n    normalize( dir );\n    vec2 value = d * dir * delta;\n\n    value.x = clamp(value.x, -maxV.x, maxV.x);\n    value.y = clamp(value.y, -maxV.y, maxV.y);\n    \n    vec4 c1 = texture2D( tex, uv - value );\n    vec4 c2 = texture2D( tex, uv );\n    vec4 c3 = texture2D( tex, uv + value );\n\n    return vec4( c1.r, c2.g, c3.b, c1.a + c2.a + c3.a );\n}";
     }
   });
 

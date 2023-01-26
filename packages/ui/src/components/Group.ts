@@ -79,10 +79,9 @@ export class Group extends EventsHandler {
 	protected onFold(){
 
 		if(!this.foldable) return;
-		const padding = parseFloat(getComputedStyle(this.contentWrapper).paddingBottom);
 		const h = this.contentWrapper.getBoundingClientRect().height;
 
-		this.foldableWrapper.style.height = `${h + padding}px`;
+		this.foldableWrapper.style.height = `${h}px`;
 
 		if(this.timer) clearTimeout(this.timer);
 

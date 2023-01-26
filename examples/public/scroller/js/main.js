@@ -362,7 +362,7 @@
 		pointer-events: all;
 	}
 
-	.scrolling [fil-scroller-content] [fil-scroller-pointer] {
+	.scroller__scrolling [fil-scroller-content] [fil-scroller-pointer] {
 		pointer-events: none;
 	}
 
@@ -490,9 +490,9 @@
           const disableScroll = () => {
             if (timeout)
               clearTimeout(timeout);
-            document.documentElement.classList.add("scrolling");
+            document.documentElement.classList.add("scroller__scrolling");
             timeout = setTimeout(() => {
-              document.documentElement.classList.remove("scrolling");
+              document.documentElement.classList.remove("scroller__scrolling");
             }, 20);
           };
           window.addEventListener("wheel", () => {

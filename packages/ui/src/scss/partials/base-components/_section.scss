@@ -7,8 +7,14 @@ section {
 
 	border-radius: var(--border-radius);
 
+	margin-top: var(--line-separator);
+
 	&[ui-depth="0"],
-	&:nth-child(even) {
+	&[ui-depth="2"],
+	&[ui-depth="4"],
+	&[ui-depth="6"],
+	&[ui-depth="8"],
+	&[ui-depth="10"] {
 		background-color: var(--bg-0);
 	}
 

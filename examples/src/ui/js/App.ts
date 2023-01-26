@@ -60,7 +60,6 @@ export class App {
 		});
 		group.add(obj, 'booleanTest', {
 			title: 'Boolean Test',
-			view: 'test'
 		});
 		group.add(obj, 'booleanTest', {
 			title: 'Boolean Test',
@@ -73,7 +72,7 @@ export class App {
 			title: 'Number Test',
 		});
 
-		const g2 = group.addGroup({
+		const g2 = this.ui.addGroup({
 			title: 'Subgroup Test',
 		})
 		const g4 = g2.addGroup({
