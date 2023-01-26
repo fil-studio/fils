@@ -311,6 +311,9 @@
 }
 ._ui-wrapper section ._ui-content-wrapper {
   padding: 0 var(--line-separator) var(--line-separator) var(--line-separator);
+  position: relative;
+  float: left;
+  width: 100%;
 }
 ._ui-wrapper section ._ui-content-wrapper fieldset:first-of-type {
   margin-top: 8px;
