@@ -1,1 +1,1 @@
-export * from './core/UI';
+export * from './components/UI';

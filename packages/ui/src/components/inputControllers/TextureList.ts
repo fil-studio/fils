@@ -1,5 +1,5 @@
 import { UI } from "../../main";
-import { TextureItem } from "../customItems/TexureItem";
+import { TextureItem } from "../items/customItems/TexureItem";
 import { InputController } from "./InputController";
 
 export class TextureList extends InputController {

@@ -1,5 +1,7 @@
-import { ItemRegister } from '../../../../packages/ui/src/components/ItemFactory';
+import { ItemRegister } from '../../../../packages/ui/src/partials/ItemFactory';
 import { UI } from '../../../../packages/ui/src/main';
+
+import { uiMaterialData } from '../../../../packages/ui-icons/lib/Icons';
 
 /**
  * S'ha de poder crear els components manualment
@@ -39,49 +41,48 @@ export class App {
 
 		this.ui = new UI({
 			title: 'UI',
-			onChangeCallback: (e) => {
-				console.log('Callback', e);
-			}
+			icon: uiMaterialData
 		});
+
+		const group = this.ui.addGroup({
+			title: 'Group Test',
+		});
+		// const group = this.ui;
 
 		/**
 		 * Object
 		 * Key
 		 * Options
 		 */
-		this.ui.add(obj, 'colorTest', {
+		group.add(obj, 'colorTest', {
 			title: 'Color Test',
 			view: 'color'
 		});
-		this.ui.add(obj, 'booleanTest', {
+		group.add(obj, 'booleanTest', {
 			title: 'Boolean Test',
 			view: 'test'
 		});
-		this.ui.add(obj, 'booleanTest', {
+		group.add(obj, 'booleanTest', {
 			title: 'Boolean Test',
 			view: 'test2'
 		});
-		this.ui.addItem(obj, 'stringTest', {
+		group.addItem(obj, 'stringTest', {
 			title: 'String Test'
 		});
-		this.ui.add(obj, 'numberTest', {
-			title: 'Number Test'
+		group.add(obj, 'numberTest', {
+			title: 'Number Test',
 		});
+
+		const g2 = group.addGroup({
+			title: 'Subgroup Test',
+		})
+		const g4 = g2.addGroup({
+			title: 'Subgroup Test 2',
+		})
+
 		this.ui.add(obj, 'textureTest', {
 			title: 'Texture Test',
 			view: 'texture'
-		});
-		this.ui.add(obj, 'materialTest', {
-			title: 'Material Test',
-			view: 'material'
-		});
-
-
-		this.ui.addButton({
-			title: 'Button Test',
-			callback: () => {
-				console.log('Button pressed');
-			}
 		});
 
 
