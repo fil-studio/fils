@@ -1,7 +1,11 @@
-export const BASE_CLASS = '_ui'
-export const VERTICAL_ROW = '_ui-vertical-row'
-export const FOLDABLE = '_ui-foldable'
-export const FOLDABLE_ELEMENT = '_ui-foldable-el'
+import { el } from "@fils/utils";
+
+export const BASE_CLASS = '_ui';
+export const ICON_HEADER = '_ui-icon';
+export const CONTENT_WRAPPER = '_ui-content-wrapper';
+export const VERTICAL_ROW = '_ui-vertical-row';
+export const FOLDABLE = '_ui-foldable';
+export const FOLDABLE_ELEMENT = '_ui-foldable-el';
 
 export const WRAPPER_CLASS = `${BASE_CLASS}-wrapper`;
 export const EMBED_WRAPPER_CLASS = `${BASE_CLASS}-embed-wrapper`;
@@ -16,8 +20,8 @@ export enum RowTypes {
 interface DomOptions {
 	type: RowTypes;
 	depth: number;
-
 	title?: string;
+	icon?: string;
 }
 
 const dom = {
@@ -33,6 +37,7 @@ const dom = {
 		type,
 		depth,
 		title,
+		icon
 	}:DomOptions = {
 		type: RowTypes.ui,
 		depth: 0
@@ -48,25 +53,35 @@ const dom = {
 		const row = document.createElement(domEl);
 		row.setAttribute('ui-depth', `${depth}`);
 
-
 		/**
 		 * Add Classes to Row
 		 */
-		if(type === RowTypes.ui) row.classList.add(WRAPPER_CLASS);
-
+		if(type === RowTypes.ui) {
+			row.classList.add(WRAPPER_CLASS);
+		}
 
 		/**
 		 * Create a Group Row
 		 */
 		if(type === RowTypes.group) {
 
-			const titleTab = document.createElement('header');
-			const h3 = document.createElement('h3');
+			const titleTab = el('header');
+
+			if(icon){
+				const iconWrapper = el('div');
+				iconWrapper.classList.add(ICON_HEADER);
+				iconWrapper.innerHTML = icon;
+				titleTab.appendChild(iconWrapper);
+			}
+
+			const h3 = el('h3');
 			h3.innerText = title;
 			titleTab.appendChild(h3);
+
 			row.appendChild(titleTab);
 
-			const contentWrapper = document.createElement('div');
+			const contentWrapper = el('div');
+			contentWrapper.classList.add(CONTENT_WRAPPER);
 			row.appendChild(contentWrapper);
 		}
 
@@ -74,12 +89,12 @@ const dom = {
 		 * Create a Item Row
 		 */
 		if(type === RowTypes.item) {
-				const h4 = document.createElement('h4');
-				h4.innerText = title;
-				row.appendChild(h4);
+			const h4 = el('h4');
+			h4.innerText = title;
+			row.appendChild(h4);
 
-				const contentWrapper = document.createElement('div');
-				row.appendChild(contentWrapper);
+			const contentWrapper = el('div');
+			row.appendChild(contentWrapper);
 		}
 
 		/**

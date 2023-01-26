@@ -54,6 +54,14 @@
   align-items: center;
   padding: 8px 10px;
 }
+._ui-wrapper header ._ui-icon {
+  width: 20px;
+  height: 1em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 3px;
+}
 ._ui-wrapper fieldset {
   margin: 0;
   padding: 8px 10px;

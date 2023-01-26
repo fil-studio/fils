@@ -19,6 +19,16 @@ header {
 
 	padding: 8px 10px;
 
+
+	._ui-icon {
+		width: 20px;
+		height: 1em;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-right: 3px;
+	}
+
 }
 
 fieldset {

@@ -39,6 +39,7 @@ export class App {
 
 		this.ui = new UI({
 			title: 'UI',
+			icon: 'uiCone'
 		});
 
 		const group = this.ui.addGroup({

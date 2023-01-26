@@ -1,9 +1,12 @@
-import { EventsHandler } from "../partials/Events";
 import { UI } from "../main";
-import dom, { FOLDABLE, FOLDABLE_ELEMENT, RowTypes, WRAPPER_CLASS } from "../utils/dom";
-import { Button, ButtonOptions } from "./Button";
-import { Item, ItemOptions } from "./Item";
+import { EventsHandler } from "../partials/Events";
 import { ItemFactory } from "../partials/ItemFactory";
+import dom, { CONTENT_WRAPPER, FOLDABLE, FOLDABLE_ELEMENT, RowTypes } from "../utils/dom";
+import { Button } from "./Button";
+import { Item, ItemOptions } from "./Item";
+import * as Icons from '../../../ui-icons/lib/Icons';
+import { el } from "@fils/utils";
+
 
 export interface GroupParams {
 	parent?: Group | UI;
@@ -11,6 +14,7 @@ export interface GroupParams {
 
 	folded?: boolean;
 	foldable?: boolean;
+	icon?: string;
 }
 
 export class Group extends EventsHandler {
@@ -31,7 +35,8 @@ export class Group extends EventsHandler {
 		parent,
 		title,
 		folded = false,
-		foldable = true
+		foldable = true,
+		icon = null
 	}: GroupParams) {
 		super(parent);
 
@@ -39,13 +44,15 @@ export class Group extends EventsHandler {
 		this.title = title || '';
 		this.depth = this.parent?.depth + 1 || this.depth;
 
+
 		this.dom = dom.createRow({
 			type: RowTypes.group,
 			depth: this.depth,
 			title: this.title,
+			icon: icon ? Icons[icon] : null,
 		});
 
-		this.contentWrapper = this.dom.querySelector('div');
+		this.contentWrapper = this.dom.querySelector(`.${CONTENT_WRAPPER}`);
 
 		// Is it folded or not? If it's not foldable, it's not folded
 		this.folded = foldable ? folded : false;
@@ -54,15 +61,17 @@ export class Group extends EventsHandler {
 	}
 
 	protected addFoldListeners(){
+
 		if(!this.foldable) return;
 
 		this.dom.classList.add(FOLDABLE);
-		const header = this.dom.querySelector('header');
 
-		this.foldableWrapper = document.createElement('div');
+		this.foldableWrapper = el('div');
 		this.foldableWrapper.classList.add(FOLDABLE_ELEMENT);
 		this.dom.appendChild(this.foldableWrapper);
 		this.foldableWrapper.appendChild(this.contentWrapper);
+
+		const header = this.dom.querySelector('header');
 
 		header.addEventListener('click', () => {
 			this.folded = !this.folded;
@@ -71,6 +80,7 @@ export class Group extends EventsHandler {
 	}
 
 	protected onFold(){
+
 		if(!this.foldable) return;
 		const h = this.contentWrapper.getBoundingClientRect().height;
 
