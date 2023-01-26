@@ -157,10 +157,13 @@ export class App extends WebGLSketch {
 			)
 		});
 
-		const f1 = gui.addFolder("Final Pass");
-		f1.add(pass.shader.uniforms.enableCA, 'value', {
-			label: "Chromatic Aberration"
-		});
+		const f1 = gui.addFolder("Final Pass").close();
+		f1.add(pass.shader.uniforms.enableCA, 'value').name('Chromatic Aberration');
+		f1.add(pass.shader.uniforms.chromatic_aberration, 'value', 0, .05).name('Intensity');
+		f1.add(pass.shader.uniforms.enableDithering, 'value').name('Dithering');
+		f1.add(pass.shader.uniforms.dither, 'value', 0, 100).name('Intensity');
+		f1.add(pass.shader.uniforms.enableVignette, 'value').name('Vignette');
+		f1.add(pass.shader.uniforms.vIntensity, 'value', 0, 1).name('Intensity');
 
 		this.start(customRaf);
 	}
