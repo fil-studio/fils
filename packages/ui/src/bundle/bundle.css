@@ -53,6 +53,7 @@
   transition-duration: inherit;
   transition-timing-function: inherit;
   transition-property: height;
+  height: var(--ui-fold-height);
 }
 ._ui-wrapper ._ui-foldable ._ui-chevron {
   transform: rotate(-90deg);
@@ -62,6 +63,9 @@
 }
 ._ui-wrapper ._ui-foldable._ui-folded > header ._ui-icon ._ui-chevron {
   transform: rotate(0deg);
+}
+._ui-wrapper ._ui-foldable._ui-folded ._ui-foldable-el {
+  height: 0px !important;
 }
 ._ui-wrapper header {
   position: relative;
@@ -82,16 +86,22 @@
   align-items: center;
   margin-right: 5px;
 }
+._ui-wrapper header h3 {
+  margin: 0;
+}
 ._ui-wrapper section {
   position: relative;
   width: 100%;
   height: auto;
-  padding: 0 var(--line-separator) var(--line-separator) var(--line-separator);
+  padding: 0 var(--line-separator);
   background-color: var(--bg-1);
   border-radius: var(--border-radius);
 }
 ._ui-wrapper section[ui-depth="0"], ._ui-wrapper section:nth-child(even) {
   background-color: var(--bg-0);
+}
+._ui-wrapper section > :last-child {
+  margin-bottom: var(--line-separator);
 }
 ._ui-wrapper fieldset {
   padding: var(--padding);

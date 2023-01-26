@@ -10,6 +10,9 @@
 		transition-duration: inherit;
 		transition-timing-function: inherit;
 		transition-property: height;
+
+		height: var(--ui-fold-height);
+
 	}
 
 	._ui-chevron {
@@ -24,6 +27,9 @@
 			._ui-chevron {
 				transform: rotate(0deg);
 			}
+		}
+		._ui-foldable-el {
+			height: 0px !important;
 		}
 	}
 }

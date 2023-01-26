@@ -5,6 +5,7 @@ export const ICON_HEADER = '_ui-icon';
 export const CONTENT_WRAPPER = '_ui-content-wrapper';
 export const VERTICAL_ROW = '_ui-vertical-row';
 export const FOLDED = '_ui-folded';
+export const NOT_FOLDED = '_ui-not-folded';
 export const FOLDABLE = '_ui-foldable';
 export const FOLDABLE_ELEMENT = '_ui-foldable-el';
 
@@ -27,7 +28,6 @@ interface DomOptions {
 	type: RowTypes;
 	depth: number;
 	title?: string;
-	icon?: string;
 	foldable?: boolean;
 }
 
@@ -44,8 +44,7 @@ const dom = {
 		type,
 		depth,
 		title,
-		foldable,
-		icon
+		foldable
 	}:DomOptions = {
 		type: RowTypes.ui,
 		depth: 0

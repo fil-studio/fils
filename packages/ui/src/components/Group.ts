@@ -1,7 +1,7 @@
 import { UI } from "../main";
 import { EventsHandler } from "../partials/Events";
 import { ItemFactory } from "../partials/ItemFactory";
-import dom, { CONTENT_WRAPPER, FOLDABLE, FOLDABLE_ELEMENT, FOLDED, RowTypes } from "../utils/dom";
+import dom, { CONTENT_WRAPPER, FOLDABLE, FOLDABLE_ELEMENT, FOLDED, NOT_FOLDED, RowTypes } from "../utils/dom";
 import { Button } from "./Button";
 import { Item, ItemOptions } from "./Item";
 import { el } from "@fils/utils";
@@ -79,21 +79,32 @@ export class Group extends EventsHandler {
 	protected onFold(){
 
 		if(!this.foldable) return;
-		const h = this.contentWrapper.getBoundingClientRect().height;
+		const h = this.contentWrapper.getBoundingClientRect().height + 3;
 
-		this.foldableWrapper.style.height = this.folded ? `0px` : `${h}px`;
+		this.dom.style.setProperty('--ui-fold-height', `${h}px`);
 
 		if(this.timer) clearTimeout(this.timer);
 
-		if(this.folded) this.dom.classList.add(FOLDED);
-		else this.dom.classList.remove(FOLDED);
+		// Just go with it, without the timeout, it doesn't work
+		setTimeout(() => {
 
-		if(!this.folded) {
-			const d = parseFloat(getComputedStyle(this.foldableWrapper).transitionDuration) * 1000;
-			this.timer = setTimeout(() => {
-				this.foldableWrapper.style.height = 'auto';
-			}, d);
-		}
+			if(this.folded) {
+				this.dom.classList.add(FOLDED);
+				// this.dom.classList.remove(NOT_FOLDED);
+			}	else {
+				// this.dom.classList.add(NOT_FOLDED);
+				this.dom.classList.remove(FOLDED);
+			}
+
+			if(!this.folded) {
+				const d = parseFloat(getComputedStyle(this.foldableWrapper).transitionDuration) * 1000;
+				this.timer = setTimeout(() => {
+					this.dom.style.setProperty('--ui-fold-height', `auto`);
+				}, d);
+			}
+
+		}, 5);
+
 	}
 
 	/**
