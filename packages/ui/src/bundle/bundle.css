@@ -10,8 +10,8 @@
   --border-radius: 8px;
   --padding: 10px 8px;
   --line-separator: 3px;
-  --duration: 0.15s;
-  --timing: linear;
+  --duration: 5s;
+  --timing: ease-in-out;
   --accent-color: #2871C7;
   --bg-0: #303030;
   --bg-1: #191919;
@@ -44,6 +44,7 @@
 ._ui-wrapper ._ui-foldable {
   transition-duration: var(--duration);
   transition-timing-function: var(--timing);
+  overflow: hidden;
 }
 ._ui-wrapper ._ui-foldable > header {
   cursor: pointer;
@@ -53,7 +54,6 @@
   transition-duration: inherit;
   transition-timing-function: inherit;
   transition-property: height;
-  height: var(--ui-fold-height);
 }
 ._ui-wrapper ._ui-foldable ._ui-chevron {
   transform: rotate(-90deg);
@@ -64,7 +64,7 @@
 ._ui-wrapper ._ui-foldable._ui-folded > header ._ui-icon ._ui-chevron {
   transform: rotate(0deg);
 }
-._ui-wrapper ._ui-foldable._ui-folded ._ui-foldable-el {
+._ui-wrapper ._ui-foldable._ui-folded > ._ui-foldable-el {
   height: 0px !important;
 }
 ._ui-wrapper header {
@@ -93,15 +93,14 @@
   position: relative;
   width: 100%;
   height: auto;
-  padding: 0 var(--line-separator);
   background-color: var(--bg-1);
   border-radius: var(--border-radius);
 }
 ._ui-wrapper section[ui-depth="0"], ._ui-wrapper section:nth-child(even) {
   background-color: var(--bg-0);
 }
-._ui-wrapper section > :last-child {
-  margin-bottom: var(--line-separator);
+._ui-wrapper section ._ui-content-wrapper {
+  padding: 0 var(--line-separator) var(--line-separator) var(--line-separator);
 }
 ._ui-wrapper fieldset {
   padding: var(--padding);

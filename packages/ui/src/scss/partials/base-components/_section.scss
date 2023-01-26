@@ -2,7 +2,6 @@ section {
 	position: relative;
 	width: 100%;
 	height: auto;
-	padding: 0 var(--line-separator);
 
 	background-color: var(--bg-1);
 
@@ -13,7 +12,7 @@ section {
 		background-color: var(--bg-0);
 	}
 
-	> :last-child {
-		margin-bottom: var(--line-separator);
+	._ui-content-wrapper {
+		padding: 0 var(--line-separator) var(--line-separator) var(--line-separator);
 	}
 }

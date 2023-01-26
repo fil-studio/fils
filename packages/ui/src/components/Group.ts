@@ -79,31 +79,25 @@ export class Group extends EventsHandler {
 	protected onFold(){
 
 		if(!this.foldable) return;
-		const h = this.contentWrapper.getBoundingClientRect().height + 3;
+		const padding = parseFloat(getComputedStyle(this.contentWrapper).paddingBottom);
+		const h = this.contentWrapper.getBoundingClientRect().height;
 
-		this.dom.style.setProperty('--ui-fold-height', `${h}px`);
+		this.foldableWrapper.style.height = `${h + padding}px`;
 
 		if(this.timer) clearTimeout(this.timer);
 
 		// Just go with it, without the timeout, it doesn't work
 		setTimeout(() => {
+			if(this.folded) this.dom.classList.add(FOLDED);
+			else this.dom.classList.remove(FOLDED);
+		}, 10);
 
-			if(this.folded) {
-				this.dom.classList.add(FOLDED);
-				// this.dom.classList.remove(NOT_FOLDED);
-			}	else {
-				// this.dom.classList.add(NOT_FOLDED);
-				this.dom.classList.remove(FOLDED);
-			}
-
-			if(!this.folded) {
-				const d = parseFloat(getComputedStyle(this.foldableWrapper).transitionDuration) * 1000;
-				this.timer = setTimeout(() => {
-					this.dom.style.setProperty('--ui-fold-height', `auto`);
-				}, d);
-			}
-
-		}, 5);
+		if(!this.folded) {
+			const d = parseFloat(getComputedStyle(this.foldableWrapper).transitionDuration) * 1000;
+			this.timer = setTimeout(() => {
+				this.foldableWrapper.style.height = `auto`;
+			}, d);
+		}
 
 	}
 

@@ -1,6 +1,7 @@
 ._ui-foldable {
 	transition-duration: var(--duration);
 	transition-timing-function: var(--timing);
+	overflow: hidden;
 
 	> header {
 		cursor: pointer;
@@ -10,9 +11,6 @@
 		transition-duration: inherit;
 		transition-timing-function: inherit;
 		transition-property: height;
-
-		height: var(--ui-fold-height);
-
 	}
 
 	._ui-chevron {
@@ -28,7 +26,7 @@
 				transform: rotate(0deg);
 			}
 		}
-		._ui-foldable-el {
+		> ._ui-foldable-el {
 			height: 0px !important;
 		}
 	}
