@@ -7,8 +7,8 @@
 	--line-separator: 3px;
 
 	// Transitions
-	--duration: 5s;
-	--timing: ease-in-out;
+	--duration: .3s;
+	--timing: cubic-bezier(.6, 0, .4, 1);
 
 
 	// Colors

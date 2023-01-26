@@ -10,8 +10,8 @@
   --border-radius: 8px;
   --padding: 10px 8px;
   --line-separator: 3px;
-  --duration: 5s;
-  --timing: ease-in-out;
+  --duration: .3s;
+  --timing: cubic-bezier(.6, 0, .4, 1);
   --accent-color: #2871C7;
   --bg-0: #303030;
   --bg-1: #191919;
