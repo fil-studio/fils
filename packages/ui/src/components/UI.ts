@@ -15,6 +15,7 @@ css.inject(mergedCss);
 interface UIParams extends GroupParams {
 	embed?: HTMLElement,
 	onChangeCallback?: Function;
+	icon?: string;
 }
 export class UI extends Group {
 	domWrapper: HTMLElement;
@@ -25,8 +26,9 @@ export class UI extends Group {
 	constructor({
 		embed,
 		onChangeCallback,
+		icon,
 	}: UIParams) {
-		super({...arguments[0]});
+		super({...arguments[0] });
 
 		this.parent = null;
 
@@ -38,6 +40,11 @@ export class UI extends Group {
 			depth: this.depth,
 		});
 		this.domWrapper.appendChild(this.dom);
+
+		if(icon){
+			dom.addIcon(this.dom.querySelector('header'), icon);
+		}
+
 		if(embed){
 			this.domWrapper.classList.add(EMBED_WRAPPER_CLASS);
 			embed.appendChild(this.domWrapper);

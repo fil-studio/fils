@@ -54,6 +54,15 @@
   transition-timing-function: inherit;
   transition-property: height;
 }
+._ui-wrapper ._ui-foldable ._ui-chevron {
+  transform: rotate(-90deg);
+  width: 9px;
+  transform-origin: 50% 40%;
+  transition: transform var(--duration) var(--timing);
+}
+._ui-wrapper ._ui-foldable._ui-folded > header ._ui-icon ._ui-chevron {
+  transform: rotate(0deg);
+}
 ._ui-wrapper header {
   position: relative;
   width: 100%;
@@ -65,12 +74,13 @@
   user-select: none;
 }
 ._ui-wrapper header ._ui-icon {
-  width: 20px;
+  width: auto;
+  max-width: 20px;
   height: 1em;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-right: 3px;
+  margin-right: 5px;
 }
 ._ui-wrapper section {
   position: relative;

@@ -11,4 +11,19 @@
 		transition-timing-function: inherit;
 		transition-property: height;
 	}
+
+	._ui-chevron {
+		transform: rotate(-90deg);
+		width: 9px;
+		transform-origin: 50% 40%;
+		transition: transform var(--duration) var(--timing);
+	}
+
+	&._ui-folded {
+		> header ._ui-icon {
+			._ui-chevron {
+				transform: rotate(0deg);
+			}
+		}
+	}
 }

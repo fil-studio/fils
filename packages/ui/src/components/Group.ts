@@ -13,7 +13,6 @@ export interface GroupParams {
 
 	folded?: boolean;
 	foldable?: boolean;
-	icon?: string;
 }
 
 export class Group extends EventsHandler {
@@ -35,7 +34,6 @@ export class Group extends EventsHandler {
 		title,
 		folded = false,
 		foldable = true,
-		icon = null
 	}: GroupParams) {
 		super(parent);
 
@@ -48,7 +46,7 @@ export class Group extends EventsHandler {
 			type: RowTypes.group,
 			depth: this.depth,
 			title: this.title,
-			icon: icon ? icon : null,
+			foldable: foldable
 		});
 
 		this.contentWrapper = this.dom.querySelector(`.${CONTENT_WRAPPER}`);
