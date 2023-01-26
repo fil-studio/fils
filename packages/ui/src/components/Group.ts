@@ -4,7 +4,6 @@ import { ItemFactory } from "../partials/ItemFactory";
 import dom, { CONTENT_WRAPPER, FOLDABLE, FOLDABLE_ELEMENT, RowTypes } from "../utils/dom";
 import { Button } from "./Button";
 import { Item, ItemOptions } from "./Item";
-import * as Icons from '../../../ui-icons/lib/Icons';
 import { el } from "@fils/utils";
 
 
@@ -49,7 +48,7 @@ export class Group extends EventsHandler {
 			type: RowTypes.group,
 			depth: this.depth,
 			title: this.title,
-			icon: icon ? Icons[icon] : null,
+			icon: icon ? icon : null,
 		});
 
 		this.contentWrapper = this.dom.querySelector(`.${CONTENT_WRAPPER}`);

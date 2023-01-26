@@ -1,6 +1,8 @@
 import { ItemRegister } from '../../../../packages/ui/src/partials/ItemFactory';
 import { UI } from '../../../../packages/ui/src/main';
 
+import { uiMaterialData } from '../../../../packages/ui-icons/lib/Icons';
+
 /**
  * S'ha de poder crear els components manualment
  * S'ha de poder crear els components important un JSON
@@ -39,7 +41,7 @@ export class App {
 
 		this.ui = new UI({
 			title: 'UI',
-			icon: 'uiCone'
+			icon: uiMaterialData
 		});
 
 		const group = this.ui.addGroup({
