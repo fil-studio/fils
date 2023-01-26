@@ -36,7 +36,7 @@ export const RegisterBaseComponents = () => {
 		type: 'string',
 		extendedCSS: ``,
 		extendedHTML: `
-			<input type="text" />
+			<input type="text" placeholder="String" />
 		`,
 		addEventListeners: function() {
 
@@ -59,7 +59,7 @@ export const RegisterBaseComponents = () => {
 		type: 'number',
 		extendedCSS: ``,
 		extendedHTML: `
-			<input type="number" />
+			<input type="number" placeholder="Value"/>
 		`,
 		addEventListeners: function() {
 

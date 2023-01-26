@@ -61,10 +61,6 @@ export class App {
 		group.add(obj, 'booleanTest', {
 			title: 'Boolean Test',
 		});
-		group.add(obj, 'booleanTest', {
-			title: 'Boolean Test',
-			view: 'test2'
-		});
 		group.addItem(obj, 'stringTest', {
 			title: 'String Test'
 		});
@@ -81,13 +77,6 @@ export class App {
 		g4.add(obj, 'colorTest', {
 			title: 'Color Test',
 			view: 'color'
-		});
-		g4.add(obj, 'booleanTest', {
-			title: 'Boolean Test',
-		});
-		g4.add(obj, 'booleanTest', {
-			title: 'Boolean Test',
-			view: 'test2'
 		});
 		g4.addItem(obj, 'stringTest', {
 			title: 'String Test'

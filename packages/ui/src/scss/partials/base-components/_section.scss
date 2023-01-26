@@ -23,5 +23,12 @@ section {
 
 	._ui-content-wrapper {
 		padding: 0 var(--line-separator) var(--line-separator) var(--line-separator);
+
+		fieldset:first-of-type {
+			margin-top: 8px;
+		}
+		fieldset:last-of-type {
+			margin-bottom: 8px;
+		}
 	}
 }

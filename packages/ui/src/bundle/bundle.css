@@ -167,7 +167,6 @@
   width: 275px;
 }
 ._ui-wrapper {
-  --height: 40px;
   --radius: 8px;
   --input-radius: 4px;
   --padding: 10px 8px;
@@ -277,7 +276,7 @@
 ._ui-wrapper header {
   position: relative;
   width: 100%;
-  height: var(--height);
+  height: 40px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -313,9 +312,15 @@
 ._ui-wrapper section ._ui-content-wrapper {
   padding: 0 var(--line-separator) var(--line-separator) var(--line-separator);
 }
+._ui-wrapper section ._ui-content-wrapper fieldset:first-of-type {
+  margin-top: 8px;
+}
+._ui-wrapper section ._ui-content-wrapper fieldset:last-of-type {
+  margin-bottom: 8px;
+}
 ._ui-wrapper fieldset {
-  padding: var(--padding);
-  min-height: var(--height);
+  padding: 0 8px;
+  min-height: 30px;
   margin: var(--line-separator) 0 0 0;
   position: relative;
   width: 100%;
@@ -378,7 +383,7 @@
 ._ui-wrapper ._ui-boolean ._ui-toggle {
   width: 40px;
   height: 25px;
-  border-radius: var(--height);
+  border-radius: 15px;
   background-color: var(--section-bg-1);
   position: relative;
   transition: var(--duration) var(--timing);
