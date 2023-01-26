@@ -43,6 +43,9 @@ export class BlurPass extends RenderPass {
                 },
                 mode: {
                     value: quality
+                },
+                isGlow: {
+                    value: settings.isGlow === true
                 }
             }
         });

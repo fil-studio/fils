@@ -16,6 +16,8 @@
       "./packages/nomad",
       "./packages/phy",
       "./packages/scroller",
+      "./packages/ui",
+      "./packages/ui-icons",
       "./packages/utils"
     ]
   }

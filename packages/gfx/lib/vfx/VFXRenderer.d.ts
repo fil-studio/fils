@@ -1,4 +1,4 @@
-import { OrthographicCamera, PerspectiveCamera, Scene, ShaderMaterial, UniformsGroup, WebGLMultipleRenderTargets, WebGLRenderer, WebGLRenderTarget } from "three";
+import { DepthTexture, OrthographicCamera, PerspectiveCamera, Scene, ShaderMaterial, UniformsGroup, WebGLMultipleRenderTargets, WebGLRenderer, WebGLRenderTarget } from "three";
 import { BlurPass, BlurSettings } from "../main";
 export declare type VFXCompSettings = {
     glowSettings?: BlurSettings;
@@ -18,7 +18,10 @@ export declare class VFXRenderer {
     exposure: number;
     gamma: number;
     shader: ShaderMaterial;
+    bgScene: Scene;
+    bgRT: WebGLRenderTarget;
     constructor(renderer: WebGLRenderer, width: number, height: number, settings?: VFXCompSettings);
+    get depthTexture(): DepthTexture;
     setSize(width: number, height: number): void;
     private updateUniforms;
     render(scene: Scene, camera: PerspectiveCamera | OrthographicCamera, target?: WebGLRenderTarget): void;

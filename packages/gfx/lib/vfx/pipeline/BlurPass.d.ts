@@ -7,6 +7,7 @@ export declare type BlurSettings = {
     radius?: number;
     iterations?: number;
     quality?: BlurQuality;
+    isGlow?: boolean;
 };
 export declare class BlurPass extends RenderPass {
     radius: number;

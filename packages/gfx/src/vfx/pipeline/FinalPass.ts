@@ -8,8 +8,10 @@
 import vert from '../../glsl/fbo.vert';
 import frag from '../../glsl/vfx/final.frag';
 
+import lut from '../../glsl/lib/lut.glsl';
+
 import { RenderPass } from "./RenderPass";
-import { RawShaderMaterial, Vector2 } from 'three';
+import { RawShaderMaterial, ShaderChunk} from 'three';
 
 const SHADER = new RawShaderMaterial({
     vertexShader: vert,
@@ -33,6 +35,12 @@ const SHADER = new RawShaderMaterial({
         },
         vIntensity: {
             value: 1
+        },
+        enableLut: {
+            value: false
+        },
+        lookupTable: {
+            value: null
         }
     }
 });
@@ -44,6 +52,7 @@ export type FinalPassSettings = {
     enableDithering?:boolean;
     vignette?:number;
     enableVignette?:boolean;
+    enableLut?:boolean;
 }
 
 export class FinalPass extends RenderPass {
@@ -51,6 +60,7 @@ export class FinalPass extends RenderPass {
 
     constructor(params:FinalPassSettings={}) {
         super();
+        ShaderChunk.lut = lut;
         if(params.caAmount !== undefined) {
             SHADER.uniforms.chromatic_aberration.value = params.caAmount;
         }
@@ -70,6 +80,10 @@ export class FinalPass extends RenderPass {
         }
         if(params.enableVignette !== undefined) {
             SHADER.uniforms.enableVignette.value = params.enableVignette;
+        }
+
+        if(params.enableLut !== undefined) {
+            SHADER.uniforms.enableLut.value = params.enableLut;
         }
     }
 }

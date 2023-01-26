@@ -48,10 +48,10 @@ export class VFXPipeline {
         this.quad = new Mesh(new PlaneGeometry(1, 1), null);
         this.quad.scale.set(w, h, 1);
         this.scene.add(this.quad);
-        console.log(this.type);
     }
     addPass(pass) {
         this.stack.push(pass);
+        pass.setSize(this.width, this.height);
     }
     removePass(pass) {
         this.stack.splice(this.stack.indexOf(pass), 1);
@@ -72,6 +72,8 @@ export class VFXPipeline {
         this.camera.top = h;
         this.camera.bottom = -h;
         this.camera.updateProjectionMatrix();
+        for (const pass of this.stack)
+            pass.setSize(width, height);
     }
     swapBuffers() {
         const tmp = this.front;
@@ -87,6 +89,13 @@ export class VFXPipeline {
     get texture() {
         return this.front.texture;
     }
+    get depthTexture() {
+        if (this.type === "WebGLRenderer") {
+            return this.read.depthTexture;
+        }
+        const rnd = this.renderer;
+        return rnd.depthTexture;
+    }
     getRenderer() {
         if (this.type === "WebGLRenderer") {
             return this.renderer;
@@ -100,7 +109,8 @@ export class VFXPipeline {
         this.swapBuffers();
     }
     render(scene, camera) {
-        if (!this.stack.length && !this.blockScreen) {
+        const stack = this.stack.filter(obj => obj.enabled);
+        if (!stack.length && !this.blockScreen) {
             this.renderer.render(scene, camera, null);
         }
         else {
@@ -112,8 +122,8 @@ export class VFXPipeline {
             else
                 this.renderer.render(scene, camera, this.write);
             this.swapBuffers();
-            for (let k = 0; k < this.stack.length; k++) {
-                this.renderPass(this.stack[k], k === this.stack.length - 1);
+            for (let k = 0; k < stack.length; k++) {
+                this.renderPass(stack[k], k === stack.length - 1);
             }
         }
     }

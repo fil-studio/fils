@@ -1,4 +1,4 @@
-import { Mesh, OrthographicCamera, PerspectiveCamera, Scene, Texture, WebGLRenderer, WebGLRenderTarget } from "three";
+import { DepthTexture, Mesh, OrthographicCamera, PerspectiveCamera, Scene, Texture, WebGLRenderer, WebGLRenderTarget } from "three";
 import { RenderPass } from "./pipeline/RenderPass";
 import { VFXRenderer } from "./VFXRenderer";
 export declare type VFXPipelineSettings = {
@@ -31,6 +31,7 @@ export declare class VFXPipeline {
     get read(): WebGLRenderTarget;
     get write(): WebGLRenderTarget;
     get texture(): Texture;
+    get depthTexture(): DepthTexture;
     protected getRenderer(): WebGLRenderer;
     protected renderPass(pass: RenderPass, toScreen?: boolean): void;
     render(scene: Scene, camera: PerspectiveCamera | OrthographicCamera): void;

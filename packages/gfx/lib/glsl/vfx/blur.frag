@@ -59,5 +59,11 @@ vec4 blur() {
 }
 
 void main () {
-	gl_FragColor = blur();
+	vec4 b = blur();
+
+	/* if(isGlow) {
+		if(length(b.rgb) < threshold) discard;
+	} */
+
+	gl_FragColor = b;
 }

@@ -1,5 +1,5 @@
-import { RenderPass } from "../vfx/pipeline/RenderPass";
+import { RenderPass } from "./RenderPass";
 export declare class FXAAPass extends RenderPass {
     constructor(width: number, height: number);
-    resize(width: any, height: any): void;
+    setSize(width: number, height: number): void;
 }

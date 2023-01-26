@@ -14,6 +14,13 @@ uniform float vIntensity;
 
 #include <dithering>
 
+uniform sampler2D lookupTable;
+uniform bool enableLut;
+// #define LUT_NO_CLAMP
+#define LUT_FLIP_Y
+
+#include <lut>
+
 float vignette(vec2 texCoords, float strength) {
     vec2 uv = texCoords;
 
@@ -44,6 +51,9 @@ void main () {
          color = ca(tInput, vUv, chromatic_aberration);
     } else {
         color = texture2D(tInput, vUv);
+    }
+    if(enableLut) {
+        color = lut(color, lookupTable);
     }
     if(enableDithering) {
         color += dithering(vUv, dither);

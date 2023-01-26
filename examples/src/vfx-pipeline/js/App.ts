@@ -1,6 +1,6 @@
 // import { WebGLSketch, initMaterial, VFXRenderer, gfxShaders } from '@fils/gfx'
 // import { WebGLSketch, initMaterial, VFXRenderer, gfxShaders } from '../../../../packages/gfx/lib/main'
-import { BoxGeometry, CylinderGeometry, DirectionalLight, EquirectangularReflectionMapping, Mesh, MeshPhongMaterial, ShaderChunk, SphereGeometry, TorusKnotGeometry, WebGLRenderTarget } from 'three';
+import { BoxGeometry, CylinderGeometry, DirectionalLight, EquirectangularReflectionMapping, Mesh, MeshPhongMaterial, ShaderChunk, SphereGeometry, TextureLoader, TorusKnotGeometry, WebGLRenderTarget } from 'three';
 import { initMaterial } from '../../../../packages/gfx/src/vfx/MaterialUtils';
 import { VFXRenderer } from '../../../../packages/gfx/src/vfx/VFXRenderer';
 import { WebGLSketch, gfxShaders } from '../../../../packages/gfx';
@@ -10,11 +10,15 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { FXAAPass, VFXPipeline } from '../../../../packages/gfx/src/main';
 import { FinalPass } from '../../../../packages/gfx/src/vfx/pipeline/FinalPass';
 import { DoFPass } from '../../../../packages/gfx/src/vfx/pipeline/DoFPass';
+import { LutPass } from '../../../../packages/gfx/src/vfx/pipeline/LutPass';
+import { RetroPass } from '../../../../packages/gfx/src/vfx/pipeline/RetroPass';
 
 const BOX_GEO = new BoxGeometry(1, 1, 1);
 const BALL_GEO = new SphereGeometry(1);
 const CYL_GEO = new CylinderGeometry(.1, .1, 1, 32, 8);
 const TOR_GEO = new TorusKnotGeometry(10, 2, 64, 32, 2, 3);
+
+const loader = new TextureLoader();
 
 /**
  * VFXRenderer works best with black clear color and 0 clear alpha 
@@ -137,6 +141,9 @@ export class App extends WebGLSketch {
 			}
 		);
 
+		const lut = new LutPass(loader.load('/assets/textures/table.png'));
+		lut.enabled = false;
+
 		const dof = new DoFPass(
 			window.innerWidth,
 			window.innerHeight,
@@ -173,9 +180,18 @@ export class App extends WebGLSketch {
 			enableVignette: true,
 			vignette: .16
 		});
+
+		const retro = new RetroPass({
+			gridSize: 8,
+			dithering: 3
+		});
+		retro.enabled = false;
+
 		this.customRenderer.addPass(fxaa);
+		this.customRenderer.addPass(lut);
 		this.customRenderer.addPass(dof);
 		this.customRenderer.addPass(final);
+		this.customRenderer.addPass(retro);
 
 		/* dof.enabled = false;
 		fxaa.enabled = false;
@@ -214,6 +230,9 @@ export class App extends WebGLSketch {
 		const f3 = gui.addFolder("FXAA").close();
 		f3.add(fxaa, 'enabled');
 
+		const f4 = gui.addFolder("LUT").close();
+		f4.add(lut, 'enabled');
+
 		const f2 = gui.addFolder("Depth of Field").close();
 		f2.add(dof, 'enabled');
 		f2.add(dof.shader.uniforms.focalDistance, 'value', 0, 2).name("Focal Distance");
@@ -225,12 +244,24 @@ export class App extends WebGLSketch {
 
 		const f1 = gui.addFolder("Final Pass").close();
 		f1.add(final, 'enabled');
+		// f1.add(final.shader.uniforms.enableLut, 'value').name('LUT');
 		f1.add(final.shader.uniforms.enableCA, 'value').name('Chromatic Aberration');
 		f1.add(final.shader.uniforms.chromatic_aberration, 'value', 0, .05).name('Intensity');
 		f1.add(final.shader.uniforms.enableDithering, 'value').name('Dithering');
 		f1.add(final.shader.uniforms.dither, 'value', 0, 100).name('Intensity');
 		f1.add(final.shader.uniforms.enableVignette, 'value').name('Vignette');
 		f1.add(final.shader.uniforms.vIntensity, 'value', 0, 1).name('Intensity');
+
+		const f5 = gui.addFolder("Retro Pass").close();
+		f5.add(retro, 'enabled');
+		f5.add(retro.shader.uniforms.pixelate, 'value').name('Pixelate');
+		f5.add(retro.shader.uniforms.gridSize, 'value', 1, 20, 1).name('Pixel Size');
+		f5.add(retro.shader.uniforms.dithering, 'value', {
+			'None': 0,
+			'2x2': 1,
+			'4x4': 2,
+			'8x8': 3
+		}).name('Pixel Size');
 
 		this.start(customRaf);
 	}

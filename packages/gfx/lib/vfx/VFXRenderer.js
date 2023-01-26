@@ -1,4 +1,4 @@
-import { DepthFormat, DepthTexture, FloatType, RawShaderMaterial, RGBAFormat, UnsignedByteType, WebGLMultipleRenderTargets } from "three";
+import { DepthFormat, DepthTexture, FloatType, RawShaderMaterial, RGBAFormat, Scene, UnsignedByteType, WebGLMultipleRenderTargets, WebGLRenderTarget } from "three";
 import { BlurPass, RTUtils } from "../main";
 import vert from '../glsl/fbo.vert';
 import frag from '../glsl/vfx/comp.frag';
@@ -6,6 +6,7 @@ const COMP = new RawShaderMaterial({
     vertexShader: vert,
     fragmentShader: frag,
     uniforms: {
+        tBackground: { value: null },
         tScene: { value: null },
         tGlow: { value: null },
         exposure: { value: 1 },
@@ -44,8 +45,9 @@ export class VFXRenderer {
         }
         const bs = settings && settings.glowSettings ?
             settings.glowSettings : GLOW_DEFAULTS;
+        bs.isGlow = true;
         this.glow = new BlurPass(this.sceneRT.texture[1], w, h, bs);
-        if (settings && settings.exposure) {
+        if (settings && settings.exposure !== undefined) {
             this.exposure = settings.exposure;
         }
         if (settings && settings.gamma) {
@@ -60,11 +62,17 @@ export class VFXRenderer {
                 }
             }
         }
+        this.bgRT = new WebGLRenderTarget(width, height);
+        this.bgScene = new Scene();
+    }
+    get depthTexture() {
+        return this.sceneRT['depthTexture'];
     }
     setSize(width, height) {
         const w = width * window.devicePixelRatio;
         const h = height * window.devicePixelRatio;
         this.sceneRT.setSize(w, h);
+        this.bgRT.setSize(w, h);
         this.glow.setSize(w, h);
     }
     updateUniforms() {
@@ -78,8 +86,21 @@ export class VFXRenderer {
     }
     render(scene, camera, target = null) {
         this.rnd.autoClear = true;
+        const bg = scene.background;
+        scene.background = null;
+        if (bg) {
+            this.rnd.setRenderTarget(this.bgRT);
+            this.bgScene.background = bg;
+            this.rnd.render(this.bgScene, camera);
+            this.rnd.setRenderTarget(null);
+            this.shader.uniforms.tBackground.value = this.bgRT.texture;
+        }
+        else {
+            this.shader.uniforms.tBackground.value = null;
+        }
         this.rnd.setRenderTarget(this.sceneRT);
         this.rnd.render(scene, camera);
+        scene.background = bg;
         this.glow.renderInternal(this.rnd);
         this.rnd.setRenderTarget(null);
         this.updateUniforms();
