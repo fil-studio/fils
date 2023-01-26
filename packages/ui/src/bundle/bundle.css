@@ -176,6 +176,7 @@
   --accent-color: #2871C7;
   --bg-0: #303030;
   --bg-1: #191919;
+  --color-white: #FFF;
   --color-0: #CCCCCC;
   --color-1: #999999;
   --color-2: #666666;
@@ -305,17 +306,34 @@
   z-index: 1;
   min-height: 30px;
 }
-._ui-wrapper ._ui-toggle {
-  width: 100px;
-  height: 80%;
-  border-radius: var(--height);
-  background-color: var(--bg-1);
+._ui-wrapper ._ui-boolean {
+  cursor: pointer;
 }
-._ui-wrapper ._ui-toggle div {
-  width: var(--height);
-  height: 60%;
-  border-radius: 50%;
-  transition: all 0.2s ease-in-out;
+._ui-wrapper ._ui-boolean ._ui-toggle {
+  width: 40px;
+  height: 25px;
+  border-radius: var(--height);
+  background-color: var(--bg-0);
+  position: relative;
+  transition: var(--duration) var(--timing);
+}
+._ui-wrapper ._ui-boolean ._ui-toggle div {
+  width: 25px;
+  height: 25px;
+  border-radius: 100%;
+  background-color: var(--color-white);
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translate3d(0%, -50%, 0);
+  transition: inherit;
+}
+._ui-wrapper ._ui-boolean._ui-active ._ui-toggle {
+  background-color: var(--accent-color);
+}
+._ui-wrapper ._ui-boolean._ui-active ._ui-toggle div {
+  left: 100%;
+  transform: translate3d(-100%, -50%, 0);
 }
 
 /*# sourceMappingURL=bundle.css.map */
