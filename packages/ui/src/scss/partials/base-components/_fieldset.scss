@@ -12,6 +12,20 @@ fieldset {
 	justify-content: space-between;
 	align-items: center;
 
+	h4 {
+		width: 33.33%;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		overflow: hidden;
+		padding-right: 5px;
+	}
+
+	> div {
+		width: 66.66%;
+		display: flex;
+		justify-content: flex-end;
+	}
+
 	&._ui-vertical-row {
 		flex-direction: column;
 		align-items: flex-start;

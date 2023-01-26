@@ -3,5 +3,16 @@ button {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	padding: 8px 10px;
+	padding: var(--padding);
+	background-color: var(--section-bg-1);
+	border-radius: var(--radius);
+	cursor: pointer;
+
+	transition: var(--duration) var(--timing);
+
+	&:active {
+		background-color: var(--accent-color);
+		color: var(--color-white);
+		transition: 0s;
+	}
 }

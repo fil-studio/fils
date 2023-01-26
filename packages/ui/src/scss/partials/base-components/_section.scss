@@ -1,13 +1,6 @@
 section {
-	position: relative;
-	width: 100%;
-	height: auto;
-
-	background-color: var(--bg-1);
-
-	border-radius: var(--border-radius);
-
-	margin-top: var(--line-separator);
+	--section-bg-0: var(--bg-1);
+	--section-bg-1: var(--bg-0);
 
 	&[ui-depth="0"],
 	&[ui-depth="2"],
@@ -15,8 +8,18 @@ section {
 	&[ui-depth="6"],
 	&[ui-depth="8"],
 	&[ui-depth="10"] {
-		background-color: var(--bg-0);
+		--section-bg-0: var(--bg-0);
+		--section-bg-1: var(--bg-1);
 	}
+
+	position: relative;
+	width: 100%;
+	height: auto;
+
+	border-radius: var(--radius);
+	margin-top: var(--line-separator);
+
+	background-color: var(--section-bg-0);
 
 	._ui-content-wrapper {
 		padding: 0 var(--line-separator) var(--line-separator) var(--line-separator);

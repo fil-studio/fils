@@ -78,6 +78,23 @@ export class App {
 		const g4 = g2.addGroup({
 			title: 'Subgroup Test 2',
 		})
+		g4.add(obj, 'colorTest', {
+			title: 'Color Test',
+			view: 'color'
+		});
+		g4.add(obj, 'booleanTest', {
+			title: 'Boolean Test',
+		});
+		g4.add(obj, 'booleanTest', {
+			title: 'Boolean Test',
+			view: 'test2'
+		});
+		g4.addItem(obj, 'stringTest', {
+			title: 'String Test'
+		});
+		g4.add(obj, 'numberTest', {
+			title: 'Number Test',
+		});
 
 		this.ui.add(obj, 'textureTest', {
 			title: 'Texture Test',

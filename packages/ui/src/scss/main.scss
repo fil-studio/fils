@@ -6,6 +6,7 @@
 ._ui-wrapper {
 
 	@import "./partials/vars";
+	@import "./partials/reset";
 	@import "./partials/fonts";
 
 	position: fixed;
@@ -30,6 +31,8 @@
 
 	// Base Items
 	@import "./items/boolean";
+	@import "./items/string";
+	@import "./items/number";
 
 }
 
