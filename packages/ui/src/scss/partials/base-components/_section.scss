@@ -1,0 +1,15 @@
+section {
+	position: relative;
+	width: 100%;
+	height: auto;
+	padding: 0 var(--line-separator) var(--line-separator) var(--line-separator);
+
+	background-color: var(--bg-1);
+
+	border-radius: var(--border-radius);
+
+	&[ui-depth="0"],
+	&:nth-child(even) {
+		background-color: var(--bg-0);
+	}
+}

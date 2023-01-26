@@ -1,0 +1,23 @@
+header {
+	position: relative;
+	width: 100%;
+	height: var(--height);
+
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+
+	padding: var(--padding);
+
+	user-select: none;
+
+	._ui-icon {
+		width: 20px;
+		height: 1em;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-right: 3px;
+	}
+
+}

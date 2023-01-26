@@ -1,0 +1,27 @@
+fieldset {
+	padding: var(--padding);
+	min-height: var(--height);
+	margin: var(--line-separator) 0 0 0;
+
+	position: relative;
+	width: 100%;
+
+	border: none;
+
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+
+	&._ui-vertical-row {
+		flex-direction: column;
+		align-items: flex-start;
+
+		&>h4 {
+			margin-bottom: 8px;
+		}
+
+		&>div {
+			width: 100%;
+		}
+	}
+}

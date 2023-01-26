@@ -7,20 +7,17 @@
 }
 ._ui-wrapper {
   --height: 40px;
-  --duration: 0.2s;
-  --timing-function: linear;
+  --border-radius: 8px;
+  --padding: 10px 8px;
+  --line-separator: 3px;
+  --duration: 0.15s;
+  --timing: linear;
   --accent-color: #2871C7;
   --bg-0: #303030;
   --bg-1: #191919;
   --color-0: #CCCCCC;
   --color-1: #999999;
   --color-2: #666666;
-}
-._ui-wrapper._ui-embed-wrapper {
-  position: relative;
-  top: unset;
-  right: unset;
-  width: 100%;
 }
 ._ui-wrapper * {
   font-family: "IBM Plex Sans", sans-serif;
@@ -38,21 +35,34 @@
 ._ui-wrapper fieldset h4 {
   color: var(--color-2);
 }
-._ui-wrapper section {
-  background-color: var(--bg-1);
+._ui-wrapper._ui-embed-wrapper {
   position: relative;
+  top: unset;
+  right: unset;
   width: 100%;
-  height: auto;
+}
+._ui-wrapper ._ui-foldable {
+  transition-duration: var(--duration);
+  transition-timing-function: var(--timing);
+}
+._ui-wrapper ._ui-foldable > header {
+  cursor: pointer;
+}
+._ui-wrapper ._ui-foldable ._ui-foldable-el {
+  overflow: hidden;
+  transition-duration: inherit;
+  transition-timing-function: inherit;
+  transition-property: height;
 }
 ._ui-wrapper header {
-  background-color: var(--bg-0);
   position: relative;
   width: 100%;
   height: var(--height);
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  padding: 8px 10px;
+  padding: var(--padding);
+  user-select: none;
 }
 ._ui-wrapper header ._ui-icon {
   width: 20px;
@@ -62,12 +72,23 @@
   align-items: center;
   margin-right: 3px;
 }
-._ui-wrapper fieldset {
-  margin: 0;
-  padding: 8px 10px;
+._ui-wrapper section {
   position: relative;
   width: 100%;
+  height: auto;
+  padding: 0 var(--line-separator) var(--line-separator) var(--line-separator);
+  background-color: var(--bg-1);
+  border-radius: var(--border-radius);
+}
+._ui-wrapper section[ui-depth="0"], ._ui-wrapper section:nth-child(even) {
+  background-color: var(--bg-0);
+}
+._ui-wrapper fieldset {
+  padding: var(--padding);
   min-height: var(--height);
+  margin: var(--line-separator) 0 0 0;
+  position: relative;
+  width: 100%;
   border: none;
   display: flex;
   justify-content: space-between;
@@ -83,6 +104,13 @@
 ._ui-wrapper fieldset._ui-vertical-row > div {
   width: 100%;
 }
+._ui-wrapper button {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 10px;
+}
 ._ui-wrapper ._ui-input-controller {
   position: absolute;
   top: 100%;
@@ -92,26 +120,6 @@
   background-color: green;
   z-index: 1;
   min-height: 30px;
-}
-._ui-wrapper button {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 8px 10px;
-}
-._ui-wrapper ._ui-foldable {
-  transition-duration: var(--duration);
-  transition-timing-function: var(--timing-function);
-}
-._ui-wrapper ._ui-foldable > header {
-  cursor: pointer;
-}
-._ui-wrapper ._ui-foldable ._ui-foldable-el {
-  overflow: hidden;
-  transition-duration: inherit;
-  transition-timing-function: inherit;
-  transition-property: height;
 }
 
 /*# sourceMappingURL=bundle.css.map */

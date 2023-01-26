@@ -72,18 +72,17 @@ export class App {
 		group.add(obj, 'numberTest', {
 			title: 'Number Test',
 		});
-		group.add(obj, 'textureTest', {
+
+		const g2 = group.addGroup({
+			title: 'Subgroup Test',
+		})
+		const g4 = g2.addGroup({
+			title: 'Subgroup Test 2',
+		})
+
+		this.ui.add(obj, 'textureTest', {
 			title: 'Texture Test',
 			view: 'texture'
-		});
-		group.add(obj, 'materialTest', {
-			title: 'Material Test',
-			view: 'material'
-		});
-
-
-		this.ui.addButton({
-			title: 'Button Test',
 		});
 
 

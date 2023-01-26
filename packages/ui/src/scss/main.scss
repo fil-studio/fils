@@ -6,6 +6,7 @@
 ._ui-wrapper {
 
 	@import "./partials/vars";
+	@import "./partials/fonts";
 
 	position: fixed;
 	top: 5px;
@@ -19,9 +20,13 @@
 		width: 100%;
 	}
 
-	@import "./partials/fonts";
-	@import "./partials/structure";
 	@import "./partials/fold";
+
+	@import "./partials/base-components/header";
+	@import "./partials/base-components/section";
+	@import "./partials/base-components/fieldset";
+	@import "./partials/base-components/button";
+	@import "./partials/base-components/input-controller";
 
 }
 

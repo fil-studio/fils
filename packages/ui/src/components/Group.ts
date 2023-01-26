@@ -1,7 +1,7 @@
 import { UI } from "../main";
 import { EventsHandler } from "../partials/Events";
 import { ItemFactory } from "../partials/ItemFactory";
-import dom, { CONTENT_WRAPPER, FOLDABLE, FOLDABLE_ELEMENT, RowTypes } from "../utils/dom";
+import dom, { CONTENT_WRAPPER, FOLDABLE, FOLDABLE_ELEMENT, FOLDED, RowTypes } from "../utils/dom";
 import { Button } from "./Button";
 import { Item, ItemOptions } from "./Item";
 import { el } from "@fils/utils";
@@ -86,6 +86,9 @@ export class Group extends EventsHandler {
 		this.foldableWrapper.style.height = this.folded ? `0px` : `${h}px`;
 
 		if(this.timer) clearTimeout(this.timer);
+
+		if(this.folded) this.dom.classList.add(FOLDED);
+		else this.dom.classList.remove(FOLDED);
 
 		if(!this.folded) {
 			const d = parseFloat(getComputedStyle(this.foldableWrapper).transitionDuration) * 1000;
