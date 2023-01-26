@@ -1,11 +1,33 @@
 ._ui-foldable {
+	transition-duration: var(--duration);
+	transition-timing-function: var(--timing);
+	overflow: hidden;
+
 	> header {
 		cursor: pointer;
 	}
-	> div {
+	._ui-foldable-el {
 		overflow: hidden;
-		transition-duration: $ui_transition-duration;
-		transition-timing-function: $ui_transition-timing-function;
+		transition-duration: inherit;
+		transition-timing-function: inherit;
 		transition-property: height;
+	}
+
+	._ui-chevron {
+		transform: rotate(-90deg);
+		width: 9px;
+		transform-origin: 50% 40%;
+		transition: transform var(--duration) var(--timing);
+	}
+
+	&._ui-folded {
+		> header ._ui-icon {
+			._ui-chevron {
+				transform: rotate(0deg);
+			}
+		}
+		> ._ui-foldable-el {
+			height: 0px !important;
+		}
 	}
 }

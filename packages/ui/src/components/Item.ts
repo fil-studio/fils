@@ -1,11 +1,12 @@
 
-import { EventsHandler } from '../core/Events';
+import { EventsHandler } from '../partials/Events';
 import dom, { RowTypes } from '../utils/dom';
 import { Group } from './Group';
 
 export interface ItemOptions {
 	title?: string;
-	view?: string
+	view?: string,
+	onChangeCallback?: Function;
 }
 
 export interface ItemParams {
@@ -17,21 +18,21 @@ export interface ItemParams {
 export class Item extends EventsHandler {
 
 	dom: HTMLElement;
-	inputWrapper: HTMLElement;
+	protected inputWrapper: HTMLElement;
 
-	parent: Group;
-	depth: number;
+	protected parent: Group;
+	protected depth: number;
 
 	title: string;
 
-	object: Object;
-	key: string;
+	protected object: Object;
+	protected key: string;
 
 	value: any;
 
-	options: ItemOptions;
-
 	protected created: boolean = false;
+
+	private onChangeCallback: Function;
 
 	constructor({ parent, object, key }: ItemParams = {}, options?: ItemOptions) {
 		super(parent);
@@ -45,9 +46,10 @@ export class Item extends EventsHandler {
 		this.object = object;
 		this.key = key;
 
-		this.options = options;
-		this.title = this.options?.title || key;
-
+		this.title = options?.title || key;
+		this.onChangeCallback = options?.onChangeCallback || function(e?:CustomEvent){
+			console.log('Item - onChangeCallback:', e);
+		}
 		this.dom = dom.createRow({
 			type: RowTypes.item,
 			depth: this.depth,
@@ -66,16 +68,17 @@ export class Item extends EventsHandler {
 		this.dom.remove();
 	}
 
-	createDom() {
+	protected createDom() {
 		// Override this method
 	}
 
-	addEventListeners(): void {
+	protected addEventListeners(): void {
 		// Override this method
 	}
 
-	onChange(): void {
+	onChange(e?:CustomEvent): void {
 		console.log('Item - onChange:', this.title);
+		this.onChangeCallback(e);
  	}
 
 	/**

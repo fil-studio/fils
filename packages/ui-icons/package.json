@@ -1,0 +1,23 @@
+{
+	"name": "@fils/ui-utils",
+	"version": "0.0.1",
+	"description": "UI Icons Package written in TypeScript",
+	"main": "lib/main.js",
+	"repository": "git@github.com:fil-studio/fils.git",
+	"homepage": "https://github.com/fil-studio/fils/tree/main/packages/ui-icons",
+	"author": "fil studio <hello@fil.studio>",
+	"license": "Apache-2.0",
+	"scripts": {
+		"prepare": "npm run build",
+		"create-icons": "node create-icons.js",
+		"build": "tsc --build tsconfig.utils.json"
+	},
+	"files": [
+		"lib",
+		"README.md",
+		"package.json"
+	],
+	"devDependencies": {
+		"typescript": "^4.8.4"
+	}
+}
