@@ -60,7 +60,7 @@ export class App {
 			title: 'Number Test',
 		});
 		group.add(obj, 'numberTestSlider', {
-			title: 'Slider Test',
+			title: 'Slider Test with long text example',
 				view: 'slider',
 				min: -10,
 				max: 10

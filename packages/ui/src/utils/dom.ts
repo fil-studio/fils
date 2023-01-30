@@ -80,6 +80,7 @@ const dom = {
 
 			const h3 = el('h3');
 			h3.innerText = title;
+			h3.title = title;
 			titleTab.appendChild(h3);
 
 			row.appendChild(titleTab);
@@ -95,6 +96,7 @@ const dom = {
 		if(type === RowTypes.item) {
 			const h4 = el('h4');
 			h4.innerText = title;
+			h4.title = title;
 			row.appendChild(h4);
 
 			const contentWrapper = el('div');

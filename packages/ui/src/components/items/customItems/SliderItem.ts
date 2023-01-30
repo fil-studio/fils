@@ -36,7 +36,7 @@ export class SliderItem extends ExtendedItem {
 	}
 
 	protected updateSlider(): void {
-		const mappedValue = MathUtils.map(this.value, this.options.min, this.options.max, -1, 1);
+		const mappedValue = MathUtils.map(this.value, this.options.min, this.options.max, 0, 1);
 		this.sliderEl.style.setProperty('--value', `${mappedValue}`);
 	}
 
