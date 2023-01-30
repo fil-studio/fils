@@ -17,6 +17,7 @@ const examples = [
   'ui-icons',
   'nomad',
   'core',
+  'color-picker'
 ];
 
 try {
