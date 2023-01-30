@@ -8,11 +8,13 @@ export interface ItemOptions {
 	view?: string,
 	onChangeCallback?: Function;
 
-	// Number options
+	// Number - Slider
 	min?: number;
 	max?: number;
-	overExpose?: number | [number, number];
 	step?: number;
+
+	// Slider
+	overExpose?: number | [number, number];
 }
 
 export interface ItemParams {

@@ -35,6 +35,13 @@
 	@import "./items/number";
 	@import "./items/slider";
 
+	* {
+		&::selection {
+			background: var(--color-white);
+			color: var(--accent-color);
+		}
+	}
+
 }
 
 

@@ -64,6 +64,7 @@ export class App {
 				view: 'slider',
 				min: 0,
 				max: 10,
+				step: 0.1,
 				overExpose: [5, 40],
 		});
 

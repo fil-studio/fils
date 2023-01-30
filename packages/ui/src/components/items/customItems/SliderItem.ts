@@ -12,6 +12,8 @@ export class SliderItem extends ExtendedItem {
 	protected min: number;
 	protected max: number;
 
+	protected step: number;
+
 	protected addEventListeners(): void {
 
 		this.inputEl.value = `${Math.max(Math.min(this.max, this.value), this.min)}`;
@@ -44,8 +46,10 @@ export class SliderItem extends ExtendedItem {
 			const movementDistance = originalValue + (e.clientX - x);
 			const { width } = this.sliderEl.getBoundingClientRect();
 
-			const newValue = MathUtils.clamp(MathUtils.map(movementDistance, 0, width, 0, 1), 0, 1);
-			this.value = MathUtils.map(newValue, 0, 1, this.min, this.max);
+			const newValueMapped = MathUtils.clamp(MathUtils.map(movementDistance, 0, width, 0, 1), 0, 1);
+			const newValue = MathUtils.map(newValueMapped, 0, 1, this.min, this.max);
+
+			this.value = Math.round(newValue / this.step) * this.step;
 
 			this.updateInput();
 			this.updateSlider();
@@ -58,8 +62,9 @@ export class SliderItem extends ExtendedItem {
 			const { left, width } = this.sliderEl.getBoundingClientRect();
 			const newPosition = e.clientX - left;
 
-			const newValue = MathUtils.clamp(MathUtils.map(newPosition, 0, width, 0, 1), 0, 1);
-			this.value = MathUtils.map(newValue, 0, 1, this.min, this.max);
+			const newValueMapped = MathUtils.clamp(MathUtils.map(newPosition, 0, width, 0, 1), 0, 1);
+			const newValue = MathUtils.map(newValueMapped, 0, 1, this.min, this.max);
+			this.value = Math.round(newValue / this.step) * this.step;
 
 			this.updateInput();
 			this.updateSlider();
@@ -108,6 +113,14 @@ export class SliderItem extends ExtendedItem {
 		this.thumb = this.inputWrapper.querySelector('._ui-slider-thumb');
 
 		this.setUpOverExpose();
+
+		this.inputEl.min = `${this.min}`;
+		this.inputEl.max = `${this.max}`;
+
+		this.step = this.options.step || 0.01;
+		if(this.step === 0) this.step = 0.01;
+
+		this.inputEl.step = `${this.step}`;
 	}
 
 	protected setUpOverExpose(): void {
@@ -119,9 +132,6 @@ export class SliderItem extends ExtendedItem {
 
 		this.min = this.options.min - limits[0];
 		this.max = this.options.max + limits[1];
-
-		this.inputEl.min = `${this.min}`;
-		this.inputEl.max = `${this.max}`;
 
 		const overExposeEls = this.inputWrapper.querySelectorAll('._ui-slider-overexpose') as NodeListOf<HTMLElement>;
 

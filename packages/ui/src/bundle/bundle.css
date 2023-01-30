@@ -496,5 +496,9 @@
   background-color: var(--section-bg-1);
   border-radius: var(--input-radius);
 }
+._ui-wrapper *::selection {
+  background: var(--color-white);
+  color: var(--accent-color);
+}
 
 /*# sourceMappingURL=bundle.css.map */
