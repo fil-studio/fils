@@ -1,17 +1,20 @@
 // import { WebGLSketch, initMaterial, VFXRenderer, gfxShaders } from '@fils/gfx'
 // import { WebGLSketch, initMaterial, VFXRenderer, gfxShaders } from '../../../../packages/gfx/lib/main'
-import { BoxGeometry, CylinderGeometry, DirectionalLight, EquirectangularReflectionMapping, Mesh, MeshPhongMaterial, ShaderChunk, SphereGeometry, TextureLoader, TorusKnotGeometry, WebGLRenderTarget } from 'three';
+import { BoxGeometry, CylinderGeometry, DirectionalLight, EquirectangularReflectionMapping, Mesh, MeshPhongMaterial, RawShaderMaterial, ShaderChunk, SphereGeometry, TextureLoader, TorusKnotGeometry, WebGLRenderTarget } from 'three';
 import { initMaterial } from '../../../../packages/gfx/src/vfx/MaterialUtils';
 import { VFXRenderer } from '../../../../packages/gfx/src/vfx/VFXRenderer';
 import { WebGLSketch, gfxShaders } from '../../../../packages/gfx';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { FXAAPass, VFXPipeline } from '../../../../packages/gfx/src/main';
+import { FXAAPass, RTUtils, VFXPipeline } from '../../../../packages/gfx/src/main';
 import { FinalPass } from '../../../../packages/gfx/src/vfx/pipeline/FinalPass';
 import { DoFPass } from '../../../../packages/gfx/src/vfx/pipeline/DoFPass';
 import { LutPass } from '../../../../packages/gfx/src/vfx/pipeline/LutPass';
 import { RetroPass } from '../../../../packages/gfx/src/vfx/pipeline/RetroPass';
+
+import vert from '../../../../packages/gfx/src/glsl/fbo.vert';
+import frag from '../../../../packages/gfx/src/glsl/vfx/draw-depth.frag';
 
 const BOX_GEO = new BoxGeometry(1, 1, 1);
 const BALL_GEO = new SphereGeometry(1);
@@ -19,6 +22,20 @@ const CYL_GEO = new CylinderGeometry(.1, .1, 1, 32, 8);
 const TOR_GEO = new TorusKnotGeometry(10, 2, 64, 32, 2, 3);
 
 const loader = new TextureLoader();
+
+const debugSettings = {
+	showTextures: true
+}
+
+const SHOW_DEPTH = new RawShaderMaterial({
+	vertexShader: vert,
+	fragmentShader: frag,
+	uniforms: {
+		tDepth: {value: null},
+		cameraNear: {value: 0},
+		cameraFar: {value: 0}
+	}
+})
 
 /**
  * VFXRenderer works best with black clear color and 0 clear alpha 
@@ -31,13 +48,17 @@ const loader = new TextureLoader();
 
 export class App extends WebGLSketch {
 	customRenderer: VFXPipeline;
+	rnd:VFXRenderer;
 	meshes: Mesh[] = [];
 	background:WebGLRenderTarget;
+	depthRT:WebGLRenderTarget;
 
 	constructor() {
 		super(window.innerWidth, window.innerHeight, {
 			alpha: false,
-			antialias: true
+			antialias: true,
+			near: .1,
+			far: 100
 		});
 		document.body.appendChild(this.domElement);
 		this.domElement.className = 'view';
@@ -59,6 +80,8 @@ export class App extends WebGLSketch {
 		L.position.set(-1, 1, 1);
 		this.scene.add(L);
 
+		this.depthRT = new WebGLRenderTarget(256, 256);
+
 		const box1 = new Mesh(
 			BOX_GEO,
 			initMaterial(
@@ -69,6 +92,7 @@ export class App extends WebGLSketch {
 		);
 		box1.rotation.set(-.2, .2, .1);
 		box1.scale.x = 1.5;
+		box1.position.z = -4;
 		this.scene.add(box1);
 		this.meshes.push(box1);
 
@@ -82,7 +106,7 @@ export class App extends WebGLSketch {
 				})
 			)
 		);
-		ball1.position.z = -2;
+		ball1.position.z = -8;
 		ball1.position.y = .75;
 		ball1.scale.setScalar(.75);
 		this.scene.add(ball1);
@@ -99,7 +123,7 @@ export class App extends WebGLSketch {
 			)
 		);
 		cyl.rotation.z = Math.PI / 4;
-		cyl.position.z = 2;
+		cyl.position.z = 0;
 		cyl.scale.y = 5;
 		this.scene.add(cyl);
 		this.meshes.push(cyl);
@@ -112,7 +136,7 @@ export class App extends WebGLSketch {
 				})
 			)
 		)
-		torus.position.z = 4;
+		torus.position.z = 8;
 		torus.scale.setScalar(.1);
 		this.scene.add(torus);
 		this.meshes.push(torus);
@@ -122,6 +146,8 @@ export class App extends WebGLSketch {
 		});
 
 		this.camera.position.z = 15;
+		SHOW_DEPTH.uniforms.cameraNear.value = this.camera.near;
+		SHOW_DEPTH.uniforms.cameraFar.value = this.camera.far;
 
 		const rnd = new VFXRenderer(
 			this.renderer,
@@ -141,6 +167,8 @@ export class App extends WebGLSketch {
 			}
 		);
 
+		this.rnd = rnd;
+
 		const lut = new LutPass(loader.load('/assets/textures/table.png'));
 		lut.enabled = false;
 
@@ -156,8 +184,8 @@ export class App extends WebGLSketch {
 				},
 				camNear: this.camera.near,
 				camFar: this.camera.far,
-				focalDistance: .5,
-				aperture: .2
+				focalDistance: 15,
+				aperture: 3
 			}
 		);
 
@@ -226,6 +254,7 @@ export class App extends WebGLSketch {
 				r.type === 0 ? this.renderer : rnd
 			)
 		});
+		gui.add(debugSettings, 'showTextures');
 
 		const f3 = gui.addFolder("FXAA").close();
 		f3.add(fxaa, 'enabled');
@@ -235,8 +264,9 @@ export class App extends WebGLSketch {
 
 		const f2 = gui.addFolder("Depth of Field").close();
 		f2.add(dof, 'enabled');
-		f2.add(dof.shader.uniforms.focalDistance, 'value', 0, 2).name("Focal Distance");
-		f2.add(dof.shader.uniforms.aperture, 'value', 0, 2).name("Aperture");
+		f2.add(dof.shader.uniforms.debug, 'value').name('Debug');
+		f2.add(dof.shader.uniforms.focalDistance, 'value', 0, 30).name("Focal Distance");
+		f2.add(dof.shader.uniforms.aperture, 'value', 0.1, 10).name("Aperture");
 
 		const f21 = f2.addFolder("Blur Settings");
 		f21.add(dof.blurPass, 'iterations', 1, 32, 1);
@@ -264,6 +294,21 @@ export class App extends WebGLSketch {
 		}).name('Pixel Size');
 
 		this.start(customRaf);
+
+		let cTime = 0;
+
+		window.addEventListener('keydown', (event)=>{
+			if(event.key === ' ') {
+				if(this.clock.running) {
+					cTime = this.clock.getElapsedTime();
+					this.clock.stop();
+				}
+				else {
+					this.clock.start();
+					this.clock.elapsedTime = cTime;
+				}
+			}
+		})
 	}
 
 	resize(width: number, height: number): void {
@@ -290,5 +335,15 @@ export class App extends WebGLSketch {
 
 	render(): void {
 		this.customRenderer.render(this.scene, this.camera);
+		if(debugSettings.showTextures) {
+			SHOW_DEPTH.uniforms.tDepth.value = this.rnd.depthTexture;
+			RTUtils.renderToRT(this.depthRT, this.renderer, SHOW_DEPTH);
+			this.renderer.autoClear = false;
+			this.renderer.clearDepth();
+			RTUtils.drawRT(this.depthRT, this.renderer, 0, window.innerHeight-266);
+			RTUtils.drawTexture(this.rnd.sceneRT.texture[1], this.renderer, 266, window.innerHeight-266);
+			// RTUtils.drawRT(this.depthRT, this.renderer, 266, window.innerHeight-266);
+			this.renderer.autoClear = true;
+		}
 	}
 }

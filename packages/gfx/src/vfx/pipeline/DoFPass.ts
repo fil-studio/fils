@@ -56,11 +56,11 @@ export class DoFPass extends RenderPass {
 
 		ShaderChunk.depth = depth;
 
-		this.shader = SHADER;
-		SHADER.uniforms.cameraNear.value = settings.camNear || DEFAULTS.camNear;
-		SHADER.uniforms.cameraFar.value = settings.camFar || DEFAULTS.camFar;
-		SHADER.uniforms.focalDistance.value = settings.focalDistance || DEFAULTS.focalDistance;
-		SHADER.uniforms.aperture.value = settings.aperture || DEFAULTS.aperture;
+		this.shader = SHADER.clone();
+		this.shader.uniforms.cameraNear.value = settings.camNear || DEFAULTS.camNear;
+		this.shader.uniforms.cameraFar.value = settings.camFar || DEFAULTS.camFar;
+		this.shader.uniforms.focalDistance.value = settings.focalDistance || DEFAULTS.focalDistance;
+		this.shader.uniforms.aperture.value = settings.aperture || DEFAULTS.aperture;
 	}
 
 	setSize(width:number, height:number) {
@@ -71,7 +71,7 @@ export class DoFPass extends RenderPass {
 		if(!this.enabled) return;
 		this.blurPass.source = composer.read.texture;
 		this.blurPass.renderInternal(renderer);
-		SHADER.uniforms.tBlur.value = this.blurPass.texture;
+		this.shader.uniforms.tBlur.value = this.blurPass.texture;
 		super.render(renderer, composer, target);
 	}
 }
