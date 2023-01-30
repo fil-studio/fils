@@ -27,25 +27,9 @@ export class App {
 			multiNumberTest: [1, 2, 3],
 		}
 
-		const tmp = new Vector3(1, 2, 3);
-		console.log(tmp);
+		// const tmp = new Vector3(1, 2, 3);
+		// console.log(tmp);
 
-
-		let obj1 = {
-			view: 'test',
-			type: 'boolean',
-			extendedHTML: '<div>Frontend injected</div>',
-			extendedCSS: '',
-		}
-		let obj2 = {
-			...obj1,
-			view: 'test2',
-			extendedHTML: '<div>Frontend extended injected</div>',
-		}
-
-
-		ItemRegister(obj1);
-		ItemRegister(obj2);
 
 		this.ui = new UI({
 			title: 'UI',
@@ -62,10 +46,10 @@ export class App {
 		 * Key
 		 * Options
 		 */
-		group.add(obj, 'colorTest', {
-			title: 'Color Test',
-			view: 'color'
-		});
+		// group.add(obj, 'colorTest', {
+		// 	title: 'Color Test',
+		// 	view: 'color'
+		// });
 		group.add(obj, 'booleanTest', {
 			title: 'Boolean Test',
 		});
@@ -76,10 +60,10 @@ export class App {
 			title: 'Number Test',
 		});
 		group.add(obj, 'numberTestSlider', {
-			title: 'Number Test',
-			view: 'slider',
-			min: -10,
-			max: 10
+			title: 'Slider Test',
+				view: 'slider',
+				min: -10,
+				max: 10
 		});
 
 		const g2 = this.ui.addGroup({
@@ -88,21 +72,21 @@ export class App {
 		const g4 = g2.addGroup({
 			title: 'Subgroup Test 2',
 		})
-		g4.add(obj, 'colorTest', {
-			title: 'Color Test',
-			view: 'color'
-		});
-		g4.addItem(obj, 'stringTest', {
-			title: 'String Test'
-		});
-		g4.add(obj, 'numberTest', {
-			title: 'Number Test',
-		});
+		// g4.add(obj, 'colorTest', {
+		// 	title: 'Color Test',
+		// 	view: 'color'
+		// });
+		// g4.addItem(obj, 'stringTest', {
+		// 	title: 'String Test'
+		// });
+		// g4.add(obj, 'numberTest', {
+		// 	title: 'Number Test',
+		// });
 
-		this.ui.add(obj, 'textureTest', {
-			title: 'Texture Test',
-			view: 'texture'
-		});
+		// this.ui.add(obj, 'textureTest', {
+		// 	title: 'Texture Test',
+		// 	view: 'texture'
+		// });
 
 
 		console.log('UI', this.ui);

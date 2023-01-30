@@ -18,7 +18,7 @@ export class Button extends EventsHandler {
 		super(parent);
 
 		this.onChangeCallback = onChangeCallback || function(e){
-			console.log('Button - onChangeCallback:', e);
+			// console.log('Button - onChangeCallback:', e);
 		};
 
 		this.depth = parent.depth + 1;

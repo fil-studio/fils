@@ -61,7 +61,7 @@ export class Item extends EventsHandler {
 
 		this.title = this.options?.title || key;
 		this.onChangeCallback = this.options?.onChangeCallback || function(e?:CustomEvent){
-			console.log('Item - onChangeCallback:', e);
+			// console.log('Item - onChangeCallback:', e);
 		}
 		this.dom = dom.createRow({
 			type: RowTypes.item,
@@ -90,7 +90,7 @@ export class Item extends EventsHandler {
 	}
 
 	onChange(e?:CustomEvent): void {
-		console.log('Item - onChange:', this.title);
+		// console.log('Item - onChange:', this.title);
 		this.onChangeCallback(e);
  	}
 
@@ -98,7 +98,7 @@ export class Item extends EventsHandler {
 	 * Refresh item dom
 	 */
 	refresh() {
-		console.log('Item - refresh:', this.title);
+		// console.log('Item - refresh:', this.title);
 		this.object[this.key] = this.value;
 		this.__onChange();
 	}

@@ -1,7 +1,6 @@
 import check from "../utils/check";
-import { InputController, InputPanel } from "../components/inputPanels/InputPanel";
+import { InputPanel } from "../components/inputPanels/InputPanel";
 import { Item, ItemOptions, ItemParams } from "../components/Item";
-import { CustomExtendedItem } from "../components/items/CustomExtendedItem";
 import { ExtendedItem } from "../components/items/ExtendedItem";
 
 // Available items array
@@ -52,7 +51,7 @@ export interface ItemRegisterOptions {
 export const ItemRegister = (registerOptions:ItemRegisterOptions) => {
 
 		const createItem = (itemParams: ItemParams, options: ItemOptions) => {
-			return new registerOptions.item(registerOptions, itemParams, options) as CustomExtendedItem;
+			return new registerOptions.item(registerOptions, itemParams, options) as ExtendedItem;
 		}
 
 		const getCSS = () => {
@@ -76,6 +75,8 @@ export const ItemFactory = (itemParams:ItemParams, options:ItemOptions) => {
 	// Force item type
 	if(options.view){
 		const item = AvailableItems.items.find(item => item.view === options.view);
+
+		if(!item) throw new Error('ItemFactory - unknown view');
 		return item.create(itemParams, options);
 	}
 

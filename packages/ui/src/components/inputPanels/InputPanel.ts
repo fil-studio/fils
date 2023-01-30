@@ -10,13 +10,13 @@ export class InputPanel  {
 
 	constructor(parent: Item) {
 		this.parent = parent;
-		console.log('InputController - init');
+		console.log('InputPanel - init');
 
 		this.addEventListeners();
 	}
 
 	addEventListeners(): void {
-		console.log('InputController - addEventListeners');
+		console.log('InputPanel - addEventListeners');
 
 		this.parent.inputWrapper.addEventListener('click', () => {
 			this.create();
