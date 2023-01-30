@@ -431,7 +431,11 @@
   position: relative;
   float: left;
   width: calc(100% - 45px - 12px);
+  cursor: pointer;
   margin: 0 12px 0 0;
+}
+._ui-wrapper ._ui-slider ._ui-slider-input * {
+  pointer-events: none;
 }
 ._ui-wrapper ._ui-slider ._ui-slider-track {
   position: absolute;
