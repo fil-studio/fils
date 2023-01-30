@@ -10,10 +10,8 @@ export interface ItemOptions {
 
 	// Number options
 	min?: number;
-	minOverExpose?: number;
 	max?: number;
-	maxOverExpose?: number;
-	overExpose?: number;
+	overExpose?: number | [number, number];
 	step?: number;
 }
 

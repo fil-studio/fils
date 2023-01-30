@@ -437,7 +437,7 @@
 ._ui-wrapper ._ui-slider ._ui-slider-input * {
   pointer-events: none;
 }
-._ui-wrapper ._ui-slider ._ui-slider-track {
+._ui-wrapper ._ui-slider ._ui-slider-track, ._ui-wrapper ._ui-slider ._ui-slider-overexpose {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -445,6 +445,18 @@
   height: 2px;
   background-color: var(--color-0);
   width: 100%;
+}
+._ui-wrapper ._ui-slider ._ui-slider-overexpose {
+  background-color: var(--color-2);
+  transform: translate(0, -50%);
+  left: unset;
+  width: calc(var(--size) * 100%);
+}
+._ui-wrapper ._ui-slider ._ui-slider-overexpose._ui-slider-overexpose-min {
+  left: 0;
+}
+._ui-wrapper ._ui-slider ._ui-slider-overexpose._ui-slider-overexpose-max {
+  right: 0;
 }
 ._ui-wrapper ._ui-slider ._ui-slider-thumb {
   position: absolute;
@@ -455,6 +467,27 @@
   height: 20px;
   border-radius: 50%;
   background-color: var(--color-white);
+  cursor: grab;
+  pointer-events: all;
+  transition: background-color var(--duration) var(--timing);
+}
+._ui-wrapper ._ui-slider ._ui-slider-thumb._ui-grabbing {
+  background-color: rgba(var(--color-white), 0.2);
+}
+._ui-wrapper ._ui-slider ._ui-slider-thumb::after, ._ui-wrapper ._ui-slider ._ui-slider-thumb::before {
+  content: "";
+  position: absolute;
+  height: 8px;
+  width: 2px;
+  background-color: var(--color-white);
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+._ui-wrapper ._ui-slider ._ui-slider-thumb::after {
+  top: 0;
+}
+._ui-wrapper ._ui-slider ._ui-slider-thumb::before {
+  bottom: 0;
 }
 ._ui-wrapper ._ui-slider input {
   width: 45px;

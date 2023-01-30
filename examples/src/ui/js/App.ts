@@ -20,7 +20,7 @@ export class App {
 			booleanTest: false,
 			stringTest: 'Test',
 			numberTest: 1,
-			numberTestSlider: 1,
+			numberTestSlider: 0,
 			numberTestFloat: 0.5,
 			textureTest: 'asdapewoiewitureoiwoie09013oiasd',
 			materialTest: 'asdapewoiewitureoiwoie09013oiasd',
@@ -62,8 +62,9 @@ export class App {
 		group.add(obj, 'numberTestSlider', {
 			title: 'Slider Test with long text example',
 				view: 'slider',
-				min: -10,
-				max: 10
+				min: 0,
+				max: 10,
+				overExpose: [5, 40],
 		});
 
 		const g2 = this.ui.addGroup({
