@@ -1,7 +1,7 @@
 import { BASE_CLASS } from "../../utils/dom";
 import { Item } from "../Item";
 
-export class InputController  {
+export class InputPanel  {
 	parent: Item;
 
 	dom: HTMLElement;

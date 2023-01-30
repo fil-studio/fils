@@ -2,6 +2,13 @@
 # yarn lockfile v1
 
 
+"@fils/math@^0.0.1-0":
+  version "0.0.1-0"
+  resolved "https://registry.yarnpkg.com/@fils/math/-/math-0.0.1-0.tgz#f05cae55cda4a0b0daf7fca370a33304ba94ac62"
+  integrity sha512-ZiSKiSlQWPecz7tdvnvXQYXjFrl7DEuxKa4AKo1Hq/fg8/atmmXkbGksJIOPAnFGhqzQoeTiZrsmmThoF/Bh2Q==
+  dependencies:
+    mersenne "^0.0.4"
+
 "@fils/utils@^0.0.1-2":
   version "0.0.1-2"
   resolved "https://registry.yarnpkg.com/@fils/utils/-/utils-0.0.1-2.tgz#4406bb3611896c2340dab8af84e735fd870ff14a"
@@ -257,6 +264,11 @@ lodash.throttle@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/lodash.throttle/-/lodash.throttle-4.1.1.tgz#c23e91b710242ac70c37f1e1cda9274cc39bf2f4"
   integrity sha512-wIkUCfVKpVsWo3JSZlc+8MB5it+2AN5W8J7YVMST30UrvcQNZ1Okbj+rbVniijTWE6FGYy4XJq/rHkas8qJMLQ==
+
+mersenne@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/mersenne/-/mersenne-0.0.4.tgz#401fdec7ec21cdb9e03cd3d3021398da21b27085"
+  integrity sha512-XoSUL+nF8hMTKGQxUs8r3Btdsf1yuKKBdCCGbh3YXgCXuVKishpZv1CNc385w9s8t4Ynwc5h61BwW/FCVulkbg==
 
 minimatch@^3.1.1:
   version "3.1.2"

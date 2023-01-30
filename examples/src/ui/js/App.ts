@@ -1,7 +1,9 @@
 import { ItemRegister } from '../../../../packages/ui/src/partials/ItemFactory';
 import { UI } from '../../../../packages/ui/src/main';
 
-import { uiMaterialData } from '../../../../packages/ui-icons/lib/Icons';
+import { uiBrushData } from '../../../../packages/ui-icons/lib/Icons';
+
+import { Vector3 } from 'three';
 
 /**
  * S'ha de poder crear els components manualment
@@ -18,10 +20,16 @@ export class App {
 			booleanTest: false,
 			stringTest: 'Test',
 			numberTest: 1,
+			numberTestSlider: 1,
 			numberTestFloat: 0.5,
 			textureTest: 'asdapewoiewitureoiwoie09013oiasd',
-			materialTest: 'asdapewoiewitureoiwoie09013oiasd'
+			materialTest: 'asdapewoiewitureoiwoie09013oiasd',
+			multiNumberTest: [1, 2, 3],
 		}
+
+		const tmp = new Vector3(1, 2, 3);
+		console.log(tmp);
+
 
 		let obj1 = {
 			view: 'test',
@@ -41,7 +49,7 @@ export class App {
 
 		this.ui = new UI({
 			title: 'UI',
-			icon: uiMaterialData
+			icon: uiBrushData
 		});
 
 		const group = this.ui.addGroup({
@@ -66,6 +74,12 @@ export class App {
 		});
 		group.add(obj, 'numberTest', {
 			title: 'Number Test',
+		});
+		group.add(obj, 'numberTestSlider', {
+			title: 'Number Test',
+			view: 'slider',
+			min: -10,
+			max: 10
 		});
 
 		const g2 = this.ui.addGroup({

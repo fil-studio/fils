@@ -1,9 +1,10 @@
 import { ItemClassRegister, ItemRegister } from "./ItemFactory";
-import { ColorPicker } from "../components/inputControllers/ColorPicker";
+import { ColorPicker } from "../components/inputPanels/ColorPicker";
 import { TextureItem } from "../components/items/customItems/TexureItem";
-import { TextureList } from "../components/inputControllers/TextureList";
+import { TextureList } from "../components/inputPanels/TextureList";
 import { MaterialItem } from "../components/items/customItems/MaterialItem";
 
+import { MathUtils } from '@fils/math';
 
 export const RegisterBaseComponents = () => {
 
@@ -76,6 +77,50 @@ export const RegisterBaseComponents = () => {
 		refresh: function () {
 			const input = this.dom.querySelector('input');
 			this.value = input.value;
+		}
+	})
+
+	// Number Item
+	ItemRegister({
+		view: 'slider',
+		type: 'number',
+		extendedCSS: ``,
+		extendedHTML: `
+			<div class="_ui-slider-input">
+				<div class="_ui-slider-track"></div>
+				<div class="_ui-slider-min-overexpose"></div>
+				<div class="_ui-slider-max-overexpose"></div>
+				<div class="_ui-slider-thumb"></div>
+			</div>
+			<input type="number" placeholder="Value"/>
+		`,
+		addEventListeners: function() {
+
+			const input = this.dom.querySelector('input');
+
+			input.value = this.value;
+			input.max = this.options.max;
+			input.min = this.options.min;
+
+			const slider = this.dom.querySelector('._ui-slider-input');
+
+			const mappedValue = MathUtils.map(this.value, this.options.min, this.options.max, -1, 1);
+
+			slider.style.setProperty('--value', this.value);
+
+
+			input.addEventListener('change', () => {
+				this.refresh();
+			});
+
+		},
+
+		refresh: function () {
+			const input = this.dom.querySelector('input');
+			this.value = input.value;
+
+			const slider = this.dom.querySelector('._ui-slider-input');
+			slider.style.setProperty('--value', this.value);
 		}
 	})
 

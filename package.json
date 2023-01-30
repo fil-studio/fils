@@ -1,5 +1,5 @@
 {
-    "name": "fils",
+  "name": "fils",
 	"version": "0.0.1-1",
 	"description": "A collection of fils",
 	"repository": "git@github.com:fil-studio/fils.git",
@@ -19,4 +19,3 @@
       "./packages/utils"
     ]
   }
-  

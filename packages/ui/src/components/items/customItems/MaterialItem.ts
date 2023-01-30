@@ -1,10 +1,10 @@
-import { CustomExtendedItem } from "../CustomExtendedItem";
+import { ExtendedItem } from "../ExtendedItem";
 import { ItemOptions, ItemParams } from "../../Item";
-import { ItemClassRegisterOptions } from "../../../partials/ItemFactory";
+import { ItemRegisterOptions } from "../../../partials/ItemFactory";
 
-export class MaterialItem extends CustomExtendedItem {
+export class MaterialItem extends ExtendedItem {
 
-	constructor(registerOptions: ItemClassRegisterOptions, itemParams: ItemParams, options?: ItemOptions) {
+	constructor(registerOptions: ItemRegisterOptions, itemParams: ItemParams, options?: ItemOptions) {
 		super(registerOptions, itemParams, options);
 
 		console.log('Material');

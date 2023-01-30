@@ -1,6 +1,6 @@
 import { UI } from "../../main";
 import { TextureItem } from "../items/customItems/TexureItem";
-import { InputController } from "./InputController";
+import { InputController } from "./InputPanel";
 
 export class TextureList extends InputController {
 	parent: TextureItem;

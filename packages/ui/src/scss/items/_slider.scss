@@ -1,0 +1,40 @@
+._ui-slider {
+
+
+	._ui-slider-input {
+		position: relative;
+		float: left;
+		width: calc(100% - 45px - 8px);
+		margin: 0 8px 0 0;
+	}
+
+	._ui-slider-track {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		height: 2px;
+		background-color: var(--color-0);
+		width: 100%;
+	}
+
+	._ui-slider-thumb {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 20px;
+		height: 20px;
+		border-radius: 50%;
+		background-color: var(--color-white);
+	}
+
+
+	input {
+		width: 45px;
+		padding: var(--input-padding);
+		text-align: left;
+		background-color: var(--section-bg-1);
+		border-radius: var(--input-radius);
+	}
+}

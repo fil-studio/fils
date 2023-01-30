@@ -7,6 +7,14 @@ export interface ItemOptions {
 	title?: string;
 	view?: string,
 	onChangeCallback?: Function;
+
+	// Number options
+	min?: number;
+	minOverExpose?: number;
+	max?: number;
+	maxOverExpose?: number;
+	overExpose?: number;
+	step?: number;
 }
 
 export interface ItemParams {
@@ -18,7 +26,7 @@ export interface ItemParams {
 export class Item extends EventsHandler {
 
 	dom: HTMLElement;
-	protected inputWrapper: HTMLElement;
+	inputWrapper: HTMLElement;
 
 	protected parent: Group;
 	protected depth: number;
@@ -32,22 +40,27 @@ export class Item extends EventsHandler {
 
 	protected created: boolean = false;
 
+	protected options: ItemOptions;
+
 	private onChangeCallback: Function;
 
 	constructor({ parent, object, key }: ItemParams = {}, options?: ItemOptions) {
 		super(parent);
 
+
 		if(!parent) throw new Error('Item - parent is required');
 		if(!object) throw new Error('Item - object is required');
 		if(!key) throw new Error('Item - key is required');
+
+		this.options = options;
 
 		this.depth = parent.depth + 1;
 
 		this.object = object;
 		this.key = key;
 
-		this.title = options?.title || key;
-		this.onChangeCallback = options?.onChangeCallback || function(e?:CustomEvent){
+		this.title = this.options?.title || key;
+		this.onChangeCallback = this.options?.onChangeCallback || function(e?:CustomEvent){
 			console.log('Item - onChangeCallback:', e);
 		}
 		this.dom = dom.createRow({

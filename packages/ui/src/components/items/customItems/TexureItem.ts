@@ -1,17 +1,17 @@
 import dom, { VERTICAL_ROW } from "../../../utils/dom";
-import { CustomExtendedItem } from "../CustomExtendedItem";
-import { InputController } from "../../inputControllers/InputController";
+import { ExtendedItem } from "../ExtendedItem";
+import { InputPanel } from "../../inputPanels/InputPanel";
 import { ItemOptions, ItemParams } from "../../Item";
-import { ItemClassRegisterOptions } from "../../../partials/ItemFactory";
+import { ItemRegisterOptions } from "../../../partials/ItemFactory";
 
-export class TextureItem extends CustomExtendedItem {
+export class TextureItem extends ExtendedItem {
 	emptyButton: HTMLButtonElement;
-	inputController: InputController;
+	inputPanel: InputPanel;
 
 	test: string = 'empty string test';
 	test2: number = 15;
 
-	constructor(registerOptions: ItemClassRegisterOptions, itemParams: ItemParams, options?: ItemOptions) {
+	constructor(registerOptions: ItemRegisterOptions, itemParams: ItemParams, options?: ItemOptions) {
 		super(registerOptions, itemParams, options);
 
 		this.dom.classList.add(VERTICAL_ROW);
@@ -19,7 +19,7 @@ export class TextureItem extends CustomExtendedItem {
 		this.emptyButton = dom.createButton('Add');
 		this.inputWrapper.appendChild(this.emptyButton);
 
-		this.inputController = registerOptions.inputController ? new registerOptions.inputController(this) : null || null;
+		this.inputPanel = registerOptions.inputPanel ? new registerOptions.inputPanel(this) : null || null;
 
 	}
 }
