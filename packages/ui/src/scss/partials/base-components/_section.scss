@@ -27,10 +27,10 @@ section {
 		float: left;
 		width: 100%;
 
-		fieldset:first-of-type {
+		fieldset:first-of-type{
 			margin-top: 8px;
 		}
-		fieldset:last-of-type {
+		fieldset:last-child {
 			margin-bottom: 8px;
 		}
 	}

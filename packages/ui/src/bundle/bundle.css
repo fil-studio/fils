@@ -318,7 +318,7 @@
 ._ui-wrapper section ._ui-content-wrapper fieldset:first-of-type {
   margin-top: 8px;
 }
-._ui-wrapper section ._ui-content-wrapper fieldset:last-of-type {
+._ui-wrapper section ._ui-content-wrapper fieldset:last-child {
   margin-bottom: 8px;
 }
 ._ui-wrapper fieldset {
@@ -365,7 +365,7 @@
   align-items: center;
   padding: var(--padding);
   background-color: var(--section-bg-1);
-  border-radius: var(--radius);
+  border-radius: var(--input-radius);
   cursor: pointer;
   transition: var(--duration) var(--timing);
 }

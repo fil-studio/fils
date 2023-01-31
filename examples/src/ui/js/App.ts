@@ -103,10 +103,34 @@ export class App {
 
 		const g2 = this.ui.addGroup({
 			title: 'Subgroup Test',
+			folded: true
 		});
 
 		const g4 = g2.addGroup({
 			title: 'Subgroup Test 2',
+			folded: true
+		});
+
+		g4.add(obj, 'booleanTest', {
+			title: 'Boolean Test',
+			view: 'boolean'
+		});
+
+		g4.addItem(obj, 'stringTest', {
+			title: 'String Test',
+			view: 'string'
+		});
+
+		g4.add(obj, 'numberTest', {
+			title: 'Number Test',
+			view: 'number'
+		});
+
+		g4.addButton({
+			title: 'Button Test',
+			onClick: () => {
+				console.log('Button Test');
+			}
 		});
 
 		g2.addButton({

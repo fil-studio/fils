@@ -3,8 +3,9 @@ import { EventsHandler } from "../partials/Events";
 import { ItemFactory } from "../partials/ItemFactory";
 import dom, { CONTENT_WRAPPER, FOLDABLE, FOLDABLE_ELEMENT, FOLDED, NOT_FOLDED, RowTypes } from "../utils/dom";
 import { Button } from "./Button";
-import { Item, ItemOptions } from "./Item";
+import { Item } from "./Item";
 import { el } from "@fils/utils";
+import { ItemOptions } from "./items/ItemOptions";
 
 
 export interface GroupParams {
@@ -74,6 +75,8 @@ export class Group extends EventsHandler {
 			this.folded = !this.folded;
 			this.onFold();
 		});
+
+		this.onFold();
 	}
 
 	protected onFold(){
@@ -125,10 +128,8 @@ export class Group extends EventsHandler {
 	/**
 	 * Create a group
 	 */
-	addGroup({
-		title,
-	}: GroupParams = {}): Group {
-		const group = new Group({ parent: this, title });
+	addGroup(params: GroupParams): Group {
+		const group = new Group({ parent: this, ...params });
 
 		this.addChild(group);
 

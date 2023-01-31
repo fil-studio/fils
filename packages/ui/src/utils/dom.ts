@@ -59,7 +59,7 @@ const dom = {
 		if(type === RowTypes.item) domEl = 'fieldset';
 		if(type === RowTypes.button) domEl = 'fieldset';
 
-		const row = document.createElement(domEl);
+		const row = el(domEl);
 		row.setAttribute('ui-depth', `${depth}`);
 
 		/**
@@ -111,6 +111,7 @@ const dom = {
 		if(type === RowTypes.button) {
 			const button = dom.createButton(title);
 			row.appendChild(button);
+			row.classList.add(`${BASE_CLASS}-button-fieldset`);
 		}
 
 		return row;
