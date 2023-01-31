@@ -26,6 +26,23 @@ export class App {
 			},
 			numberTestSlider: 0,
 			numberTestFloat: 0.5,
+			optionsTestActive: 'one',
+			optionsTest: {
+				one: 'One',
+				two: 'Two',
+				three: 'Three',
+				four: 'Four',
+				five: 'Five',
+				six: 'Six',
+				seven: 'Seven',
+				eight: 'Eight',
+				nine: 'Nine',
+				ten: 'Ten',
+				eleven: 'Eleven',
+				twelve: 'Twelve',
+				thirteen: 'Thirteen',
+				fourteen: 'Fourteen'
+			},
 			textureTest: 'asdapewoiewitureoiwoie09013oiasd',
 			materialTest: 'asdapewoiewitureoiwoie09013oiasd',
 			multiNumberTest: [1, 2, 3],
@@ -56,14 +73,25 @@ export class App {
 		// });
 		group.add(obj, 'booleanTest', {
 			title: 'Boolean Test',
+			view: 'boolean'
 		});
+
 		group.addItem(obj, 'stringTest', {
-			title: 'String Test'
+			title: 'String Test',
+			view: 'string'
 		});
+
 		group.add(obj, 'numberTest', {
 			title: 'Number Test',
 			view: 'number'
 		});
+
+		group.add(obj, 'optionsTestActive', {
+			title: 'Options Test',
+			view: 'select',
+			options: obj.optionsTest,
+		});
+
 		group.add(obj, 'numberTestSlider', {
 			title: 'Slider Test with long text example',
 				view: 'slider',
@@ -75,16 +103,19 @@ export class App {
 
 		const g2 = this.ui.addGroup({
 			title: 'Subgroup Test',
-		})
+		});
+
 		const g4 = g2.addGroup({
 			title: 'Subgroup Test 2',
-		})
+		});
+
 		g2.addButton({
 			title: 'Button Test',
 			onClick: () => {
 				console.log('Button Test');
 			}
 		});
+
 		// g4.add(obj, 'colorTest', {
 		// 	title: 'Color Test',
 		// 	view: 'color'

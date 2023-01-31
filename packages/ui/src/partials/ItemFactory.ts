@@ -1,12 +1,11 @@
-import check from "../utils/check";
 import { InputPanel } from "../components/inputPanels/InputPanel";
-import { Item, ItemOptions, ItemParams } from "../components/Item";
+import { Item, ItemParams } from "../components/Item";
 import { ExtendedItem } from "../components/items/ExtendedItem";
+import { ItemOptions } from "../components/items/ItemOptions";
 
 // Available items array
 export interface AvailableItem {
 	view: string,
-	type: string,
 	create: (params: ItemParams, options) => Item,
 	getCSS: () => string
 }
@@ -15,7 +14,6 @@ export const AvailableItems = {
 }
 export interface ItemRegisterOptions {
 	view: string,
-	type: string,
 	extendedCSS?: string,
 	extendedHTML?: string,
 	inputPanel?: typeof InputPanel,
@@ -60,7 +58,6 @@ export const ItemRegister = (registerOptions:ItemRegisterOptions) => {
 
 		AvailableItems.items.push({
 			view: registerOptions.view,
-			type: registerOptions.type,
 			create: createItem,
 			getCSS: getCSS
 		});
@@ -71,6 +68,7 @@ export const ItemFactory = (itemParams:ItemParams, options:ItemOptions) => {
 	if(!itemParams.parent) throw new Error('ItemFactory - parent is required');
 	if(!itemParams.object) throw new Error('ItemFactory - object is required');
 	if(!itemParams.key) throw new Error('ItemFactory - key is required');
+	if (!options.view) throw new Error('ItemFactory - view is required');
 
 	// Force item type
 	if(options.view){
@@ -80,22 +78,22 @@ export const ItemFactory = (itemParams:ItemParams, options:ItemOptions) => {
 		return item.create(itemParams, options);
 	}
 
-	const aItems = AvailableItems.items;
+	// const aItems = AvailableItems.items;
 
-	const value = itemParams.object[itemParams.key];
+	// const value = itemParams.object[itemParams.key];
 
-	if(check.isBoolean(value)) {
-		const item = aItems.find(item => item.type === 'boolean');
-		return item.create(itemParams, options);
-	}
-	if(check.isString(value)) {
-		const item = aItems.find(item => item.type === 'string');
-		return item.create(itemParams, options);
-	}
-	if(check.isNumber(value)) {
-		const item = aItems.find(item => item.type === 'number');
-		return item.create(itemParams, options);
-	}
+	// if(check.isBoolean(value)) {
+	// 	const item = aItems.find(item => item.type === 'boolean');
+	// 	return item.create(itemParams, options);
+	// }
+	// if(check.isString(value)) {
+	// 	const item = aItems.find(item => item.type === 'string');
+	// 	return item.create(itemParams, options);
+	// }
+	// if(check.isNumber(value)) {
+	// 	const item = aItems.find(item => item.type === 'number');
+	// 	return item.create(itemParams, options);
+	// }
 
 	throw new Error('ItemFactory - unknown type');
 }

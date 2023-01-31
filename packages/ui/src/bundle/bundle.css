@@ -427,7 +427,7 @@
   float: left;
 }
 ._ui-wrapper ._ui-number ._ui-number-input:not(:last-of-type) {
-  padding: 0 var(--line-separator) 0 0;
+  margin: 0 var(--line-separator) 0 0;
 }
 ._ui-wrapper ._ui-number input {
   width: 100%;

@@ -1,8 +1,9 @@
 import { el } from "@fils/utils";
-import { updateNamedExports } from "typescript";
 import check from "../../../utils/check";
 import dom, { BASE_CLASS } from "../../../utils/dom";
 import { ExtendedItem } from "../ExtendedItem";
+import { NumberItemOptions } from "../ItemOptions";
+
 
 type item = {
 	value: number;
@@ -12,8 +13,9 @@ type item = {
 	buttonIncrease: HTMLButtonElement;
 	buttonDecrease: HTMLButtonElement;
 }
-
 export class NumberItem extends ExtendedItem {
+	protected options: NumberItemOptions;
+
 	private items: item[];
 
 	protected addEventListeners(): void {

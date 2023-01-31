@@ -1,8 +1,9 @@
-import { BASE_CLASS } from "../../utils/dom";
-import { ItemRegisterOptions } from "../../partials/ItemFactory";
-import { Item, ItemOptions, ItemParams } from "../Item";
 import { slugify } from "../../../../utils/lib/Utils";
+import { ItemRegisterOptions } from "../../partials/ItemFactory";
+import { BASE_CLASS } from "../../utils/dom";
 import { InputPanel } from "../inputPanels/InputPanel";
+import { Item, ItemParams } from "../Item";
+import { ItemOptions } from "./ItemOptions";
 
 export class ExtendedItem extends Item {
 	inputPanel: InputPanel;

@@ -2,20 +2,7 @@
 import { EventsHandler } from '../partials/Events';
 import dom, { RowTypes } from '../utils/dom';
 import { Group } from './Group';
-
-export interface ItemOptions {
-	title?: string;
-	view?: string,
-	onChangeCallback?: Function;
-
-	// Number - Slider
-	min?: number;
-	max?: number;
-	step?: number;
-
-	// Slider
-	overExpose?: number | [number, number];
-}
+import { ItemOptions } from './items/ItemOptions';
 
 export interface ItemParams {
 	object?: Object;
@@ -44,7 +31,7 @@ export class Item extends EventsHandler {
 
 	private onChangeCallback: Function;
 
-	constructor({ parent, object, key }: ItemParams = {}, options?: ItemOptions) {
+	constructor({ parent, object, key }: ItemParams = {}, options: ItemOptions) {
 		super(parent);
 
 

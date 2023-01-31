@@ -1,9 +1,13 @@
 import { MathUtils } from "@fils/math";
-import { BASE_CLASS } from "../../../utils/dom";
 import check from "../../../utils/check";
+import { BASE_CLASS } from "../../../utils/dom";
 import { ExtendedItem } from "../ExtendedItem";
+import { RangeItemOptions } from "../ItemOptions";
 
-export class SliderItem extends ExtendedItem {
+export class RangeItem extends ExtendedItem {
+
+	protected options: RangeItemOptions;
+
 	protected inputEl: HTMLInputElement;
 	protected sliderEl: HTMLElement;
 
