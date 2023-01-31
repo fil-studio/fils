@@ -380,9 +380,10 @@
 ._ui-wrapper ._ui-input-panel {
   position: fixed;
   height: auto;
-  background-color: green;
+  background-color: var(--section-bg-1);
+  color: var(--color-1);
   z-index: 2;
-  min-height: 30px;
+  transform: translateY(-3px);
 }
 ._ui-wrapper ._ui-boolean {
   cursor: pointer;
