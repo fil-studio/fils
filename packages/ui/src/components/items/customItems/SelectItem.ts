@@ -14,8 +14,11 @@ export class SelectItem extends ExtendedItem {
 
 		window.addEventListener('click', (e) => {
 			const target = e.target as HTMLElement;
+
 			if(target === this.activeOption) return;
-			if(target.closest(`.${BASE_CLASS}-select-option`)) return;
+			if(target === this.inputPanel.dom) return;
+			if(this.inputPanel.dom?.contains(target)) return;
+
 			this.dom.classList.remove(`${BASE_CLASS}-select-open`);
 			this.inputPanel.destroy();
 		});

@@ -12,13 +12,10 @@ export class SelectOptions extends InputPanel {
 		super.addEventListeners();
 	}
 
-	create(): void {
-		if (this.created) return;
-		super.create();
+	createPanelContent(): void {
 		this.options = this.parent.options.options;
 
-		console.log('Select - create');
-
+		this.createOptions();
 	}
 
 	// destroy(): void {
@@ -30,7 +27,6 @@ export class SelectOptions extends InputPanel {
 		const options = this.options;
 
 		const createOption = (value: string) => {
-			console.log('value:', value);
 			const option = el('p');
 			option.innerHTML = value;
 			this.dom.appendChild(option);

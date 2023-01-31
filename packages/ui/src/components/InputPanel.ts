@@ -15,24 +15,11 @@ export class InputPanel  {
 	}
 
 	addEventListeners(): void {
-		console.log('InputPanel - addEventListeners');
 
 		window.addEventListener('resize', () => {
 			this.positionPanel();
 		});
 
-		this.parent.inputWrapper.addEventListener('click', () => {
-			this.create();
-		});
-
-		document.addEventListener('click', (e) => {
-			if(!this.created) return;
-			const target = e.target;
-			if (this.parent.dom.contains(target as Node)) return;
-			if (this.dom.contains(target as Node)) return;
-
-			this.destroy();
-		});
 	}
 
 	positionPanel(): void {
@@ -41,10 +28,11 @@ export class InputPanel  {
 		this.dom.style.top = `${r.top + r.height}px`;
 		this.dom.style.width = `${r.width}px`;
 		this.dom.style.left = `${r.left}px`;
-		console.log('resize');
-
 	}
 
+	createPanelContent(){
+		// Override this
+	}
 
 	create(): void {
 
@@ -58,11 +46,9 @@ export class InputPanel  {
 
 		this.positionPanel();
 
-		console.log(this.uiDom);
+		this.createPanelContent();
 
 		this.uiDom.appendChild(this.dom);
-
-
 	}
 
 	destroy(): void {
