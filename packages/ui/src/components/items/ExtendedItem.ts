@@ -1,7 +1,7 @@
 import { slugify } from "../../../../utils/lib/Utils";
 import { ItemRegisterOptions } from "../../partials/ItemFactory";
 import { BASE_CLASS } from "../../utils/dom";
-import { InputPanel } from "../inputPanels/InputPanel";
+import { InputPanel } from "../InputPanel";
 import { Item, ItemParams } from "../Item";
 import { ItemOptions } from "./ItemOptions";
 

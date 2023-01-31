@@ -1,10 +1,11 @@
+import { el } from "@fils/utils";
 import check from "../../../utils/check";
 import dom, { BASE_CLASS } from "../../../utils/dom";
 import { ExtendedItem } from "../ExtendedItem";
 import { SelectItemOptions } from "../ItemOptions";
 
 export class SelectItem extends ExtendedItem {
-	protected options: SelectItemOptions;
+	options: SelectItemOptions;
 
 	protected activeOption: HTMLElement;
 	protected optionsList: HTMLElement;
@@ -15,21 +16,14 @@ export class SelectItem extends ExtendedItem {
 			const target = e.target as HTMLElement;
 			if(target === this.activeOption) return;
 			if(target.closest(`.${BASE_CLASS}-select-option`)) return;
-
 			this.dom.classList.remove(`${BASE_CLASS}-select-open`);
+			this.inputPanel.destroy();
 		});
 
 		this.activeOption.addEventListener('click', (e) => {
 			this.dom.classList.add(`${BASE_CLASS}-select-open`);
+			this.inputPanel.create();
 		});
-
-		this.optionsList.addEventListener('click', (e) => {
-			const target = e.target as HTMLElement;
-			const option = target.closest('div');
-			console.log('option:', option);
-		});
-
-
 
 	}
 
@@ -42,20 +36,16 @@ export class SelectItem extends ExtendedItem {
 				<p></p>
 				${svg}
 			</div>
-			<div class="${BASE_CLASS}-select-options">
-			</div>
 		`;
 
 		this.activeOption = this.inputWrapper.querySelector(`.${BASE_CLASS}-select-input`);
-		this.optionsList = this.inputWrapper.querySelector(`.${BASE_CLASS}-select-options`);
-
 	}
 
 	setValue(_value: any): void {
 		let value = _value;
 
 		// If it's null set it to the first option
-		if(check.isNull(value) || check.isUndefined(value)) {
+		if(check.isNull(value) || check.isUndefined(value)) {
 			value = check.isArray(this.options.options) ? this.options.options[0] : this.options.options[Object.keys(this.options.options)[0]];
 		}
 

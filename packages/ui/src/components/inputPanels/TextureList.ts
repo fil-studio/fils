@@ -1,6 +1,6 @@
 import { UI } from "../../main";
-import { TextureItem } from "../items/customItems/TexureItem";
-import { InputPanel } from "./InputPanel";
+import { TextureItem } from "../items/customItems/TextureItem";
+import { InputPanel } from "../InputPanel";
 
 export class TextureList extends InputPanel {
 	parent: TextureItem;

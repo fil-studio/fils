@@ -18,17 +18,18 @@ export interface GroupParams {
 
 export class Group extends EventsHandler {
 	title: string;
-	parent: Group | UI;
-	children: Array<Group | Item | Button> = [];
+
+	protected parent: Group | UI;
+	protected children: Array<Group | Item | Button> = [];
 	dom: HTMLElement;
 	contentWrapper: HTMLElement;
-	depth: number = 0;
+	public depth: number = 0;
 
 	folded: boolean;
 	foldable: boolean;
-	foldableWrapper: HTMLElement;
-	height: number = 0;
-	timer: NodeJS.Timeout = null;
+	protected foldableWrapper: HTMLElement;
+	protected height: number = 0;
+	protected timer: NodeJS.Timeout = null;
 
 	constructor({
 		parent,
@@ -41,7 +42,6 @@ export class Group extends EventsHandler {
 		this.parent = parent;
 		this.title = title || '';
 		this.depth = this.parent?.depth + 1 || this.depth;
-
 
 		this.dom = dom.createRow({
 			type: RowTypes.group,

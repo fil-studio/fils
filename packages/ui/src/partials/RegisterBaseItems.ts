@@ -14,6 +14,7 @@ import { TextureList } from "../components/inputPanels/TextureList";
 import { MaterialItem } from "../components/items/customItems/MaterialItem";
 import { RangeItem } from "../components/items/customItems/RangeItem";
 import { SelectItem } from "../components/items/customItems/SelectItem";
+import { SelectOptions } from "../components/inputPanels/SelectOptions";
 
 export const RegisterBaseComponents = () => {
 
@@ -39,7 +40,8 @@ export const RegisterBaseComponents = () => {
 
 	ItemRegister({
 		view: 'select',
-		item: SelectItem
+		item: SelectItem,
+		inputPanel: SelectOptions
 	})
 
 	ItemRegister({

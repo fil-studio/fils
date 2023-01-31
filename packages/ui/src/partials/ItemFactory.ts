@@ -1,4 +1,4 @@
-import { InputPanel } from "../components/inputPanels/InputPanel";
+import { InputPanel } from "../components/InputPanel";
 import { Item, ItemParams } from "../components/Item";
 import { ExtendedItem } from "../components/items/ExtendedItem";
 import { ItemOptions } from "../components/items/ItemOptions";

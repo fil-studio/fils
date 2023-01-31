@@ -1,4 +1,4 @@
-import { InputPanel } from "./InputPanel";
+import { InputPanel } from "../InputPanel";
 
 
 export class ColorPicker extends InputPanel {
