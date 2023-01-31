@@ -12,6 +12,7 @@
 
 	&:active {
 		background-color: var(--accent-color);
+		transform: translate3d(0, 3px, 0);
 		color: var(--color-white);
 		transition: 0s;
 	}

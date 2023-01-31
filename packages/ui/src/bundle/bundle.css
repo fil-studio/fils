@@ -371,6 +371,7 @@
 }
 ._ui-wrapper ._ui-btn:active {
   background-color: var(--accent-color);
+  transform: translate3d(0, 3px, 0);
   color: var(--color-white);
   transition: 0s;
 }
@@ -443,6 +444,10 @@
   height: 50%;
   width: 20px;
   cursor: pointer;
+}
+._ui-wrapper ._ui-number ._ui-btns button:active {
+  color: var(--color-white);
+  transition: 0s;
 }
 ._ui-wrapper ._ui-number ._ui-btns svg {
   width: 9px;
