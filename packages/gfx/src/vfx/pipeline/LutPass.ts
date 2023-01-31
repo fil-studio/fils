@@ -21,8 +21,11 @@ export class LutPass extends RenderPass {
         }
     });
 
+    lookupTable:Texture;
+
     constructor(table:Texture) {
         super();
+        this.lookupTable = table;
         this.shader.uniforms.lookupTable.value = table;
     }
 }

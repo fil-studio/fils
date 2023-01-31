@@ -35,7 +35,12 @@ const SHOW_DEPTH = new RawShaderMaterial({
 		cameraNear: {value: 0},
 		cameraFar: {value: 0}
 	}
-})
+});
+
+const passMap = {
+	dof: null,
+	lut: null
+}
 
 /**
  * VFXRenderer works best with black clear color and 0 clear alpha 
@@ -184,8 +189,8 @@ export class App extends WebGLSketch {
 				},
 				camNear: this.camera.near,
 				camFar: this.camera.far,
-				focalDistance: 15,
-				aperture: 3
+				focalDistance: 6.4,
+				aperture: 8.5
 			}
 		);
 
@@ -220,6 +225,9 @@ export class App extends WebGLSketch {
 		this.customRenderer.addPass(dof);
 		this.customRenderer.addPass(final);
 		this.customRenderer.addPass(retro);
+
+		passMap.dof = dof;
+		passMap.lut = lut;
 
 		/* dof.enabled = false;
 		fxaa.enabled = false;
@@ -342,6 +350,10 @@ export class App extends WebGLSketch {
 			this.renderer.clearDepth();
 			RTUtils.drawRT(this.depthRT, this.renderer, 0, window.innerHeight-266);
 			RTUtils.drawTexture(this.rnd.sceneRT.texture[1], this.renderer, 266, window.innerHeight-266);
+			RTUtils.drawTexture(passMap.lut.lookupTable, this.renderer, 256, window.innerHeight-266, 256, 256);
+			/* if(this.customRenderer.rendererType === "VFXRenderer") {
+				RTUtils.drawTexture(this.rnd.glow.texture, this.renderer, 512, window.innerHeight-266, 256, 256);
+			} */
 			// RTUtils.drawRT(this.depthRT, this.renderer, 266, window.innerHeight-266);
 			this.renderer.autoClear = true;
 		}

@@ -94,6 +94,10 @@ export class VFXPipeline {
         this.scene.add(this.quad);
     }
 
+    get rendererType():RendererType {
+        return this.type;
+    }
+
     addPass(pass:RenderPass) {
         this.stack.push(pass);
         pass.setSize(this.width, this.height);

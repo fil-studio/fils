@@ -146,4 +146,8 @@ export class BlurPass extends RenderPass{
 	get texture ():Texture {
 		return this.read.texture;
 	}
+
+	get target():WebGLRenderTarget {
+		return this.read;
+	}
 }

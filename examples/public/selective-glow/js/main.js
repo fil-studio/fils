@@ -13108,6 +13108,9 @@ oGlow = vec4(0.);`);
         get texture() {
           return this.read.texture;
         }
+        get target() {
+          return this.read;
+        }
       };
     }
   });
