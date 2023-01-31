@@ -33,10 +33,13 @@ export type RendererType = "WebGLRenderer"|"VFXRenderer";
  * on top of it.
  */
 export class VFXPipeline {
+    protected sceneRT:WebGLRenderTarget;
     protected front:WebGLRenderTarget;
     protected back:WebGLRenderTarget;
     protected renderer:SupportedRenderer;
     protected stack:RenderPass[] = [];
+
+    protected firstPass:boolean = false;
 
     scene: Scene;
     quad: Mesh;
@@ -70,11 +73,10 @@ export class VFXPipeline {
             this.type = "VFXRenderer";
         }
         this.back = this.front.clone();
+        this.sceneRT = this.front.clone();
         if(params.useDepth) {
-            this.front.depthTexture = new DepthTexture(w, h, FloatType);
-            this.front.depthTexture.format = DepthFormat;
-            this.back.depthTexture = new DepthTexture(w, h, FloatType);
-            this.back.depthTexture.format = DepthFormat;
+            this.sceneRT.depthTexture = new DepthTexture(w, h, FloatType);
+            this.sceneRT.depthTexture.format = DepthFormat;
         }
 
         this.scene = new Scene()
@@ -130,6 +132,9 @@ export class VFXPipeline {
     }
 
     get read():WebGLRenderTarget {
+        if(this.firstPass && this.type === "WebGLRenderer") {
+            return this.sceneRT;
+        }
         return this.front;
     }
 
@@ -143,7 +148,7 @@ export class VFXPipeline {
 
     get depthTexture():DepthTexture {
         if(this.type === "WebGLRenderer") {
-            return this.read.depthTexture;
+            return this.sceneRT.depthTexture;
         }
         const rnd = this.renderer as VFXRenderer;
         return rnd.depthTexture;
@@ -168,17 +173,22 @@ export class VFXPipeline {
         const stack = this.stack.filter(obj=>obj.enabled);
 
         if(!stack.length && !this.blockScreen) {
-            this.renderer.render(scene, camera, null);
-            
-        } else {
             if(this.type === "WebGLRenderer") {
                 const rnd = this.renderer as WebGLRenderer;
-                rnd.setRenderTarget(this.write);
+                rnd.setRenderTarget(null);
+                rnd.render(scene, camera);
+            } else this.renderer.render(scene, camera, null);
+        } else {
+            this.firstPass = true;
+            if(this.type === "WebGLRenderer") {
+                const rnd = this.renderer as WebGLRenderer;
+                rnd.setRenderTarget(this.sceneRT);
                 rnd.render(scene, camera);
             } else this.renderer.render(scene, camera, this.write);
             this.swapBuffers();
             for(let k=0;k<stack.length;k++) {
                 this.renderPass(stack[k], k === stack.length-1);
+                this.firstPass = false;
             }
         }
     }

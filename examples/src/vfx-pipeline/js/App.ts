@@ -336,7 +336,7 @@ export class App extends WebGLSketch {
 	render(): void {
 		this.customRenderer.render(this.scene, this.camera);
 		if(debugSettings.showTextures) {
-			SHOW_DEPTH.uniforms.tDepth.value = this.rnd.depthTexture;
+			SHOW_DEPTH.uniforms.tDepth.value = this.customRenderer.depthTexture;
 			RTUtils.renderToRT(this.depthRT, this.renderer, SHOW_DEPTH);
 			this.renderer.autoClear = false;
 			this.renderer.clearDepth();

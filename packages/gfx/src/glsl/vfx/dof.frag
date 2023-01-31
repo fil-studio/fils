@@ -24,8 +24,6 @@ void main () {
 	float CoC = distance(distanceToCamera, focalDistance);
 	float st = smoothstep(0.0, aperture, CoC);
 
-	// float st = smoothstep(focalDistance - aperture, focalDistance + aperture, depth);
-
 	vec3 color = mix(noBlur, blur, st);
 
 	/* vec2 uv = gl_FragCoord.xy / textureSize(depthTexture, 0).xy;
@@ -37,7 +35,7 @@ void main () {
 	gl_FragColor = scene; */
 	
 	if(debug) {
-		gl_FragColor = vec4(vec3(st), 1.0);
+		gl_FragColor = vec4(vec3(1.0-st), 1.0);
 	}
 	else {
 		gl_FragColor = vec4(color, 1.0);
