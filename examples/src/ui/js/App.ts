@@ -1,9 +1,6 @@
-import { ItemRegister } from '../../../../packages/ui/src/partials/ItemFactory';
 import { UI } from '../../../../packages/ui/src/main';
-
 import { uiBrushData } from '../../../../packages/ui-icons/lib/Icons';
 
-import { Vector3 } from 'three';
 
 /**
  * S'ha de poder crear els components manualment
@@ -74,6 +71,12 @@ export class App {
 		const g4 = g2.addGroup({
 			title: 'Subgroup Test 2',
 		})
+		g2.addButton({
+			title: 'Button Test',
+			onClick: () => {
+				console.log('Button Test');
+			}
+		});
 		// g4.add(obj, 'colorTest', {
 		// 	title: 'Color Test',
 		// 	view: 'color'

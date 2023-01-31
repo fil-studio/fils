@@ -8,4 +8,36 @@
 		border-radius: var(--input-radius);
 	}
 
+	._ui-btns {
+		position: absolute;
+		height: 100%;
+		width: auto;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+
+		button {
+			padding: 0;
+			display: flex;
+			justify-content: flex-start;
+			align-items: center;
+			height: 50%;
+			width: 20px;
+			cursor: pointer;
+		}
+
+		svg {
+			width: 9px;
+		}
+
+		._ui-btn-decrease {
+
+			svg {
+				transform: rotate(180deg);
+				transform-origin: center;
+			}
+
+		}
+	}
+
 }
