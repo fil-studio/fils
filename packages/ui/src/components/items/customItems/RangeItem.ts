@@ -9,7 +9,7 @@ export class RangeItem extends ExtendedItem {
 	protected options: RangeItemOptions;
 
 	protected inputEl: HTMLInputElement;
-	protected sliderEl: HTMLElement;
+	protected rangeEl: HTMLElement;
 
 	protected thumb: HTMLElement;
 
@@ -22,12 +22,12 @@ export class RangeItem extends ExtendedItem {
 
 		this.inputEl.value = `${Math.max(Math.min(this.max, this.value), this.min)}`;
 
-		this.updateSlider();
+		this.updateRange();
 
 		this.inputEl.addEventListener('change', () => {
 			this.value = this.inputEl.value;
 			this.refresh();
-			this.updateSlider();
+			this.updateRange();
 		});
 
 		let dragging = false;
@@ -40,7 +40,7 @@ export class RangeItem extends ExtendedItem {
 			dragging = true;
 			this.thumb.classList.add(`${BASE_CLASS}-grabbing`);
 			x = e.clientX;
-			const { width } = this.sliderEl.getBoundingClientRect();
+			const { width } = this.rangeEl.getBoundingClientRect();
 			originalValue = MathUtils.map(this.mappedValue, 0, 1, 0, width);
 		}
 
@@ -48,7 +48,7 @@ export class RangeItem extends ExtendedItem {
 			if (!dragging) return;
 
 			const movementDistance = originalValue + (e.clientX - x);
-			const { width } = this.sliderEl.getBoundingClientRect();
+			const { width } = this.rangeEl.getBoundingClientRect();
 
 			const newValueMapped = MathUtils.clamp(MathUtils.map(movementDistance, 0, width, 0, 1), 0, 1);
 			const newValue = MathUtils.map(newValueMapped, 0, 1, this.min, this.max);
@@ -56,14 +56,14 @@ export class RangeItem extends ExtendedItem {
 			this.value = Math.round(newValue / this.step) * this.step;
 
 			this.updateInput();
-			this.updateSlider();
+			this.updateRange();
 		}
 
 		const mouseClick = (e) => {
 			const t = e.target as HTMLElement;
 			if (t === this.thumb) return;
 
-			const { left, width } = this.sliderEl.getBoundingClientRect();
+			const { left, width } = this.rangeEl.getBoundingClientRect();
 			const newPosition = e.clientX - left;
 
 			const newValueMapped = MathUtils.clamp(MathUtils.map(newPosition, 0, width, 0, 1), 0, 1);
@@ -71,7 +71,7 @@ export class RangeItem extends ExtendedItem {
 			this.value = Math.round(newValue / this.step) * this.step;
 
 			this.updateInput();
-			this.updateSlider();
+			this.updateRange();
 		}
 
 		const reset = () => {
@@ -81,11 +81,11 @@ export class RangeItem extends ExtendedItem {
 			this.thumb.classList.remove(`${BASE_CLASS}-grabbing`);
 		}
 
-		this.sliderEl.addEventListener('click', (e) => {
+		this.rangeEl.addEventListener('click', (e) => {
 			mouseClick(e);
 		})
 
-		this.sliderEl.addEventListener('mousedown', (e) => {
+		this.rangeEl.addEventListener('mousedown', (e) => {
 			mouseDown(e);
 		});
 		window.addEventListener('mousemove', (e) => {
@@ -103,18 +103,18 @@ export class RangeItem extends ExtendedItem {
 
 	protected createDom(): void {
 		this.inputWrapper.innerHTML = `
-			<div class="_ui-slider-input">
-				<div class="_ui-slider-track"></div>
-				<div class="_ui-slider-overexpose _ui-slider-overexpose-min"></div>
-				<div class="_ui-slider-overexpose _ui-slider-overexpose-max"></div>
-				<div class="_ui-slider-thumb"></div>
+			<div class="_ui-range-input">
+				<div class="_ui-range-track"></div>
+				<div class="_ui-range-overexpose _ui-range-overexpose-min"></div>
+				<div class="_ui-range-overexpose _ui-range-overexpose-max"></div>
+				<div class="_ui-range-thumb"></div>
 			</div>
 			<input type="number" placeholder="Value"/>
 		`;
 
 		this.inputEl = this.inputWrapper.querySelector('input');
-		this.sliderEl = this.inputWrapper.querySelector('._ui-slider-input');
-		this.thumb = this.inputWrapper.querySelector('._ui-slider-thumb');
+		this.rangeEl = this.inputWrapper.querySelector('._ui-range-input');
+		this.thumb = this.inputWrapper.querySelector('._ui-range-thumb');
 
 		this.setUpOverExpose();
 
@@ -137,7 +137,7 @@ export class RangeItem extends ExtendedItem {
 		this.min = this.options.min - limits[0];
 		this.max = this.options.max + limits[1];
 
-		const overExposeEls = this.inputWrapper.querySelectorAll('._ui-slider-overexpose') as NodeListOf<HTMLElement>;
+		const overExposeEls = this.inputWrapper.querySelectorAll('._ui-range-overexpose') as NodeListOf<HTMLElement>;
 
 		const distance = Math.abs(this.min - this.max);
 
@@ -149,8 +149,8 @@ export class RangeItem extends ExtendedItem {
 
 	}
 
-	protected updateSlider(): void {
-		this.sliderEl.style.setProperty('--value', `${this.mappedValue}`);
+	protected updateRange(): void {
+		this.rangeEl.style.setProperty('--value', `${this.mappedValue}`);
 	}
 	protected updateInput(): void {
 		this.inputEl.value = `${this.value.toFixed(2)}`;

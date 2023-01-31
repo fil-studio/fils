@@ -65,15 +65,13 @@ export const ItemRegister = (registerOptions:ItemRegisterOptions) => {
 
 export const ItemFactory = (itemParams:ItemParams, options:ItemOptions) => {
 
-	if(!itemParams.parent) throw new Error('ItemFactory - parent is required');
 	if(!itemParams.object) throw new Error('ItemFactory - object is required');
 	if(!itemParams.key) throw new Error('ItemFactory - key is required');
-	if (!options.view) throw new Error('ItemFactory - view is required');
+	if(!options.view) throw new Error('ItemFactory - view is required');
 
 	// Force item type
 	if(options.view){
 		const item = AvailableItems.items.find(item => item.view === options.view);
-
 		if(!item) throw new Error('ItemFactory - unknown view');
 		return item.create(itemParams, options);
 	}

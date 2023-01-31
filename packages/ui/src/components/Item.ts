@@ -34,7 +34,6 @@ export class Item extends EventsHandler {
 	constructor({ parent, object, key }: ItemParams = {}, options: ItemOptions) {
 		super(parent);
 
-
 		if(!parent) throw new Error('Item - parent is required');
 		if(!object) throw new Error('Item - object is required');
 		if(!key) throw new Error('Item - key is required');
@@ -80,6 +79,10 @@ export class Item extends EventsHandler {
 		// console.log('Item - onChange:', this.title);
 		this.onChangeCallback(e);
  	}
+
+	afterCreate(): void {
+		// Override this method
+	}
 
 	/**
 	 * Refresh item dom

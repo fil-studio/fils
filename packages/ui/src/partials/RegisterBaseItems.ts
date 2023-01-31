@@ -13,6 +13,7 @@ import { TextureList } from "../components/inputPanels/TextureList";
 
 import { MaterialItem } from "../components/items/customItems/MaterialItem";
 import { RangeItem } from "../components/items/customItems/RangeItem";
+import { SelectItem } from "../components/items/customItems/SelectItem";
 
 export const RegisterBaseComponents = () => {
 
@@ -32,13 +33,13 @@ export const RegisterBaseComponents = () => {
 	})
 
 	ItemRegister({
-		view: 'slider',
+		view: 'range',
 		item: RangeItem
 	})
 
 	ItemRegister({
 		view: 'select',
-		item: RangeItem
+		item: SelectItem
 	})
 
 	ItemRegister({

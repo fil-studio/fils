@@ -11,7 +11,7 @@ export class ExtendedItem extends Item {
 	constructor(registerOptions: ItemRegisterOptions, itemParams: ItemParams, options?: ItemOptions) {
 		super(itemParams, options);
 
-		this.dom.classList.add(`${BASE_CLASS}-${slugify(registerOptions.view) }`);
+		this.dom.classList.add(`${BASE_CLASS}-${slugify(registerOptions.view)}`);
 
 		// InputController
 		this.inputPanel = registerOptions.inputPanel ? new registerOptions.inputPanel(this) : null || null;
@@ -20,5 +20,6 @@ export class ExtendedItem extends Item {
 		this.setValue(this.object[this.key]);
 		this.addEventListeners();
 		this.created = true;
+		this.afterCreate();
 	}
 }

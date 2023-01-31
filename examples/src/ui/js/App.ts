@@ -16,18 +16,18 @@ export class App {
 			colorTest: '#ff0000',
 			booleanTest: false,
 			stringTest: 'Test',
-			// numberTest: 1,
+			numberTest: 1,
 			// numberTest: [1,2],
 			// numberTest: [1, 2, 3, 4],
-			numberTest: {
-				x: 1,
-				y: 2,
-				z: 3,
-			},
+			// numberTest: {
+			// 	x: 1,
+			// 	y: 2,
+			// 	z: 3,
+			// },
 			numberTestSlider: 0,
 			numberTestFloat: 0.5,
-			optionsTestActive: 'one',
-			optionsTest: {
+			optionsTestActiveObject: null,
+			optionsTestObject: {
 				one: 'One',
 				two: 'Two',
 				three: 'Three',
@@ -41,8 +41,27 @@ export class App {
 				eleven: 'Eleven',
 				twelve: 'Twelve',
 				thirteen: 'Thirteen',
-				fourteen: 'Fourteen'
+				fourteen: 'Fourteen',
+				fifteen: 'Fifteen',
 			},
+			optionsTestActiveArray: null,
+			optionsTestArray: [
+				'One Array',
+				'Two Array',
+				'Three Array',
+				'Four Array',
+				'Five Array',
+				'Six Array',
+				'Seven Array',
+				'Eight Array',
+				'Nine Array',
+				'Ten Array',
+				'Eleven Array',
+				'Twelve Array',
+				'Thirteen Array',
+				'Fourteen Array',
+				'Fifteen Array',
+			],
 			textureTest: 'asdapewoiewitureoiwoie09013oiasd',
 			materialTest: 'asdapewoiewitureoiwoie09013oiasd',
 			multiNumberTest: [1, 2, 3],
@@ -86,20 +105,26 @@ export class App {
 			view: 'number'
 		});
 
-		group.add(obj, 'optionsTestActive', {
-			title: 'Options Test',
-			view: 'select',
-			options: obj.optionsTest,
-		});
-
 		group.add(obj, 'numberTestSlider', {
 			title: 'Slider Test with long text example',
-				view: 'slider',
-				min: 0,
+				view: 'range',
+				min: -10,
 				max: 10,
 				step: 0.1,
-				overExpose: [5, 40],
+				overExpose: [5, 10],
 		});
+
+		group.add(obj, 'optionsTestActiveObject', {
+			title: 'Select Object',
+			view: 'select',
+			options: obj.optionsTestObject,
+		});
+		group.add(obj, 'optionsTestActiveArray', {
+			title: 'Select Array',
+			view: 'select',
+			options: obj.optionsTestArray,
+		});
+
 
 		const g2 = this.ui.addGroup({
 			title: 'Subgroup Test',

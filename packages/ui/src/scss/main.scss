@@ -33,7 +33,8 @@
 	@import "./items/boolean";
 	@import "./items/string";
 	@import "./items/number";
-	@import "./items/slider";
+	@import "./items/range";
+	@import "./items/select";
 
 	* {
 		&::selection {

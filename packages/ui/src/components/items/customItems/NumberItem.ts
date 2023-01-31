@@ -45,26 +45,6 @@ export class NumberItem extends ExtendedItem {
 
 	}
 
-	refresh(): void {
-
-		if (check.isNumber(this.value)) {
-			this.value = this.items[0].value;
-		} else if (check.isArray(this.value)) {
-			for (let i = 0; i < this.items.length; i++) {
-				this.value[i] = this.items[i].value;
-			}
-		} else if (check.isObject(this.value)) {
-			let i = 0;
-			for (const key in this.value as Object) {
-				this.value[key] = this.items[i].value;
-				i++;
-			}
-		}
-		console.log(this.value);
-
-		super.refresh();
-	}
-
 	protected createItem(value:number): item {
 		const item = {
 			value,
@@ -129,6 +109,25 @@ export class NumberItem extends ExtendedItem {
 
 			this.inputWrapper.appendChild(item.wrapper);
 		}
+	}
+
+	refresh(): void {
+
+		if (check.isNumber(this.value)) {
+			this.value = this.items[0].value;
+		} else if (check.isArray(this.value)) {
+			for (let i = 0; i < this.items.length; i++) {
+				this.value[i] = this.items[i].value;
+			}
+		} else if (check.isObject(this.value)) {
+			let i = 0;
+			for (const key in this.value as Object) {
+				this.value[key] = this.items[i].value;
+				i++;
+			}
+		}
+
+		super.refresh();
 	}
 }
 
