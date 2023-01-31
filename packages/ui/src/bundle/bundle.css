@@ -164,7 +164,7 @@
   position: fixed;
   top: 5px;
   right: 5px;
-  width: 275px;
+  width: 300px;
 }
 ._ui-wrapper {
   --radius: 8px;
@@ -333,7 +333,7 @@
   align-items: center;
 }
 ._ui-wrapper fieldset h4 {
-  width: 40%;
+  width: 33.33%;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -342,7 +342,7 @@
   flex-shrink: 0;
 }
 ._ui-wrapper fieldset > div {
-  width: 60%;
+  width: 66.66%;
   display: flex;
   justify-content: flex-end;
   flex-grow: 0;
@@ -421,6 +421,14 @@
   background-color: var(--section-bg-1);
   border-radius: var(--input-radius);
 }
+._ui-wrapper ._ui-number ._ui-number-input {
+  flex-grow: 1;
+  position: relative;
+  float: left;
+}
+._ui-wrapper ._ui-number ._ui-number-input:not(:last-of-type) {
+  padding: 0 var(--line-separator) 0 0;
+}
 ._ui-wrapper ._ui-number input {
   width: 100%;
   padding: var(--input-padding);
@@ -428,15 +436,17 @@
   background-color: var(--section-bg-1);
   border-radius: var(--input-radius);
 }
-._ui-wrapper ._ui-number ._ui-btns {
+._ui-wrapper ._ui-number ._ui-number-btns {
   position: absolute;
+  top: 0;
+  right: 0;
   height: 100%;
   width: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-._ui-wrapper ._ui-number ._ui-btns button {
+._ui-wrapper ._ui-number ._ui-number-btns button {
   padding: 0;
   display: flex;
   justify-content: flex-start;
@@ -445,21 +455,21 @@
   width: 20px;
   cursor: pointer;
 }
-._ui-wrapper ._ui-number ._ui-btns button:active {
+._ui-wrapper ._ui-number ._ui-number-btns button:active {
   color: var(--color-white);
   transition: 0s;
 }
-._ui-wrapper ._ui-number ._ui-btns svg {
+._ui-wrapper ._ui-number ._ui-number-btns svg {
   width: 9px;
 }
-._ui-wrapper ._ui-number ._ui-btns ._ui-btn-decrease svg {
+._ui-wrapper ._ui-number ._ui-number-btns ._ui-btn-decrease svg {
   transform: rotate(180deg);
   transform-origin: center;
 }
 ._ui-wrapper ._ui-slider ._ui-slider-input {
   position: relative;
   float: left;
-  width: calc(100% - 45px - 12px);
+  width: calc(75% - 12px);
   cursor: pointer;
   margin: 0 12px 0 0;
 }
@@ -519,7 +529,7 @@
   bottom: 0;
 }
 ._ui-wrapper ._ui-slider input {
-  width: 45px;
+  width: calc(25% - var(--line-separator));
   padding: var(--input-padding);
   text-align: left;
   background-color: var(--section-bg-1);

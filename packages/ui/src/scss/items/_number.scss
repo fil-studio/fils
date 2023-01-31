@@ -1,5 +1,15 @@
 ._ui-number {
 
+	._ui-number-input {
+		flex-grow: 1;
+		position: relative;
+		float: left;
+
+		&:not(:last-of-type){
+			padding: 0 var(--line-separator) 0 0;
+		}
+	}
+
 	input {
 		width: 100%;
 		padding: var(--input-padding);
@@ -8,8 +18,10 @@
 		border-radius: var(--input-radius);
 	}
 
-	._ui-btns {
+	._ui-number-btns {
 		position: absolute;
+		top: 0;
+		right: 0;
 		height: 100%;
 		width: auto;
 		display: flex;

@@ -16,7 +16,14 @@ export class App {
 			colorTest: '#ff0000',
 			booleanTest: false,
 			stringTest: 'Test',
-			numberTest: 1,
+			// numberTest: 1,
+			// numberTest: [1,2],
+			// numberTest: [1, 2, 3, 4],
+			numberTest: {
+				x: 1,
+				y: 2,
+				z: 3,
+			},
 			numberTestSlider: 0,
 			numberTestFloat: 0.5,
 			textureTest: 'asdapewoiewitureoiwoie09013oiasd',
@@ -55,6 +62,7 @@ export class App {
 		});
 		group.add(obj, 'numberTest', {
 			title: 'Number Test',
+			view: 'number'
 		});
 		group.add(obj, 'numberTestSlider', {
 			title: 'Slider Test with long text example',

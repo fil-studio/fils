@@ -3,7 +3,7 @@
 	._ui-slider-input {
 		position: relative;
 		float: left;
-		width: calc(100% - 45px - 12px);
+		width: calc(75% - 12px);
 		cursor: pointer;
 		margin: 0 12px 0 0;
 
@@ -78,7 +78,7 @@
 	}
 
 	input {
-		width: 45px;
+		width: calc(25% - var(--line-separator));
 		padding: var(--input-padding);
 		text-align: left;
 		background-color: var(--section-bg-1);
