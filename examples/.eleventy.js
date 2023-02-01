@@ -12,6 +12,7 @@ const isProduction = process.env.ELEVENTY_ENV === 'production';
 const examples = [
   'scroller',
   'selective-glow',
+  'vfx-common-pipeline',
   'vfx-pipeline',
   'ui',
   'ui-icons',

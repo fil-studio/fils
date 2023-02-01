@@ -1,5 +1,5 @@
 import { Texture, TextureEncoding, ToneMapping, WebGLRenderer } from "three";
-export declare type ToneMappingOptions = {
+export type ToneMappingOptions = {
     toneMapping?: ToneMapping;
     exposure?: number;
     outputEncoding?: TextureEncoding;

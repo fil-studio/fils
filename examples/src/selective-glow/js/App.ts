@@ -1,12 +1,14 @@
-// import { WebGLSketch, initMaterial, VFXRenderer, gfxShaders } from '@fils/gfx'
-// import { WebGLSketch, initMaterial, VFXRenderer, gfxShaders } from '../../../../packages/gfx/lib/main'
+// import { WebGLSketch, initMaterial, VFXRenderer, vfxShaders } from '@fils/vfx'
+// import { WebGLSketch, initMaterial, VFXRenderer, vfxShaders } from '../../../../packages/vfx/lib/main'
 import { BoxGeometry, CylinderGeometry, DirectionalLight, Mesh, MeshPhongMaterial, ShaderChunk, SphereGeometry, TorusKnotGeometry } from 'three';
-import { initMaterial } from '../../../../packages/gfx/src/vfx/MaterialUtils';
-import { VFXRenderer } from '../../../../packages/gfx/src/vfx/VFXRenderer';
-import { WebGLSketch, gfxShaders } from '../../../../packages/gfx';
+/* import { initMaterial } from '../../../../packages/vfx/src/vfx/MaterialUtils';
+import { VFXRenderer } from '../../../../packages/vfx/src/vfx/VFXRenderer';
+import { WebGLSketch } from '../../../../packages/gfx'; */
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { initMaterial, VFXRenderer, vfxShaders } from '@fils/vfx';
+import { WebGLSketch } from '@fils/gfx';
 
 const BOX_GEO = new BoxGeometry(1, 1, 1);
 const BALL_GEO = new SphereGeometry(1);
@@ -26,7 +28,7 @@ export class App extends WebGLSketch {
 		document.body.appendChild(this.domElement);
 		this.domElement.className = 'view';
 
-		ShaderChunk['rgbSplit'] = gfxShaders.rgbSplit;
+		ShaderChunk['rgbSplit'] = vfxShaders.rgbSplit;
 
 		const L = new DirectionalLight(0xffffff, .35);
 		L.position.set(-1, 1, 1);

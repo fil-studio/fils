@@ -1,9 +1,9 @@
 import { Texture } from "three";
-export declare type FitType = 'cover' | 'contain';
+export type FitType = 'cover' | 'contain';
 export declare function createTextureFromFile(file: File, handler?: Function): void;
 export declare function perspectiveFov(z: number, viewportHeight?: number): number;
 export declare function frustumHeight(fov: number, depth: number): number;
-export declare type Size = {
+export type Size = {
     width: number;
     height: number;
 };

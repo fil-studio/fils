@@ -32,6 +32,7 @@
 	},
 	"dependencies": {
 		"@fils/ani": "workspace:^",
+		"@fils/color": "workspace:^",
 		"@fils/gen": "workspace:^",
 		"@fils/gfx": "workspace:^",
 		"@fils/io": "workspace:^",
@@ -40,7 +41,7 @@
 		"@fils/phy": "workspace:^",
 		"@fils/scroller": "workspace:^",
 		"@fils/utils": "workspace:^",
-		"@fils/color": "workspace:^",
+		"@fils/vfx": "workspace:^",
 		"gsap": "^3.11.3",
 		"three": "^0.146.0"
 	}

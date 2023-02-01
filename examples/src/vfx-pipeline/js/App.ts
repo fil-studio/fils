@@ -1,20 +1,15 @@
-// import { WebGLSketch, initMaterial, VFXRenderer, gfxShaders } from '@fils/gfx'
-// import { WebGLSketch, initMaterial, VFXRenderer, gfxShaders } from '../../../../packages/gfx/lib/main'
-import { BoxGeometry, CylinderGeometry, DirectionalLight, EquirectangularReflectionMapping, Mesh, MeshPhongMaterial, RawShaderMaterial, ShaderChunk, SphereGeometry, TextureLoader, TorusKnotGeometry, WebGLRenderTarget } from 'three';
-import { initMaterial } from '../../../../packages/gfx/src/vfx/MaterialUtils';
-import { VFXRenderer } from '../../../../packages/gfx/src/vfx/VFXRenderer';
-import { WebGLSketch, gfxShaders } from '../../../../packages/gfx';
-import Stats from 'three/examples/jsm/libs/stats.module.js';
-import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
+import { BoxGeometry, CylinderGeometry, DirectionalLight, EquirectangularReflectionMapping, Mesh, MeshPhongMaterial, RawShaderMaterial, SphereGeometry, TextureLoader, TorusKnotGeometry, WebGLRenderTarget } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { FXAAPass, RTUtils, VFXPipeline } from '../../../../packages/gfx/src/main';
-import { FinalPass } from '../../../../packages/gfx/src/vfx/pipeline/FinalPass';
-import { DoFPass } from '../../../../packages/gfx/src/vfx/pipeline/DoFPass';
-import { LutPass } from '../../../../packages/gfx/src/vfx/pipeline/LutPass';
-import { RetroPass } from '../../../../packages/gfx/src/vfx/pipeline/RetroPass';
+import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
+import Stats from 'three/examples/jsm/libs/stats.module.js';
 
-import vert from '../../../../packages/gfx/src/glsl/fbo.vert';
-import frag from '../../../../packages/gfx/src/glsl/vfx/draw-depth.frag';
+import { RTUtils, WebGLSketch } from '@fils/gfx';
+import { DoFPass, FinalPass, FXAAPass, initMaterial, LutPass, RetroPass, VFXPipeline, VFXRenderer } from '@fils/vfx';
+
+// import { FinalPass } from '../../../../packages/vfx/src/main';
+
+import vert from '../../../../packages/vfx/src/glsl/fbo.vert';
+import frag from '../../../../packages/vfx/src/glsl/vfx/draw-depth.frag';
 
 const BOX_GEO = new BoxGeometry(1, 1, 1);
 const BALL_GEO = new SphereGeometry(1);
@@ -24,7 +19,7 @@ const TOR_GEO = new TorusKnotGeometry(10, 2, 64, 32, 2, 3);
 const loader = new TextureLoader();
 
 const debugSettings = {
-	showTextures: true
+	showTextures: false
 }
 
 const SHOW_DEPTH = new RawShaderMaterial({
@@ -68,6 +63,8 @@ export class App extends WebGLSketch {
 		document.body.appendChild(this.domElement);
 		this.domElement.className = 'view';
 
+		console.log('VFX Custom Pipeline');
+
 		this.background = new WebGLRenderTarget(1024, 512);
 		this.renderer.setClearColor(0x666666, 1);
 		this.renderer.setRenderTarget(this.background);
@@ -77,9 +74,6 @@ export class App extends WebGLSketch {
 
 		this.background.texture.mapping = EquirectangularReflectionMapping;
 		this.scene.background = this.background.texture;
-
-		ShaderChunk['rgbSplit'] = gfxShaders.rgbSplit;
-		ShaderChunk['dithering'] = gfxShaders.dithering;
 
 		const L = new DirectionalLight(0xffffff, .35);
 		L.position.set(-1, 1, 1);
@@ -220,9 +214,9 @@ export class App extends WebGLSketch {
 		});
 		retro.enabled = false;
 
-		this.customRenderer.addPass(fxaa);
 		this.customRenderer.addPass(lut);
 		this.customRenderer.addPass(dof);
+		this.customRenderer.addPass(fxaa);
 		this.customRenderer.addPass(final);
 		this.customRenderer.addPass(retro);
 
@@ -264,9 +258,6 @@ export class App extends WebGLSketch {
 		});
 		gui.add(debugSettings, 'showTextures');
 
-		const f3 = gui.addFolder("FXAA").close();
-		f3.add(fxaa, 'enabled');
-
 		const f4 = gui.addFolder("LUT").close();
 		f4.add(lut, 'enabled');
 
@@ -279,6 +270,9 @@ export class App extends WebGLSketch {
 		const f21 = f2.addFolder("Blur Settings");
 		f21.add(dof.blurPass, 'iterations', 1, 32, 1);
 		f21.add(dof.blurPass, 'radius', .1, 5);
+
+		const f3 = gui.addFolder("FXAA").close();
+		f3.add(fxaa, 'enabled');
 
 		const f1 = gui.addFolder("Final Pass").close();
 		f1.add(final, 'enabled');

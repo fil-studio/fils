@@ -10,7 +10,9 @@
     "workspaces": [
       "./packages/ani",
       "./packages/gen",
+      "./packages/color",
       "./packages/gfx",
+      "./packages/vfx",
       "./packages/io",
       "./packages/math",
       "./packages/nomad",
