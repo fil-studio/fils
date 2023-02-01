@@ -1,11 +1,12 @@
+import { el } from "@fils/utils";
 import { UI } from "../main";
 import { EventsHandler } from "../partials/Events";
 import { ItemFactory } from "../partials/ItemFactory";
-import dom, { CONTENT_WRAPPER, FOLDABLE, FOLDABLE_ELEMENT, FOLDED, NOT_FOLDED, RowTypes } from "../utils/dom";
+import dom, { CONTENT_WRAPPER, FOLDABLE, FOLDABLE_ELEMENT, FOLDED, RowTypes } from "../utils/dom";
 import { Button } from "./Button";
 import { Item } from "./Item";
-import { el } from "@fils/utils";
 import { ItemOptions } from "./items/ItemOptions";
+import { Spacer, SpacerParams, SpacerSize } from "./Spacer";
 
 
 export interface GroupParams {
@@ -20,7 +21,7 @@ export class Group extends EventsHandler {
 	title: string;
 
 	protected parent: Group | UI;
-	protected children: Array<Group | Item | Button> = [];
+	protected children: Array<Group | Item | Button | Spacer> = [];
 	dom: HTMLElement;
 	contentWrapper: HTMLElement;
 	public depth: number = 0;
@@ -106,9 +107,9 @@ export class Group extends EventsHandler {
 	/**
 	 * Enables listeners, add children to childrens array
 	 */
-	protected addChild(child: Group | Item | Button){
+	protected addChild(child: Group | Item | Button | Spacer, events:boolean = true){
 		this.children.push(child);
-		this.addChildrenListener(child);
+		if(events) this.addChildrenListener(child as EventsHandler);
 		this.contentWrapper.appendChild(child.dom);
 	}
 
@@ -130,10 +131,16 @@ export class Group extends EventsHandler {
 	 */
 	addGroup(params: GroupParams): Group {
 		const group = new Group({ parent: this, ...params });
-
 		this.addChild(group);
-
 		return group;
+	}
+
+	/**
+ * Create spacer
+ */
+	addSpacer(params?:SpacerParams) {
+		const spacer = new Spacer({ parent: this, ...params });
+		this.addChild(spacer, false);
 	}
 
 	/**

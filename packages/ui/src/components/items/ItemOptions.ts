@@ -24,5 +24,4 @@ export interface UploadItemOptions extends ItemOptionsInterface {
 	text: string;
 }
 
-
 export type ItemOptions = ItemOptionsInterface | NumberItemOptions | RangeItemOptions | SelectItemOptions | UploadItemOptions;

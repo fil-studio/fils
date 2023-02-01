@@ -1,4 +1,5 @@
 import { uiAppendBlend, uiBrushData } from '../../../../packages/ui-icons/lib/Icons';
+import { SpacerSize } from '../../../../packages/ui/src/components/Spacer';
 import { UI } from '../../../../packages/ui/src/main';
 
 
@@ -99,9 +100,17 @@ export class App {
 			view: 'upload'
 		});
 
+		group.addSpacer({
+			size: SpacerSize.small
+		});
+
 		group.add(obj, 'booleanTest', {
 			title: 'Boolean Test',
 			view: 'boolean'
+		});
+
+		group.addSpacer({
+			size: SpacerSize.medium,
 		});
 
 		group.addItem(obj, 'stringTest', {
@@ -109,10 +118,17 @@ export class App {
 			view: 'string'
 		});
 
+
+		group.addSpacer({
+			size: SpacerSize.large,
+		});
+
 		group.add(obj, 'numberTest', {
 			title: 'Number Test',
 			view: 'number'
 		});
+
+		group.addSpacer();
 
 		group.add(obj, 'numberTestSlider', {
 			title: 'Slider Test with long text example',

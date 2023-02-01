@@ -1,5 +1,6 @@
 import { el } from "@fils/utils";
 import { uiTriaDown } from '../../../ui-icons/lib/Icons';
+import { SpacerSize } from "../components/Spacer";
 
 
 export const BASE_CLASS = '_ui';
@@ -23,7 +24,8 @@ export enum RowTypes {
 	ui,
 	group,
 	item,
-	button
+	button,
+	spacer
 }
 
 interface DomOptions {
@@ -31,6 +33,8 @@ interface DomOptions {
 	depth: number;
 	title?: string;
 	foldable?: boolean;
+	line?: boolean;
+	size?: SpacerSize;
 }
 
 const dom = {
@@ -56,7 +60,9 @@ const dom = {
 		type,
 		depth,
 		title,
-		foldable
+		foldable,
+		line,
+		size,
 	}:DomOptions = {
 		type: RowTypes.ui,
 		depth: 0
@@ -68,6 +74,7 @@ const dom = {
 		if(type === RowTypes.group) domEl = 'section';
 		if(type === RowTypes.item) domEl = 'fieldset';
 		if(type === RowTypes.button) domEl = 'fieldset';
+		if(type === RowTypes.spacer) domEl = 'div';
 
 		const row = el(domEl);
 		row.setAttribute('ui-depth', `${depth}`);
@@ -125,6 +132,15 @@ const dom = {
 			const button = dom.createButton(title);
 			row.appendChild(button);
 			row.classList.add(`${BASE_CLASS}-button-fieldset`);
+		}
+
+		/**
+		 * Create a Spacer Row
+		 */
+		if(type === RowTypes.spacer) {
+			row.classList.add(`${BASE_CLASS}-spacer`);
+			if(line) row.classList.add(`${BASE_CLASS}-spacer-line`);
+			row.classList.add(`${BASE_CLASS}-spacer-${size}`);
 		}
 
 		return row;
