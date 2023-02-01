@@ -75,6 +75,10 @@ export class Item extends EventsHandler {
 		// Override this method
 	}
 
+	onResize(e?: CustomEvent<any>): void {
+		// Override this method
+	}
+
 	onChange(e?:CustomEvent): void {
 		// console.log('Item - onChange:', this.title);
 		this.onChangeCallback(e);

@@ -20,11 +20,11 @@ export class InputPanel  {
 		window.addEventListener('resize', () => {
 			this.positionPanel();
 		});
-
 	}
 
 	positionPanel(): void {
 		if (!this.created) return;
+
 		const r = this.parent.inputWrapper.getBoundingClientRect();
 		this.dom.style.top = `${r.top + r.height}px`;
 		this.dom.style.width = `${r.width}px`;
@@ -62,6 +62,9 @@ export class InputPanel  {
 		this.created = false;
 		this.dom.remove();
 		this.dom = null;
+	}
+
+	onResize(): void {
 	}
 
 	onChange(): void {

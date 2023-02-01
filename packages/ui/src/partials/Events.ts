@@ -6,10 +6,15 @@ export class EventsHandler extends EventTarget {
 	}
 
 	private addParentListener(parent: EventsHandler): void {
-		parent.addEventListener('refresh', (e: CustomEvent) => {
+		parent.addEventListener('onRefresh', (e: CustomEvent) => {
 			this.__refresh();
-		})
+		});
+
+		parent.addEventListener('onResize', (e: CustomEvent) => {
+			this.__onResize(e);
+		});
 	}
+
 
 	protected addChildrenListener(children: EventsHandler): void {
 		children.addEventListener('onChange', (e: CustomEvent) => {
@@ -20,13 +25,20 @@ export class EventsHandler extends EventTarget {
 		})
 	}
 
+	__onResize(e?: CustomEvent): void {
+		this.onResize(e);
+		let event = new CustomEvent('onResize');
+		this.dispatchEvent(event);
+	}
+	onResize(e?: CustomEvent): void {}
+
 	/**
 	 * Top down events
 	 */
 	// Propagator
 	private __refresh(e?: CustomEvent): void {
 		this.refresh(e);
-		let event = new CustomEvent("refresh");
+		let event = new CustomEvent('onRefresh');
 		this.dispatchEvent(event);
 	}
 	// Receiver
@@ -37,7 +49,7 @@ export class EventsHandler extends EventTarget {
 	 */
 	// Propagator
 	protected __onChange(e?: CustomEvent): void {
-		let event = new CustomEvent("onChange");
+		let event = new CustomEvent('onChange');
 		this.onChange(e ? e : event);
 		this.dispatchEvent(event);
 	}
@@ -51,7 +63,7 @@ export class EventsHandler extends EventTarget {
 		const detail = e ? e.detail : {
 			initiator: this
 		};
-		let event = new CustomEvent("onChangeComplete", { detail });
+		let event = new CustomEvent('onChangeComplete', { detail });
 		this.dispatchEvent(event);
 	}
 	// Receiver

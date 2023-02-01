@@ -95,6 +95,7 @@ export class UI extends Group {
 			dragging = true;
 			x = e.clientX;
 			width = this.domWrapper.getBoundingClientRect().width;
+			this.__onResize();
 		});
 
 		window.addEventListener('mousemove', (e) => {

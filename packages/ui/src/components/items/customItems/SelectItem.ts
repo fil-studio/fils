@@ -19,8 +19,7 @@ export class SelectItem extends ExtendedItem {
 			if(target === this.inputPanel.dom) return;
 			if(this.inputPanel.dom?.contains(target)) return;
 
-			this.dom.classList.remove(`${BASE_CLASS}-select-open`);
-			this.inputPanel.destroy();
+			this.destroyPanel();
 		});
 
 		this.activeOption.addEventListener('click', (e) => {
@@ -28,6 +27,15 @@ export class SelectItem extends ExtendedItem {
 			this.inputPanel.create();
 		});
 
+	}
+
+	onResize(e?: CustomEvent<any>): void {
+		this.destroyPanel();
+	}
+
+	destroyPanel(): void {
+		this.dom.classList.remove(`${BASE_CLASS}-select-open`);
+		this.inputPanel.destroy();
 	}
 
 	protected createDom(): void {
