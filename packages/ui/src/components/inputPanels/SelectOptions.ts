@@ -9,16 +9,20 @@ export class SelectOptions extends InputPanel {
 
 	protected options: Array<string> | Object;
 
-	addEventListeners(): void {
-		super.addEventListeners();
-	}
-
 	createPanelContent(): void {
 
 		this.dom.classList.add(`${BASE_CLASS}-select-options`)
 
 		this.options = this.parent.options.options;
 		this.createOptions();
+	}
+
+	addOptionListener(option: HTMLElement): void {
+		option.addEventListener('click', (e) => {
+			e.stopPropagation();
+			this.parent.setValue(option.innerHTML);
+			this.parent.destroyPanel();
+		});
 	}
 
 	protected createOptions(): void {
@@ -28,6 +32,7 @@ export class SelectOptions extends InputPanel {
 			const option = el('p');
 			option.innerHTML = value;
 			this.dom.appendChild(option);
+			this.addOptionListener(option);
 		}
 
 		if(check.isArray(options)) {

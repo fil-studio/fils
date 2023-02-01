@@ -13,16 +13,20 @@ export class SelectItem extends ExtendedItem {
 	protected addEventListeners(): void {
 
 		window.addEventListener('click', (e) => {
-			const target = e.target as HTMLElement;
 
-			if(target === this.activeOption) return;
-			if(target === this.inputPanel.dom) return;
+			const target = e.target as HTMLElement;
 			if(this.inputPanel.dom?.contains(target)) return;
+
+			if(!this.inputPanel.created) return;
 
 			this.destroyPanel();
 		});
 
 		this.activeOption.addEventListener('click', (e) => {
+			if(this.inputPanel.created) return;
+
+			e.stopPropagation();
+
 			this.dom.classList.add(`${BASE_CLASS}-select-open`);
 			this.inputPanel.create();
 		});
