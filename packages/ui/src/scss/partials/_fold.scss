@@ -13,21 +13,24 @@
 		transition-property: height;
 	}
 
-	._ui-chevron {
-		transform: rotate(-90deg);
-		width: 9px;
-		transform-origin: 50% 40%;
-		transition: transform var(--duration) var(--timing);
+	._ui-foldable-el {
+		._ui-icon {
+			transform: rotate(0deg);
+			width: 20px;
+			transform-origin: 50%;
+			transition: transform var(--duration) var(--timing);
+		}
 	}
 
 	&._ui-folded {
-		> header ._ui-icon {
-			._ui-chevron {
-				transform: rotate(0deg);
-			}
-		}
 		> ._ui-foldable-el {
 			height: 0px !important;
+		}
+	}
+
+	&._ui-folded:not([ui-depth="0"]) {
+		> header ._ui-icon {
+			transform: rotate(-90deg);
 		}
 	}
 }
