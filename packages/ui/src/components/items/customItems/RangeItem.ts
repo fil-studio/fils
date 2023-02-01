@@ -13,10 +13,22 @@ export class RangeItem extends ExtendedItem {
 
 	protected thumb: HTMLElement;
 
-	protected min: number;
-	protected max: number;
+	max: number;
+	min: number;
+	step: number;
+	decimals: number;
 
-	protected step: number;
+	limitNumber = (value: number):number => {
+
+		let tmp = value;
+		if(this.max) tmp = Math.min(tmp, this.max);
+		if(this.min) tmp = Math.max(tmp, this.min);
+
+		// Round to decimals
+		tmp = Math.round(tmp * Math.pow(10, this.decimals)) / Math.pow(10, this.decimals);
+
+		return tmp;
+	}
 
 	protected addEventListeners(): void {
 
@@ -25,8 +37,10 @@ export class RangeItem extends ExtendedItem {
 		this.updateRange();
 
 		this.inputEl.addEventListener('change', () => {
-			this.value = this.inputEl.value;
-			this.refresh();
+			let value = this.inputEl.valueAsNumber;
+			value = this.limitNumber(value);
+			this.inputEl.valueAsNumber = value;
+			this.setValue(value);
 			this.updateRange();
 		});
 
@@ -102,6 +116,12 @@ export class RangeItem extends ExtendedItem {
 	}
 
 	protected createDom(): void {
+
+		this.max = this.options.max || undefined;
+		this.min = this.options.min || undefined;
+		this.step = this.options.step || 0.01;
+		this.decimals = this.options.decimals || 2;
+
 		this.inputWrapper.innerHTML = `
 			<div class="_ui-range-input">
 				<div class="_ui-range-track"></div>
@@ -113,6 +133,10 @@ export class RangeItem extends ExtendedItem {
 		`;
 
 		this.inputEl = this.inputWrapper.querySelector('input');
+		if(this.min) this.inputEl.setAttribute('min', this.min.toString());
+		if(this.max) this.inputEl.setAttribute('max', this.max.toString());
+		if(this.step) this.inputEl.setAttribute('step', this.step.toString());
+
 		this.rangeEl = this.inputWrapper.querySelector('._ui-range-input');
 		this.thumb = this.inputWrapper.querySelector('._ui-range-thumb');
 

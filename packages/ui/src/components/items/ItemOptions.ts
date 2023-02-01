@@ -9,6 +9,7 @@ export interface NumberItemOptions extends ItemOptionsInterface {
 	min?: number;
 	max?: number;
 	step?: number;
+	decimals?: number;
 }
 
 export interface RangeItemOptions extends NumberItemOptions {

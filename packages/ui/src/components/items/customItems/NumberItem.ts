@@ -20,6 +20,23 @@ export class NumberItem extends ExtendedItem {
 
 	private items: item[];
 
+	max: number;
+	min: number;
+	step: number;
+	decimals: number;
+
+	limitNumber = (value: number):number => {
+
+		let tmp = value;
+		if(this.max) tmp = Math.min(tmp, this.max);
+		if(this.min) tmp = Math.max(tmp, this.min);
+
+		// Round to decimals
+		tmp = Math.round(tmp * Math.pow(10, this.decimals)) / Math.pow(10, this.decimals);
+
+		return tmp;
+	}
+
 	protected addEventListeners(): void {
 
 		for(const item of this.items) {
@@ -28,23 +45,56 @@ export class NumberItem extends ExtendedItem {
 
 			item.input.addEventListener('change', () => {
 				item.value = item.input.valueAsNumber;
-				this.refresh();
+				item.value = this.limitNumber(item.value);
+				item.input.valueAsNumber = item.value;
+				this.setValue();
 			});
 
 			item.buttonIncrease.addEventListener('click', () => {
-				item.value++;
+				item.value += this.step;
+				item.value = this.limitNumber(item.value);
 				item.input.valueAsNumber = item.value;
-				this.refresh();
+				this.setValue();
 			});
 
 			item.buttonDecrease.addEventListener('click', () => {
-				item.value--;
+				item.value -= this.step;
+				item.value = this.limitNumber(item.value);
 				item.input.valueAsNumber = item.value;
-				this.refresh();
+				this.setValue();
 			});
 
 		}
 
+	}
+
+	setValue(_value?:any): void {
+
+		let value;
+
+		if(this.created){
+
+			if (check.isNumber(this.value)) {
+				value = this.items[0].value;
+			} else if (check.isArray(this.value)) {
+				value = [];
+				for (let i = 0; i < this.items.length; i++) {
+					value.push(this.items[i].value);
+				}
+			} else if (check.isObject(this.value)) {
+				let i = 0;
+				value = {};
+				for (const key in this.value as Object) {
+					value[key] = this.items[i].value;
+					i++;
+				}
+			}
+
+		} else {
+			value = _value;
+		}
+
+		super.setValue(value);
 	}
 
 	protected createItem(value:number): item {
@@ -81,14 +131,22 @@ export class NumberItem extends ExtendedItem {
 
 	protected createDom(): void {
 
+		this.max = this.options.max || undefined;
+		this.min = this.options.min || undefined;
+		this.step = this.options.step || 0.01;
+		this.decimals = this.options.decimals || 2;
+
 		this.createItems(this.object[this.key]);
 
 		for(const item of this.items) {
 
 			item.wrapper = el('div', `${BASE_CLASS}-number-input`);
 
-			item.wrapper.innerHTML = `<input type="number" placeholder="${item.placeholder}"/>`;
+			item.wrapper.innerHTML = `<input type="number" placeholder="${item.placeholder}" />`;
 			item.input = item.wrapper.querySelector('input');
+			if(this.min) item.input.setAttribute('min', this.min.toString());
+			if(this.max) item.input.setAttribute('max', this.max.toString());
+			if(this.step) item.input.setAttribute('step', this.step.toString());
 
 			const btns = el('div', `${BASE_CLASS}-number-btns`);
 
@@ -111,23 +169,6 @@ export class NumberItem extends ExtendedItem {
 		}
 	}
 
-	refresh(): void {
 
-		if (check.isNumber(this.value)) {
-			this.value = this.items[0].value;
-		} else if (check.isArray(this.value)) {
-			for (let i = 0; i < this.items.length; i++) {
-				this.value[i] = this.items[i].value;
-			}
-		} else if (check.isObject(this.value)) {
-			let i = 0;
-			for (const key in this.value as Object) {
-				this.value[key] = this.items[i].value;
-				i++;
-			}
-		}
-
-		super.refresh();
-	}
 }
 
