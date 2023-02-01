@@ -1,8 +1,9 @@
-import { el } from "@fils/utils";
+import { uiDownarrowHlt } from '../../../../../ui-icons/lib/Icons';
 import check from "../../../utils/check";
-import dom, { BASE_CLASS } from "../../../utils/dom";
+import { BASE_CLASS } from "../../../utils/dom";
 import { ExtendedItem } from "../ExtendedItem";
 import { SelectItemOptions } from "../ItemOptions";
+
 
 export class SelectItem extends ExtendedItem {
 	options: SelectItemOptions;
@@ -44,12 +45,10 @@ export class SelectItem extends ExtendedItem {
 
 	protected createDom(): void {
 
-		const svg = dom.getChevron();
-
 		this.inputWrapper.innerHTML = `
 			<div class="${BASE_CLASS}-select-input">
 				<p></p>
-				${svg}
+				${uiDownarrowHlt}
 			</div>
 		`;
 

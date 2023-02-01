@@ -1,5 +1,5 @@
+import { uiAppendBlend, uiBrushData } from '../../../../packages/ui-icons/lib/Icons';
 import { UI } from '../../../../packages/ui/src/main';
-import { uiBrushData } from '../../../../packages/ui-icons/lib/Icons';
 
 
 /**
@@ -17,14 +17,15 @@ export class App {
 			booleanTest: false,
 			stringTest: 'Test',
 			// numberTest: 1,
-			// numberTest: [1,2],
+			numberTest: [1,2],
 			// numberTest: [1, 2, 3, 4],
-			numberTest: {
-				x: 1,
-				y: 2,
-				z: 3,
-				w: 5
-			},
+			// numberTest: {
+			// 	x: 1,
+			// 	y: 2,
+			// 	z: 3,
+			// 	w: 5
+			// },
+			uploadTest: null,
 			numberTestSlider: 0,
 			numberTestFloat: 0.5,
 			optionsTestActiveObject: null,
@@ -91,6 +92,13 @@ export class App {
 		// 	title: 'Color Test',
 		// 	view: 'color'
 		// });
+		group.add(obj, 'uploadTest', {
+			title: 'Upload Button',
+			text: 'Upload',
+			icon: uiAppendBlend,
+			view: 'upload'
+		});
+
 		group.add(obj, 'booleanTest', {
 			title: 'Boolean Test',
 			view: 'boolean'

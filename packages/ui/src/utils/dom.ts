@@ -9,6 +9,8 @@ export const NOT_FOLDED = '_ui-not-folded';
 export const FOLDABLE = '_ui-foldable';
 export const FOLDABLE_ELEMENT = '_ui-foldable-el';
 export const BUTTON_CLASS = '_ui-btn';
+export const BUTTON_ICON_CLASS = '_ui-btn-icon';
+export const BUTTON_ICON_ITEM_CLASS = '_ui-btn-icon-item';
 
 export const WRAPPER_CLASS = `${BASE_CLASS}-wrapper`;
 export const EMBED_WRAPPER_CLASS = `${BASE_CLASS}-embed-wrapper`;
@@ -33,12 +35,21 @@ interface DomOptions {
 }
 
 const dom = {
-	createButton: (title:string) => {
+	createButton: (title:string, icon?:string) => {
 		const button = document.createElement('button');
 		button.classList.add(BUTTON_CLASS);
+
 		const h3 = document.createElement('h3');
 		h3.innerText = title;
 		button.appendChild(h3);
+
+		if(icon){
+			const iconWrapper = document.createElement('div');
+			iconWrapper.innerHTML = icon;
+			iconWrapper.classList.add(BUTTON_ICON_ITEM_CLASS);
+			button.appendChild(iconWrapper);
+			button.classList.add(BUTTON_ICON_CLASS);
+		}
 
 		return button;
 	},
@@ -96,10 +107,13 @@ const dom = {
 		 * Create a Item Row
 		 */
 		if(type === RowTypes.item) {
-			const h4 = el('h4');
-			h4.innerText = title;
-			h4.title = title;
-			row.appendChild(h4);
+
+			if(title){
+				const h4 = el('h4');
+				h4.innerText = title;
+				h4.title = title;
+				row.appendChild(h4);
+			}
 
 			const contentWrapper = el('div');
 			row.appendChild(contentWrapper);

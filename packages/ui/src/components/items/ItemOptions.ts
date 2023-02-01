@@ -19,5 +19,10 @@ export interface SelectItemOptions extends ItemOptionsInterface {
 	options: Array<string | number> | Object;
 }
 
+export interface UploadItemOptions extends ItemOptionsInterface {
+	icon: string;
+	text: string;
+}
 
-export type ItemOptions = ItemOptionsInterface | NumberItemOptions | RangeItemOptions | SelectItemOptions;
+
+export type ItemOptions = ItemOptionsInterface | NumberItemOptions | RangeItemOptions | SelectItemOptions | UploadItemOptions;

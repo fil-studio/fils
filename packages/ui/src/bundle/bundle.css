@@ -173,6 +173,7 @@
   --input-radius: 4px;
   --padding: 10px 8px;
   --input-padding: 8px 6px;
+  --button-padding: 8px 12px;
   --line-separator: 3px;
   --duration: .3s;
   --timing: cubic-bezier(.6, 0, .4, 1);
@@ -379,17 +380,26 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: var(--padding);
+  padding: var(--button-padding);
   background-color: var(--section-bg-1);
   border-radius: var(--input-radius);
   cursor: pointer;
   transition: var(--duration) var(--timing);
+  transform: translate3d(0, -1px, 0);
 }
 ._ui-wrapper ._ui-btn:active {
   background-color: var(--accent-color);
-  transform: translate3d(0, 3px, 0);
+  transform: translate3d(0, 1px, 0);
   color: var(--color-white);
   transition: 0s;
+}
+._ui-wrapper ._ui-btn-icon {
+  justify-content: space-between;
+}
+._ui-wrapper ._ui-btn-icon ._ui-btn-icon-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 ._ui-wrapper ._ui-input-panel {
   position: fixed;
@@ -477,9 +487,9 @@
   transition: 0s;
 }
 ._ui-wrapper ._ui-number ._ui-number-btns svg {
-  width: 9px;
+  width: 20px;
 }
-._ui-wrapper ._ui-number ._ui-number-btns ._ui-btn-decrease svg {
+._ui-wrapper ._ui-number ._ui-number-btns ._ui-btn-increase svg {
   transform: rotate(180deg);
   transform-origin: center;
 }
@@ -568,16 +578,16 @@
   pointer-events: none;
 }
 ._ui-wrapper ._ui-select ._ui-select-input svg {
-  width: 9px;
+  width: 20px;
   position: absolute;
   right: 11px;
   top: 50%;
   transition: all var(--duration) var(--timing);
-  transform: translateY(-50%) rotate(180deg);
+  transform: translateY(-50%) rotate(0deg);
 }
 ._ui-wrapper ._ui-select._ui-select-open ._ui-select-input svg {
   color: var(--color-white);
-  transform: translateY(-50%) rotate(270deg);
+  transform: translateY(-50%) rotate(90deg);
 }
 ._ui-wrapper ._ui-select-options p {
   padding: var(--input-padding);

@@ -15,6 +15,7 @@ import { MaterialItem } from "../components/items/customItems/MaterialItem";
 import { RangeItem } from "../components/items/customItems/RangeItem";
 import { SelectItem } from "../components/items/customItems/SelectItem";
 import { SelectOptions } from "../components/inputPanels/SelectOptions";
+import { UploadItem } from "../components/items/customItems/UploadItem";
 
 export const RegisterBaseComponents = () => {
 
@@ -42,6 +43,11 @@ export const RegisterBaseComponents = () => {
 		view: 'select',
 		item: SelectItem,
 		inputPanel: SelectOptions
+	})
+
+	ItemRegister({
+		view: 'upload',
+		item: UploadItem,
 	})
 
 	ItemRegister({

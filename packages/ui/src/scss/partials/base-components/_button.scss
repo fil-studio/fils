@@ -3,17 +3,30 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	padding: var(--padding);
+	padding: var(--button-padding);
 	background-color: var(--section-bg-1);
 	border-radius: var(--input-radius);
 	cursor: pointer;
 
 	transition: var(--duration) var(--timing);
+	transform: translate3d(0, -1px, 0);
 
 	&:active {
 		background-color: var(--accent-color);
-		transform: translate3d(0, 3px, 0);
+		transform: translate3d(0, 1px, 0);
 		color: var(--color-white);
 		transition: 0s;
 	}
+}
+
+
+._ui-btn-icon {
+	justify-content: space-between;
+
+	._ui-btn-icon-item {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
 }

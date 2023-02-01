@@ -1,8 +1,10 @@
 import { el } from "@fils/utils";
 import check from "../../../utils/check";
-import dom, { BASE_CLASS } from "../../../utils/dom";
+import { BASE_CLASS } from "../../../utils/dom";
 import { ExtendedItem } from "../ExtendedItem";
 import { NumberItemOptions } from "../ItemOptions";
+import { uiDownarrowHlt } from '../../../../../ui-icons/lib/Icons';
+
 
 
 type item = {
@@ -81,8 +83,6 @@ export class NumberItem extends ExtendedItem {
 
 		this.createItems(this.object[this.key]);
 
-		const svg = dom.getChevron();
-
 		for(const item of this.items) {
 
 			item.wrapper = el('div', `${BASE_CLASS}-number-input`);
@@ -93,10 +93,10 @@ export class NumberItem extends ExtendedItem {
 			const btns = el('div', `${BASE_CLASS}-number-btns`);
 
 			item.buttonIncrease = el('button', `${BASE_CLASS}-btn-increase`) as HTMLButtonElement;
-			item.buttonIncrease.innerHTML = svg;
+			item.buttonIncrease.innerHTML = uiDownarrowHlt;
 
 			item.buttonDecrease = el('button', `${BASE_CLASS}-btn-decrease`) as HTMLButtonElement;
-			item.buttonDecrease.innerHTML = svg;
+			item.buttonDecrease.innerHTML = uiDownarrowHlt;
 
 			btns.appendChild(item.buttonIncrease);
 			btns.appendChild(item.buttonDecrease);
