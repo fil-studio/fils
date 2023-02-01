@@ -18,23 +18,34 @@
 		svg {
 			width: 9px;
 			position: absolute;
-			right: 20px;
+			right: 11px;
 			top: 50%;
 			transition: all var(--duration) var(--timing);
 			transform: translateY(-50%) rotate(180deg);
 		}
 	}
 
-	._ui-select-options {
-		position: absolute;
-		width: 100%;
-		height: auto;
-	}
-
 	&._ui-select-open {
 		._ui-select-input svg {
 			color: var(--color-white);
 			transform: translateY(-50%) rotate(270deg);
+		}
+	}
+
+}
+
+._ui-select-options {
+
+	p {
+		padding: var(--input-padding);
+		text-align: left;
+		background-color: var(--section-bg-1);
+		border-radius: var(--input-radius);
+		cursor: pointer;
+
+		&:hover {
+			background-color: var(--accent-color);
+			color: var(--color-white);
 		}
 	}
 

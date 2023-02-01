@@ -14,7 +14,8 @@ header {
 	color: var(--color-0);
 }
 
-fieldset {
+fieldset,
+._ui-input-panel {
 	font-size: 12px;
 	color: var(--color-1);
 	font-weight: 400;

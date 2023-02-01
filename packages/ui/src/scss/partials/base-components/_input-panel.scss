@@ -4,5 +4,9 @@
 	background-color: var(--section-bg-1);
 	color: var(--color-1);
 	z-index: 2;
-	transform: translateY(-3px);
+	transform: translateY(var(--line-separator));
+	border-radius: var(--input-radius);
+
+	max-height: 300px;
+	overflow-y: auto;
 }

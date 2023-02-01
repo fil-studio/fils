@@ -16,14 +16,15 @@ export class App {
 			colorTest: '#ff0000',
 			booleanTest: false,
 			stringTest: 'Test',
-			numberTest: 1,
+			// numberTest: 1,
 			// numberTest: [1,2],
 			// numberTest: [1, 2, 3, 4],
-			// numberTest: {
-			// 	x: 1,
-			// 	y: 2,
-			// 	z: 3,
-			// },
+			numberTest: {
+				x: 1,
+				y: 2,
+				z: 3,
+				w: 5
+			},
 			numberTestSlider: 0,
 			numberTestFloat: 0.5,
 			optionsTestActiveObject: null,
@@ -111,7 +112,7 @@ export class App {
 				min: -10,
 				max: 10,
 				step: 0.1,
-				overExpose: [5, 10],
+				// overExpose: [0, 10],
 		});
 
 		group.add(obj, 'optionsTestActiveObject', {

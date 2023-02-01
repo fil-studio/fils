@@ -9,16 +9,29 @@
 	@import "./partials/reset";
 	@import "./partials/fonts";
 
+	--wrapper-width: 300px;
+
 	position: fixed;
 	top: 5px;
 	right: 5px;
-	width: 300px;
+	width: var(--wrapper-width);
+	min-width: 300px;
 
 	&._ui-embed-wrapper {
 		position: relative;
 		top: unset;
 		right: unset;
 		width: 100%;
+	}
+
+	._ui-ui-resizer {
+		position: absolute;
+		width: 4px;
+		height: calc(100% - 4px);
+		top: 4px;
+		left: 0;
+		cursor: ew-resize;
+		z-index: 1;
 	}
 
 	@import "./partials/fold";
@@ -44,8 +57,3 @@
 	}
 
 }
-
-
-
-
-// @import "./items/boolean";

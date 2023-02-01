@@ -2,6 +2,7 @@ import { el } from "@fils/utils";
 import check from "../../utils/check";
 import { SelectItem } from "../items/customItems/SelectItem";
 import { InputPanel } from "../InputPanel";
+import { BASE_CLASS } from "../../utils/dom";
 
 export class SelectOptions extends InputPanel {
 	parent: SelectItem;
@@ -13,15 +14,12 @@ export class SelectOptions extends InputPanel {
 	}
 
 	createPanelContent(): void {
-		this.options = this.parent.options.options;
 
+		this.dom.classList.add(`${BASE_CLASS}-select-options`)
+
+		this.options = this.parent.options.options;
 		this.createOptions();
 	}
-
-	// destroy(): void {
-	// 	super.destroy();
-
-	// }
 
 	protected createOptions(): void {
 		const options = this.options;

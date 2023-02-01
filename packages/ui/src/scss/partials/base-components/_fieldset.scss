@@ -14,6 +14,7 @@ fieldset {
 
 	h4 {
 		width: 33.33%;
+		max-width: 200px;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 		overflow: hidden;
@@ -26,7 +27,7 @@ fieldset {
 		width: 66.66%;
 		display: flex;
 		justify-content: flex-end;
-		flex-grow: 0;
+		flex-grow: 1;
 		flex-shrink: 0;
 		position: relative;
 		float: left;
