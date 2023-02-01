@@ -1,11 +1,12 @@
 // Import CSS
+import { el } from '@fils/utils';
 import styles from '../bundle/bundle.min.css';
-import { Group, GroupParams } from './Group';
+import { CSS_UI } from '../partials/cssClasses';
 import { AvailableItems } from '../partials/ItemFactory';
 import { RegisterBaseComponents } from '../partials/RegisterBaseItems';
 import css from '../utils/css';
-import dom, { BASE_CLASS, EMBED_WRAPPER_CLASS, RowTypes } from '../utils/dom';
-import { el } from '@fils/utils';
+import dom, { RowTypes } from '../utils/dom';
+import { Group, GroupParams } from './Group';
 
 RegisterBaseComponents();
 const mergedCss = css.merge(styles, AvailableItems.items);
@@ -49,7 +50,7 @@ export class UI extends Group {
 		}
 
 		if(embed){
-			this.domWrapper.classList.add(EMBED_WRAPPER_CLASS);
+			this.domWrapper.classList.add(CSS_UI.embed);
 			embed.appendChild(this.domWrapper);
 		} else {
 			document.body.appendChild(this.domWrapper);
@@ -71,7 +72,7 @@ export class UI extends Group {
 		if(!this.resizable) return;
 
 		// Create resizer element
-		const resizer = el('div', `${BASE_CLASS}-ui-resizer`);
+		const resizer = el('div', CSS_UI.resizer);
 		this.domWrapper.appendChild(resizer);
 
 

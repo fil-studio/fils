@@ -1,4 +1,4 @@
-._ui-foldable {
+._ui-section-foldable {
 	transition-duration: var(--duration);
 	transition-timing-function: var(--timing);
 	overflow: hidden;
@@ -6,15 +6,15 @@
 	> header {
 		cursor: pointer;
 	}
-	._ui-foldable-el {
+	._ui-section-foldable-element {
 		overflow: hidden;
 		transition-duration: inherit;
 		transition-timing-function: inherit;
 		transition-property: height;
 	}
 
-	._ui-foldable-el {
-		._ui-icon {
+	._ui-section-foldable-element {
+		._ui-section-header-icon {
 			transform: rotate(0deg);
 			width: 20px;
 			transform-origin: 50%;
@@ -22,14 +22,14 @@
 		}
 	}
 
-	&._ui-folded {
-		> ._ui-foldable-el {
+	&._ui-section-folded {
+		> ._ui-section-foldable-element {
 			height: 0px !important;
 		}
 	}
 
-	&._ui-folded:not([ui-depth="0"]) {
-		> header ._ui-icon {
+	&._ui-section-folded:not([ui-depth="0"]) {
+		> header ._ui-section-header-icon {
 			transform: rotate(-90deg);
 		}
 	}

@@ -1,4 +1,5 @@
-import dom, { VERTICAL_ROW } from "../../../utils/dom";
+import { CSS_UI } from "../../../partials/cssClasses";
+import dom from "../../../utils/dom";
 import { ExtendedItem } from "../ExtendedItem";
 
 export class TextureItem extends ExtendedItem {
@@ -10,7 +11,7 @@ export class TextureItem extends ExtendedItem {
 
 	protected createDom(): void {
 
-		this.dom.classList.add(VERTICAL_ROW);
+		this.dom.classList.add(CSS_UI.row.vertical);
 
 		this.emptyButton = dom.createButton('Add');
 		this.inputWrapper.appendChild(this.emptyButton);

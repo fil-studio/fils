@@ -17,14 +17,14 @@
 	width: var(--wrapper-width);
 	min-width: 300px;
 
-	&._ui-embed-wrapper {
+	&._ui-wrapper--embed {
 		position: relative;
 		top: unset;
 		right: unset;
 		width: 100%;
 	}
 
-	._ui-ui-resizer {
+	._ui-wrapper--resizer {
 		position: absolute;
 		width: 4px;
 		height: calc(100% - 4px);
@@ -34,14 +34,14 @@
 		z-index: 1;
 	}
 
+	@import "./partials/base-components/section";
 	@import "./partials/fold";
 
 	@import "./partials/base-components/header";
-	@import "./partials/base-components/section";
 	@import "./partials/base-components/fieldset";
 	@import "./partials/base-components/button";
 	@import "./partials/base-components/spacer";
-	@import "./partials/base-components/input-panel";
+	@import "./partials/base-components/panel";
 
 	// Base Items
 	@import "./items/boolean";
@@ -57,7 +57,7 @@
 		}
 	}
 
-	._ui-hidden {
+	._ui--hidden {
 		display: none;
 		pointer-events: none;
 	}

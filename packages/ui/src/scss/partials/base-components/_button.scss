@@ -1,4 +1,4 @@
-._ui-btn {
+._ui-button {
 	width: 100%;
 	display: flex;
 	justify-content: center;
@@ -25,10 +25,10 @@
 	}
 }
 
-._ui-btn-icon {
+._ui-button-has-icon {
 	justify-content: space-between;
 
-	._ui-btn-icon-item {
+	._ui-button-icon {
 		display: flex;
 		justify-content: center;
 		align-items: center;

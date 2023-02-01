@@ -1,6 +1,6 @@
 import { uiDownarrowHlt } from '../../../../../ui-icons/lib/Icons';
+import { CSS_UI } from '../../../partials/cssClasses';
 import check from "../../../utils/check";
-import { BASE_CLASS } from "../../../utils/dom";
 import { ExtendedItem } from "../ExtendedItem";
 import { SelectItemOptions } from "../ItemOptions";
 
@@ -28,7 +28,7 @@ export class SelectItem extends ExtendedItem {
 
 			e.stopPropagation();
 
-			this.dom.classList.add(`${BASE_CLASS}-select-open`);
+			this.dom.classList.add(`${CSS_UI.baseClass}-select-open`);
 			this.inputPanel.create();
 		});
 
@@ -39,20 +39,20 @@ export class SelectItem extends ExtendedItem {
 	}
 
 	destroyPanel(): void {
-		this.dom.classList.remove(`${BASE_CLASS}-select-open`);
+		this.dom.classList.remove(`${CSS_UI.baseClass}-select-open`);
 		this.inputPanel.destroy();
 	}
 
 	protected createDom(): void {
 
 		this.inputWrapper.innerHTML = `
-			<div class="${BASE_CLASS}-select-input">
+			<div class="${CSS_UI.baseClass}-select-input">
 				<p></p>
 				${uiDownarrowHlt}
 			</div>
 		`;
 
-		this.activeOption = this.inputWrapper.querySelector(`.${BASE_CLASS}-select-input`);
+		this.activeOption = this.inputWrapper.querySelector(`.${CSS_UI.baseClass}-select-input`);
 	}
 
 	setValue(_value: any): void {

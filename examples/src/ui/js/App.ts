@@ -100,17 +100,11 @@ export class App {
 			view: 'upload'
 		});
 
-		group.addSpacer({
-			size: SpacerSize.small
-		});
+		group.addSpacer();
 
 		group.add(obj, 'booleanTest', {
 			title: 'Boolean Test',
 			view: 'boolean'
-		});
-
-		group.addSpacer({
-			size: SpacerSize.medium,
 		});
 
 		group.addItem(obj, 'stringTest', {
@@ -119,9 +113,7 @@ export class App {
 		});
 
 
-		group.addSpacer({
-			size: SpacerSize.large,
-		});
+		group.addSpacer();
 
 		group.add(obj, 'numberTest', {
 			title: 'Number Test',

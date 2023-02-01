@@ -1,6 +1,6 @@
 import { MathUtils } from "@fils/math";
+import { CSS_UI } from "../../../partials/cssClasses";
 import check from "../../../utils/check";
-import { BASE_CLASS } from "../../../utils/dom";
 import { ExtendedItem } from "../ExtendedItem";
 import { RangeItemOptions } from "../ItemOptions";
 
@@ -52,7 +52,7 @@ export class RangeItem extends ExtendedItem {
 			const t = e.target as HTMLElement;
 			if (t != this.thumb) return;
 			dragging = true;
-			this.thumb.classList.add(`${BASE_CLASS}-grabbing`);
+			this.thumb.classList.add(`${CSS_UI.baseClass}-grabbing`);
 			x = e.clientX;
 			const { width } = this.rangeEl.getBoundingClientRect();
 			originalValue = MathUtils.map(this.mappedValue, 0, 1, 0, width);
@@ -92,7 +92,7 @@ export class RangeItem extends ExtendedItem {
 			if (!dragging) return
 			dragging = false;
 			x = 0;
-			this.thumb.classList.remove(`${BASE_CLASS}-grabbing`);
+			this.thumb.classList.remove(`${CSS_UI.baseClass}-grabbing`);
 		}
 
 		this.rangeEl.addEventListener('click', (e) => {

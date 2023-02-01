@@ -1,8 +1,8 @@
 import { el } from "@fils/utils";
+import { CSS_UI } from "../../partials/cssClasses";
 import check from "../../utils/check";
-import { SelectItem } from "../items/customItems/SelectItem";
 import { InputPanel } from "../InputPanel";
-import { BASE_CLASS } from "../../utils/dom";
+import { SelectItem } from "../items/customItems/SelectItem";
 
 export class SelectOptions extends InputPanel {
 	parent: SelectItem;
@@ -11,7 +11,7 @@ export class SelectOptions extends InputPanel {
 
 	createPanelContent(): void {
 
-		this.dom.classList.add(`${BASE_CLASS}-select-options`)
+		this.dom.classList.add(`${CSS_UI.baseClass}-select-options`)
 
 		this.options = this.parent.options.options;
 		this.createOptions();

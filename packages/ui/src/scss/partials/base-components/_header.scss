@@ -11,7 +11,11 @@ header {
 
 	user-select: none;
 
-	._ui-icon {
+	&._ui-section-header-has-icon {
+
+	}
+
+	._ui-section-header-icon {
 		width: auto;
 		max-width: 20px;
 		height: 1em;

@@ -1,12 +1,13 @@
 import { el } from "@fils/utils";
 import { UI } from "../main";
+import { CSS_UI } from "../partials/cssClasses";
 import { EventsHandler } from "../partials/Events";
 import { ItemFactory } from "../partials/ItemFactory";
-import dom, { CONTENT_WRAPPER, FOLDABLE, FOLDABLE_ELEMENT, FOLDED, RowTypes } from "../utils/dom";
+import dom, { RowTypes } from "../utils/dom";
 import { Button } from "./Button";
 import { Item } from "./Item";
 import { ItemOptions } from "./items/ItemOptions";
-import { Spacer, SpacerParams, SpacerSize } from "./Spacer";
+import { Spacer, SpacerParams } from "./Spacer";
 
 
 export interface GroupParams {
@@ -51,7 +52,7 @@ export class Group extends EventsHandler {
 			foldable: foldable
 		});
 
-		this.contentWrapper = this.dom.querySelector(`.${CONTENT_WRAPPER}`);
+		this.contentWrapper = this.dom.querySelector(`.${CSS_UI.section.content}`);
 
 		// Is it folded or not? If it's not foldable, it's not folded
 		this.folded = foldable ? folded : false;
@@ -63,10 +64,9 @@ export class Group extends EventsHandler {
 
 		if(!this.foldable) return;
 
-		this.dom.classList.add(FOLDABLE);
+		this.dom.classList.add(CSS_UI.section.foldable);
 
-		this.foldableWrapper = el('div');
-		this.foldableWrapper.classList.add(FOLDABLE_ELEMENT);
+		this.foldableWrapper = el('div', CSS_UI.section.foldableElement);
 		this.dom.appendChild(this.foldableWrapper);
 		this.foldableWrapper.appendChild(this.contentWrapper);
 
@@ -91,8 +91,8 @@ export class Group extends EventsHandler {
 
 		// Just go with it, without the timeout, it doesn't work
 		setTimeout(() => {
-			if(this.folded) this.dom.classList.add(FOLDED);
-			else this.dom.classList.remove(FOLDED);
+			if(this.folded) this.dom.classList.add(CSS_UI.section.folded);
+			else this.dom.classList.remove(CSS_UI.section.folded);
 		}, 5);
 
 		if(!this.folded) {

@@ -237,22 +237,22 @@
   color: var(--color-0);
 }
 ._ui-wrapper fieldset,
-._ui-wrapper ._ui-input-panel {
+._ui-wrapper ._ui-panel {
   font-size: 12px;
   color: var(--color-1);
   font-weight: 400;
 }
 ._ui-wrapper fieldset h4,
-._ui-wrapper ._ui-input-panel h4 {
+._ui-wrapper ._ui-panel h4 {
   color: var(--color-2);
 }
-._ui-wrapper._ui-embed-wrapper {
+._ui-wrapper._ui-wrapper--embed {
   position: relative;
   top: unset;
   right: unset;
   width: 100%;
 }
-._ui-wrapper ._ui-ui-resizer {
+._ui-wrapper ._ui-wrapper--resizer {
   position: absolute;
   width: 4px;
   height: calc(100% - 4px);
@@ -260,54 +260,6 @@
   left: 0;
   cursor: ew-resize;
   z-index: 1;
-}
-._ui-wrapper ._ui-foldable {
-  transition-duration: var(--duration);
-  transition-timing-function: var(--timing);
-  overflow: hidden;
-}
-._ui-wrapper ._ui-foldable > header {
-  cursor: pointer;
-}
-._ui-wrapper ._ui-foldable ._ui-foldable-el {
-  overflow: hidden;
-  transition-duration: inherit;
-  transition-timing-function: inherit;
-  transition-property: height;
-}
-._ui-wrapper ._ui-foldable ._ui-foldable-el ._ui-icon {
-  transform: rotate(0deg);
-  width: 20px;
-  transform-origin: 50%;
-  transition: transform var(--duration) var(--timing);
-}
-._ui-wrapper ._ui-foldable._ui-folded > ._ui-foldable-el {
-  height: 0px !important;
-}
-._ui-wrapper ._ui-foldable._ui-folded:not([ui-depth="0"]) > header ._ui-icon {
-  transform: rotate(-90deg);
-}
-._ui-wrapper header {
-  position: relative;
-  width: 100%;
-  height: 40px;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  padding: var(--padding);
-  user-select: none;
-}
-._ui-wrapper header ._ui-icon {
-  width: auto;
-  max-width: 20px;
-  height: 1em;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-right: 5px;
-}
-._ui-wrapper header h3 {
-  margin: 0;
 }
 ._ui-wrapper section {
   --section-bg-0: var(--bg-1);
@@ -323,17 +275,65 @@
   --section-bg-0: var(--bg-0);
   --section-bg-1: var(--bg-1);
 }
-._ui-wrapper section ._ui-content-wrapper {
+._ui-wrapper section ._ui-section-content {
   padding: 0 var(--line-separator) var(--line-separator) var(--line-separator);
   position: relative;
   float: left;
   width: 100%;
 }
-._ui-wrapper section ._ui-content-wrapper fieldset:first-of-type {
+._ui-wrapper section ._ui-section-content fieldset:first-of-type {
   margin-top: 8px;
 }
-._ui-wrapper section ._ui-content-wrapper fieldset:last-child {
+._ui-wrapper section ._ui-section-content fieldset:last-child {
   margin-bottom: 8px;
+}
+._ui-wrapper ._ui-section-foldable {
+  transition-duration: var(--duration);
+  transition-timing-function: var(--timing);
+  overflow: hidden;
+}
+._ui-wrapper ._ui-section-foldable > header {
+  cursor: pointer;
+}
+._ui-wrapper ._ui-section-foldable ._ui-section-foldable-element {
+  overflow: hidden;
+  transition-duration: inherit;
+  transition-timing-function: inherit;
+  transition-property: height;
+}
+._ui-wrapper ._ui-section-foldable ._ui-section-foldable-element ._ui-section-header-icon {
+  transform: rotate(0deg);
+  width: 20px;
+  transform-origin: 50%;
+  transition: transform var(--duration) var(--timing);
+}
+._ui-wrapper ._ui-section-foldable._ui-section-folded > ._ui-section-foldable-element {
+  height: 0px !important;
+}
+._ui-wrapper ._ui-section-foldable._ui-section-folded:not([ui-depth="0"]) > header ._ui-section-header-icon {
+  transform: rotate(-90deg);
+}
+._ui-wrapper header {
+  position: relative;
+  width: 100%;
+  height: 40px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: var(--padding);
+  user-select: none;
+}
+._ui-wrapper header ._ui-section-header-icon {
+  width: auto;
+  max-width: 20px;
+  height: 1em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 5px;
+}
+._ui-wrapper header h3 {
+  margin: 0;
 }
 ._ui-wrapper fieldset {
   padding: 0 8px;
@@ -365,17 +365,17 @@
   position: relative;
   float: left;
 }
-._ui-wrapper fieldset._ui-vertical-row {
+._ui-wrapper fieldset._ui-row-vertical {
   flex-direction: column;
   align-items: flex-start;
 }
-._ui-wrapper fieldset._ui-vertical-row > h4 {
+._ui-wrapper fieldset._ui-row-vertical > h4 {
   margin-bottom: 8px;
 }
-._ui-wrapper fieldset._ui-vertical-row > div {
+._ui-wrapper fieldset._ui-row-vertical > div {
   width: 100%;
 }
-._ui-wrapper ._ui-btn {
+._ui-wrapper ._ui-button {
   width: 100%;
   display: flex;
   justify-content: center;
@@ -388,25 +388,25 @@
   transition: var(--duration) var(--timing);
   transform: translate3d(0, -1px, 0);
 }
-._ui-wrapper ._ui-btn:active {
+._ui-wrapper ._ui-button:active {
   background-color: var(--accent-color);
   transform: translate3d(0, 1px, 0);
   color: var(--color-white);
   transition: 0s;
 }
-._ui-wrapper ._ui-btn h3 {
+._ui-wrapper ._ui-button h3 {
   text-overflow: ellipsis;
   overflow: hidden;
 }
-._ui-wrapper ._ui-btn-icon {
+._ui-wrapper ._ui-button-has-icon {
   justify-content: space-between;
 }
-._ui-wrapper ._ui-btn-icon ._ui-btn-icon-item {
+._ui-wrapper ._ui-button-has-icon ._ui-button-icon {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-._ui-wrapper ._ui-btn-icon ._ui-btn-icon-item svg {
+._ui-wrapper ._ui-button-has-icon ._ui-button-icon svg {
   width: 20px;
 }
 ._ui-wrapper ._ui-spacer {
@@ -414,16 +414,16 @@
   display: block;
   margin-bottom: calc(-1 * var(--line-separator));
 }
-._ui-wrapper ._ui-spacer._ui-spacer-0 {
+._ui-wrapper ._ui-spacer._ui-spacer-small {
   padding: 10px 0;
 }
-._ui-wrapper ._ui-spacer._ui-spacer-1 {
+._ui-wrapper ._ui-spacer._ui-spacer-medium {
   padding: 15px 0;
 }
-._ui-wrapper ._ui-spacer._ui-spacer-2 {
+._ui-wrapper ._ui-spacer._ui-spacer-large {
   padding: 20px 0;
 }
-._ui-wrapper ._ui-spacer._ui-spacer-line:before {
+._ui-wrapper ._ui-spacer._ui-spacer-has-line:before {
   content: "";
   display: block;
   width: calc(100% - 16px);
@@ -431,7 +431,7 @@
   height: 1px;
   background: var(--section-bg-1);
 }
-._ui-wrapper ._ui-input-panel {
+._ui-wrapper ._ui-panel {
   position: fixed;
   height: auto;
   background-color: var(--section-bg-1);
@@ -634,7 +634,7 @@
   background: var(--color-white);
   color: var(--accent-color);
 }
-._ui-wrapper ._ui-hidden {
+._ui-wrapper ._ui--hidden {
   display: none;
   pointer-events: none;
 }

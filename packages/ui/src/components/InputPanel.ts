@@ -1,4 +1,5 @@
 import { el } from "@fils/utils";
+import { CSS_UI } from "../partials/cssClasses";
 import { BASE_CLASS, WRAPPER_CLASS } from "../utils/dom";
 import { Item } from "./Item";
 
@@ -40,13 +41,13 @@ export class InputPanel  {
 		if (this.created) return;
 		this.created = true;
 
-		this.uiDom = this.parent.dom.closest(`.${WRAPPER_CLASS}`);
+		this.uiDom = this.parent.dom.closest(`.${CSS_UI.wrapper}`);
 
 		const parentDomStyle = getComputedStyle(this.parent.dom);
 		const bg0 = parentDomStyle.getPropertyValue('--section-bg-0');
 		const bg1 = parentDomStyle.getPropertyValue('--section-bg-1');
 
-		this.dom = el('div', `${BASE_CLASS}-input-panel`);
+		this.dom = el('div', CSS_UI.panel.baseClass);
 		this.dom.style.setProperty('--section-bg-0', bg0);
 		this.dom.style.setProperty('--section-bg-1', bg1);
 

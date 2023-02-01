@@ -1,23 +1,7 @@
 import { el } from "@fils/utils";
 import { uiTriaDown } from '../../../ui-icons/lib/Icons';
 import { SpacerSize } from "../components/Spacer";
-
-
-export const BASE_CLASS = '_ui';
-export const ICON_HEADER = '_ui-icon';
-export const CONTENT_WRAPPER = '_ui-content-wrapper';
-export const VERTICAL_ROW = '_ui-vertical-row';
-export const FOLDED = '_ui-folded';
-export const NOT_FOLDED = '_ui-not-folded';
-export const FOLDABLE = '_ui-foldable';
-export const FOLDABLE_ELEMENT = '_ui-foldable-el';
-export const BUTTON_CLASS = '_ui-btn';
-export const BUTTON_ICON_CLASS = '_ui-btn-icon';
-export const BUTTON_ICON_ITEM_CLASS = '_ui-btn-icon-item';
-
-export const WRAPPER_CLASS = `${BASE_CLASS}-wrapper`;
-export const EMBED_WRAPPER_CLASS = `${BASE_CLASS}-embed-wrapper`;
-
+import { CSS_UI } from "../partials/cssClasses";
 
 
 export enum RowTypes {
@@ -33,25 +17,26 @@ interface DomOptions {
 	depth: number;
 	title?: string;
 	foldable?: boolean;
-	line?: boolean;
-	size?: SpacerSize;
 }
 
 const dom = {
 	createButton: (title:string, icon?:string) => {
 		const button = document.createElement('button');
-		button.classList.add(BUTTON_CLASS);
+		button.classList.add(CSS_UI.button.baseClass);
 
 		const h3 = document.createElement('h3');
 		h3.innerText = title;
 		button.appendChild(h3);
 
 		if(icon){
+
 			const iconWrapper = document.createElement('div');
 			iconWrapper.innerHTML = icon;
-			iconWrapper.classList.add(BUTTON_ICON_ITEM_CLASS);
+			iconWrapper.classList.add(CSS_UI.button.icon);
+
+			button.classList.add(CSS_UI.button.hasIcon);
 			button.appendChild(iconWrapper);
-			button.classList.add(BUTTON_ICON_CLASS);
+
 		}
 
 		return button;
@@ -60,9 +45,7 @@ const dom = {
 		type,
 		depth,
 		title,
-		foldable,
-		line,
-		size,
+		foldable
 	}:DomOptions = {
 		type: RowTypes.ui,
 		depth: 0
@@ -83,7 +66,7 @@ const dom = {
 		 * Add Classes to Row
 		 */
 		if(type === RowTypes.ui) {
-			row.classList.add(WRAPPER_CLASS);
+			row.classList.add(CSS_UI.wrapper);
 		}
 
 		/**
@@ -104,8 +87,7 @@ const dom = {
 
 			row.appendChild(titleTab);
 
-			const contentWrapper = el('div');
-			contentWrapper.classList.add(CONTENT_WRAPPER);
+			const contentWrapper = el('div', CSS_UI.section.content);
 			row.appendChild(contentWrapper);
 		}
 
@@ -131,22 +113,21 @@ const dom = {
 		if(type === RowTypes.button) {
 			const button = dom.createButton(title);
 			row.appendChild(button);
-			row.classList.add(`${BASE_CLASS}-button-fieldset`);
+			row.classList.add(CSS_UI.row.hasButton);
 		}
 
 		/**
 		 * Create a Spacer Row
 		 */
 		if(type === RowTypes.spacer) {
-			row.classList.add(`${BASE_CLASS}-spacer`);
-			if(line) row.classList.add(`${BASE_CLASS}-spacer-line`);
-			row.classList.add(`${BASE_CLASS}-spacer-${size}`);
+			row.classList.add(CSS_UI.spacer.baseClass);
 		}
 
 		return row;
 	},
 	addIcon: (header:HTMLElement, icon?:string) => {
-		const iconWrapper = header.querySelector(`.${ICON_HEADER}`) ? header.querySelector(`.${ICON_HEADER}`) : el('div', ICON_HEADER);
+		const iconClass = CSS_UI.section.header.icon;
+		const iconWrapper = header.querySelector(`.${iconClass}`) ? header.querySelector(`.${iconClass}`) : el('div', iconClass);
 		iconWrapper.innerHTML = icon ? icon : uiTriaDown;
 		header.prepend(iconWrapper);
 	},
