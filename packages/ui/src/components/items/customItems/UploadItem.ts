@@ -1,4 +1,4 @@
-import dom, { VERTICAL_ROW } from "../../../utils/dom";
+import dom, { BASE_CLASS, VERTICAL_ROW } from "../../../utils/dom";
 import { ExtendedItem } from "../ExtendedItem";
 import { UploadItemOptions } from "../ItemOptions";
 import { uiRemove } from '../../../../../ui-icons/lib/Icons';
@@ -23,8 +23,16 @@ export class UploadItem extends ExtendedItem {
 			const file = (e.target as HTMLInputElement).files[0];
 			if(!file) return;
 
-			this.uploadButton.querySelector('h3').innerHTML = file.name;
+			this.removeUploadButton.querySelector('h3').innerHTML = file.name;
+			this.removeUploadButton.classList.remove(`${BASE_CLASS}-hidden`);
+			this.uploadButton.classList.add(`${BASE_CLASS}-hidden`);
 			this.setValue(file);
+		});
+
+		this.removeUploadButton.addEventListener('click', () => {
+			this.removeUploadButton.classList.add(`${BASE_CLASS}-hidden`);
+			this.uploadButton.classList.remove(`${BASE_CLASS}-hidden`);
+			this.setValue(null);
 		});
 
 	}
@@ -37,7 +45,8 @@ export class UploadItem extends ExtendedItem {
 		this.inputWrapper.appendChild(this.uploadButton);
 
 		this.removeUploadButton = dom.createButton('', uiRemove);
-		this.inputWrapper.appendChild(this.uploadButton);
+		this.removeUploadButton.classList.add(`${BASE_CLASS}-hidden`);
+		this.inputWrapper.appendChild(this.removeUploadButton);
 
 		this.dom.classList.add(VERTICAL_ROW);
 
