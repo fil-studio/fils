@@ -7,9 +7,17 @@ export class App {
 	constructor() {
 		console.log('App', uiIcons);
 
+		const toggle = el('button', 'toggle');
+		toggle.innerText = 'Toggle Titles';
+		toggle.addEventListener('click', () => {
+			document.body.classList.toggle('hide-titles');
+		});
+		document.body.appendChild(toggle);
 
 		this.wrapper = el('div', 'wrapper');
 		document.body.appendChild(this.wrapper);
+
+
 
 		for(const [key, value] of Object.entries(uiIcons)) this.createIcon(key, value);
 
@@ -21,6 +29,9 @@ export class App {
 		const icon = el('div', 'icon');
 		icon.innerHTML = v;
 		icon.setAttribute('data-name', k);
+		const t = el('h3');
+		t.innerText = k;
+		icon.appendChild(t);
 
 		this.wrapper.appendChild(icon);
 		this.elements.push(icon);

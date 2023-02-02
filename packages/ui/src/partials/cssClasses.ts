@@ -40,32 +40,4 @@ export const CSS_UI = {
 	panel: {
 		baseClass: `_ui-panel`,
 	}
-	// iconHeader: `${UICLASSES.baseClass}-icon-header`,
-	// contentWrapper: `${UICLASSES.baseClass}-content-wrapper`,
-	// folded: `${UICLASSES.baseClass}-folded`,
-	// notFolded: `${UICLASSES.baseClass}-not-folded`,
-	// foldable: `${UICLASSES.baseClass}-foldable`,
-	// foldableElement: `${UICLASSES.baseClass}-foldable-element`,
-	// wrapperClass: `${UICLASSES.baseClass}-wrapper`,
-	// embedWrapperClass: `${UICLASSES.baseClass}-embed-wrapper`,
 };
-
-// Folded i not folded redundant
-
-
-
-
-// export const BASE_CLASS = '_ui';
-// export const ICON_HEADER = '_ui-icon';
-// export const CONTENT_WRAPPER = '_ui-content-wrapper';
-// export const VERTICAL_ROW = '_ui-vertical-row';
-// export const FOLDED = '_ui-folded';
-// export const NOT_FOLDED = '_ui-not-folded';
-// export const FOLDABLE = '_ui-foldable';
-// export const FOLDABLE_ELEMENT = '_ui-foldable-el';
-// export const BUTTON_CLASS = '_ui-btn';
-// export const BUTTON_ICON_CLASS = '_ui-btn-icon';
-// export const BUTTON_ICON_ITEM_CLASS = '_ui-btn-icon-item';
-
-// export const WRAPPER_CLASS = `${BASE_CLASS}-wrapper`;
-// export const EMBED_WRAPPER_CLASS = `${BASE_CLASS}-embed-wrapper`;
