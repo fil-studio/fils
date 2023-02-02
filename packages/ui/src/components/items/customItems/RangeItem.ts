@@ -4,7 +4,6 @@ import check from "../../../utils/check";
 import { ExtendedItem } from "../ExtendedItem";
 import { RangeItemOptions } from "../ItemOptions";
 
-
 CSS_UI.items.push({
 	type: 'range',
 	input: '_ui-range-input',

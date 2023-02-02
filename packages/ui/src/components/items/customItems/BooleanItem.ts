@@ -1,3 +1,4 @@
+import { CSS_UI } from "../../../partials/cssClasses";
 import { ExtendedItem } from "../ExtendedItem";
 
 export class BooleanItem extends ExtendedItem {
@@ -19,7 +20,7 @@ export class BooleanItem extends ExtendedItem {
 	}
 
 	refresh(): void {
-		this.dom.classList.toggle('_ui-active', this.value);
+		this.dom.classList.toggle(CSS_UI.utility.active, this.value);
 		super.refresh();
 	}
 }

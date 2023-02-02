@@ -5,7 +5,8 @@ export const CSS_UI = {
 	resizer: '_ui-wrapper--resizer',
 	utility: {
 		hidden: '_ui--hidden',
-		grab: '_ui--grab'
+		grab: '_ui--grab',
+		active: '_ui--active'
 	},
 	row: {
 		baseClass: '_ui-row',
