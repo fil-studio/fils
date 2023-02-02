@@ -53,7 +53,7 @@ export class App extends WebGLSketch {
 			alpha: false,
 			antialias: true,
 			near: .1,
-			far: 10,
+			far: 50,
 			fov: 60
 		});
 		document.body.appendChild(this.domElement);
@@ -104,7 +104,7 @@ export class App extends WebGLSketch {
 			this.resize(window.innerWidth, window.innerHeight);
 		});
 
-		this.camera.position.set(0.8784235609578162, 2.019534268346124, 2.9076436337723184);
+		this.camera.position.set(0.5527206749354661, 1.35, 1.263465532006498);
 		SHOW_DEPTH.uniforms.cameraNear.value = this.camera.near;
 		SHOW_DEPTH.uniforms.cameraFar.value = this.camera.far;
 
@@ -115,7 +115,7 @@ export class App extends WebGLSketch {
 			{
 				exposure: 0,
 				gamma: 1.2,
-				samples: 1,
+				samples: 4,
 				glowSettings: {
 					scale: .5,
 					radius: 2,
@@ -130,15 +130,22 @@ export class App extends WebGLSketch {
 
 		const settings:CommonPipelineSettings = {
 			final: {
-				enableCA: false,
-				enableDithering: true,
+				enableCA: true,
+				enableDithering: false,
 				enableVignette: true,
 				vignette: .25,
-				dither: 5
+				dither: 5,
+				caAmount: .0015
 			},
 			dof: {
-				focalDistance: 0.01,
-				aperture: .5
+				focalDistance: 0.89,
+				aperture: .068,
+				blur: {
+					iterations: 32,
+					quality: 2,
+					scale: 1,
+					radius: 1
+				}
 			},
 			enableFXAA: false
 		}
@@ -155,7 +162,7 @@ export class App extends WebGLSketch {
 		document.body.appendChild(stats.domElement);
 
 		const controls = new OrbitControls(this.camera, this.domElement);
-		controls.target.set(0,2,0);
+		controls.target.set(0.3,1.5,0);
 
 		const customRaf = () => {
 			requestAnimationFrame(customRaf);
@@ -190,8 +197,8 @@ export class App extends WebGLSketch {
 		const f2 = gui.addFolder("Depth of Field").close();
 		f2.add(dof, 'enabled');
 		f2.add(dof.shader.uniforms.debug, 'value').name('Debug');
-		f2.add(dof.shader.uniforms.focalDistance, 'value', 0, 1).name("Focal Distance");
-		f2.add(dof.shader.uniforms.aperture, 'value', 0.1, 1).name("Aperture");
+		f2.add(dof.shader.uniforms.focalDistance, 'value', 0.8, 1.25).name("Focal Distance");
+		f2.add(dof.shader.uniforms.aperture, 'value', 0.001, 1).name("Aperture");
 
 		const f21 = f2.addFolder("Blur Settings");
 		f21.add(dof.blurPass, 'iterations', 1, 32, 1);

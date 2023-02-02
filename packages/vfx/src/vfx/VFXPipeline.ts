@@ -65,7 +65,7 @@ export class VFXPipeline {
         this.front = new WebGLRenderTarget(w, h);
         
         if(rnd['isWebGLRenderer']) {
-            this.front.samples = params.samples || 4;
+            // this.front.samples = params.samples || 4;
             this.type = "WebGLRenderer";
         } else {
             const r = rnd as VFXRenderer;
@@ -74,6 +74,7 @@ export class VFXPipeline {
         }
         this.back = this.front.clone();
         this.sceneRT = this.front.clone();
+        this.sceneRT.samples = params.samples || 4;
         if(params.useDepth) {
             this.sceneRT.depthTexture = new DepthTexture(w, h, FloatType);
             this.sceneRT.depthTexture.format = DepthFormat;

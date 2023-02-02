@@ -1,15 +1,13 @@
-import { BoxGeometry, CylinderGeometry, DirectionalLight, EquirectangularReflectionMapping, Mesh, MeshPhongMaterial, RawShaderMaterial, SphereGeometry, TextureLoader, TorusKnotGeometry, WebGLRenderTarget } from 'three';
+import { BoxGeometry, CylinderGeometry, DirectionalLight, EquirectangularReflectionMapping, Mesh, MeshPhongMaterial, SphereGeometry, TextureLoader, TorusKnotGeometry, WebGLRenderTarget } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 
 import { RTUtils, WebGLSketch } from '@fils/gfx';
-import { DoFPass, FinalPass, FXAAPass, initMaterial, LutPass, RetroPass, VFXPipeline, VFXRenderer } from '@fils/vfx';
+// import { DoFPass, FinalPass, FXAAPass, initMaterial, LutPass, RetroPass, VFXPipeline, VFXRenderer } from '@fils/vfx';
+import { FinalPass, initMaterial, LutPass, RetroPass, VFXPipeline, VFXRenderer } from '../../../../packages/vfx/src/main';
 
 // import { FinalPass } from '../../../../packages/vfx/src/main';
-
-import vert from '../../../../packages/vfx/src/glsl/fbo.vert';
-import frag from '../../../../packages/vfx/src/glsl/vfx/draw-depth.frag';
 
 const BOX_GEO = new BoxGeometry(1, 1, 1);
 const BALL_GEO = new SphereGeometry(1);
@@ -22,18 +20,7 @@ const debugSettings = {
 	showTextures: false
 }
 
-const SHOW_DEPTH = new RawShaderMaterial({
-	vertexShader: vert,
-	fragmentShader: frag,
-	uniforms: {
-		tDepth: {value: null},
-		cameraNear: {value: 0},
-		cameraFar: {value: 0}
-	}
-});
-
 const passMap = {
-	dof: null,
 	lut: null
 }
 
@@ -51,14 +38,14 @@ export class App extends WebGLSketch {
 	rnd:VFXRenderer;
 	meshes: Mesh[] = [];
 	background:WebGLRenderTarget;
-	depthRT:WebGLRenderTarget;
 
 	constructor() {
 		super(window.innerWidth, window.innerHeight, {
 			alpha: false,
 			antialias: true,
 			near: .1,
-			far: 100
+			far: 100,
+			fov: 60
 		});
 		document.body.appendChild(this.domElement);
 		this.domElement.className = 'view';
@@ -78,8 +65,6 @@ export class App extends WebGLSketch {
 		const L = new DirectionalLight(0xffffff, .35);
 		L.position.set(-1, 1, 1);
 		this.scene.add(L);
-
-		this.depthRT = new WebGLRenderTarget(256, 256);
 
 		const box1 = new Mesh(
 			BOX_GEO,
@@ -145,8 +130,6 @@ export class App extends WebGLSketch {
 		});
 
 		this.camera.position.z = 15;
-		SHOW_DEPTH.uniforms.cameraNear.value = this.camera.near;
-		SHOW_DEPTH.uniforms.cameraFar.value = this.camera.far;
 
 		const rnd = new VFXRenderer(
 			this.renderer,
@@ -162,42 +145,20 @@ export class App extends WebGLSketch {
 					iterations: 8,
 					quality: 2
 				},
-				useDepth: true
+				useDepth: false
 			}
 		);
 
 		this.rnd = rnd;
 
 		const lut = new LutPass(loader.load('/assets/textures/table.png'));
-		lut.enabled = false;
-
-		const dof = new DoFPass(
-			window.innerWidth,
-			window.innerHeight,
-			{
-				blur: {
-					scale: 1,
-					iterations: 8,
-					quality: 2,
-					radius: 1
-				},
-				camNear: this.camera.near,
-				camFar: this.camera.far,
-				focalDistance: 6.4,
-				aperture: 8.5
-			}
-		);
-
-		const fxaa = new FXAAPass(
-			window.innerWidth,
-			window.innerHeight,
-		);
+		// lut.enabled = false;
 
 		// this.customRenderer = new VFXPipeline(this.renderer);
-		this.customRenderer = new VFXPipeline(rnd,{
+		this.customRenderer = new VFXPipeline(this.renderer,{
 			width: window.innerWidth,
 			height: window.innerHeight,
-			useDepth: true,
+			useDepth: false,
 			samples: 1
 		});
 		const final = new FinalPass({
@@ -212,15 +173,12 @@ export class App extends WebGLSketch {
 			gridSize: 8,
 			dithering: 3
 		});
-		retro.enabled = false;
+		retro.enabled = true;
 
 		this.customRenderer.addPass(lut);
-		this.customRenderer.addPass(dof);
-		this.customRenderer.addPass(fxaa);
 		this.customRenderer.addPass(final);
 		this.customRenderer.addPass(retro);
 
-		passMap.dof = dof;
 		passMap.lut = lut;
 
 		/* dof.enabled = false;
@@ -245,7 +203,7 @@ export class App extends WebGLSketch {
 		const gui = new GUI();
 
 		const r = {
-			type: 1 
+			type: 0 
 		}
 
 		gui.add(r, "type", {
@@ -258,21 +216,8 @@ export class App extends WebGLSketch {
 		});
 		gui.add(debugSettings, 'showTextures');
 
-		const f4 = gui.addFolder("LUT").close();
-		f4.add(lut, 'enabled');
-
-		const f2 = gui.addFolder("Depth of Field").close();
-		f2.add(dof, 'enabled');
-		f2.add(dof.shader.uniforms.debug, 'value').name('Debug');
-		f2.add(dof.shader.uniforms.focalDistance, 'value', 0, 30).name("Focal Distance");
-		f2.add(dof.shader.uniforms.aperture, 'value', 0.1, 10).name("Aperture");
-
-		const f21 = f2.addFolder("Blur Settings");
-		f21.add(dof.blurPass, 'iterations', 1, 32, 1);
-		f21.add(dof.blurPass, 'radius', .1, 5);
-
-		const f3 = gui.addFolder("FXAA").close();
-		f3.add(fxaa, 'enabled');
+		const f0 = gui.addFolder("LUT").close();
+		f0.add(lut, 'enabled');
 
 		const f1 = gui.addFolder("Final Pass").close();
 		f1.add(final, 'enabled');
@@ -284,11 +229,11 @@ export class App extends WebGLSketch {
 		f1.add(final.shader.uniforms.enableVignette, 'value').name('Vignette');
 		f1.add(final.shader.uniforms.vIntensity, 'value', 0, 1).name('Intensity');
 
-		const f5 = gui.addFolder("Retro Pass").close();
-		f5.add(retro, 'enabled');
-		f5.add(retro.shader.uniforms.pixelate, 'value').name('Pixelate');
-		f5.add(retro.shader.uniforms.gridSize, 'value', 1, 20, 1).name('Pixel Size');
-		f5.add(retro.shader.uniforms.dithering, 'value', {
+		const f2 = gui.addFolder("Retro Pass").close();
+		f2.add(retro, 'enabled');
+		f2.add(retro.shader.uniforms.pixelate, 'value').name('Pixelate');
+		f2.add(retro.shader.uniforms.gridSize, 'value', 1, 20, 1).name('Pixel Size');
+		f2.add(retro.shader.uniforms.dithering, 'value', {
 			'None': 0,
 			'2x2': 1,
 			'4x4': 2,
@@ -338,13 +283,9 @@ export class App extends WebGLSketch {
 	render(): void {
 		this.customRenderer.render(this.scene, this.camera);
 		if(debugSettings.showTextures) {
-			SHOW_DEPTH.uniforms.tDepth.value = this.customRenderer.depthTexture;
-			RTUtils.renderToRT(this.depthRT, this.renderer, SHOW_DEPTH);
 			this.renderer.autoClear = false;
 			this.renderer.clearDepth();
-			RTUtils.drawRT(this.depthRT, this.renderer, 0, window.innerHeight-266);
-			RTUtils.drawTexture(this.rnd.sceneRT.texture[1], this.renderer, 266, window.innerHeight-266);
-			RTUtils.drawTexture(passMap.lut.lookupTable, this.renderer, 256, window.innerHeight-266, 256, 256);
+			RTUtils.drawTexture(passMap.lut.lookupTable, this.renderer, 0, window.innerHeight-266, 256, 256);
 			/* if(this.customRenderer.rendererType === "VFXRenderer") {
 				RTUtils.drawTexture(this.rnd.glow.texture, this.renderer, 512, window.innerHeight-266, 256, 256);
 			} */

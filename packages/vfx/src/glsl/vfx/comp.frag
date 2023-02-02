@@ -24,7 +24,9 @@ void main () {
     
     float glowA = glow.a;
 
-    scene = mix(bg, scene, scene.a);
+    float bA = smoothstep(.9, 1., scene.a);
+
+    scene = mix(bg, scene, bA);
 
     scene.rgb += glow.rgb;
 

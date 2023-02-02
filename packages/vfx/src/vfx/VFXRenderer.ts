@@ -79,7 +79,7 @@ export class VFXRenderer {
             type: UnsignedByteType
         });
 
-        this.sceneRT['samples'] = settings.samples || 4;
+        this.sceneRT['samples'] = settings && settings.samples || 4;
         this.sceneRT.texture[ 0 ].name = 'diffuse';
         this.sceneRT.texture[ 1 ].name = 'glow';
 

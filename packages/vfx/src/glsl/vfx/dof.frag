@@ -13,13 +13,13 @@ uniform float aperture;
 uniform float focalDistance;
 
 void main () {
-	float depth = readDepth (tDepth, vUv);
-	// float depth = texture2D(tDepth, vUv).r;
+	// float depth = readDepth (tDepth, vUv);
+	float depth = texture2D(tDepth, vUv).x;
 	vec3 noBlur = texture2D(tInput, vUv).rgb;
 	vec3 blur = texture2D(tBlur, vUv).rgb;
 
-	float distanceToCamera = mix(cameraNear, cameraFar, depth);
-	// float distanceToCamera = depth;
+	// float distanceToCamera = mix(cameraNear, cameraFar, depth);
+	float distanceToCamera = depth;
 
 	float CoC = distance(distanceToCamera, focalDistance);
 	float st = smoothstep(0.0, aperture, CoC);
