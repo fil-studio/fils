@@ -567,7 +567,7 @@
   pointer-events: all;
   transition: background-color var(--duration) var(--timing);
 }
-._ui-wrapper ._ui-range ._ui-range-thumb._ui-grabbing {
+._ui-wrapper ._ui-range ._ui-range-thumb._ui--grab {
   background-color: rgba(var(--color-white), 0.2);
 }
 ._ui-wrapper ._ui-range ._ui-range-thumb::after, ._ui-wrapper ._ui-range ._ui-range-thumb::before {

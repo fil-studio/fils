@@ -53,7 +53,7 @@
 
 		transition: background-color var(--duration) var(--timing);
 
-		&._ui-grabbing {
+		&._ui--grab {
 			background-color: rgba(var(--color-white), .2)
 		}
 

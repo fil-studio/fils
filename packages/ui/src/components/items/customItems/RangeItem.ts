@@ -4,6 +4,18 @@ import check from "../../../utils/check";
 import { ExtendedItem } from "../ExtendedItem";
 import { RangeItemOptions } from "../ItemOptions";
 
+
+CSS_UI.items.push({
+	type: 'range',
+	input: '_ui-range-input',
+	track: '_ui-range-track',
+	overExpose: '_ui-range-overexpose',
+	overExposeMin: '_ui-range-overexpose-min',
+	overExposeMax: '_ui-range-overexpose-max',
+	thumb: '_ui-range-thumb',
+});
+const c = CSS_UI.getItemClasses('range');
+
 export class RangeItem extends ExtendedItem {
 
 	protected options: RangeItemOptions;
@@ -52,7 +64,7 @@ export class RangeItem extends ExtendedItem {
 			const t = e.target as HTMLElement;
 			if (t != this.thumb) return;
 			dragging = true;
-			this.thumb.classList.add(`${CSS_UI.baseClass}-grabbing`);
+			this.thumb.classList.add(CSS_UI.utility.grab);
 			x = e.clientX;
 			const { width } = this.rangeEl.getBoundingClientRect();
 			originalValue = MathUtils.map(this.mappedValue, 0, 1, 0, width);
@@ -92,7 +104,7 @@ export class RangeItem extends ExtendedItem {
 			if (!dragging) return
 			dragging = false;
 			x = 0;
-			this.thumb.classList.remove(`${CSS_UI.baseClass}-grabbing`);
+			this.thumb.classList.remove(CSS_UI.utility.grab);
 		}
 
 		this.rangeEl.addEventListener('click', (e) => {
@@ -123,11 +135,11 @@ export class RangeItem extends ExtendedItem {
 		this.decimals = this.options.decimals || 2;
 
 		this.inputWrapper.innerHTML = `
-			<div class="_ui-range-input">
-				<div class="_ui-range-track"></div>
-				<div class="_ui-range-overexpose _ui-range-overexpose-min"></div>
-				<div class="_ui-range-overexpose _ui-range-overexpose-max"></div>
-				<div class="_ui-range-thumb"></div>
+			<div class="${c.input}">
+				<div class="${c.track}"></div>
+				<div class="${c.overExpose} ${c.overExposeMin}"></div>
+				<div class="${c.overExpose} ${c.overExposeMax}"></div>
+				<div class="${c.thumb}"></div>
 			</div>
 			<input type="number" placeholder="Value"/>
 		`;
@@ -137,8 +149,8 @@ export class RangeItem extends ExtendedItem {
 		if(this.max) this.inputEl.setAttribute('max', this.max.toString());
 		if(this.step) this.inputEl.setAttribute('step', this.step.toString());
 
-		this.rangeEl = this.inputWrapper.querySelector('._ui-range-input');
-		this.thumb = this.inputWrapper.querySelector('._ui-range-thumb');
+		this.rangeEl = this.inputWrapper.querySelector(`.${c.input}`);
+		this.thumb = this.inputWrapper.querySelector(`.${c.thumb}`);
 
 		this.setUpOverExpose();
 
@@ -161,7 +173,7 @@ export class RangeItem extends ExtendedItem {
 		this.min = this.options.min - limits[0];
 		this.max = this.options.max + limits[1];
 
-		const overExposeEls = this.inputWrapper.querySelectorAll('._ui-range-overexpose') as NodeListOf<HTMLElement>;
+		const overExposeEls = this.inputWrapper.querySelectorAll(`.${c.overExpose}`) as NodeListOf<HTMLElement>;
 
 		const distance = Math.abs(this.min - this.max);
 
