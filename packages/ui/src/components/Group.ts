@@ -70,8 +70,6 @@ export class Group extends EventsHandler {
 		this.foldable = foldable;
 		this.addFoldListeners();
 
-		console.log(this.dom.el);
-
 	}
 
 	protected addFoldListeners(){
