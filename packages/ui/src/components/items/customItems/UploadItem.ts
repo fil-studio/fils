@@ -43,18 +43,18 @@ export class UploadItem extends ExtendedItem {
 		this.buttonTitle = this.options.text ? this.options.text : this.title;
 
 		this.uploadButton = dom.createButton(this.buttonTitle, this.options.icon);
-		this.inputWrapper.appendChild(this.uploadButton);
+		this.dom.content.appendChild(this.uploadButton);
 
 		this.removeUploadButton = dom.createButton('', uiRemove);
 		this.removeUploadButton.classList.add(`${CSS_UI.utility.hidden}`);
-		this.inputWrapper.appendChild(this.removeUploadButton);
+		this.dom.content.appendChild(this.removeUploadButton);
 
-		this.dom.classList.add(CSS_UI.row.vertical);
+		this.dom.el.classList.add(CSS_UI.row.vertical);
 
 		this.input = document.createElement('input');
 		this.input.type = 'file';
 		this.input.style.display = 'none';
-		this.inputWrapper.appendChild(this.input);
+		this.dom.content.appendChild(this.input);
 
 
 	}

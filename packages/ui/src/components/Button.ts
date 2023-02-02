@@ -1,16 +1,21 @@
 import { EventsHandler } from "../partials/Events";
 import dom, { RowTypes } from "../utils/dom";
+import { Dom } from "./Item";
 
 export interface ButtonOptions {
 	title?: string;
 	onChangeCallback?: Function;
 }
 
+interface ButtonDom extends Dom {
+	button: HTMLButtonElement
+}
+
 export class Button extends EventsHandler {
 	type: RowTypes = RowTypes.button;
 
-	dom: HTMLElement;
-	button: HTMLButtonElement;
+	dom: ButtonDom;
+
 	depth: number;
 	onChangeCallback: Function;
 
@@ -23,18 +28,18 @@ export class Button extends EventsHandler {
 
 		this.depth = parent.depth + 1;
 
-		this.dom = dom.createRow( {
+		this.dom.el = dom.createRow( {
 			type: RowTypes.button,
 			depth: this.depth,
 			title: title || 'Button'
 		});
-		this.button = this.dom.querySelector('button');
+		this.dom.button = this.dom.el.querySelector('button');
 
 		this.addEventListeners();
 	}
 
 	private addEventListeners(){
-		this.button.addEventListener('click', (e) => {
+		this.dom.button.addEventListener('click', (e) => {
 			this.onChangeCallback(e);
 			this.__onChange();
 		});

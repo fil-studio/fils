@@ -10,10 +10,17 @@ export interface ItemParams {
 	parent?: Group;
 }
 
+export interface Dom {
+	el: HTMLElement
+}
+
+export interface ItemDom extends Dom {
+	content: HTMLElement
+}
+
 export class Item extends EventsHandler {
 
-	dom: HTMLElement;
-	inputWrapper: HTMLElement;
+	dom: ItemDom;
 
 	protected parent: Group;
 	protected depth: number;
@@ -49,13 +56,16 @@ export class Item extends EventsHandler {
 		this.onChangeCallback = this.options?.onChangeCallback || function(e?:CustomEvent){
 			// console.log('Item - onChangeCallback:', e);
 		}
-		this.dom = dom.createRow({
+
+		console.log(this.title);
+
+		this.dom.el = dom.createRow({
 			type: RowTypes.item,
 			depth: this.depth,
 			title: this.title,
 		})
 
-		this.inputWrapper = this.dom.querySelector('div');
+		this.dom.content = this.dom.el.querySelector('div');
 	}
 
 	setValue(value: any) {
@@ -64,7 +74,7 @@ export class Item extends EventsHandler {
 	}
 
 	destroy(): void {
-		this.dom.remove();
+		this.dom.el.remove();
 	}
 
 	protected createDom() {

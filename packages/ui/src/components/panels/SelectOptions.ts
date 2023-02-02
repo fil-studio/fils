@@ -1,17 +1,17 @@
 import { el } from "@fils/utils";
 import { CSS_UI } from "../../partials/cssClasses";
 import check from "../../utils/check";
-import { InputPanel } from "../InputPanel";
+import { Panel } from "../Panel";
 import { SelectItem } from "../items/customItems/SelectItem";
 
-export class SelectOptions extends InputPanel {
+export class SelectOptions extends Panel {
 	parent: SelectItem;
 
 	protected options: Array<string> | Object;
 
 	createPanelContent(): void {
 
-		this.dom.classList.add(CSS_UI.panel.select)
+		this.dom.el.classList.add(`${CSS_UI.panel.baseClass}-${this.parent.options.view}`)
 
 		this.options = this.parent.options.options;
 		this.createOptions();
@@ -31,7 +31,7 @@ export class SelectOptions extends InputPanel {
 		const createOption = (value: string) => {
 			const option = el('p');
 			option.innerHTML = value;
-			this.dom.appendChild(option);
+			this.dom.el.appendChild(option);
 			this.addOptionListener(option);
 		}
 

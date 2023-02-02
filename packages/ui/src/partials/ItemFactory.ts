@@ -1,7 +1,7 @@
-import { InputPanel } from "../components/InputPanel";
 import { Item, ItemParams } from "../components/Item";
 import { ExtendedItem } from "../components/items/ExtendedItem";
 import { ItemOptions } from "../components/items/ItemOptions";
+import { Panel } from "../components/Panel";
 
 // Available items array
 export interface AvailableItem {
@@ -16,7 +16,7 @@ export interface ItemRegisterOptions {
 	view: string,
 	extendedCSS?: string,
 	extendedHTML?: string,
-	inputPanel?: typeof InputPanel,
+	panel?: typeof Panel,
 	parseValue?: (value: any) => any,
 	addEventListeners?: () => void,
 	refresh?: () => void,

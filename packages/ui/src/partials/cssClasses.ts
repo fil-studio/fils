@@ -39,6 +39,9 @@ export const CSS_UI = {
 			large: '_ui-spacer-large',
 		}
 	},
+	panel: {
+		baseClass: '_ui-panel',
+	},
 
 	// Custom items will be injected here
 	items: [],

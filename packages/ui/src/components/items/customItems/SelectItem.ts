@@ -23,20 +23,20 @@ export class SelectItem extends ExtendedItem {
 		window.addEventListener('click', (e) => {
 
 			const target = e.target as HTMLElement;
-			if(this.inputPanel.dom?.contains(target)) return;
+			if(this.panel.dom.el?.contains(target)) return;
 
-			if(!this.inputPanel.created) return;
+			if(!this.panel.created) return;
 
 			this.destroyPanel();
 		});
 
 		this.activeOption.addEventListener('click', (e) => {
-			if(this.inputPanel.created) return;
+			if(this.panel.created) return;
 
 			e.stopPropagation();
 
-			this.dom.classList.add(c.open);
-			this.inputPanel.create();
+			this.dom.el.classList.add(c.open);
+			this.panel.create();
 		});
 
 	}
@@ -46,20 +46,20 @@ export class SelectItem extends ExtendedItem {
 	}
 
 	destroyPanel(): void {
-		this.dom.classList.remove(c.open);
-		this.inputPanel.destroy();
+		this.dom.el.classList.remove(c.open);
+		this.panel.destroy();
 	}
 
 	protected createDom(): void {
 
-		this.inputWrapper.innerHTML = `
+		this.dom.content.innerHTML = `
 			<div class="${c.input}">
 				<p></p>
 				${uiDownarrowHlt}
 			</div>
 		`;
 
-		this.activeOption = this.inputWrapper.querySelector(`.${c.input}`);
+		this.activeOption = this.dom.content.querySelector(`.${c.input}`);
 	}
 
 	setValue(_value: any): void {

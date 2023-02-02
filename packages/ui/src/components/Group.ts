@@ -5,7 +5,7 @@ import { EventsHandler } from "../partials/Events";
 import { ItemFactory } from "../partials/ItemFactory";
 import dom, { RowTypes } from "../utils/dom";
 import { Button } from "./Button";
-import { Item } from "./Item";
+import { Dom, Item } from "./Item";
 import { ItemOptions } from "./items/ItemOptions";
 import { Spacer, SpacerParams } from "./Spacer";
 
@@ -18,18 +18,23 @@ export interface GroupParams {
 	foldable?: boolean;
 }
 
+export interface GroupDom extends Dom {
+	content: HTMLElement
+	foldWrapper: HTMLElement
+}
+
 export class Group extends EventsHandler {
 	title: string;
 
+	dom: GroupDom;
+
 	protected parent: Group | UI;
 	protected children: Array<Group | Item | Button | Spacer> = [];
-	dom: HTMLElement;
-	contentWrapper: HTMLElement;
+
 	public depth: number = 0;
 
 	folded: boolean;
 	foldable: boolean;
-	protected foldableWrapper: HTMLElement;
 	protected height: number = 0;
 	protected timer: NodeJS.Timeout = null;
 
@@ -45,32 +50,35 @@ export class Group extends EventsHandler {
 		this.title = title || '';
 		this.depth = this.parent?.depth + 1 || this.depth;
 
-		this.dom = dom.createRow({
+		this.dom.el = dom.createRow({
 			type: RowTypes.group,
 			depth: this.depth,
 			title: this.title,
 			foldable: foldable
 		});
 
-		this.contentWrapper = this.dom.querySelector(`.${CSS_UI.section.content}`);
+		this.dom.content = this.dom.el.querySelector(`.${CSS_UI.section.content}`);
 
 		// Is it folded or not? If it's not foldable, it's not folded
 		this.folded = foldable ? folded : false;
 		this.foldable = foldable;
 		this.addFoldListeners();
+
+		console.log(this.dom.el);
+
 	}
 
 	protected addFoldListeners(){
 
 		if(!this.foldable) return;
 
-		this.dom.classList.add(CSS_UI.section.foldable);
+		this.dom.el.classList.add(CSS_UI.section.foldable);
 
-		this.foldableWrapper = el('div', CSS_UI.section.foldableElement);
-		this.dom.appendChild(this.foldableWrapper);
-		this.foldableWrapper.appendChild(this.contentWrapper);
+		this.dom.foldWrapper = el('div', CSS_UI.section.foldableElement);
+		this.dom.el.appendChild(this.dom.foldWrapper);
+		this.dom.foldWrapper.appendChild(this.dom.content);
 
-		const header = this.dom.querySelector('header');
+		const header = this.dom.el.querySelector('header');
 
 		header.addEventListener('click', () => {
 			this.folded = !this.folded;
@@ -83,22 +91,22 @@ export class Group extends EventsHandler {
 	protected onFold(){
 
 		if(!this.foldable) return;
-		const h = this.contentWrapper.getBoundingClientRect().height;
+		const h = this.dom.content.getBoundingClientRect().height;
 
-		this.foldableWrapper.style.height = `${h}px`;
+		this.dom.foldWrapper.style.height = `${h}px`;
 
 		if(this.timer) clearTimeout(this.timer);
 
 		// Just go with it, without the timeout, it doesn't work
 		setTimeout(() => {
-			if(this.folded) this.dom.classList.add(CSS_UI.section.folded);
-			else this.dom.classList.remove(CSS_UI.section.folded);
+			if(this.folded) this.dom.el.classList.add(CSS_UI.section.folded);
+			else this.dom.el.classList.remove(CSS_UI.section.folded);
 		}, 5);
 
 		if(!this.folded) {
-			const d = parseFloat(getComputedStyle(this.foldableWrapper).transitionDuration) * 1000;
+			const d = parseFloat(getComputedStyle(this.dom.foldWrapper).transitionDuration) * 1000;
 			this.timer = setTimeout(() => {
-				this.foldableWrapper.style.height = `auto`;
+				this.dom.foldWrapper.style.height = `auto`;
 			}, d);
 		}
 
@@ -110,12 +118,12 @@ export class Group extends EventsHandler {
 	protected addChild(child: Group | Item | Button | Spacer, events:boolean = true){
 		this.children.push(child);
 		if(events) this.addChildrenListener(child as EventsHandler);
-		this.contentWrapper.appendChild(child.dom);
+		this.dom.content.appendChild(child.dom.el);
 	}
 
 	destroy(): void {
 		for(const child of this.children) child.destroy();
-		this.dom.remove();
+		this.dom.el.remove();
 	}
 
 	/**

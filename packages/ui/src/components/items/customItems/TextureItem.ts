@@ -11,9 +11,9 @@ export class TextureItem extends ExtendedItem {
 
 	protected createDom(): void {
 
-		this.dom.classList.add(CSS_UI.row.vertical);
+		this.dom.el.classList.add(CSS_UI.row.vertical);
 
 		this.emptyButton = dom.createButton('Add');
-		this.inputWrapper.appendChild(this.emptyButton);
+		this.dom.content.appendChild(this.emptyButton);
 	}
 }

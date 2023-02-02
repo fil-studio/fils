@@ -4,7 +4,7 @@ export class StringItem extends ExtendedItem {
 
 	protected addEventListeners(): void {
 
-		const input = this.dom.querySelector('input');
+		const input = this.dom.el.querySelector('input');
 		input.value = this.value;
 		input.addEventListener('change', () => {
 			this.refresh();
@@ -13,11 +13,11 @@ export class StringItem extends ExtendedItem {
 	}
 
 	protected createDom(): void {
-		this.inputWrapper.innerHTML = `<input type="text" placeholder="String" />`;
+		this.dom.content.innerHTML = `<input type="text" placeholder="String" />`;
 	}
 
 	refresh(): void {
-		const input = this.dom.querySelector('input');
+		const input = this.dom.el.querySelector('input');
 		this.value = input.value;
 		super.refresh();
 	}

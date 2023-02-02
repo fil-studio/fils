@@ -1,6 +1,7 @@
 import { MathUtils } from "@fils/math";
 import { CSS_UI } from "../../../partials/cssClasses";
 import check from "../../../utils/check";
+import { ItemDom } from "../../Item";
 import { ExtendedItem } from "../ExtendedItem";
 import { RangeItemOptions } from "../ItemOptions";
 
@@ -15,14 +16,17 @@ CSS_UI.items.push({
 });
 const c = CSS_UI.getItemClasses('range');
 
+interface RangeDom extends ItemDom {
+	input: HTMLInputElement,
+	range: HTMLElement,
+	thumb: HTMLElement
+}
+
 export class RangeItem extends ExtendedItem {
 
 	protected options: RangeItemOptions;
 
-	protected inputEl: HTMLInputElement;
-	protected rangeEl: HTMLElement;
-
-	protected thumb: HTMLElement;
+	dom: RangeDom;
 
 	max: number;
 	min: number;
@@ -43,14 +47,14 @@ export class RangeItem extends ExtendedItem {
 
 	protected addEventListeners(): void {
 
-		this.inputEl.value = `${Math.max(Math.min(this.max, this.value), this.min)}`;
+		this.dom.input.value = `${Math.max(Math.min(this.max, this.value), this.min)}`;
 
 		this.updateRange();
 
-		this.inputEl.addEventListener('change', () => {
-			let value = this.inputEl.valueAsNumber;
+		this.dom.input.addEventListener('change', () => {
+			let value = this.dom.input.valueAsNumber;
 			value = this.limitNumber(value);
-			this.inputEl.valueAsNumber = value;
+			this.dom.input.valueAsNumber = value;
 			this.setValue(value);
 			this.updateRange();
 		});
@@ -61,11 +65,11 @@ export class RangeItem extends ExtendedItem {
 
 		const mouseDown = (e) => {
 			const t = e.target as HTMLElement;
-			if (t != this.thumb) return;
+			if (t != this.dom.thumb) return;
 			dragging = true;
-			this.thumb.classList.add(CSS_UI.utility.grab);
+			this.dom.thumb.classList.add(CSS_UI.utility.grab);
 			x = e.clientX;
-			const { width } = this.rangeEl.getBoundingClientRect();
+			const { width } = this.dom.range.getBoundingClientRect();
 			originalValue = MathUtils.map(this.mappedValue, 0, 1, 0, width);
 		}
 
@@ -73,7 +77,7 @@ export class RangeItem extends ExtendedItem {
 			if (!dragging) return;
 
 			const movementDistance = originalValue + (e.clientX - x);
-			const { width } = this.rangeEl.getBoundingClientRect();
+			const { width } = this.dom.range.getBoundingClientRect();
 
 			const newValueMapped = MathUtils.clamp(MathUtils.map(movementDistance, 0, width, 0, 1), 0, 1);
 			const newValue = MathUtils.map(newValueMapped, 0, 1, this.min, this.max);
@@ -86,9 +90,9 @@ export class RangeItem extends ExtendedItem {
 
 		const mouseClick = (e) => {
 			const t = e.target as HTMLElement;
-			if (t === this.thumb) return;
+			if (t === this.dom.thumb) return;
 
-			const { left, width } = this.rangeEl.getBoundingClientRect();
+			const { left, width } = this.dom.range.getBoundingClientRect();
 			const newPosition = e.clientX - left;
 
 			const newValueMapped = MathUtils.clamp(MathUtils.map(newPosition, 0, width, 0, 1), 0, 1);
@@ -103,14 +107,14 @@ export class RangeItem extends ExtendedItem {
 			if (!dragging) return
 			dragging = false;
 			x = 0;
-			this.thumb.classList.remove(CSS_UI.utility.grab);
+			this.dom.thumb.classList.remove(CSS_UI.utility.grab);
 		}
 
-		this.rangeEl.addEventListener('click', (e) => {
+		this.dom.range.addEventListener('click', (e) => {
 			mouseClick(e);
 		})
 
-		this.rangeEl.addEventListener('mousedown', (e) => {
+		this.dom.range.addEventListener('mousedown', (e) => {
 			mouseDown(e);
 		});
 		window.addEventListener('mousemove', (e) => {
@@ -133,7 +137,7 @@ export class RangeItem extends ExtendedItem {
 		this.step = this.options.step || 0.01;
 		this.decimals = this.options.decimals || 2;
 
-		this.inputWrapper.innerHTML = `
+		this.dom.content.innerHTML = `
 			<div class="${c.input}">
 				<div class="${c.track}"></div>
 				<div class="${c.overExpose} ${c.overExposeMin}"></div>
@@ -143,23 +147,23 @@ export class RangeItem extends ExtendedItem {
 			<input type="number" placeholder="Value"/>
 		`;
 
-		this.inputEl = this.inputWrapper.querySelector('input');
-		if(this.min) this.inputEl.setAttribute('min', this.min.toString());
-		if(this.max) this.inputEl.setAttribute('max', this.max.toString());
-		if(this.step) this.inputEl.setAttribute('step', this.step.toString());
+		this.dom.input = this.dom.content.querySelector('input');
+		if(this.min) this.dom.input.setAttribute('min', this.min.toString());
+		if(this.max) this.dom.input.setAttribute('max', this.max.toString());
+		if(this.step) this.dom.input.setAttribute('step', this.step.toString());
 
-		this.rangeEl = this.inputWrapper.querySelector(`.${c.input}`);
-		this.thumb = this.inputWrapper.querySelector(`.${c.thumb}`);
+		this.dom.range = this.dom.content.querySelector(`.${c.input}`);
+		this.dom.thumb = this.dom.content.querySelector(`.${c.thumb}`);
 
 		this.setUpOverExpose();
 
-		this.inputEl.min = `${this.min}`;
-		this.inputEl.max = `${this.max}`;
+		this.dom.input.min = `${this.min}`;
+		this.dom.input.max = `${this.max}`;
 
 		this.step = this.options.step || 0.01;
 		if(this.step === 0) this.step = 0.01;
 
-		this.inputEl.step = `${this.step}`;
+		this.dom.input.step = `${this.step}`;
 	}
 
 	protected setUpOverExpose(): void {
@@ -172,7 +176,7 @@ export class RangeItem extends ExtendedItem {
 		this.min = this.options.min - limits[0];
 		this.max = this.options.max + limits[1];
 
-		const overExposeEls = this.inputWrapper.querySelectorAll(`.${c.overExpose}`) as NodeListOf<HTMLElement>;
+		const overExposeEls = this.dom.content.querySelectorAll(`.${c.overExpose}`) as NodeListOf<HTMLElement>;
 
 		const distance = Math.abs(this.min - this.max);
 
@@ -185,10 +189,10 @@ export class RangeItem extends ExtendedItem {
 	}
 
 	protected updateRange(): void {
-		this.rangeEl.style.setProperty('--value', `${this.mappedValue}`);
+		this.dom.range.style.setProperty('--value', `${this.mappedValue}`);
 	}
 	protected updateInput(): void {
-		this.inputEl.value = `${this.value.toFixed(2)}`;
+		this.dom.input.value = `${this.value.toFixed(2)}`;
 	}
 
 }

@@ -1,18 +1,21 @@
 import { el } from "@fils/utils";
 import { CSS_UI } from "../partials/cssClasses";
-import { BASE_CLASS, WRAPPER_CLASS } from "../utils/dom";
-import { Item } from "./Item";
+import { Dom, Item, ItemDom } from "./Item";
 
-export class InputPanel  {
+interface PanelDom extends Dom {
+	ui: HTMLElement,
+	parent: ItemDom
+}
+
+export class Panel {
 	parent: Item;
-	uiDom: HTMLElement;
-
-	dom: HTMLElement;
+	dom: PanelDom;
 
 	created: boolean = false;
 
 	constructor(parent: Item) {
 		this.parent = parent;
+		this.dom.parent = parent.dom;
 		this.addEventListeners();
 	}
 
@@ -26,10 +29,10 @@ export class InputPanel  {
 	positionPanel(): void {
 		if (!this.created) return;
 
-		const r = this.parent.inputWrapper.getBoundingClientRect();
-		this.dom.style.top = `${r.top + r.height}px`;
-		this.dom.style.width = `${r.width}px`;
-		this.dom.style.left = `${r.left}px`;
+		const r = this.dom.parent.content.getBoundingClientRect();
+		this.dom.el.style.top = `${r.top + r.height}px`;
+		this.dom.el.style.width = `${r.width}px`;
+		this.dom.el.style.left = `${r.left}px`;
 	}
 
 	createPanelContent(){
@@ -41,21 +44,21 @@ export class InputPanel  {
 		if (this.created) return;
 		this.created = true;
 
-		this.uiDom = this.parent.dom.closest(`.${CSS_UI.wrapper}`);
+		this.dom.ui = this.parent.dom.el.closest(`.${CSS_UI.wrapper}`);
 
-		const parentDomStyle = getComputedStyle(this.parent.dom);
+		const parentDomStyle = getComputedStyle(this.dom.parent.content);
 		const bg0 = parentDomStyle.getPropertyValue('--section-bg-0');
 		const bg1 = parentDomStyle.getPropertyValue('--section-bg-1');
 
-		this.dom = el('div', CSS_UI.panel.baseClass);
-		this.dom.style.setProperty('--section-bg-0', bg0);
-		this.dom.style.setProperty('--section-bg-1', bg1);
+		this.dom.el = el('div', CSS_UI.panel.baseClass);
+		this.dom.el.style.setProperty('--section-bg-0', bg0);
+		this.dom.el.style.setProperty('--section-bg-1', bg1);
 
 		this.positionPanel();
 
 		this.createPanelContent();
 
-		this.uiDom.appendChild(this.dom);
+		this.dom.ui.appendChild(this.dom.el);
 	}
 
 	destroy(): void {

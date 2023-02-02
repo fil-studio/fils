@@ -1,8 +1,8 @@
 import { UI } from "../../main";
 import { TextureItem } from "../items/customItems/TextureItem";
-import { InputPanel } from "../InputPanel";
+import { Panel } from "../Panel";
 
-export class TextureList extends InputPanel {
+export class TextureList extends Panel {
 	parent: TextureItem;
 	ui: UI;
 
@@ -19,10 +19,10 @@ export class TextureList extends InputPanel {
 		super.create();
 		console.log('TextureList - create');
 
-		this.dom.classList.add('texture-list');
+		this.dom.el.classList.add('texture-list');
 
 		this.ui = new UI({
-			embed: this.dom,
+			embed: this.dom.el,
 			title: 'Texture List',
 		});
 		const g1 = this.ui.addGroup({

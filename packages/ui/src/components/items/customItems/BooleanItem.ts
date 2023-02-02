@@ -4,7 +4,7 @@ import { ExtendedItem } from "../ExtendedItem";
 export class BooleanItem extends ExtendedItem {
 
 	protected addEventListeners(): void {
-		 	this.dom.addEventListener('click', () => {
+		 	this.dom.el.addEventListener('click', () => {
  			this.value = !this.value;
  			this.refresh();
  		});
@@ -12,7 +12,7 @@ export class BooleanItem extends ExtendedItem {
 
 	protected createDom(): void {
 
-		this.inputWrapper.innerHTML = `
+		this.dom.content.innerHTML = `
  			<div class="_ui-toggle">
  				<div></div>
  			</div>`;
@@ -20,7 +20,7 @@ export class BooleanItem extends ExtendedItem {
 	}
 
 	refresh(): void {
-		this.dom.classList.toggle(CSS_UI.utility.active, this.value);
+		this.dom.el.classList.toggle(CSS_UI.utility.active, this.value);
 		super.refresh();
 	}
 }

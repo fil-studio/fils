@@ -14,7 +14,6 @@ type item = {
 	buttonDecrease: HTMLButtonElement;
 }
 
-
 CSS_UI.items.push({
 	type: 'number',
 	input: '_ui-number-input',
@@ -174,7 +173,7 @@ export class NumberItem extends ExtendedItem {
 				item.buttonDecrease.style.display = 'none';
 			}
 
-			this.inputWrapper.appendChild(item.wrapper);
+			this.dom.content.appendChild(item.wrapper);
 		}
 	}
 
