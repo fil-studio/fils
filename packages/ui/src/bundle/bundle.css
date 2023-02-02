@@ -493,7 +493,7 @@
   background-color: var(--section-bg-1);
   border-radius: var(--input-radius);
 }
-._ui-wrapper ._ui-number ._ui-number-btns {
+._ui-wrapper ._ui-number ._ui-number-buttons {
   position: absolute;
   top: 0;
   right: 0;
@@ -503,7 +503,7 @@
   flex-direction: column;
   align-items: center;
 }
-._ui-wrapper ._ui-number ._ui-number-btns button {
+._ui-wrapper ._ui-number ._ui-number-buttons button {
   padding: 0;
   display: flex;
   justify-content: flex-start;
@@ -512,14 +512,14 @@
   width: 20px;
   cursor: pointer;
 }
-._ui-wrapper ._ui-number ._ui-number-btns button:active {
+._ui-wrapper ._ui-number ._ui-number-buttons button:active {
   color: var(--color-white);
   transition: 0s;
 }
-._ui-wrapper ._ui-number ._ui-number-btns svg {
+._ui-wrapper ._ui-number ._ui-number-buttons svg {
   width: 20px;
 }
-._ui-wrapper ._ui-number ._ui-number-btns ._ui-btn-increase svg {
+._ui-wrapper ._ui-number ._ui-number-buttons ._ui-number-btn-increase svg {
   transform: rotate(180deg);
   transform-origin: center;
 }
@@ -619,14 +619,14 @@
   color: var(--color-white);
   transform: translateY(-50%) rotate(90deg);
 }
-._ui-wrapper ._ui-select-options p {
+._ui-wrapper ._ui-panel-select p {
   padding: var(--input-padding);
   text-align: left;
   background-color: var(--section-bg-1);
   border-radius: var(--input-radius);
   cursor: pointer;
 }
-._ui-wrapper ._ui-select-options p:hover {
+._ui-wrapper ._ui-panel-select p:hover {
   background-color: var(--accent-color);
   color: var(--color-white);
 }

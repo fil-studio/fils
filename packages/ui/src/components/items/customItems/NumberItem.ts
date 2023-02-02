@@ -5,8 +5,6 @@ import { NumberItemOptions } from "../ItemOptions";
 import { uiDownarrowHlt } from '../../../../../ui-icons/lib/Icons';
 import { CSS_UI } from "../../../partials/cssClasses";
 
-
-
 type item = {
 	value: number;
 	placeholder: string;
@@ -15,6 +13,17 @@ type item = {
 	buttonIncrease: HTMLButtonElement;
 	buttonDecrease: HTMLButtonElement;
 }
+
+
+CSS_UI.items.push({
+	type: 'number',
+	input: '_ui-number-input',
+	buttons: '_ui-number-buttons',
+	btnIncrease: '_ui-number-btn-increase',
+	btnDecrease: '_ui-number-btn-decrease',
+});
+const c = CSS_UI.getItemClasses('number');
+
 export class NumberItem extends ExtendedItem {
 	protected options: NumberItemOptions;
 
@@ -140,7 +149,7 @@ export class NumberItem extends ExtendedItem {
 
 		for(const item of this.items) {
 
-			item.wrapper = el('div', `${CSS_UI.baseClass}-number-input`);
+			item.wrapper = el('div', c.input);
 
 			item.wrapper.innerHTML = `<input type="number" placeholder="${item.placeholder}" />`;
 			item.input = item.wrapper.querySelector('input');
@@ -148,12 +157,12 @@ export class NumberItem extends ExtendedItem {
 			if(this.max) item.input.setAttribute('max', this.max.toString());
 			if(this.step) item.input.setAttribute('step', this.step.toString());
 
-			const btns = el('div', `${CSS_UI.baseClass}-number-btns`);
+			const btns = el('div', c.buttons);
 
-			item.buttonIncrease = el('button', `${CSS_UI.baseClass}-btn-increase`) as HTMLButtonElement;
+			item.buttonIncrease = el('button', c.btnIncrease) as HTMLButtonElement;
 			item.buttonIncrease.innerHTML = uiDownarrowHlt;
 
-			item.buttonDecrease = el('button', `${CSS_UI.baseClass}-btn-decrease`) as HTMLButtonElement;
+			item.buttonDecrease = el('button', c.btnDecrease) as HTMLButtonElement;
 			item.buttonDecrease.innerHTML = uiDownarrowHlt;
 
 			btns.appendChild(item.buttonIncrease);

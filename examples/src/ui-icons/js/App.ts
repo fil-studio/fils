@@ -13,11 +13,10 @@ export class App {
 			document.body.classList.toggle('hide-titles');
 		});
 		document.body.appendChild(toggle);
+		document.body.classList.add('hide-titles');
 
 		this.wrapper = el('div', 'wrapper');
 		document.body.appendChild(this.wrapper);
-
-
 
 		for(const [key, value] of Object.entries(uiIcons)) this.createIcon(key, value);
 

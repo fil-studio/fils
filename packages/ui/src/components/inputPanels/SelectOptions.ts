@@ -11,7 +11,7 @@ export class SelectOptions extends InputPanel {
 
 	createPanelContent(): void {
 
-		this.dom.classList.add(`${CSS_UI.baseClass}-select-options`)
+		this.dom.classList.add(CSS_UI.panel.select)
 
 		this.options = this.parent.options.options;
 		this.createOptions();

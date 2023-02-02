@@ -18,7 +18,7 @@
 		border-radius: var(--input-radius);
 	}
 
-	._ui-number-btns {
+	._ui-number-buttons {
 		position: absolute;
 		top: 0;
 		right: 0;
@@ -47,7 +47,7 @@
 			width: 20px;
 		}
 
-		._ui-btn-increase {
+		._ui-number-btn-increase {
 
 			svg {
 				transform: rotate(180deg);

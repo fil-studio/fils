@@ -4,6 +4,13 @@ import check from "../../../utils/check";
 import { ExtendedItem } from "../ExtendedItem";
 import { SelectItemOptions } from "../ItemOptions";
 
+CSS_UI.items.push({
+	type: 'select',
+	input: '_ui-select-input',
+	open: '_ui-select-open',
+	panel: '_ui-panel-select'
+});
+const c = CSS_UI.getItemClasses('select');
 
 export class SelectItem extends ExtendedItem {
 	options: SelectItemOptions;
@@ -28,7 +35,7 @@ export class SelectItem extends ExtendedItem {
 
 			e.stopPropagation();
 
-			this.dom.classList.add(`${CSS_UI.baseClass}-select-open`);
+			this.dom.classList.add(c.open);
 			this.inputPanel.create();
 		});
 
@@ -39,20 +46,20 @@ export class SelectItem extends ExtendedItem {
 	}
 
 	destroyPanel(): void {
-		this.dom.classList.remove(`${CSS_UI.baseClass}-select-open`);
+		this.dom.classList.remove(c.open);
 		this.inputPanel.destroy();
 	}
 
 	protected createDom(): void {
 
 		this.inputWrapper.innerHTML = `
-			<div class="${CSS_UI.baseClass}-select-input">
+			<div class="${c.input}">
 				<p></p>
 				${uiDownarrowHlt}
 			</div>
 		`;
 
-		this.activeOption = this.inputWrapper.querySelector(`.${CSS_UI.baseClass}-select-input`);
+		this.activeOption = this.inputWrapper.querySelector(`.${c.input}`);
 	}
 
 	setValue(_value: any): void {
