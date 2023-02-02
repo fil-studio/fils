@@ -1,23 +1,32 @@
 
 & {
-	--radius: 8px;
-	--input-radius: 4px;
-	--padding: 10px 8px;
-	--input-padding: 8px 6px;
+
+	// Border radius
+	--radius-0: 4px;
+	--radius-1: 8px;
+
+	// Inputs - Groups paddings
+	--padding-0: 8px 6px;
+	--padding-1: 10px 8px;
+
+	// Buttons padding
 	--button-padding: 8px 12px;
-	--line-separator: 3px;
+
+	// Distance between fieldsets - vertical
+	--spacer: 3px;
 
 	// Transitions
 	--duration: .3s;
 	--timing: cubic-bezier(.6, 0, .4, 1);
 
 	// Colors
-	--accent-color: #2871C7;
+	--accent: #2871C7;
 	--bg-0: #303030;
 	--bg-1: #191919;
-	--color-white: #FFF;
+	--white: #FFF;
 	--color-0: #CCCCCC;
 	--color-1: #999999;
 	--color-2: #666666;
+
 }
 

@@ -4,10 +4,10 @@
 
 	._ui-select-input {
 		width: 100%;
-		padding: var(--input-padding);
+		padding: var(--padding-0);
 		text-align: left;
 		background-color: var(--section-bg-1);
-		border-radius: var(--input-radius);
+		border-radius: var(--radius-0);
 
 		cursor: pointer;
 
@@ -27,7 +27,7 @@
 
 	&._ui-select-open {
 		._ui-select-input svg {
-			color: var(--color-white);
+			color: var(--white);
 			transform: translateY(-50%) rotate(90deg);
 		}
 	}
@@ -37,15 +37,15 @@
 ._ui-panel-select {
 
 	p {
-		padding: var(--input-padding);
+		padding: var(--padding-0);
 		text-align: left;
 		background-color: var(--section-bg-1);
-		border-radius: var(--input-radius);
+		border-radius: var(--radius-0);
 		cursor: pointer;
 
 		&:hover {
-			background-color: var(--accent-color);
-			color: var(--color-white);
+			background-color: var(--accent);
+			color: var(--white);
 		}
 	}
 

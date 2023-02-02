@@ -6,16 +6,16 @@
 		float: left;
 
 		&:not(:last-of-type){
-			margin: 0 var(--line-separator) 0 0;
+			margin: 0 var(--spacer) 0 0;
 		}
 	}
 
 	input {
 		width: 100%;
-		padding: var(--input-padding);
+		padding: var(--padding-0);
 		text-align: left;
 		background-color: var(--section-bg-1);
-		border-radius: var(--input-radius);
+		border-radius: var(--radius-0);
 	}
 
 	._ui-number-buttons {
@@ -38,7 +38,7 @@
 			cursor: pointer;
 
 			&:active {
-				color: var(--color-white);
+				color: var(--white);
 				transition: 0s;
 			}
 		}

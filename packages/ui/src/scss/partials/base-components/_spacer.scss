@@ -1,7 +1,7 @@
 ._ui-spacer {
 	width: 100%;
 	display: block;
-	margin-bottom: calc(-1 * var(--line-separator));
+	margin-bottom: calc(-1 * var(--spacer));
 
 	&._ui-spacer-small {
 		padding: 10px 0;

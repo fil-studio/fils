@@ -22,13 +22,13 @@ section {
 	width: 100%;
 	height: auto;
 
-	border-radius: var(--radius);
-	margin-top: var(--line-separator);
+	border-radius: var(--radius-1);
+	margin-top: var(--spacer);
 
 	background-color: var(--section-bg-0);
 
 	._ui-section-content {
-		padding: 0 var(--line-separator) var(--line-separator) var(--line-separator);
+		padding: 0 var(--spacer) var(--spacer) var(--spacer);
 		position: relative;
 		float: left;
 		width: 100%;

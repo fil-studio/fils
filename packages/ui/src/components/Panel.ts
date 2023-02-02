@@ -22,6 +22,9 @@ export class Panel {
 
 		this.parent = parent;
 		this.dom.parent = parent.dom;
+		// todo aixo no pot anar amb close
+		this.dom.ui = document.body.querySelector(`.${CSS_UI.wrapper}`);
+
 		this.addEventListeners();
 	}
 
@@ -50,8 +53,6 @@ export class Panel {
 		if (this.created) return;
 		this.created = true;
 
-		this.dom.ui = this.parent.dom.el.closest(`.${CSS_UI.wrapper}`);
-
 		const parentDomStyle = getComputedStyle(this.dom.parent.content);
 		const bg0 = parentDomStyle.getPropertyValue('--section-bg-0');
 		const bg1 = parentDomStyle.getPropertyValue('--section-bg-1');
@@ -70,8 +71,7 @@ export class Panel {
 	destroy(): void {
 		if (!this.created) return;
 		this.created = false;
-		this.dom.remove();
-		this.dom = null;
+		this.dom.el.remove();
 	}
 
 	onResize(): void {

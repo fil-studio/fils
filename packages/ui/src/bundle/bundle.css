@@ -169,18 +169,18 @@
   min-width: 300px;
 }
 ._ui-wrapper {
-  --radius: 8px;
-  --input-radius: 4px;
-  --padding: 10px 8px;
-  --input-padding: 8px 6px;
+  --radius-0: 4px;
+  --radius-1: 8px;
+  --padding-0: 8px 6px;
+  --padding-1: 10px 8px;
   --button-padding: 8px 12px;
-  --line-separator: 3px;
+  --spacer: 3px;
   --duration: .3s;
   --timing: cubic-bezier(.6, 0, .4, 1);
-  --accent-color: #2871C7;
+  --accent: #2871C7;
   --bg-0: #303030;
   --bg-1: #191919;
-  --color-white: #FFF;
+  --white: #FFF;
   --color-0: #CCCCCC;
   --color-1: #999999;
   --color-2: #666666;
@@ -267,8 +267,8 @@
   position: relative;
   width: 100%;
   height: auto;
-  border-radius: var(--radius);
-  margin-top: var(--line-separator);
+  border-radius: var(--radius-1);
+  margin-top: var(--spacer);
   background-color: var(--section-bg-0);
 }
 ._ui-wrapper section[ui-depth="0"], ._ui-wrapper section[ui-depth="2"], ._ui-wrapper section[ui-depth="4"], ._ui-wrapper section[ui-depth="6"], ._ui-wrapper section[ui-depth="8"], ._ui-wrapper section[ui-depth="10"] {
@@ -280,7 +280,7 @@
   --section-bg-1: green;
 }
 ._ui-wrapper section ._ui-section-content {
-  padding: 0 var(--line-separator) var(--line-separator) var(--line-separator);
+  padding: 0 var(--spacer) var(--spacer) var(--spacer);
   position: relative;
   float: left;
   width: 100%;
@@ -324,7 +324,7 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  padding: var(--padding);
+  padding: var(--padding-1);
   user-select: none;
 }
 ._ui-wrapper header ._ui-section-header-icon {
@@ -342,7 +342,7 @@
 ._ui-wrapper fieldset {
   padding: 0 8px;
   min-height: 30px;
-  margin: var(--line-separator) 0 0 0;
+  margin: var(--spacer) 0 0 0;
   position: relative;
   width: 100%;
   border: none;
@@ -380,22 +380,23 @@
   width: 100%;
 }
 ._ui-wrapper ._ui-button {
+  --animation-space: 1px;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: var(--button-padding);
   background-color: var(--section-bg-1);
-  border-radius: var(--input-radius);
+  border-radius: var(--radius-0);
   cursor: pointer;
-  margin: 0 1px;
   transition: var(--duration) var(--timing);
-  transform: translate3d(0, -1px, 0);
+  transform: translate3d(0, calc(-1 * var(--animation-space)), 0);
+  margin-top: var(--animation-space);
 }
 ._ui-wrapper ._ui-button:active {
-  background-color: var(--accent-color);
-  transform: translate3d(0, 1px, 0);
-  color: var(--color-white);
+  background-color: var(--accent);
+  transform: translate3d(0, var(--animation-space), 0);
+  color: var(--white);
   transition: 0s;
 }
 ._ui-wrapper ._ui-button h3 {
@@ -416,7 +417,7 @@
 ._ui-wrapper ._ui-spacer {
   width: 100%;
   display: block;
-  margin-bottom: calc(-1 * var(--line-separator));
+  margin-bottom: calc(-1 * var(--spacer));
 }
 ._ui-wrapper ._ui-spacer._ui-spacer-small {
   padding: 10px 0;
@@ -441,8 +442,8 @@
   background-color: var(--section-bg-1);
   color: var(--color-1);
   z-index: 2;
-  transform: translateY(var(--line-separator));
-  border-radius: var(--input-radius);
+  transform: translateY(var(--spacer));
+  border-radius: var(--radius-0);
   max-height: 300px;
   overflow-y: auto;
 }
@@ -461,7 +462,7 @@
   width: 25px;
   height: 25px;
   border-radius: 100%;
-  background-color: var(--color-white);
+  background-color: var(--white);
   position: absolute;
   top: 50%;
   left: 0;
@@ -469,7 +470,7 @@
   transition: inherit;
 }
 ._ui-wrapper ._ui-boolean._ui--active ._ui-toggle {
-  background-color: var(--accent-color);
+  background-color: var(--accent);
 }
 ._ui-wrapper ._ui-boolean._ui--active ._ui-toggle div {
   left: 100%;
@@ -477,10 +478,10 @@
 }
 ._ui-wrapper ._ui-string input {
   width: 100%;
-  padding: var(--input-padding);
+  padding: var(--padding-0);
   text-align: left;
   background-color: var(--section-bg-1);
-  border-radius: var(--input-radius);
+  border-radius: var(--radius-0);
 }
 ._ui-wrapper ._ui-number ._ui-number-input {
   flex-grow: 1;
@@ -488,14 +489,14 @@
   float: left;
 }
 ._ui-wrapper ._ui-number ._ui-number-input:not(:last-of-type) {
-  margin: 0 var(--line-separator) 0 0;
+  margin: 0 var(--spacer) 0 0;
 }
 ._ui-wrapper ._ui-number input {
   width: 100%;
-  padding: var(--input-padding);
+  padding: var(--padding-0);
   text-align: left;
   background-color: var(--section-bg-1);
-  border-radius: var(--input-radius);
+  border-radius: var(--radius-0);
 }
 ._ui-wrapper ._ui-number ._ui-number-buttons {
   position: absolute;
@@ -517,7 +518,7 @@
   cursor: pointer;
 }
 ._ui-wrapper ._ui-number ._ui-number-buttons button:active {
-  color: var(--color-white);
+  color: var(--white);
   transition: 0s;
 }
 ._ui-wrapper ._ui-number ._ui-number-buttons svg {
@@ -566,20 +567,20 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background-color: var(--color-white);
+  background-color: var(--white);
   cursor: grab;
   pointer-events: all;
   transition: background-color var(--duration) var(--timing);
 }
 ._ui-wrapper ._ui-range ._ui-range-thumb._ui--grab {
-  background-color: rgba(var(--color-white), 0.2);
+  background-color: rgba(var(--white), 0.2);
 }
 ._ui-wrapper ._ui-range ._ui-range-thumb::after, ._ui-wrapper ._ui-range ._ui-range-thumb::before {
   content: "";
   position: absolute;
   height: 8px;
   width: 2px;
-  background-color: var(--color-white);
+  background-color: var(--white);
   left: 50%;
   transform: translate(-50%, 0);
 }
@@ -590,11 +591,11 @@
   bottom: 0;
 }
 ._ui-wrapper ._ui-range input {
-  width: calc(25% - var(--line-separator));
-  padding: var(--input-padding);
+  width: calc(25% - var(--spacer));
+  padding: var(--padding-0);
   text-align: left;
   background-color: var(--section-bg-1);
-  border-radius: var(--input-radius);
+  border-radius: var(--radius-0);
 }
 ._ui-wrapper ._ui-select {
   position: relative;
@@ -602,10 +603,10 @@
 }
 ._ui-wrapper ._ui-select ._ui-select-input {
   width: 100%;
-  padding: var(--input-padding);
+  padding: var(--padding-0);
   text-align: left;
   background-color: var(--section-bg-1);
-  border-radius: var(--input-radius);
+  border-radius: var(--radius-0);
   cursor: pointer;
 }
 ._ui-wrapper ._ui-select ._ui-select-input * {
@@ -620,23 +621,23 @@
   transform: translateY(-50%) rotate(0deg);
 }
 ._ui-wrapper ._ui-select._ui-select-open ._ui-select-input svg {
-  color: var(--color-white);
+  color: var(--white);
   transform: translateY(-50%) rotate(90deg);
 }
 ._ui-wrapper ._ui-panel-select p {
-  padding: var(--input-padding);
+  padding: var(--padding-0);
   text-align: left;
   background-color: var(--section-bg-1);
-  border-radius: var(--input-radius);
+  border-radius: var(--radius-0);
   cursor: pointer;
 }
 ._ui-wrapper ._ui-panel-select p:hover {
-  background-color: var(--accent-color);
-  color: var(--color-white);
+  background-color: var(--accent);
+  color: var(--white);
 }
 ._ui-wrapper *::selection {
-  background: var(--color-white);
-  color: var(--accent-color);
+  background: var(--white);
+  color: var(--accent);
 }
 ._ui-wrapper ._ui--hidden {
   display: none;

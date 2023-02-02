@@ -16,7 +16,7 @@
 			width: 25px;
 			height: 25px;
 			border-radius: 100%;
-			background-color: var(--color-white);
+			background-color: var(--white);
 			position: absolute;
 			top: 50%;
 			left: 0;
@@ -28,7 +28,7 @@
 
 	&._ui--active {
 		._ui-toggle {
-			background-color: var(--accent-color);
+			background-color: var(--accent);
 
 			div {
 				left: 100%;

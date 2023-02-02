@@ -1,21 +1,25 @@
+
 ._ui-button {
+
+	--animation-space: 1px;
+
 	width: 100%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	padding: var(--button-padding);
 	background-color: var(--section-bg-1);
-	border-radius: var(--input-radius);
+	border-radius: var(--radius-0);
 	cursor: pointer;
 
-	margin: 0 1px;
 	transition: var(--duration) var(--timing);
-	transform: translate3d(0, -1px, 0);
+	transform: translate3d(0, calc(-1 * var(--animation-space)), 0);
+	margin-top: var(--animation-space);
 
 	&:active {
-		background-color: var(--accent-color);
-		transform: translate3d(0, 1px, 0);
-		color: var(--color-white);
+		background-color: var(--accent);
+		transform: translate3d(0, var(--animation-space), 0);
+		color: var(--white);
 		transition: 0s;
 	}
 

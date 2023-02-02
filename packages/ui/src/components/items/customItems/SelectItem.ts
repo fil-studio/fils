@@ -22,10 +22,11 @@ export class SelectItem extends ExtendedItem {
 
 		window.addEventListener('click', (e) => {
 
+			if(!this.panel.created) return;
+
 			const target = e.target as HTMLElement;
 			if(this.panel.dom.el?.contains(target)) return;
 
-			if(!this.panel.created) return;
 
 			this.destroyPanel();
 		});
