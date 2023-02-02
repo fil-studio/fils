@@ -28,6 +28,11 @@ export class Button extends EventsHandler {
 
 		this.depth = parent.depth + 1;
 
+		this.dom = {
+			el: null,
+			button: null
+		}
+
 		this.dom.el = dom.createRow( {
 			type: RowTypes.button,
 			depth: this.depth,

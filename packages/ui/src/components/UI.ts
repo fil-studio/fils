@@ -42,6 +42,11 @@ export class UI extends Group {
 
 		this.parent = null;
 
+		this.dom = {
+			wrapper: null,
+			...this.dom
+		};
+
 		/*
 		 * Main UI requires an extra wrapper
 		 */

@@ -57,7 +57,10 @@ export class Item extends EventsHandler {
 			// console.log('Item - onChangeCallback:', e);
 		}
 
-		console.log(this.title);
+		this.dom = {
+			el: null,
+			content: null,
+		}
 
 		this.dom.el = dom.createRow({
 			type: RowTypes.item,

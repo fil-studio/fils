@@ -31,6 +31,10 @@ export class Spacer {
 
 		const depth = parent.depth + 1;
 
+		this.dom = {
+			el: null
+		}
+
 		this.dom.el = dom.createRow( {
 			type: RowTypes.spacer,
 			depth: depth,

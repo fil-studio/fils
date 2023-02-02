@@ -50,6 +50,12 @@ export class Group extends EventsHandler {
 		this.title = title || '';
 		this.depth = this.parent?.depth + 1 || this.depth;
 
+		this.dom = {
+			el: null,
+			content: null,
+			foldWrapper: null
+		}
+
 		this.dom.el = dom.createRow({
 			type: RowTypes.group,
 			depth: this.depth,

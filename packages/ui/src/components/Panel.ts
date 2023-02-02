@@ -14,6 +14,12 @@ export class Panel {
 	created: boolean = false;
 
 	constructor(parent: Item) {
+		this.dom = {
+			el: null,
+			ui: null,
+			parent: null
+		}
+
 		this.parent = parent;
 		this.dom.parent = parent.dom;
 		this.addEventListeners();
