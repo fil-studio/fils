@@ -1,4 +1,4 @@
-import { Item, ItemParams } from "../components/Item";
+import { Item, ItemParams } from "../components/items/Item";
 import { ExtendedItem } from "../components/items/ExtendedItem";
 import { ItemOptions } from "../components/items/ItemOptions";
 import { Panel } from "../components/Panel";

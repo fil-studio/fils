@@ -1,7 +1,7 @@
 import { MathUtils } from "@fils/math";
 import { CSS_UI } from "../../../partials/cssClasses";
 import check from "../../../utils/check";
-import { ItemDom } from "../../Item";
+import { ItemDom } from "../Item";
 import { ExtendedItem } from "../ExtendedItem";
 import { RangeItemOptions } from "../ItemOptions";
 

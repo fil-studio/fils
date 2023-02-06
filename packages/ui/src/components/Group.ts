@@ -1,11 +1,11 @@
 import { el } from "@fils/utils";
 import { UI } from "../main";
 import { CSS_UI } from "../partials/cssClasses";
-import { EventsHandler } from "../partials/Events";
+import { EventsManager } from "../partials/EventsManager";
 import { ItemFactory } from "../partials/ItemFactory";
 import dom, { RowTypes } from "../utils/dom";
 import { Button } from "./Button";
-import { Dom, Item } from "./Item";
+import { Dom, Item } from "./items/Item";
 import { ItemOptions } from "./items/ItemOptions";
 import { Spacer, SpacerParams } from "./Spacer";
 
@@ -23,7 +23,7 @@ export interface GroupDom extends Dom {
 	foldWrapper: HTMLElement
 }
 
-export class Group extends EventsHandler {
+export class Group extends EventsManager {
 	title: string;
 
 	dom: GroupDom;
@@ -44,7 +44,7 @@ export class Group extends EventsHandler {
 		folded = false,
 		foldable = true,
 	}: GroupParams) {
-		super(parent);
+		super();
 
 		this.parent = parent;
 		this.title = title || '';
@@ -114,28 +114,30 @@ export class Group extends EventsHandler {
 			}, d);
 		}
 
+		this.emit('foldToggle');
+		this.emit(this.folded ? 'fold' : 'unfold');
+
+	}
+
+	destroy(): void {
+		this.dom.el.remove();
 	}
 
 	/**
 	 * Enables listeners, add children to childrens array
 	 */
-	protected addChild(child: Group | Item | Button | Spacer, events:boolean = true){
+	protected addChild(child: Group | Item | Button | Spacer) : Group | Item | Button {
 		this.children.push(child);
-		if(events) this.addChildrenListener(child as EventsHandler);
 		this.dom.content.appendChild(child.dom.el);
-	}
-
-	destroy(): void {
-		for(const child of this.children) child.destroy();
-		this.dom.el.remove();
+		return child as Group | Item | Button;
 	}
 
 	/**
 	 * Create a button
 	 */
-	addButton(options){
+	addButton(options): Button{
 		const button = new Button(this, options);
-		this.addChild(button);
+		return this.addChild(button) as Button;
 	}
 
 	/**
@@ -143,27 +145,26 @@ export class Group extends EventsHandler {
 	 */
 	addGroup(params: GroupParams): Group {
 		const group = new Group({ parent: this, ...params });
-		this.addChild(group);
-		return group;
+		return this.addChild(group) as Group;
 	}
 
 	/**
- * Create spacer
- */
+	 * Create spacer
+	 */
 	addSpacer(params?:SpacerParams) {
 		const spacer = new Spacer({ parent: this, ...params });
-		this.addChild(spacer, false);
+		this.addChild(spacer);
 	}
 
 	/**
 	 * Create an item
 	 */
-	add(object, key, options?: ItemOptions){
-		this.addItem(object, key, options);
+	add(object, key, options?: ItemOptions): Item{
+		return this.addItem(object, key, options);
 	}
-	addItem(object, key, options?: ItemOptions) {
+	addItem(object, key, options?: ItemOptions): Item {
 		const item = ItemFactory({parent: this, object, key}, options);
-		this.addChild(item);
+		return this.addChild(item) as Item;
 	}
 
 

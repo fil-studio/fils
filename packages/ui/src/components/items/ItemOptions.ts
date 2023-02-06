@@ -2,7 +2,6 @@
 export interface ItemOptionsInterface {
 	view: string,
 	title?: string;
-	onChangeCallback?: Function;
 }
 
 export interface NumberItemOptions extends ItemOptionsInterface {

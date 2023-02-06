@@ -1,8 +1,8 @@
 
-import { EventsHandler } from '../partials/Events';
-import dom, { RowTypes } from '../utils/dom';
-import { Group } from './Group';
-import { ItemOptions } from './items/ItemOptions';
+import { EventsManager } from '../../partials/EventsManager';
+import dom, { RowTypes } from '../../utils/dom';
+import { Group } from '../Group';
+import { ItemOptions } from './ItemOptions';
 
 export interface ItemParams {
 	object?: Object;
@@ -18,7 +18,7 @@ export interface ItemDom extends Dom {
 	content: HTMLElement
 }
 
-export class Item extends EventsHandler {
+export class Item extends EventsManager {
 
 	dom: ItemDom;
 
@@ -36,10 +36,8 @@ export class Item extends EventsHandler {
 
 	protected options: ItemOptions;
 
-	private onChangeCallback: Function;
-
 	constructor({ parent, object, key }: ItemParams = {}, options: ItemOptions) {
-		super(parent);
+		super();
 
 		if(!parent) throw new Error('Item - parent is required');
 		if(!object) throw new Error('Item - object is required');
@@ -53,9 +51,6 @@ export class Item extends EventsHandler {
 		this.key = key;
 
 		this.title = this.options?.title || key;
-		this.onChangeCallback = this.options?.onChangeCallback || function(e?:CustomEvent){
-			// console.log('Item - onChangeCallback:', e);
-		}
 
 		this.dom = {
 			el: null,
@@ -88,15 +83,6 @@ export class Item extends EventsHandler {
 		// Override this method
 	}
 
-	onResize(e?: CustomEvent<any>): void {
-		// Override this method
-	}
-
-	onChange(e?:CustomEvent): void {
-		// console.log('Item - onChange:', this.title);
-		this.onChangeCallback(e);
- 	}
-
 	afterCreate(): void {
 		// Override this method
 	}
@@ -107,6 +93,6 @@ export class Item extends EventsHandler {
 	refresh() {
 		// console.log('Item - refresh:', this.title);
 		this.object[this.key] = this.value;
-		this.__onChange();
+		this.emit('change');
 	}
 }

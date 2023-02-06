@@ -1,6 +1,6 @@
 import { el } from "@fils/utils";
 import { CSS_UI } from "../partials/cssClasses";
-import { Dom, Item, ItemDom } from "./Item";
+import { Dom, Item, ItemDom } from "./items/Item";
 
 interface PanelDom extends Dom {
 	ui: HTMLElement,

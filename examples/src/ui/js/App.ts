@@ -105,7 +105,9 @@ export class App {
 		group.add(obj, 'booleanTest', {
 			title: 'Boolean Test',
 			view: 'boolean'
-		});
+		}).on('change', () => {
+			console.log('change', obj.numberTestSlider);
+		})
 
 		group.addItem(obj, 'stringTest', {
 			title: 'String Test',
@@ -129,7 +131,7 @@ export class App {
 				max: 10,
 				step: 0.1,
 				// overExpose: [0, 10],
-		});
+		})
 
 		group.add(obj, 'optionsTestActiveObject', {
 			title: 'Select Object',
@@ -147,6 +149,17 @@ export class App {
 			title: 'Subgroup Test',
 			folded: true
 		});
+
+		g2.on('fold', () => {
+			console.log('fold');
+		})
+		g2.on('unfold', () => {
+			console.log('unfold');
+		})
+		g2.on('foldToggle', () => {
+			console.log('foldToggle');
+		})
+
 
 		const g4 = g2.addGroup({
 			title: 'Subgroup Test 2',
@@ -169,35 +182,17 @@ export class App {
 		});
 
 		g4.addButton({
-			title: 'Button Test',
-			onClick: () => {
-				console.log('Button Test');
-			}
-		});
+			title: 'Button Test g4',
+		}).on('click', () => {
+			console.log('Button Test g4');
+
+		})
 
 		g2.addButton({
-			title: 'Button Test',
-			onClick: () => {
-				console.log('Button Test');
-			}
+			title: 'Button Test g2',
+		}).on('click', () => {
+			console.log('Button Test g2');
 		});
-
-		// g4.add(obj, 'colorTest', {
-		// 	title: 'Color Test',
-		// 	view: 'color'
-		// });
-		// g4.addItem(obj, 'stringTest', {
-		// 	title: 'String Test'
-		// });
-		// g4.add(obj, 'numberTest', {
-		// 	title: 'Number Test',
-		// });
-
-		// this.ui.add(obj, 'textureTest', {
-		// 	title: 'Texture Test',
-		// 	view: 'texture'
-		// });
-
 
 		console.log('UI', this.ui);
 

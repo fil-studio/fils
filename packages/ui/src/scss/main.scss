@@ -17,14 +17,14 @@
 	width: var(--wrapper-width);
 	min-width: 300px;
 
-	&._ui-wrapper--embed {
+	&._ui-wrapper-embed {
 		position: relative;
 		top: unset;
 		right: unset;
 		width: 100%;
 	}
 
-	._ui-wrapper--resizer {
+	._ui-wrapper-resizer {
 		position: absolute;
 		width: 4px;
 		height: calc(100% - 4px);

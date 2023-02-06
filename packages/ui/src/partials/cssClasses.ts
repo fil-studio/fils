@@ -1,8 +1,8 @@
 export const CSS_UI = {
 	baseClass: '_ui',
 	wrapper: '_ui-wrapper',
-	embed: '_ui-wrapper--embed',
-	resizer: '_ui-wrapper--resizer',
+	embed: '_ui-wrapper-embed',
+	resizer: '_ui-wrapper-resizer',
 	utility: {
 		hidden: '_ui--hidden',
 		grab: '_ui--grab',

@@ -1,30 +1,24 @@
-import { EventsHandler } from "../partials/Events";
+import { EventsManager } from "../partials/EventsManager";
 import dom, { RowTypes } from "../utils/dom";
-import { Dom } from "./Item";
+import { Dom } from "./items/Item";
 
 export interface ButtonOptions {
 	title?: string;
-	onChangeCallback?: Function;
 }
 
 interface ButtonDom extends Dom {
 	button: HTMLButtonElement
 }
 
-export class Button extends EventsHandler {
+export class Button extends EventsManager {
 	type: RowTypes = RowTypes.button;
 
 	dom: ButtonDom;
 
 	depth: number;
-	onChangeCallback: Function;
 
-	constructor(parent, { title, onChangeCallback }: ButtonOptions = {}) {
-		super(parent);
-
-		this.onChangeCallback = onChangeCallback || function(e){
-			// console.log('Button - onChangeCallback:', e);
-		};
+	constructor(parent, { title }: ButtonOptions = {}) {
+		super();
 
 		this.depth = parent.depth + 1;
 
@@ -45,12 +39,11 @@ export class Button extends EventsHandler {
 
 	private addEventListeners(){
 		this.dom.button.addEventListener('click', (e) => {
-			this.onChangeCallback(e);
-			this.__onChange();
+			this.emit('click');
 		});
 	}
 
 	destroy(){
-		this.button.remove();
+		this.dom.el.remove();
 	}
 }

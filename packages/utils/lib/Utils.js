@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.slugify = exports.copyToClipboard = exports.hasGetUserMedia = exports.isTouchDevice = exports.isDesktop = exports.getIOSVersion = exports.isIpad = exports.isIphone = exports.getAndroidVersion = exports.isSafari = exports.isBrowser = exports.isMobile = exports.getDocumentHeight = exports.webgl = exports.webgl2 = exports.el = void 0;
+exports.generateUniqueId = exports.slugify = exports.copyToClipboard = exports.hasGetUserMedia = exports.isTouchDevice = exports.isDesktop = exports.getIOSVersion = exports.isIpad = exports.isIphone = exports.getAndroidVersion = exports.isSafari = exports.isBrowser = exports.isMobile = exports.getDocumentHeight = exports.webgl = exports.webgl2 = exports.el = void 0;
 function el(type, className, parent) {
     var e = document.createElement(type);
     if (className != undefined)
@@ -95,3 +95,8 @@ function slugify(str) {
         .replace(/-+$/, '');
 }
 exports.slugify = slugify;
+function generateUniqueId(prefix) {
+    if (prefix === void 0) { prefix = ''; }
+    return "".concat(prefix, "-").concat(Date.now(), "-").concat(Math.random().toString(36).substr(2, 9));
+}
+exports.generateUniqueId = generateUniqueId;

@@ -246,13 +246,13 @@
 ._ui-wrapper ._ui-panel h4 {
   color: var(--color-2);
 }
-._ui-wrapper._ui-wrapper--embed {
+._ui-wrapper._ui-wrapper-embed {
   position: relative;
   top: unset;
   right: unset;
   width: 100%;
 }
-._ui-wrapper ._ui-wrapper--resizer {
+._ui-wrapper ._ui-wrapper-resizer {
   position: absolute;
   width: 4px;
   height: calc(100% - 4px);

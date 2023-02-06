@@ -1,7 +1,7 @@
 import { CSS_UI } from "../partials/cssClasses";
 import dom, { RowTypes } from "../utils/dom";
 import { Group } from "./Group";
-import { Dom } from "./Item";
+import { Dom } from "./items/Item";
 
 export enum SpacerSize {
 	small,

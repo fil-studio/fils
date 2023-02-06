@@ -1,5 +1,5 @@
 // Import CSS
-import { el } from '@fils/utils';
+import { el, generateUniqueId } from '../../../utils/lib/Utils';
 import styles from '../bundle/bundle.min.css';
 import { CSS_UI } from '../partials/cssClasses';
 import { AvailableItems } from '../partials/ItemFactory';
@@ -16,7 +16,6 @@ css.inject(mergedCss);
 interface UIParams extends GroupParams {
 	resizable?: boolean;
 	embed?: HTMLElement,
-	onChangeCallback?: Function;
 	icon?: string;
 }
 
@@ -25,20 +24,22 @@ interface UIDom extends GroupDom {
 }
 
 export class UI extends Group {
+
+	id: string;
+
 	dom: UIDom;
 
 	resizable: boolean;
 	depth: number = 0;
 
-	onChangeCallback: Function;
-
 	constructor({
 		resizable = true,
 		embed,
-		onChangeCallback,
 		icon,
 	}: UIParams) {
 		super({...arguments[0] });
+
+		this.id = generateUniqueId('ui');
 
 		this.parent = null;
 
@@ -70,14 +71,6 @@ export class UI extends Group {
 
 		this.resizable = resizable;
 		this.addDragListeners();
-
-		/**
-		 * onChangeCallback is called when a value is changed
-		 * todo - everything needs a callback
-		 */
-		this.onChangeCallback = onChangeCallback ? onChangeCallback : function(e?:CustomEvent){
-			console.log('UI onChangeCallback', e);
-		};
 	}
 
 	addDragListeners(){
@@ -91,9 +84,9 @@ export class UI extends Group {
 		const resize = (w, x) => {
 
 			if(x < 0 && w + x < 300) return;
-
 			this.dom.wrapper.style.setProperty('--wrapper-width', `${w + x}px`);
 
+			this.emit('resize');
 		}
 
 
@@ -108,7 +101,6 @@ export class UI extends Group {
 			dragging = true;
 			x = e.clientX;
 			width = this.dom.wrapper.getBoundingClientRect().width;
-			this.__onResize();
 		});
 
 		window.addEventListener('mousemove', (e) => {
@@ -125,10 +117,5 @@ export class UI extends Group {
 		});
 
 	}
-
-	onChange(e?: CustomEvent): void {
-		this.onChangeCallback(e);
-	}
-
 
 }
