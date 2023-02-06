@@ -154,13 +154,6 @@ export class App {
 		g2.on('fold', () => {
 			console.log('fold');
 		})
-		g2.on('unfold', () => {
-			console.log('unfold');
-		})
-		g2.on('foldToggle', () => {
-			console.log('foldToggle');
-		})
-
 
 		const g4 = g2.addGroup({
 			title: 'Subgroup Test 2',

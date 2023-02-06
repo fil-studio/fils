@@ -93,7 +93,7 @@ export class Item extends EventsManager {
 	refresh() {
 		// console.log('Item - refresh:', this.title);
 		this.object[this.key] = this.value;
-		this.emit('change');
 		this.emit('__childrenChange');
+		this.emit('change');
 	}
 }

@@ -114,9 +114,7 @@ export class Group extends EventsManager {
 			}, d);
 		}
 
-		this.emit('foldToggle');
-		this.emit(this.folded ? 'fold' : 'unfold');
-
+		this.emit('fold');
 	}
 
 	destroy(): void {
