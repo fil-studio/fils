@@ -9,6 +9,7 @@ export * from './vfx/pipeline/RetroPass';
 export * from './vfx/CommonVFXPipeline';
 export * from './vfx/VFXPipeline';
 export * from './vfx/materials/MaterialUtils';
+export * from './vfx/materials/VFXBasicMaterials';
 
 import rgb from './glsl/lib/rgbSplit.glsl';
 import dither from './glsl/lib/dither.glsl';

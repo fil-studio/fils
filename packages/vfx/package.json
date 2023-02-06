@@ -1,6 +1,6 @@
 {
 	"name": "@fils/vfx",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "Web VFX Package written in TypeScript",
 	"main": "lib/main.js",
 	"repository": "git@github.com:fil-studio/fils.git",

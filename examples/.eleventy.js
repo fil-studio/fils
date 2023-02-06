@@ -14,6 +14,7 @@ const examples = [
   'selective-glow',
   'vfx-common-pipeline',
   'vfx-pipeline',
+  'vfx-materials',
   'ui',
   'ui-icons',
   'nomad',
