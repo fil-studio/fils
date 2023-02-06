@@ -14,7 +14,7 @@ export class ExtendedItem extends Item {
 
 		this.dom.el.classList.add(`${CSS_UI.baseClass}-${slugify(registerOptions.view)}`);
 
-		this.panels = check.isArray(registerOptions.panels) ? registerOptions.panels : [registerOptions.panels];
+		this.panels = check.isArray(registerOptions.panels) ? registerOptions.panels as Array<typeof Panel> : [registerOptions.panels] as Array<typeof Panel>;
 
 		this.beforeCreate();
 		this.createDom();
