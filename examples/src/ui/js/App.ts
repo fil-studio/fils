@@ -1,4 +1,4 @@
-import { uiAppendBlend, uiBrushData } from '../../../../packages/ui-icons/lib/Icons';
+import { uiAppendBlend, uiBrushData, uiTexture } from '../../../../packages/ui-icons/lib/Icons';
 import { SpacerSize } from '../../../../packages/ui/src/components/Spacer';
 import { UI } from '../../../../packages/ui/src/main';
 
@@ -94,6 +94,13 @@ export class App {
 		 * Key
 		 * Options
 		 */
+		group.add(obj, 'textureTest', {
+			title: 'Texture Test',
+			text: 'Texture',
+			icon: uiTexture,
+			view: 'texture'
+		});
+
 		// group.add(obj, 'colorTest', {
 		// 	title: 'Color Test',
 		// 	view: 'color'

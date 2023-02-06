@@ -1,6 +1,6 @@
 
 export class EventsManager {
-	subscribers: Object = {};
+	protected subscribers: Object = {};
 
 	constructor() {
 

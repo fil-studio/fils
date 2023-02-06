@@ -417,13 +417,12 @@
   align-items: flex-start;
 }
 ._ui-wrapper fieldset._ui-row-vertical > h4 {
-  margin-bottom: 8px;
+  margin: 10px 0 5px;
 }
 ._ui-wrapper fieldset._ui-row-vertical > div {
   width: 100%;
 }
 ._ui-wrapper ._ui-button {
-  --animation-space: 1px;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -433,12 +432,10 @@
   border-radius: var(--radius-0);
   cursor: pointer;
   transition: var(--duration) var(--timing);
-  transform: translate3d(0, calc(-1 * var(--animation-space)), 0);
   margin-top: var(--animation-space);
 }
 ._ui-wrapper ._ui-button:active {
   background-color: var(--accent);
-  transform: translate3d(0, var(--animation-space), 0);
   color: var(--white);
   transition: 0s;
 }
@@ -653,6 +650,33 @@
   transform: translateY(-50%) rotate(0deg);
 }
 ._ui-wrapper ._ui-select._ui-select-open ._ui-select-input svg {
+  color: var(--white);
+  transform: translateY(-50%) rotate(90deg);
+}
+._ui-wrapper ._ui-texture {
+  position: relative;
+  float: left;
+}
+._ui-wrapper ._ui-texture ._ui-texture-input {
+  width: 100%;
+  padding: var(--padding-0);
+  text-align: left;
+  background-color: var(--section-bg-1);
+  border-radius: var(--radius-0);
+  cursor: pointer;
+}
+._ui-wrapper ._ui-texture ._ui-texture-input * {
+  pointer-events: none;
+}
+._ui-wrapper ._ui-texture ._ui-texture-input svg {
+  width: 20px;
+  position: absolute;
+  right: 11px;
+  top: 50%;
+  transition: all var(--duration) var(--timing);
+  transform: translateY(-50%) rotate(0deg);
+}
+._ui-wrapper ._ui-texture._ui-texture-open ._ui-texture-input svg {
   color: var(--white);
   transform: translateY(-50%) rotate(90deg);
 }

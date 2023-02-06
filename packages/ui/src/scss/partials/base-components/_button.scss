@@ -1,8 +1,6 @@
 
 ._ui-button {
 
-	--animation-space: 1px;
-
 	width: 100%;
 	display: flex;
 	justify-content: center;
@@ -13,12 +11,10 @@
 	cursor: pointer;
 
 	transition: var(--duration) var(--timing);
-	transform: translate3d(0, calc(-1 * var(--animation-space)), 0);
 	margin-top: var(--animation-space);
 
 	&:active {
 		background-color: var(--accent);
-		transform: translate3d(0, var(--animation-space), 0);
 		color: var(--white);
 		transition: 0s;
 	}
