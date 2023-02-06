@@ -6,16 +6,14 @@ import { StringItem } from "../components/items/customItems/StringItem";
 import { NumberItem } from "../components/items/customItems/NumberItem";
 
 import { ColorItem } from "../components/items/customItems/ColorItem";
-import { ColorPicker } from "../components/panels/ColorPicker";
 
 import { TextureItem } from "../components/items/customItems/TextureItem";
-import { TextureList } from "../components/panels/TextureList";
 
 import { MaterialItem } from "../components/items/customItems/MaterialItem";
 import { RangeItem } from "../components/items/customItems/RangeItem";
 import { SelectItem } from "../components/items/customItems/SelectItem";
-import { SelectPanel } from "../components/panels/SelectPanel";
 import { UploadItem } from "../components/items/customItems/UploadItem";
+import { SelectPanel } from "../components/panels/customPanels/SelectPanel";
 
 export const RegisterBaseComponents = () => {
 
@@ -53,13 +51,13 @@ export const RegisterBaseComponents = () => {
 	ItemRegister({
 		view: 'color',
 		item: ColorItem,
-		panel: ColorPicker
+		// panel: ColorPicker
 	})
 
 	ItemRegister({
 		view: 'texture',
 		item: TextureItem,
-	 	panel: TextureList
+	 	// panel: TextureList
 	})
 
 	ItemRegister({

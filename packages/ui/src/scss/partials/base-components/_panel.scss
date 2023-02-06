@@ -4,9 +4,13 @@
 	background-color: var(--section-bg-1);
 	color: var(--color-1);
 	z-index: 2;
-	transform: translateY(var(--spacer));
 	border-radius: var(--radius-0);
 
-	max-height: 300px;
-	overflow-y: auto;
+
+
+	&._ui-panel-dropdown {
+		transform: translateY(var(--spacer));
+		max-height: 300px;
+		overflow-y: auto;
+	}
 }

@@ -1,7 +1,7 @@
 import { el } from "@fils/utils";
-import { CSS_UI } from "../partials/cssClasses";
-import { ExtendedItem } from "./items/ExtendedItem";
-import { Dom, Item, ItemDom } from "./items/Item";
+import { CSS_UI } from "../../partials/cssClasses";
+import { ExtendedItem } from "../items/ExtendedItem";
+import { Dom, ItemDom } from "../items/Item";
 
 interface PanelDom extends Dom {
 	ui: HTMLElement,
@@ -26,21 +26,14 @@ export class Panel {
 		this.addEventListeners();
 	}
 
-
 	addEventListeners(): void {
-
 		window.addEventListener('resize', () => {
 			this.positionPanel();
 		});
 	}
 
 	positionPanel(): void {
-		if (!this.created) return;
-
-		const r = this.dom.parent.content.getBoundingClientRect();
-		this.dom.el.style.top = `${r.top + r.height}px`;
-		this.dom.el.style.width = `${r.width}px`;
-		this.dom.el.style.left = `${r.left}px`;
+		// Position types will override this
 	}
 
 	createPanelContent(){
@@ -61,6 +54,8 @@ export class Panel {
 		const bg1 = parentDomStyle.getPropertyValue('--section-bg-1');
 
 		this.dom.el = el('div', CSS_UI.panel.baseClass);
+		this.dom.el.classList.add(`${CSS_UI.panel.baseClass}-${this.parent.options.view}`)
+
 		this.dom.el.style.setProperty('--section-bg-0', bg0);
 		this.dom.el.style.setProperty('--section-bg-1', bg1);
 

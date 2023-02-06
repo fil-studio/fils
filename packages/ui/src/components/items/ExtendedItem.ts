@@ -1,7 +1,7 @@
 import { slugify } from "../../../../utils/lib/Utils";
 import { CSS_UI } from "../../partials/cssClasses";
 import { ItemRegisterOptions } from "../../partials/ItemFactory";
-import { Panel } from "../Panel";
+import { Panel } from "../panels/Panel";
 import { Item, ItemParams } from "./Item";
 import { ItemOptions } from "./ItemOptions";
 

@@ -69,7 +69,7 @@ export class UI extends Group {
 			document.body.appendChild(this.dom.wrapper);
 		}
 
-		this.resizable = resizable;
+		this.resizable = embed ? false : resizable;
 		this.addDragListeners();
 	}
 

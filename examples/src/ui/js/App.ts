@@ -76,7 +76,8 @@ export class App {
 
 		this.ui = new UI({
 			title: 'UI',
-			icon: uiBrushData
+			icon: uiBrushData,
+			embed: document.querySelector('.embed-example') as HTMLElement,
 		});
 
 		const group = this.ui.addGroup({

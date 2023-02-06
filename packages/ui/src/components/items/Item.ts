@@ -34,7 +34,7 @@ export class Item extends EventsManager {
 
 	protected created: boolean = false;
 
-	protected options: ItemOptions;
+	options: ItemOptions;
 
 	constructor({ parent, object, key }: ItemParams = {}, options: ItemOptions) {
 		super();

@@ -41,6 +41,7 @@ export const CSS_UI = {
 	},
 	panel: {
 		baseClass: '_ui-panel',
+		dropdown: '_ui-panel-dropdown',
 	},
 
 	// Custom items will be injected here
