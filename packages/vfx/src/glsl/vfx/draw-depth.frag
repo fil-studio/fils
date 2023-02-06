@@ -7,7 +7,8 @@ uniform sampler2D tDepth;
 varying vec2 vUv;
 
 void main () {
-	float depth = smoothstep(0., 1., readDepth (tDepth, vUv));
+	// float depth = smoothstep(0., 1., readDepth (tDepth, vUv));
+    float depth = readDepth (tDepth, vUv);
 	/* gl_FragColor = vec4(
         texture2D(tDepth, vUv).rrr,
         1.0); */

@@ -74,6 +74,7 @@ export class DoFPass extends RenderPass {
 		this.blurPass.source = composer.read.texture;
 		this.blurPass.renderInternal(renderer);
 		this.shader.uniforms.tBlur.value = this.blurPass.texture;
+		
 		super.render(renderer, composer, target);
 	}
 }

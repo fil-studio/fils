@@ -8,7 +8,7 @@ export * from './vfx/pipeline/LutPass';
 export * from './vfx/pipeline/RetroPass';
 export * from './vfx/CommonVFXPipeline';
 export * from './vfx/VFXPipeline';
-export * from './vfx/MaterialUtils';
+export * from './vfx/materials/MaterialUtils';
 
 import rgb from './glsl/lib/rgbSplit.glsl';
 import dither from './glsl/lib/dither.glsl';

@@ -192,6 +192,12 @@ export class VFXPipeline {
             } else this.renderer.render(scene, camera, this.write);
             this.swapBuffers();
             for(let k=0;k<stack.length;k++) {
+                if(stack[k].shader.uniforms['cameraNear']) {
+                    stack[k].shader.uniforms['cameraNear'].value = camera.near;
+                }
+                if(stack[k].shader.uniforms['cameraFar']) {
+                    stack[k].shader.uniforms['cameraFar'].value = camera.far;
+                }
                 this.renderPass(stack[k], k === stack.length-1);
                 this.firstPass = false;
             }

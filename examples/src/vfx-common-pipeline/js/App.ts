@@ -1,4 +1,4 @@
-import { DirectionalLight, EquirectangularReflectionMapping, MeshBasicMaterial, RawShaderMaterial, ShaderChunk, TextureLoader, WebGLRenderTarget } from 'three';
+import { DirectionalLight, EquirectangularReflectionMapping, MeshBasicMaterial, PlaneGeometry, RawShaderMaterial, Raycaster, ShaderChunk, TextureLoader, Vector3, WebGLRenderTarget } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
@@ -29,6 +29,9 @@ const SHOW_DEPTH = new RawShaderMaterial({
 
 const gltfLoader = new GLTFLoader();
 const tLoader = new TextureLoader();
+
+const raycaster = new Raycaster();
+const tmp = new Vector3();
 
 /**
  * CommonVFXPipeline wraps a common post-processing stack 
@@ -100,6 +103,19 @@ export class App extends WebGLSketch {
 
 		this.depthRT = new WebGLRenderTarget(256, 256);
 
+		/* const dummy = new Mesh(
+			new PlaneGeometry(1,1),
+			initMaterial(
+				new MeshBasicMaterial({
+					color: 0xff0000
+				})
+			)
+		)
+
+		dummy.position.y = 2;
+		dummy.position.z = -1;
+		this.scene.add(dummy); */
+
 		window.addEventListener('resize', (event) => {
 			this.resize(window.innerWidth, window.innerHeight);
 		});
@@ -138,8 +154,8 @@ export class App extends WebGLSketch {
 				caAmount: .0015
 			},
 			dof: {
-				focalDistance: 0.89,
-				aperture: .068,
+				focalDistance: 0.99,
+				aperture: 1,
 				blur: {
 					iterations: 32,
 					quality: 2,
@@ -197,8 +213,8 @@ export class App extends WebGLSketch {
 		const f2 = gui.addFolder("Depth of Field").close();
 		f2.add(dof, 'enabled');
 		f2.add(dof.shader.uniforms.debug, 'value').name('Debug');
-		f2.add(dof.shader.uniforms.focalDistance, 'value', 0.8, 1.25).name("Focal Distance");
-		f2.add(dof.shader.uniforms.aperture, 'value', 0.001, 1).name("Aperture");
+		f2.add(dof.shader.uniforms.focalDistance, 'value', 0.1, 5).name("Focal Distance");
+		f2.add(dof.shader.uniforms.aperture, 'value', 0.5, 5).name("Aperture");
 
 		const f21 = f2.addFolder("Blur Settings");
 		f21.add(dof.blurPass, 'iterations', 1, 32, 1);
@@ -233,6 +249,24 @@ export class App extends WebGLSketch {
 				}
 			}
 		})
+
+		/* window.addEventListener("click", (event)=>{
+			const coords = {
+				x: -1 + 2 * event.clientX / window.innerWidth,
+				y:  1 - 2 * event.clientY / window.innerHeight
+			}
+
+			raycaster.setFromCamera(coords, this.camera);
+
+			const i = raycaster.intersectObjects(this.scene.children);
+			if(i.length) {
+				const p = i[0].point;
+				const depth = tmp.copy(p).distanceTo(this.camera.position);
+				console.log(depth);
+				
+				dof.shader.uniforms.focalDistance.value = depth;
+			}
+		}); */
 	}
 
 	resize(width: number, height: number): void {
