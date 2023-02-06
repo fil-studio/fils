@@ -6,11 +6,26 @@
 	z-index: 2;
 	border-radius: var(--radius-0);
 
-
-
 	&._ui-panel-dropdown {
 		transform: translateY(var(--spacer));
 		max-height: 300px;
 		overflow-y: auto;
 	}
+}
+
+._ui-panel-select {
+
+	p {
+		padding: var(--padding-0);
+		text-align: left;
+		background-color: var(--section-bg-1);
+		border-radius: var(--radius-0);
+		cursor: pointer;
+
+		&:hover {
+			background-color: var(--accent);
+			color: var(--white);
+		}
+	}
+
 }

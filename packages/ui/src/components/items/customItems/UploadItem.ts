@@ -6,7 +6,7 @@ import { UploadItemOptions } from "../ItemOptions";
 
 
 export class UploadItem extends ExtendedItem {
-	protected options: UploadItemOptions;
+	options: UploadItemOptions;
 
 	protected buttonTitle: string;
 

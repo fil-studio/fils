@@ -83,10 +83,6 @@ export class Item extends EventsManager {
 		// Override this method
 	}
 
-	afterCreate(): void {
-		// Override this method
-	}
-
 	/**
 	 * Refresh item dom
 	 */

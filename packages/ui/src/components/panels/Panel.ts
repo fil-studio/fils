@@ -47,7 +47,6 @@ export class Panel {
 
 		// This needs to be provided by the parent each time as the dom changes
 		this.dom.parent = dom;
-		this.dom.ui = this.dom.parent.el.closest(`.${CSS_UI.wrapper}`);
 
 		const parentDomStyle = getComputedStyle(this.dom.parent.content);
 		const bg0 = parentDomStyle.getPropertyValue('--section-bg-0');
@@ -63,7 +62,7 @@ export class Panel {
 
 		this.createPanelContent();
 
-		this.dom.ui.appendChild(this.dom.el);
+		document.body.appendChild(this.dom.el);
 	}
 
 	destroy(): void {

@@ -24,7 +24,7 @@ CSS_UI.items.push({
 const c = CSS_UI.getItemClasses('number');
 
 export class NumberItem extends ExtendedItem {
-	protected options: NumberItemOptions;
+	options: NumberItemOptions;
 
 	private items: item[];
 

@@ -2,6 +2,7 @@ import { el } from '@fils/utils';
 import { uiDownarrowHlt } from '../../../../../ui-icons/lib/Icons';
 import { CSS_UI } from '../../../partials/cssClasses';
 import check from "../../../utils/check";
+import { SelectPanel } from '../../panels/customPanels/SelectPanel';
 import { ExtendedItem } from "../ExtendedItem";
 import { SelectItemOptions } from "../ItemOptions";
 
@@ -14,10 +15,15 @@ CSS_UI.items.push({
 const c = CSS_UI.getItemClasses('select');
 
 export class SelectItem extends ExtendedItem {
+	panel: SelectPanel;
 	options: SelectItemOptions;
 
 	protected activeOption: HTMLElement;
 	protected optionsList: HTMLElement;
+
+	beforeCreate(): void {
+		this.panel = new this.panels[0](this) as SelectPanel;
+	}
 
 	protected addEventListeners(): void {
 

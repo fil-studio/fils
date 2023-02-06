@@ -160,15 +160,8 @@
   src: url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjWr7AIFsdP3pBms.woff2) format("woff2");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
-._ui-wrapper {
-  --wrapper-width: 300px;
-  position: fixed;
-  top: 5px;
-  right: 5px;
-  width: var(--wrapper-width);
-  min-width: 300px;
-}
-._ui-wrapper {
+._ui-wrapper,
+._ui-panel {
   --radius-0: 4px;
   --radius-1: 8px;
   --padding-0: 8px 6px;
@@ -186,17 +179,25 @@
   --color-2: #666666;
 }
 ._ui-wrapper,
-._ui-wrapper * {
+._ui-wrapper *,
+._ui-panel,
+._ui-panel * {
   box-sizing: border-box;
 }
-._ui-wrapper fieldset {
+._ui-wrapper fieldset,
+._ui-panel fieldset {
   min-inline-size: unset;
 }
 ._ui-wrapper small,
 ._ui-wrapper input,
 ._ui-wrapper textarea,
 ._ui-wrapper select,
-._ui-wrapper button {
+._ui-wrapper button,
+._ui-panel small,
+._ui-panel input,
+._ui-panel textarea,
+._ui-panel select,
+._ui-panel button {
   padding: 0;
   margin: 0;
   border: none;
@@ -216,35 +217,75 @@
 ._ui-wrapper h6,
 ._ui-wrapper small,
 ._ui-wrapper p,
-._ui-wrapper a {
+._ui-wrapper a,
+._ui-panel h1,
+._ui-panel h2,
+._ui-panel h3,
+._ui-panel h4,
+._ui-panel h5,
+._ui-panel h6,
+._ui-panel small,
+._ui-panel p,
+._ui-panel a {
   margin: 0;
   font: inherit;
 }
 ._ui-wrapper input[type=number]::-webkit-inner-spin-button,
-._ui-wrapper input[type=number]::-webkit-outer-spin-button {
+._ui-wrapper input[type=number]::-webkit-outer-spin-button,
+._ui-panel input[type=number]::-webkit-inner-spin-button,
+._ui-panel input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-._ui-wrapper * {
+._ui-wrapper, ._ui-wrapper *,
+._ui-panel,
+._ui-panel * {
   font-family: "IBM Plex Sans", sans-serif;
 }
-._ui-wrapper header {
+._ui-wrapper header,
+._ui-panel header {
   font-size: 12px;
   color: var(--color-1);
   font-weight: 700;
 }
-._ui-wrapper [ui-depth="0"] > header {
+._ui-wrapper [ui-depth="0"] > header,
+._ui-panel [ui-depth="0"] > header {
   color: var(--color-0);
 }
 ._ui-wrapper fieldset,
-._ui-wrapper ._ui-panel {
+._ui-panel fieldset {
   font-size: 12px;
   color: var(--color-1);
   font-weight: 400;
 }
 ._ui-wrapper fieldset h4,
-._ui-wrapper ._ui-panel h4 {
+._ui-panel fieldset h4 {
   color: var(--color-2);
+}
+._ui-wrapper._ui-panel-dropdown,
+._ui-panel._ui-panel-dropdown {
+  font-size: 12px;
+  color: var(--color-1);
+  font-weight: 400;
+}
+._ui-wrapper *::selection,
+._ui-panel *::selection {
+  background: var(--white);
+  color: var(--accent);
+}
+._ui-wrapper ._ui--hidden,
+._ui-panel ._ui--hidden {
+  display: none !important;
+  pointer-events: none;
+}
+
+._ui-wrapper {
+  --wrapper-width: 300px;
+  position: fixed;
+  top: 5px;
+  right: 5px;
+  width: var(--wrapper-width);
+  min-width: 300px;
 }
 ._ui-wrapper._ui-wrapper-embed {
   position: relative;
@@ -438,19 +479,6 @@
   height: 1px;
   background: var(--section-bg-1);
 }
-._ui-wrapper ._ui-panel {
-  position: fixed;
-  height: auto;
-  background-color: var(--section-bg-1);
-  color: var(--color-1);
-  z-index: 2;
-  border-radius: var(--radius-0);
-}
-._ui-wrapper ._ui-panel._ui-panel-dropdown {
-  transform: translateY(var(--spacer));
-  max-height: 300px;
-  overflow-y: auto;
-}
 ._ui-wrapper ._ui-boolean {
   cursor: pointer;
 }
@@ -628,24 +656,31 @@
   color: var(--white);
   transform: translateY(-50%) rotate(90deg);
 }
-._ui-wrapper ._ui-panel-select p {
+
+._ui-panel {
+  position: fixed;
+  height: auto;
+  background-color: var(--section-bg-1);
+  color: var(--color-1);
+  z-index: 2;
+  border-radius: var(--radius-0);
+}
+._ui-panel._ui-panel-dropdown {
+  transform: translateY(var(--spacer));
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+._ui-panel-select p {
   padding: var(--padding-0);
   text-align: left;
   background-color: var(--section-bg-1);
   border-radius: var(--radius-0);
   cursor: pointer;
 }
-._ui-wrapper ._ui-panel-select p:hover {
+._ui-panel-select p:hover {
   background-color: var(--accent);
   color: var(--white);
-}
-._ui-wrapper *::selection {
-  background: var(--white);
-  color: var(--accent);
-}
-._ui-wrapper ._ui--hidden {
-  display: none;
-  pointer-events: none;
 }
 
 /*# sourceMappingURL=bundle.css.map */

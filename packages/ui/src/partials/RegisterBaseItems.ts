@@ -14,6 +14,7 @@ import { RangeItem } from "../components/items/customItems/RangeItem";
 import { SelectItem } from "../components/items/customItems/SelectItem";
 import { UploadItem } from "../components/items/customItems/UploadItem";
 import { SelectPanel } from "../components/panels/customPanels/SelectPanel";
+import { TextureSelectPanel } from "../components/panels/customPanels/TextureSelectPanel";
 
 export const RegisterBaseComponents = () => {
 
@@ -40,7 +41,7 @@ export const RegisterBaseComponents = () => {
 	ItemRegister({
 		view: 'select',
 		item: SelectItem,
-		panel: SelectPanel
+		panels: SelectPanel
 	})
 
 	ItemRegister({
@@ -57,7 +58,9 @@ export const RegisterBaseComponents = () => {
 	ItemRegister({
 		view: 'texture',
 		item: TextureItem,
-	 	// panel: TextureList
+	 	panels: [
+			TextureSelectPanel
+		]
 	})
 
 	ItemRegister({

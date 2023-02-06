@@ -16,7 +16,7 @@ export interface ItemRegisterOptions {
 	view: string,
 	extendedCSS?: string,
 	extendedHTML?: string,
-	panel?: typeof Panel,
+	panels?: typeof Panel | Array<typeof Panel>,
 	parseValue?: (value: any) => any,
 	addEventListeners?: () => void,
 	refresh?: () => void,

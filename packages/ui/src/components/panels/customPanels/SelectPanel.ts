@@ -6,7 +6,7 @@ import { DropdownPanel } from "../DropdownPanel";
 export class SelectPanel extends DropdownPanel {
 	parent: SelectItem;
 
-	protected options: Array<string> | Object;
+	options: Array<string> | Object;
 
 	createPanelContent(): void {
 

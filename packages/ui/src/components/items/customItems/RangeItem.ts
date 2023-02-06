@@ -24,7 +24,7 @@ interface RangeDom extends ItemDom {
 
 export class RangeItem extends ExtendedItem {
 
-	protected options: RangeItemOptions;
+	options: RangeItemOptions;
 
 	dom: RangeDom;
 

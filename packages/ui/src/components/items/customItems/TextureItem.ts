@@ -13,7 +13,7 @@ export class TextureItem extends ExtendedItem {
 
 		this.dom.el.classList.add(CSS_UI.row.vertical);
 
-		this.emptyButton = dom.createButton('Add');
+		this.emptyButton = dom.createButton('Add') as HTMLButtonElement;
 		this.dom.content.appendChild(this.emptyButton);
 	}
 }
