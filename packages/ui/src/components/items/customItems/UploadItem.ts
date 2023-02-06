@@ -24,7 +24,7 @@ export class UploadItem extends ExtendedItem {
 			const file = (e.target as HTMLInputElement).files[0];
 			if(!file) return;
 
-			this.removeUploadButton.querySelector('h3').innerHTML = file.name;
+			this.removeUploadButton.querySelector('h3').innerText = file.name;
 			this.removeUploadButton.classList.remove(`${CSS_UI.utility.hidden}`);
 			this.uploadButton.classList.add(`${CSS_UI.utility.hidden}`);
 			this.setValue(file);

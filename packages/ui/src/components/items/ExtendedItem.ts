@@ -14,12 +14,13 @@ export class ExtendedItem extends Item {
 		this.dom.el.classList.add(`${CSS_UI.baseClass}-${slugify(registerOptions.view)}`);
 
 		// InputController
-		this.panel = registerOptions.panel ? new registerOptions.panel(this) : null || null;
 
 		this.createDom();
 		this.setValue(this.object[this.key]);
 		this.addEventListeners();
 		this.created = true;
 		this.afterCreate();
+
+		this.panel = registerOptions.panel ? new registerOptions.panel(this) : null || null;
 	}
 }

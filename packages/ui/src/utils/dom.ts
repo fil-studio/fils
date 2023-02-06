@@ -1,6 +1,5 @@
 import { el } from "@fils/utils";
 import { uiTriaDown } from '../../../ui-icons/lib/Icons';
-import { SpacerSize } from "../components/Spacer";
 import { CSS_UI } from "../partials/cssClasses";
 
 
@@ -21,16 +20,16 @@ interface DomOptions {
 
 const dom = {
 	createButton: (title:string, icon?:string) => {
-		const button = document.createElement('button');
+		const button = el('button');
 		button.classList.add(CSS_UI.button.baseClass);
 
-		const h3 = document.createElement('h3');
+		const h3 = el('h3');
 		h3.innerText = title;
 		button.appendChild(h3);
 
 		if(icon){
 
-			const iconWrapper = document.createElement('div');
+			const iconWrapper = el('div');
 			iconWrapper.innerHTML = icon;
 			iconWrapper.classList.add(CSS_UI.button.icon);
 

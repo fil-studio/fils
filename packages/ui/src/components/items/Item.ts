@@ -22,7 +22,7 @@ export class Item extends EventsManager {
 
 	dom: ItemDom;
 
-	protected parent: Group;
+	parent: Group;
 	protected depth: number;
 
 	title: string;

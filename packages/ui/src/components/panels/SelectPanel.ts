@@ -4,7 +4,7 @@ import check from "../../utils/check";
 import { Panel } from "../Panel";
 import { SelectItem } from "../items/customItems/SelectItem";
 
-export class SelectOptions extends Panel {
+export class SelectPanel extends Panel {
 	parent: SelectItem;
 
 	protected options: Array<string> | Object;

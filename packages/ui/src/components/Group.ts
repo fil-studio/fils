@@ -180,5 +180,4 @@ export class Group extends EventsManager {
 		this.emit('change', target);
 	}
 
-
 }

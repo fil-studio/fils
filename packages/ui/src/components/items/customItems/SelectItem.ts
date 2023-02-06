@@ -1,3 +1,4 @@
+import { el } from '@fils/utils';
 import { uiDownarrowHlt } from '../../../../../ui-icons/lib/Icons';
 import { CSS_UI } from '../../../partials/cssClasses';
 import check from "../../../utils/check";
@@ -37,7 +38,7 @@ export class SelectItem extends ExtendedItem {
 			e.stopPropagation();
 
 			this.dom.el.classList.add(c.open);
-			this.panel.create();
+			this.panel.create(this.dom);
 		});
 
 	}
@@ -53,13 +54,11 @@ export class SelectItem extends ExtendedItem {
 
 	protected createDom(): void {
 
-		this.dom.content.innerHTML = `
-			<div class="${c.input}">
-				<p></p>
-				${uiDownarrowHlt}
-			</div>
-		`;
-
+		const input = el('div', c.input);
+		const p = el('p');
+		input.innerHTML = uiDownarrowHlt;
+		input.appendChild(p);
+		this.dom.content.appendChild(input);
 		this.activeOption = this.dom.content.querySelector(`.${c.input}`);
 	}
 

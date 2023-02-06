@@ -1,5 +1,6 @@
 import { el } from "@fils/utils";
 import { CSS_UI } from "../partials/cssClasses";
+import { ExtendedItem } from "./items/ExtendedItem";
 import { Dom, Item, ItemDom } from "./items/Item";
 
 interface PanelDom extends Dom {
@@ -8,12 +9,12 @@ interface PanelDom extends Dom {
 }
 
 export class Panel {
-	parent: Item;
+	parent: ExtendedItem;
 	dom: PanelDom;
 
 	created: boolean = false;
 
-	constructor(parent: Item) {
+	constructor(parent: ExtendedItem) {
 		this.dom = {
 			el: null,
 			ui: null,
@@ -21,12 +22,10 @@ export class Panel {
 		}
 
 		this.parent = parent;
-		this.dom.parent = parent.dom;
-		// todo aixo no pot anar amb close
-		this.dom.ui = document.body.querySelector(`.${CSS_UI.wrapper}`);
 
 		this.addEventListeners();
 	}
+
 
 	addEventListeners(): void {
 
@@ -48,10 +47,14 @@ export class Panel {
 		// Override this
 	}
 
-	create(): void {
+	create(dom:ItemDom): void {
 
 		if (this.created) return;
 		this.created = true;
+
+		// This needs to be provided by the parent each time as the dom changes
+		this.dom.parent = dom;
+		this.dom.ui = this.dom.parent.el.closest(`.${CSS_UI.wrapper}`);
 
 		const parentDomStyle = getComputedStyle(this.dom.parent.content);
 		const bg0 = parentDomStyle.getPropertyValue('--section-bg-0');
