@@ -1,17 +1,21 @@
 
 export class EventsManager {
-	subscribers: Array<any> = [];
+	subscribers: Object = {};
 
-	on(event, callback) {
+	constructor() {
+
+	}
+
+	on(event:string, callback: Function) {
 		if (!this.subscribers[event]) {
 			this.subscribers[event] = [];
 		}
 		this.subscribers[event].push(callback);
 	}
 
-	emit(event) {
+	emit(event:string, target?:EventsManager) {
 		if (this.subscribers[event]) {
-			this.subscribers[event].forEach(subscriber => subscriber());
+			this.subscribers[event].forEach(subscriber => subscriber(target ? target : this));
 		}
 	}
 

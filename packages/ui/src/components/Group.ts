@@ -145,6 +145,11 @@ export class Group extends EventsManager {
 	 */
 	addGroup(params: GroupParams): Group {
 		const group = new Group({ parent: this, ...params });
+
+		group.on('__childrenChange', (target) => {
+			this.change(target as EventsManager);
+		})
+
 		return this.addChild(group) as Group;
 	}
 
@@ -164,7 +169,17 @@ export class Group extends EventsManager {
 	}
 	addItem(object, key, options?: ItemOptions): Item {
 		const item = ItemFactory({parent: this, object, key}, options);
+
+		item.on('__childrenChange', () => {
+			this.change(item as EventsManager);
+		})
+
 		return this.addChild(item) as Item;
+	}
+
+ 	change(target:EventsManager){
+		this.emit('__childrenChange', target)
+		this.emit('change', target);
 	}
 
 

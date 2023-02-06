@@ -82,6 +82,10 @@ export class App {
 		const group = this.ui.addGroup({
 			title: 'Group Test',
 		});
+
+		this.ui.on('change', (target) => {
+			console.log('change', target);
+		});
 		// const group = this.ui;
 
 		/**
@@ -105,10 +109,7 @@ export class App {
 		group.add(obj, 'booleanTest', {
 			title: 'Boolean Test',
 			view: 'boolean'
-		}).on('change', () => {
-			console.log('change', obj.numberTestSlider);
 		})
-
 		group.addItem(obj, 'stringTest', {
 			title: 'String Test',
 			view: 'string'
@@ -185,7 +186,6 @@ export class App {
 			title: 'Button Test g4',
 		}).on('click', () => {
 			console.log('Button Test g4');
-
 		})
 
 		g2.addButton({
