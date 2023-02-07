@@ -20,7 +20,7 @@ import { BlurPass, BlurSettings } from "../main";
  * as explained below.
 */
 
-import vert from '../glsl/fbo.vert';
+import vert from '../glsl/vfx/comp.vert';
 import frag from '../glsl/vfx/comp.frag';
 import { RTUtils } from "@fils/gfx";
 
@@ -33,6 +33,7 @@ const COMP = new RawShaderMaterial({
         tGlow: {value: null},
         exposure: {value: 1},
         gamma: {value: 1},
+        renderBackground: {value: true},
         renderGlow: {value: true},
         renderScene: {value: true}
     },
@@ -60,6 +61,7 @@ export class VFXRenderer {
     rnd:WebGLRenderer;
     sceneRT:WebGLMultipleRenderTargets;
     glow:BlurPass;
+    showBackground:boolean = true;
     showGlow:boolean = true;
     showScene:boolean = true;
     exposure:number = COMP.uniforms.exposure.value;
@@ -79,7 +81,7 @@ export class VFXRenderer {
             type: UnsignedByteType
         });
 
-        this.sceneRT['samples'] = settings && settings.samples || 4;
+        this.sceneRT['samples'] = 4;//settings && settings.samples || 4;
         this.sceneRT.texture[ 0 ].name = 'diffuse';
         this.sceneRT.texture[ 1 ].name = 'glow';
 
@@ -135,6 +137,7 @@ export class VFXRenderer {
         const u = this.shader.uniforms;
         u.exposure.value = this.exposure;
         u.gamma.value = this.gamma;
+        u.renderBackground.value = this.showBackground;
         u.renderGlow.value = this.showGlow;
         u.renderScene.value = this.showScene;
 

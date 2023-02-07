@@ -72,6 +72,7 @@ export class VFXEmissiveMaterial extends Material {
         shader.fragmentShader = emissive_frag;
         shader.uniforms = {
             emissive: { value: this.emissive },
+            emissiveMap: { value: this.emissiveMap},
             emissiveIntensity: { value: this.emissiveIntensity },
             clippingPlanes: {value: new Vector2()}
         }
@@ -85,6 +86,7 @@ export class VFXEmissiveMaterial extends Material {
 
     onBeforeRender() {
         if(!this.shaderRef) return;
+        this.shaderRef.uniforms.emissiveMap.value = this.emissiveMap;
         this.shaderRef.uniforms.emissiveIntensity.value = this.emissiveIntensity;
     }
 }

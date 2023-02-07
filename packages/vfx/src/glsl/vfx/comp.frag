@@ -1,24 +1,29 @@
+#version 300 es
+
 precision highp float;
 
-varying vec2 vUv;
+in vec2 vUv;
 uniform sampler2D tBackground;
 uniform sampler2D tScene;
 uniform sampler2D tGlow;
 uniform float exposure;
 uniform float gamma;
 
+uniform bool renderBackground;
 uniform bool renderGlow;
 uniform bool renderScene;
 
+layout (location = 0) out vec4 pcColor;
+
 void main () {
-    vec4 bg = texture2D(tBackground, vUv);
+    vec4 bg = renderBackground ? texture(tBackground, vUv) : vec4(0.);
     vec4 scene;
     if(renderScene) {
-        scene = texture2D(tScene, vUv);
+        scene = texture(tScene, vUv);
     }
     vec4 glow = vec4(0.0);
     if(renderGlow) {
-        glow = texture2D(tGlow, vUv);
+        glow = texture(tGlow, vUv);
         // glow.rgb -= vec3(.2);
     }
     
@@ -37,7 +42,7 @@ void main () {
     // also gamma correct while we're at it       
     result = pow(result, vec3(1.0 / gamma));
 
-    gl_FragColor = vec4(result, scene.a + glowA);
+    pcColor = vec4(result, scene.a + glowA);
     // gl_FragColor = vec4(scene.rgb, scene.a + glow.a);
     // gl_FragColor = glow;
     // gl_FragColor = scene;

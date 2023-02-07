@@ -9,9 +9,9 @@
 #include <clipping_planes_pars_vertex>
 
 void main() {
-	#include <uv_vertex>
-	#include <uv2_vertex>
-	#include <morphcolor_vertex>
+	#ifdef USE_EMISSIVEMAP
+	vUv = uv;
+	#endif
 	
     #include <begin_vertex>
 	#include <morphtarget_vertex>
