@@ -1,11 +1,14 @@
-import { WebGLSketch, initMaterial, VFXRenderer, gfxShaders } from '@fils/gfx'
+// import { WebGLSketch, initMaterial, VFXRenderer, vfxShaders } from '@fils/vfx'
+// import { WebGLSketch, initMaterial, VFXRenderer, vfxShaders } from '../../../../packages/vfx/lib/main'
 import { BoxGeometry, CylinderGeometry, DirectionalLight, Mesh, MeshPhongMaterial, ShaderChunk, SphereGeometry, TorusKnotGeometry } from 'three';
-// import { initMaterial } from '../../../../gfx/src/vfx/MaterialUtils';
-// import { VFXRenderer } from '../../../../gfx/src/vfx/VFXRenderer';
-// import { gfxShaders } from '../../../../gfx';
+/* import { initMaterial } from '../../../../packages/vfx/src/vfx/MaterialUtils';
+import { VFXRenderer } from '../../../../packages/vfx/src/vfx/VFXRenderer';
+import { WebGLSketch } from '../../../../packages/gfx'; */
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { initMaterial, VFXRenderer, vfxShaders } from '@fils/vfx';
+import { WebGLSketch } from '@fils/gfx';
 
 const BOX_GEO = new BoxGeometry(1, 1, 1);
 const BALL_GEO = new SphereGeometry(1);
@@ -25,7 +28,7 @@ export class App extends WebGLSketch {
 		document.body.appendChild(this.domElement);
 		this.domElement.className = 'view';
 
-		ShaderChunk['rgbSplit'] = gfxShaders.rgbSplit;
+		ShaderChunk['rgbSplit'] = vfxShaders.rgbSplit;
 
 		const L = new DirectionalLight(0xffffff, .35);
 		L.position.set(-1, 1, 1);
@@ -100,9 +103,10 @@ export class App extends WebGLSketch {
 			window.innerWidth,
 			window.innerHeight,
 			{
-				exposure: 2,
+				exposure: .1,
 				gamma: 1.8,
-				blurSettings: {
+				samples: 4,
+				glowSettings: {
 					scale: .5,
 					radius: 1,
 					iterations: 8,
@@ -135,7 +139,7 @@ export class App extends WebGLSketch {
 			this.customRenderer,
 			'showScene'
 		);
-		gui.add(this.customRenderer, 'exposure', 1, 5, .1);
+		gui.add(this.customRenderer, 'exposure', 0, 1, .1);
 		gui.add(this.customRenderer, 'gamma', 1, 3.2, .1);
 
 		const blur = gui.addFolder('Blur Options');
@@ -163,7 +167,7 @@ export class App extends WebGLSketch {
 
 	resize(width: number, height: number): void {
 		super.resize(width, height);
-		this.customRenderer.resize(width, height);
+		this.customRenderer.setSize(width, height);
 	}
 
 	update() {

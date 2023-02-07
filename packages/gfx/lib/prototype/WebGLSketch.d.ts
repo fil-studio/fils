@@ -1,6 +1,6 @@
 import { Clock, OrthographicCamera, PerspectiveCamera, Scene, Vector2, WebGLRenderer } from "three";
 import { Sketch } from "./Sketch";
-export declare type RenderOptions = {
+export type RenderOptions = {
     antialias?: boolean;
     alpha?: boolean;
     ortho?: boolean;

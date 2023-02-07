@@ -1,4 +1,4 @@
-import { RawShaderMaterial, RGBAFormat, UnsignedByteType, Vector2, WebGLMultipleRenderTargets } from "three";
+import { DepthFormat, DepthTexture, FloatType, RawShaderMaterial, RGBAFormat, Scene, UnsignedByteType, WebGLMultipleRenderTargets, WebGLRenderTarget } from "three";
 import { BlurPass, RTUtils } from "../main";
 import vert from '../glsl/fbo.vert';
 import frag from '../glsl/vfx/comp.frag';
@@ -6,26 +6,29 @@ const COMP = new RawShaderMaterial({
     vertexShader: vert,
     fragmentShader: frag,
     uniforms: {
+        tBackground: { value: null },
         tScene: { value: null },
         tGlow: { value: null },
-        exposure: { value: 1.2 },
-        gamma: { value: 1.8 },
-        rgbStrength: { value: 0.5 },
-        maxRGBDisp: { value: new Vector2(1, 1) },
-        rgbDelta: { value: new Vector2() },
-        rgb: { value: false },
+        exposure: { value: 1 },
+        gamma: { value: 1 },
         renderGlow: { value: true },
-        rgbRadial: { value: true },
         renderScene: { value: true }
     },
     transparent: true
 });
+const GLOW_DEFAULTS = {
+    scale: .3,
+    radius: 1,
+    iterations: 8,
+    quality: 0
+};
 export class VFXRenderer {
     constructor(renderer, width, height, settings) {
         this.showGlow = true;
         this.showScene = true;
         this.exposure = COMP.uniforms.exposure.value;
         this.gamma = COMP.uniforms.gamma.value;
+        this.shader = COMP.clone();
         this.rnd = renderer;
         const w = width * window.devicePixelRatio;
         const h = height * window.devicePixelRatio;
@@ -33,51 +36,47 @@ export class VFXRenderer {
             format: RGBAFormat,
             type: UnsignedByteType
         });
-        this.sceneRT['samples'] = 4;
+        this.sceneRT['samples'] = settings.samples || 4;
         this.sceneRT.texture[0].name = 'diffuse';
         this.sceneRT.texture[1].name = 'glow';
-        const bs = settings && settings.blurSettings ?
-            settings.blurSettings : {
-            scale: .3,
-            radius: 1,
-            iterations: 8,
-            quality: 0
-        };
+        if (settings.useDepth) {
+            this.sceneRT['depthTexture'] = new DepthTexture(w, h, FloatType);
+            this.sceneRT['depthTexture'].format = DepthFormat;
+        }
+        const bs = settings && settings.glowSettings ?
+            settings.glowSettings : GLOW_DEFAULTS;
+        bs.isGlow = true;
         this.glow = new BlurPass(this.sceneRT.texture[1], w, h, bs);
-        if (settings && settings.exposure) {
+        if (settings && settings.exposure !== undefined) {
             this.exposure = settings.exposure;
         }
         if (settings && settings.gamma) {
             this.gamma = settings.gamma;
         }
-        if (settings && settings.rgbStrength) {
-            COMP.uniforms.rgb.value = true;
-            COMP.uniforms.rgbStrength.value = settings.rgbStrength;
+        if (settings.customFargment !== undefined) {
+            this.shader.vertexShader = settings.customFargment;
+            if (settings.customUniforms !== undefined) {
+                const u = settings.customUniforms;
+                for (const key in u) {
+                    this.shader.uniforms[key] = u[key];
+                }
+            }
         }
-        if (settings && settings.rgbDelta) {
-            COMP.uniforms.rgb.value = true;
-            COMP.uniforms.rgbDelta.value.copy(settings.rgbDelta);
-        }
-        if (settings && settings.maxRGBDisp) {
-            COMP.uniforms.rgb.value = true;
-            COMP.uniforms.rgbDelta.value.copy(settings.maxRGBDisp);
-        }
-        if (settings && settings.rgbRadial != undefined) {
-            COMP.uniforms.rgb.value = true;
-            COMP.uniforms.rgbRadial.value = settings.rgbRadial;
-        }
+        this.bgRT = new WebGLRenderTarget(width, height);
+        this.bgScene = new Scene();
     }
-    get shader() {
-        return COMP;
+    get depthTexture() {
+        return this.sceneRT['depthTexture'];
     }
-    resize(width, height) {
+    setSize(width, height) {
         const w = width * window.devicePixelRatio;
         const h = height * window.devicePixelRatio;
         this.sceneRT.setSize(w, h);
+        this.bgRT.setSize(w, h);
         this.glow.setSize(w, h);
     }
     updateUniforms() {
-        const u = COMP.uniforms;
+        const u = this.shader.uniforms;
         u.exposure.value = this.exposure;
         u.gamma.value = this.gamma;
         u.renderGlow.value = this.showGlow;
@@ -87,16 +86,29 @@ export class VFXRenderer {
     }
     render(scene, camera, target = null) {
         this.rnd.autoClear = true;
+        const bg = scene.background;
+        scene.background = null;
+        if (bg) {
+            this.rnd.setRenderTarget(this.bgRT);
+            this.bgScene.background = bg;
+            this.rnd.render(this.bgScene, camera);
+            this.rnd.setRenderTarget(null);
+            this.shader.uniforms.tBackground.value = this.bgRT.texture;
+        }
+        else {
+            this.shader.uniforms.tBackground.value = null;
+        }
         this.rnd.setRenderTarget(this.sceneRT);
         this.rnd.render(scene, camera);
+        scene.background = bg;
         this.glow.renderInternal(this.rnd);
         this.rnd.setRenderTarget(null);
         this.updateUniforms();
         if (target) {
-            RTUtils.renderToRT(target, this.rnd, COMP);
+            RTUtils.renderToRT(target, this.rnd, this.shader);
         }
         else
-            RTUtils.renderToViewport(this.rnd, COMP);
+            RTUtils.renderToViewport(this.rnd, this.shader);
         this.rnd.setRenderTarget(null);
     }
 }

@@ -1,6 +1,6 @@
 {
 	"name": "@fils/gfx",
-	"version": "0.0.1-55",
+	"version": "0.0.3",
 	"description": "Web GFX Package written in TypeScript",
 	"main": "lib/main.js",
 	"repository": "git@github.com:fil-studio/fils.git",
@@ -10,7 +10,8 @@
 	"private": false,
 	"scripts": {
 		"prepare": "yarn build",
-		"build": "tsc --build tsconfig.gfx.json && cp -r src/glsl lib/"
+		"build": "tsc --build tsconfig.gfx.json",
+		"postbuild": "node postbuild.js"
 	},
 	"files": [
 		"lib",

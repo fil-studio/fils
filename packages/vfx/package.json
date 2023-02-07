@@ -1,0 +1,30 @@
+{
+	"name": "@fils/vfx",
+	"version": "0.0.2",
+	"description": "Web VFX Package written in TypeScript",
+	"main": "lib/main.js",
+	"repository": "git@github.com:fil-studio/fils.git",
+	"homepage": "https://github.com/fil-studio/fils/tree/main/packages/vfx",
+	"author": "fil studio <hello@fil.studio>",
+	"license": "Apache-2.0",
+	"private": false,
+	"scripts": {
+		"prepare": "yarn build",
+		"build": "tsc --build tsconfig.vfx.json",
+		"postbuild": "node postbuild.js"
+	},
+	"files": [
+		"lib",
+		"examples",
+		"README.md"
+	],
+	"dependencies": {
+		"@fils/gfx": "workspace:^",
+		"@fils/io": "workspace:^",
+		"@fils/math": "workspace:^",
+		"three": "^0.145.0"
+	},
+	"devDependencies": {
+		"typescript": "^4.8.4"
+	}
+}
