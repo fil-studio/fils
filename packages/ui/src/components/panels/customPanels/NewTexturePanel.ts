@@ -37,6 +37,11 @@ export class NewTexturePanel extends FloatingPanel {
 			optionLabel: 'name',
 		});
 
+		this.ui.addSpacer({
+			size: 'small',
+			line: false
+		})
+
 		this.ui.addButton({
 			title: 'Save',
 		}).on('click', () => {

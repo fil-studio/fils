@@ -4,19 +4,16 @@ import { Group } from "./Group";
 import { Dom } from "./items/Item";
 
 export enum SpacerSize {
-	small,
-	medium,
-	large
+	small = 'small',
+	medium = 'medium',
+	large = 'large'
 }
-const SpacerSizeNames = Object.values(SpacerSize);
-
 
 export interface SpacerParams {
 	parent?: Group;
 	size?: SpacerSize;
 	line?: boolean;
 }
-
 
 export class Spacer {
 	type: RowTypes = RowTypes.spacer;
@@ -41,7 +38,7 @@ export class Spacer {
 		});
 
 		if (line) this.dom.el.classList.add(CSS_UI.spacer.hasLine);
-		this.dom.el.classList.add(CSS_UI.spacer.size[SpacerSizeNames[size]]);
+		this.dom.el.classList.add(CSS_UI.spacer.size[size]);
 
 	}
 
