@@ -746,6 +746,9 @@
 ._ui-panel-select ._ui-panel-option:hover,
 ._ui-panel-texture ._ui-panel-option:hover {
   background-color: var(--accent);
+}
+._ui-panel-select ._ui-panel-option:hover p,
+._ui-panel-texture ._ui-panel-option:hover p {
   color: var(--white);
 }
 
