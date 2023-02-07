@@ -4,7 +4,7 @@ import { CSS_UI } from '../../../partials/cssClasses';
 import check from "../../../utils/check";
 import { SelectPanel } from '../../panels/customPanels/SelectPanel';
 import { ExtendedItem } from "../ExtendedItem";
-import { SelectItemOptions } from "../ItemOptions";
+import { DropdownOptions } from "../ItemOptions";
 
 CSS_UI.items.push({
 	type: 'select',
@@ -16,10 +16,9 @@ const c = CSS_UI.getItemClasses('select');
 
 export class SelectItem extends ExtendedItem {
 	panel: SelectPanel;
-	options: SelectItemOptions;
+	options: DropdownOptions;
 
 	protected activeOption: HTMLElement;
-	protected optionsList: HTMLElement;
 
 	beforeCreate(): void {
 		this.panel = new this.panels[0](this) as SelectPanel;

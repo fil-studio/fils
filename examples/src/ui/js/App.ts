@@ -2,6 +2,7 @@ import { uiAppendBlend, uiBrushData, uiTexture } from '../../../../packages/ui-i
 import { SpacerSize } from '../../../../packages/ui/src/components/Spacer';
 import { UI } from '../../../../packages/ui/src/main';
 
+import { Texture, TextureLoader } from 'three';
 
 /**
  * S'ha de poder crear els components manualment
@@ -11,9 +12,10 @@ import { UI } from '../../../../packages/ui/src/main';
 
 export class App {
 	ui: UI;
+	obj: any;
 	constructor() {
 
-		const obj = {
+		this.obj = {
 			colorTest: '#ff0000',
 			booleanTest: false,
 			stringTest: 'Test',
@@ -30,23 +32,6 @@ export class App {
 			numberTestSlider: 0,
 			numberTestFloat: 0.5,
 			optionsTestActiveObject: null,
-			optionsTestObject: {
-				one: 'One',
-				two: 'Two',
-				three: 'Three',
-				four: 'Four',
-				five: 'Five',
-				six: 'Six',
-				seven: 'Seven',
-				eight: 'Eight',
-				nine: 'Nine',
-				ten: 'Ten',
-				eleven: 'Eleven',
-				twelve: 'Twelve',
-				thirteen: 'Thirteen',
-				fourteen: 'Fourteen',
-				fifteen: 'Fifteen',
-			},
 			optionsTestActiveArray: null,
 			optionsTestArray: [
 				'One Array',
@@ -65,14 +50,35 @@ export class App {
 				'Fourteen Array',
 				'Fifteen Array',
 			],
-			textureTest: 'asdapewoiewitureoiwoie09013oiasd',
+			textureTest: null,
+			textures: [],
 			materialTest: 'asdapewoiewitureoiwoie09013oiasd',
 			multiNumberTest: [1, 2, 3],
 		}
 
+
+		const loader = new TextureLoader();
+
+		let loaded = 0;
+		for(let i = 0; i <= 10; i++) {
+			loader.load('../assets/texture-test.png', (texture:Texture) => {
+				texture.name = `Texture ${i}`;
+
+				this.obj.textures.push(texture);
+				loaded++;
+				if(loaded === 10) this.createUI();
+			});
+		}
+
+	}
+
+	createUI() {
+		console.log(this.obj.textures);
+
 		// const tmp = new Vector3(1, 2, 3);
 		// console.log(tmp);
 
+		console.log('UI');
 
 		this.ui = new UI({
 			title: 'UI',
@@ -90,22 +96,28 @@ export class App {
 		// const group = this.ui;
 
 		/**
-		 * Object
-		 * Key
-		 * Options
-		 */
-		group.add(obj, 'textureTest', {
+		* Object
+		* Key
+		* Options
+		*/
+		group.add(this.obj, 'textureTest', {
 			title: 'Texture Test',
 			text: 'Texture',
-			icon: uiTexture,
-			view: 'texture'
+			view: 'texture',
+			options: this.obj.textures
 		});
 
-		// group.add(obj, 'colorTest', {
+		group.add(this.obj, 'optionsTestActiveArray', {
+			title: 'Select Array',
+			view: 'select',
+			options: this.obj.optionsTestArray,
+		});
+
+		// group.add(this.obj, 'colorTest', {
 		// 	title: 'Color Test',
 		// 	view: 'color'
 		// });
-		group.add(obj, 'uploadTest', {
+		group.add(this.obj, 'uploadTest', {
 			title: 'Upload Button',
 			text: 'Upload',
 			icon: uiAppendBlend,
@@ -114,11 +126,11 @@ export class App {
 
 		group.addSpacer();
 
-		group.add(obj, 'booleanTest', {
+		group.add(this.obj, 'booleanTest', {
 			title: 'Boolean Test',
 			view: 'boolean'
 		})
-		group.addItem(obj, 'stringTest', {
+		group.addItem(this.obj, 'stringTest', {
 			title: 'String Test',
 			view: 'string'
 		});
@@ -126,14 +138,14 @@ export class App {
 
 		group.addSpacer();
 
-		group.add(obj, 'numberTest', {
+		group.add(this.obj, 'numberTest', {
 			title: 'Number Test',
 			view: 'number'
 		});
 
 		group.addSpacer();
 
-		group.add(obj, 'numberTestSlider', {
+		group.add(this.obj, 'numberTestSlider', {
 			title: 'Slider Test with long text example',
 				view: 'range',
 				min: -10,
@@ -142,16 +154,7 @@ export class App {
 				// overExpose: [0, 10],
 		})
 
-		group.add(obj, 'optionsTestActiveObject', {
-			title: 'Select Object',
-			view: 'select',
-			options: obj.optionsTestObject,
-		});
-		group.add(obj, 'optionsTestActiveArray', {
-			title: 'Select Array',
-			view: 'select',
-			options: obj.optionsTestArray,
-		});
+
 
 
 		const g2 = this.ui.addGroup({
@@ -168,17 +171,17 @@ export class App {
 			folded: true
 		});
 
-		g4.add(obj, 'booleanTest', {
+		g4.add(this.obj, 'booleanTest', {
 			title: 'Boolean Test',
 			view: 'boolean'
 		});
 
-		g4.addItem(obj, 'stringTest', {
+		g4.addItem(this.obj, 'stringTest', {
 			title: 'String Test',
 			view: 'string'
 		});
 
-		g4.add(obj, 'numberTest', {
+		g4.add(this.obj, 'numberTest', {
 			title: 'Number Test',
 			view: 'number'
 		});
@@ -196,6 +199,5 @@ export class App {
 		});
 
 		console.log('UI', this.ui);
-
 	}
 }

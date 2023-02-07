@@ -1,10 +1,9 @@
 import { el } from "@fils/utils";
 import { uiDownarrowHlt } from "../../../../../ui-icons/lib/Icons";
 import { CSS_UI } from "../../../partials/cssClasses";
-import check from "../../../utils/check";
-import dom from "../../../utils/dom";
 import { TextureSelectPanel } from "../../panels/customPanels/TextureSelectPanel";
 import { ExtendedItem } from "../ExtendedItem";
+import { TextureItemOptions } from "../ItemOptions";
 
 
 CSS_UI.items.push({
@@ -17,10 +16,9 @@ const c = CSS_UI.getItemClasses('texture');
 
 export class TextureItem extends ExtendedItem {
 	listPanel: TextureSelectPanel;
-
+	options: TextureItemOptions
 
 	protected activeOption: HTMLElement;
-	protected optionsList: HTMLElement;
 
 	beforeCreate(): void {
 		this.listPanel = new this.panels[0](this) as TextureSelectPanel;
@@ -68,25 +66,6 @@ export class TextureItem extends ExtendedItem {
 
 		this.dom.el.classList.add(CSS_UI.row.vertical);
 
-	}
-
-	setValue(_value: any): void {
-		let value = _value;
-
-		// If it's null set it to the first option
-		if(check.isNull(value) || check.isUndefined(value)) {
-			value = [
-				'textura 1',
-				'textura 2',
-				'textura 3',
-			]
-		}
-
-		super.setValue(value);
-	}
-
-	afterCreate(): void {
-		this.setValue(this.value);
 	}
 
 	refresh(): void {

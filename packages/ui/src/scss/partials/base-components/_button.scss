@@ -2,6 +2,7 @@
 ._ui-button {
 
 	width: 100%;
+	min-height: var(--item-min-height);
 	display: flex;
 	justify-content: center;
 	align-items: center;

@@ -170,6 +170,7 @@
   --spacer: 3px;
   --duration: .3s;
   --timing: cubic-bezier(.6, 0, .4, 1);
+  --item-min-height: 36px;
   --accent: #2871C7;
   --bg-0: #303030;
   --bg-1: #191919;
@@ -424,6 +425,7 @@
 }
 ._ui-wrapper ._ui-button {
   width: 100%;
+  min-height: var(--item-min-height);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -659,10 +661,13 @@
 }
 ._ui-wrapper ._ui-texture ._ui-texture-input {
   width: 100%;
+  min-height: var(--item-min-height);
   padding: var(--padding-0);
   text-align: left;
   background-color: var(--section-bg-1);
   border-radius: var(--radius-0);
+  display: flex;
+  align-items: center;
   cursor: pointer;
 }
 ._ui-wrapper ._ui-texture ._ui-texture-input * {

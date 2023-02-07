@@ -3,7 +3,7 @@ import { CSS_UI } from "../../partials/cssClasses";
 import { ExtendedItem } from "../items/ExtendedItem";
 import { Dom, ItemDom } from "../items/Item";
 
-interface PanelDom extends Dom {
+export interface PanelDom extends Dom {
 	ui: HTMLElement,
 	parent: ItemDom
 }
