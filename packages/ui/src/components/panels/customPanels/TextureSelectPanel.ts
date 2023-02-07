@@ -29,5 +29,11 @@ export class TextureSelectPanel extends DropdownPanel {
 		add.appendChild(p);
 		this.dom.el.appendChild(add);
 
+		add.addEventListener('click', (e) => {
+			e.stopPropagation();
+			this.parent.addTexture();
+			this.parent.destroyPanel();
+		});
+
 	}
 }

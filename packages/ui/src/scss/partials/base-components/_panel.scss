@@ -11,6 +11,13 @@
 		max-height: 300px;
 		overflow-y: auto;
 	}
+
+	&._ui-panel-left {
+		transform: translateX(calc(-100% - 50px));
+	}
+	&._ui-panel-right {
+		transform: translateX(calc(100% + 50px));
+	}
 }
 
 ._ui-panel-select {

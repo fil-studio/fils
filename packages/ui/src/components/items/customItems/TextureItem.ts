@@ -1,6 +1,7 @@
 import { el } from "@fils/utils";
 import { uiDownarrowHlt } from "../../../../../ui-icons/lib/Icons";
 import { CSS_UI } from "../../../partials/cssClasses";
+import { TextureCreatePanel } from "../../panels/customPanels/TextureCreatePanel";
 import { TextureSelectPanel } from "../../panels/customPanels/TextureSelectPanel";
 import { ExtendedItem } from "../ExtendedItem";
 import { DropdownOptions } from "../ItemOptions";
@@ -15,35 +16,42 @@ CSS_UI.items.push({
 const c = CSS_UI.getItemClasses('texture');
 
 export class TextureItem extends ExtendedItem {
-	listPanel: TextureSelectPanel;
+	textureSelectPanel: TextureSelectPanel;
 	options: DropdownOptions;
+
+	textureCreatePanel: TextureCreatePanel;
 
 	protected activeOption: HTMLElement;
 
 	beforeCreate(): void {
-		this.listPanel = new TextureSelectPanel(this);
+		this.textureSelectPanel = new TextureSelectPanel(this);
+		this.textureCreatePanel = new TextureCreatePanel(this);
 	}
 
 	protected addEventListeners(): void {
 
 		window.addEventListener('click', (e) => {
 
-			if(!this.listPanel.created) return;
+			if(!this.textureSelectPanel.created) return;
 
 			const target = e.target as HTMLElement;
-			if(this.listPanel.dom.el?.contains(target)) return;
+			if(this.textureSelectPanel.dom.el?.contains(target)) return;
 			this.destroyPanel();
 		});
 
 		this.activeOption.addEventListener('click', (e) => {
-			if(this.listPanel.created) return;
+			if(this.textureSelectPanel.created) return;
 
 			e.stopPropagation();
 
 			this.dom.el.classList.add(c.open);
-			this.listPanel.create(this.dom);
+			this.textureSelectPanel.create(this.dom);
 		});
 
+	}
+
+	addTexture(): void {
+		this.textureCreatePanel.create(this.dom);
 	}
 
 	onResize(e?: CustomEvent<any>): void {
@@ -52,7 +60,7 @@ export class TextureItem extends ExtendedItem {
 
 	destroyPanel(): void {
 		this.dom.el.classList.remove(c.open);
-		this.listPanel.destroy();
+		this.textureSelectPanel.destroy();
 	}
 
 	protected createDom(): void {
