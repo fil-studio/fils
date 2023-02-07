@@ -3,16 +3,7 @@
 	float: left;
 
 	._ui-texture-input {
-		width: 100%;
-		min-height: var(--item-min-height);
-		padding: var(--padding-0);
-		text-align: left;
-		background-color: var(--section-bg-1);
-		border-radius: var(--radius-0);
-		display: flex;
-		align-items: center;
-
-		cursor: pointer;
+		@include item;
 
 		* {
 			pointer-events: none;

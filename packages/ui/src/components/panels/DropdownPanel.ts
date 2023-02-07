@@ -45,7 +45,7 @@ export class DropdownPanel extends Panel {
 
 	createSearch(): void {
 
-		const search = el('div', 'search');
+		const search = el('div', CSS_UI.panel.search);
 		const p = el('p');
 		p.innerHTML = 'Search';
 		search.appendChild(p);
@@ -58,9 +58,11 @@ export class DropdownPanel extends Panel {
 	}
 
 	createOption(_value: Object | string | Array<any>): void {
-		const option = el('p');
 
-		option.innerHTML = this.parent.getLabel(_value);
+		const option = el('div', CSS_UI.panel.option);
+		const p = el('p');
+		p.innerHTML = this.parent.getLabel(_value);
+		option.appendChild(p);
 
 		this.dom.el.appendChild(option);
 		this.dom.options.push(option);

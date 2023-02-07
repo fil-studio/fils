@@ -44,6 +44,9 @@ export const CSS_UI = {
 		baseClass: '_ui-panel',
 		dropdown: '_ui-panel-dropdown',
 		floating: '_ui-panel-floating',
+		button: '_ui-panel-button',
+		search: '_ui-panel-search',
+		option: '_ui-panel-option',
 	},
 
 	// Custom items will be injected here

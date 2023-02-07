@@ -1,4 +1,5 @@
 import { el } from "@fils/utils";
+import { CSS_UI } from "../../../partials/cssClasses";
 import { TextureItem } from "../../items/customItems/TextureItem";
 import { DropdownPanel } from "../DropdownPanel";
 
@@ -16,7 +17,7 @@ export class SelectTexturePanel extends DropdownPanel {
 
 	createAddTexture(): void {
 
-		const add = el('div', 'add');
+		const add = el('div', CSS_UI.panel.button);
 		const p = el('p');
 		p.innerHTML = 'Add Texture';
 		add.appendChild(p);

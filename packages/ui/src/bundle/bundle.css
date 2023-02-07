@@ -164,13 +164,10 @@
 ._ui-panel {
   --radius-0: 4px;
   --radius-1: 8px;
-  --padding-0: 8px 6px;
-  --padding-1: 10px 8px;
-  --button-padding: 8px 12px;
-  --spacer: 3px;
+  --padding: 0.2rem 0.4rem;
+  --spacer: 0.25rem;
   --duration: .3s;
   --timing: cubic-bezier(.6, 0, .4, 1);
-  --item-min-height: 36px;
   --accent: #2871C7;
   --bg-0: #303030;
   --bg-1: #191919;
@@ -242,32 +239,21 @@
 ._ui-panel,
 ._ui-panel * {
   font-family: "IBM Plex Sans", sans-serif;
+  font-size: 12px;
+  color: var(--color-1);
+  font-weight: 400;
 }
 ._ui-wrapper header,
 ._ui-panel header {
-  font-size: 12px;
-  color: var(--color-1);
   font-weight: 700;
 }
 ._ui-wrapper [ui-depth="0"] > header,
 ._ui-panel [ui-depth="0"] > header {
   color: var(--color-0);
 }
-._ui-wrapper fieldset,
-._ui-panel fieldset {
-  font-size: 12px;
-  color: var(--color-1);
-  font-weight: 400;
-}
 ._ui-wrapper fieldset h4,
 ._ui-panel fieldset h4 {
   color: var(--color-2);
-}
-._ui-wrapper._ui-panel-dropdown,
-._ui-panel._ui-panel-dropdown {
-  font-size: 12px;
-  color: var(--color-1);
-  font-weight: 400;
 }
 ._ui-wrapper *::selection,
 ._ui-panel *::selection {
@@ -332,10 +318,10 @@
   width: 100%;
 }
 ._ui-wrapper section ._ui-section-content fieldset:first-of-type {
-  margin-top: 8px;
+  margin-top: 0.5rem;
 }
 ._ui-wrapper section ._ui-section-content fieldset:last-child {
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
 }
 ._ui-wrapper ._ui-section-foldable {
   transition-duration: var(--duration);
@@ -370,7 +356,7 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  padding: var(--padding-1);
+  padding: var(--padding);
   user-select: none;
 }
 ._ui-wrapper header ._ui-section-header-icon {
@@ -386,8 +372,7 @@
   margin: 0;
 }
 ._ui-wrapper fieldset {
-  padding: 0 8px;
-  min-height: 30px;
+  padding: 0 0.25rem;
   margin: var(--spacer) 0 0 0;
   position: relative;
   width: 100%;
@@ -420,21 +405,22 @@
   align-items: flex-start;
 }
 ._ui-wrapper fieldset._ui-row-vertical > h4 {
-  margin: 10px 0 5px;
+  padding: 0.5rem 0;
 }
 ._ui-wrapper fieldset._ui-row-vertical > div {
   width: 100%;
 }
 ._ui-wrapper ._ui-button {
   width: 100%;
-  min-height: var(--item-min-height);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: var(--button-padding);
+  min-height: 2rem;
+  padding: var(--padding);
+  text-align: left;
   background-color: var(--section-bg-1);
   border-radius: var(--radius-0);
+  display: flex;
+  align-items: center;
   cursor: pointer;
+  padding: 0.2rem 0.7rem;
   transition: var(--duration) var(--timing);
   margin-top: var(--animation-space);
 }
@@ -511,10 +497,14 @@
 }
 ._ui-wrapper ._ui-string input {
   width: 100%;
-  padding: var(--padding-0);
+  min-height: 2rem;
+  padding: var(--padding);
   text-align: left;
   background-color: var(--section-bg-1);
   border-radius: var(--radius-0);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 }
 ._ui-wrapper ._ui-number ._ui-number-input {
   flex-grow: 1;
@@ -526,10 +516,14 @@
 }
 ._ui-wrapper ._ui-number input {
   width: 100%;
-  padding: var(--padding-0);
+  min-height: 2rem;
+  padding: var(--padding);
   text-align: left;
   background-color: var(--section-bg-1);
   border-radius: var(--radius-0);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 }
 ._ui-wrapper ._ui-number ._ui-number-buttons {
   position: absolute;
@@ -624,11 +618,16 @@
   bottom: 0;
 }
 ._ui-wrapper ._ui-range input {
-  width: calc(25% - var(--spacer));
-  padding: var(--padding-0);
+  width: 100%;
+  min-height: 2rem;
+  padding: var(--padding);
   text-align: left;
   background-color: var(--section-bg-1);
   border-radius: var(--radius-0);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  width: calc(25% - var(--spacer));
 }
 ._ui-wrapper ._ui-select {
   position: relative;
@@ -636,10 +635,13 @@
 }
 ._ui-wrapper ._ui-select ._ui-select-input {
   width: 100%;
-  padding: var(--padding-0);
+  min-height: 2rem;
+  padding: var(--padding);
   text-align: left;
   background-color: var(--section-bg-1);
   border-radius: var(--radius-0);
+  display: flex;
+  align-items: center;
   cursor: pointer;
 }
 ._ui-wrapper ._ui-select ._ui-select-input * {
@@ -663,8 +665,8 @@
 }
 ._ui-wrapper ._ui-texture ._ui-texture-input {
   width: 100%;
-  min-height: var(--item-min-height);
-  padding: var(--padding-0);
+  min-height: 2rem;
+  padding: var(--padding);
   text-align: left;
   background-color: var(--section-bg-1);
   border-radius: var(--radius-0);
@@ -720,14 +722,29 @@
   transform: translate3d(-50%, -50%, 0);
 }
 
-._ui-panel-select p {
-  padding: var(--padding-0);
-  text-align: left;
+._ui-panel-select ._ui-panel-button,
+._ui-panel-select ._ui-panel-search,
+._ui-panel-select ._ui-panel-option,
+._ui-panel-texture ._ui-panel-button,
+._ui-panel-texture ._ui-panel-search,
+._ui-panel-texture ._ui-panel-option {
+  padding: 0.6rem;
   background-color: var(--section-bg-1);
-  border-radius: var(--radius-0);
   cursor: pointer;
 }
-._ui-panel-select p:hover {
+._ui-panel-select ._ui-panel-search,
+._ui-panel-texture ._ui-panel-search {
+  position: sticky;
+  top: 0;
+  border-bottom: 2px solid var(--section-bg-0);
+}
+._ui-panel-select ._ui-panel-option,
+._ui-panel-texture ._ui-panel-option {
+  text-align: left;
+  border-radius: var(--radius-0);
+}
+._ui-panel-select ._ui-panel-option:hover,
+._ui-panel-texture ._ui-panel-option:hover {
   background-color: var(--accent);
   color: var(--white);
 }

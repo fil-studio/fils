@@ -1,15 +1,7 @@
 
 ._ui-button {
-
-	width: 100%;
-	min-height: var(--item-min-height);
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	padding: var(--button-padding);
-	background-color: var(--section-bg-1);
-	border-radius: var(--radius-0);
-	cursor: pointer;
+	@include item;
+	padding: 0.2rem 0.7rem;
 
 	transition: var(--duration) var(--timing);
 	margin-top: var(--animation-space);

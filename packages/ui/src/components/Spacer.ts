@@ -19,7 +19,6 @@ export class Spacer {
 	type: RowTypes = RowTypes.spacer;
 	dom: Dom;
 
-
 	constructor({
 		parent,
 		size = SpacerSize.medium,

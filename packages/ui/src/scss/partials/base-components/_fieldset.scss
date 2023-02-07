@@ -1,6 +1,5 @@
 fieldset {
-	padding: 0 8px;
-	min-height: 30px;
+	padding: 0 0.25rem;
 	margin: var(--spacer) 0 0 0;
 
 	position: relative;
@@ -38,7 +37,7 @@ fieldset {
 		align-items: flex-start;
 
 		&>h4 {
-			margin: 10px 0 5px;
+			padding: 0.5rem 0;
 		}
 
 		&>div {

@@ -11,11 +11,7 @@
 	}
 
 	input {
-		width: 100%;
-		padding: var(--padding-0);
-		text-align: left;
-		background-color: var(--section-bg-1);
-		border-radius: var(--radius-0);
+		@include item;
 	}
 
 	._ui-number-buttons {

@@ -36,19 +36,34 @@
 	}
 }
 
-._ui-panel-select {
+._ui-panel-select,
+._ui-panel-texture {
 
-	p {
-		padding: var(--padding-0);
-		text-align: left;
+	._ui-panel-button,
+	._ui-panel-search,
+	._ui-panel-option {
+		padding: 0.6rem;
 		background-color: var(--section-bg-1);
-		border-radius: var(--radius-0);
 		cursor: pointer;
+	}
+
+	._ui-panel-button {
+
+	}
+
+	._ui-panel-search {
+		position: sticky;
+		top: 0;
+		border-bottom: 2px solid var(--section-bg-0);
+	}
+
+	._ui-panel-option {
+		text-align: left;
+		border-radius: var(--radius-0);
 
 		&:hover {
 			background-color: var(--accent);
 			color: var(--white);
 		}
 	}
-
 }
