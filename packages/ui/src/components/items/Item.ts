@@ -50,7 +50,7 @@ export class Item extends EventsManager {
 		this.object = object;
 		this.key = key;
 
-		this.title = this.options?.title || key;
+		this.title = this.options?.title || key.charAt(0).toUpperCase() + key.slice(1);
 
 		this.dom = {
 			el: null,

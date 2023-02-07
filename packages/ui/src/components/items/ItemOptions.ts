@@ -17,6 +17,7 @@ export interface RangeItemOptions extends NumberItemOptions {
 
 export interface DropdownOptions extends ItemOptionsInterface {
 	options: Array<any>;
+	optionLabel?: string;
 }
 export interface UploadItemOptions extends ItemOptionsInterface {
 	icon: string;

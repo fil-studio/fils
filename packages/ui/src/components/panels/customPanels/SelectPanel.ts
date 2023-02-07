@@ -1,4 +1,3 @@
-import { el } from "@fils/utils";
 import { SelectItem } from "../../items/customItems/SelectItem";
 import { DropdownPanel } from "../DropdownPanel";
 
@@ -12,13 +11,4 @@ export class SelectPanel extends DropdownPanel {
 			this.parent.destroyPanel();
 		});
 	}
-
-	createOption(value:string) {
-		const option = el('p');
-		option.innerHTML = value;
-		this.dom.el.appendChild(option);
-		this.addOptionListener(option);
-		this.dom.options.push(option);
-	}
-
 }

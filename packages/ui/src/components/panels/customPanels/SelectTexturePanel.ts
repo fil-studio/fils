@@ -2,7 +2,7 @@ import { el } from "@fils/utils";
 import { TextureItem } from "../../items/customItems/TextureItem";
 import { DropdownPanel } from "../DropdownPanel";
 
-export class TextureSelectPanel extends DropdownPanel {
+export class SelectTexturePanel extends DropdownPanel {
 	parent: TextureItem;
 
 	options: Array<Object>;
@@ -12,13 +12,6 @@ export class TextureSelectPanel extends DropdownPanel {
 		this.createAddTexture();
 		super.createPanelContent();
 
-	}
-
-	createOption(value:object) {
-		const option = el('p');
-		option.innerHTML = value.name;
-		this.dom.el.appendChild(option);
-		this.dom.options.push(option);
 	}
 
 	createAddTexture(): void {
@@ -31,8 +24,8 @@ export class TextureSelectPanel extends DropdownPanel {
 
 		add.addEventListener('click', (e) => {
 			e.stopPropagation();
-			this.parent.addTexture();
-			this.parent.destroyPanel();
+			this.parent.createFloating();
+			this.parent.destroyDropdown();
 		});
 
 	}

@@ -1,10 +1,11 @@
 import { el } from "@fils/utils";
 import { uiDownarrowHlt } from "../../../../../ui-icons/lib/Icons";
 import { CSS_UI } from "../../../partials/cssClasses";
-import { TextureCreatePanel } from "../../panels/customPanels/TextureCreatePanel";
-import { TextureSelectPanel } from "../../panels/customPanels/TextureSelectPanel";
+import { NewTexturePanel } from "../../panels/customPanels/NewTexturePanel";
+import { SelectTexturePanel} from "../../panels/customPanels/SelectTexturePanel";
 import { ExtendedItem } from "../ExtendedItem";
 import { DropdownOptions } from "../ItemOptions";
+import { SelectItem } from "./SelectItem";
 
 
 CSS_UI.items.push({
@@ -15,52 +16,59 @@ CSS_UI.items.push({
 });
 const c = CSS_UI.getItemClasses('texture');
 
-export class TextureItem extends ExtendedItem {
-	textureSelectPanel: TextureSelectPanel;
+export class TextureItem extends SelectItem {
+	dropdownPanel: SelectTexturePanel;
 	options: DropdownOptions;
 
-	textureCreatePanel: TextureCreatePanel;
-
-	protected activeOption: HTMLElement;
+	floatingPanel: NewTexturePanel;
 
 	beforeCreate(): void {
-		this.textureSelectPanel = new TextureSelectPanel(this);
-		this.textureCreatePanel = new TextureCreatePanel(this);
+		this.dropdownPanel = new SelectTexturePanel(this);
+		this.floatingPanel = new NewTexturePanel(this);
 	}
 
 	protected addEventListeners(): void {
 
-		window.addEventListener('click', (e) => {
-
-			if(!this.textureSelectPanel.created) return;
-
-			const target = e.target as HTMLElement;
-			if(this.textureSelectPanel.dom.el?.contains(target)) return;
-			this.destroyPanel();
-		});
-
-		this.activeOption.addEventListener('click', (e) => {
-			if(this.textureSelectPanel.created) return;
-
+		this.dom.el.addEventListener('click', (e) => {
 			e.stopPropagation();
-
-			this.dom.el.classList.add(c.open);
-			this.textureSelectPanel.create(this.dom);
+			this.destroyFloating();
+			this.createDropdown();
 		});
 
+		window.addEventListener('click', (e) => {
+			const target = e.target as HTMLElement;
+
+			if(this.dropdownPanel.created) {
+				if(this.dropdownPanel.dom.el?.contains(target)) return;
+				this.destroyDropdown();
+			}
+
+			if(this.floatingPanel.created) {
+				if(this.floatingPanel.dom.el?.contains(target)) return;
+				this.destroyFloating();
+			}
+
+		});
 	}
 
-	addTexture(): void {
-		this.textureCreatePanel.create(this.dom);
+	createFloating(): void {
+		this.floatingPanel.create(this.dom);
+	}
+	createDropdown(): void {
+		this.dropdownPanel.create(this.dom);
 	}
 
 	onResize(e?: CustomEvent<any>): void {
-		this.destroyPanel();
+		this.destroyDropdown();
+		this.destroyFloating();
 	}
 
-	destroyPanel(): void {
+	destroyDropdown(): void {
 		this.dom.el.classList.remove(c.open);
-		this.textureSelectPanel.destroy();
+		this.dropdownPanel.destroy();
+	}
+	destroyFloating(): void {
+		this.floatingPanel.destroy();
 	}
 
 	protected createDom(): void {
@@ -70,14 +78,11 @@ export class TextureItem extends ExtendedItem {
 		input.innerHTML = uiDownarrowHlt;
 		input.appendChild(p);
 		this.dom.content.appendChild(input);
-		this.activeOption = this.dom.content.querySelector(`.${c.input}`);
 
 		this.dom.el.classList.add(CSS_UI.row.vertical);
 
+		this.activeOption = this.dom.content.querySelector(`.${c.input}`);
+
 	}
 
-	refresh(): void {
-		this.activeOption.querySelector('p').innerText = this.value;
-		super.refresh();
-	}
 }

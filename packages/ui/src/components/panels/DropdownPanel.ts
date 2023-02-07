@@ -1,7 +1,6 @@
 import { el } from "@fils/utils";
 import { CSS_UI } from "../../partials/cssClasses";
 import { SelectItem } from "../items/customItems/SelectItem";
-import { TextureItem } from "../items/customItems/TextureItem";
 import { Panel, PanelDom } from "./Panel";
 
 interface DropdownPanelDom extends PanelDom {
@@ -9,12 +8,12 @@ interface DropdownPanelDom extends PanelDom {
 }
 
 export class DropdownPanel extends Panel {
-	parent: SelectItem | TextureItem;
+	parent: SelectItem;
 	options: Array<any>;
 
 	dom: DropdownPanelDom;
 
-	constructor(parent: SelectItem | TextureItem) {
+	constructor(parent: SelectItem) {
 		super(parent);
 		this.dom = this.dom as DropdownPanelDom;
 		this.dom.options = [];
@@ -26,6 +25,8 @@ export class DropdownPanel extends Panel {
 		this.dom.el.classList.add(CSS_UI.panel.dropdown);
 
 		const r = this.dom.parent.content.getBoundingClientRect();
+		console.log(r);
+
 		this.dom.el.style.top = `${r.top + r.height}px`;
 		this.dom.el.style.width = `${r.width}px`;
 		this.dom.el.style.left = `${r.left}px`;
@@ -39,10 +40,6 @@ export class DropdownPanel extends Panel {
 		this.createOptions();
 
 		this.addEventListeners();
-
-	}
-
-	addEventListeners(): void {
 
 	}
 
@@ -60,7 +57,13 @@ export class DropdownPanel extends Panel {
 
 	}
 
-	createOption(value: Object) {
+	createOption(_value: Object | string | Array<any>): void {
+		const option = el('p');
+
+		option.innerHTML = this.parent.getLabel(_value);
+
+		this.dom.el.appendChild(option);
+		this.dom.options.push(option);
 	}
 
 	private createOptions(): void {

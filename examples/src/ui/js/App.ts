@@ -104,13 +104,15 @@ export class App {
 			title: 'Texture Test',
 			text: 'Texture',
 			view: 'texture',
-			options: this.obj.textures
+			options: this.obj.textures,
+			optionLabel: 'name',
 		});
 
 		group.add(this.obj, 'optionsTestActiveArray', {
 			title: 'Select Array',
 			view: 'select',
 			options: this.obj.optionsTestArray,
+			optionLabel: 'name',
 		});
 
 		// group.add(this.obj, 'colorTest', {

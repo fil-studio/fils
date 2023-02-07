@@ -6,7 +6,8 @@ export const CSS_UI = {
 	utility: {
 		hidden: '_ui--hidden',
 		grab: '_ui--grab',
-		active: '_ui--active'
+		active: '_ui--active',
+		loaded: '_ui--loaded',
 	},
 	row: {
 		baseClass: '_ui-row',
@@ -42,6 +43,7 @@ export const CSS_UI = {
 	panel: {
 		baseClass: '_ui-panel',
 		dropdown: '_ui-panel-dropdown',
+		floating: '_ui-panel-floating',
 	},
 
 	// Custom items will be injected here

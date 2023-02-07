@@ -33,7 +33,6 @@ export class SelectItem extends ExtendedItem {
 			const target = e.target as HTMLElement;
 			if(this.panel.dom.el?.contains(target)) return;
 
-
 			this.destroyPanel();
 		});
 
@@ -67,15 +66,18 @@ export class SelectItem extends ExtendedItem {
 		this.activeOption = this.dom.content.querySelector(`.${c.input}`);
 	}
 
-	setValue(_value: any): void {
-		let value = _value;
+	getLabel(value: Object | string | Array<any>): string {
 
-		// If it's null set it to the first option
-		if(check.isNull(value) || check.isUndefined(value)) {
-			value = check.isArray(this.options.options) ? this.options.options[0] : this.options.options[Object.keys(this.options.options)[0]];
+		// Is string or number
+		let label = check.isNull(value) || check.isUndefined(value) ? 'Empty' : value as string;
+		if (check.isArray(value)) {
+			label = value[0];
+		}
+		if (check.isObject(value)) {
+			label = value[this.options.optionLabel ? this.options.optionLabel : Object.keys(value)[0]];
 		}
 
-		super.setValue(value);
+		return label as string;
 	}
 
 	afterCreate(): void {
@@ -83,7 +85,9 @@ export class SelectItem extends ExtendedItem {
 	}
 
 	refresh(): void {
-		this.activeOption.querySelector('p').innerText = this.value;
+		console.log('refresh', this.getLabel(this.value));
+
+		this.activeOption.querySelector('p').innerText = this.getLabel(this.value);
 		super.refresh();
 	}
 }

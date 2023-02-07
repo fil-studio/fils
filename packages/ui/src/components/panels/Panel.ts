@@ -63,6 +63,12 @@ export class Panel {
 		this.createPanelContent();
 
 		document.body.appendChild(this.dom.el);
+
+		this.dom.el.classList.add(CSS_UI.utility.loaded);
+
+		setTimeout(() => {
+			this.dom.el.classList.add(CSS_UI.utility.active);
+		}, 10);
 	}
 
 	destroy(): void {

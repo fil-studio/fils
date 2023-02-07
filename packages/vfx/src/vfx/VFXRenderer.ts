@@ -22,7 +22,7 @@ import { BlurPass, BlurSettings } from "../main";
 
 import vert from '../glsl/fbo.vert';
 import frag from '../glsl/vfx/comp.frag';
-import { RTUtils } from "@fils/gfx";
+import { RTUtils } from '../../../gfx/src/main';
 
 const COMP = new RawShaderMaterial({
     vertexShader: vert,
