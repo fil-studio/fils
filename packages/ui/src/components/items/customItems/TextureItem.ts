@@ -3,7 +3,7 @@ import { uiDownarrowHlt } from "../../../../../ui-icons/lib/Icons";
 import { CSS_UI } from "../../../partials/cssClasses";
 import { TextureSelectPanel } from "../../panels/customPanels/TextureSelectPanel";
 import { ExtendedItem } from "../ExtendedItem";
-import { TextureItemOptions } from "../ItemOptions";
+import { DropdownOptions } from "../ItemOptions";
 
 
 CSS_UI.items.push({
@@ -16,12 +16,12 @@ const c = CSS_UI.getItemClasses('texture');
 
 export class TextureItem extends ExtendedItem {
 	listPanel: TextureSelectPanel;
-	options: TextureItemOptions
+	options: DropdownOptions;
 
 	protected activeOption: HTMLElement;
 
 	beforeCreate(): void {
-		this.listPanel = new this.panels[0](this) as TextureSelectPanel;
+		this.listPanel = new TextureSelectPanel(this);
 	}
 
 	protected addEventListeners(): void {

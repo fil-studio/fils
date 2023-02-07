@@ -7,19 +7,12 @@ import { Panel } from "../components/panels/Panel";
 export interface AvailableItem {
 	view: string,
 	create: (params: ItemParams, options) => Item,
-	getCSS: () => string
 }
 export const AvailableItems = {
 	items: [] as AvailableItem[],
 }
 export interface ItemRegisterOptions {
 	view: string,
-	extendedCSS?: string,
-	extendedHTML?: string,
-	panels?: typeof Panel | Array<typeof Panel>,
-	parseValue?: (value: any) => any,
-	addEventListeners?: () => void,
-	refresh?: () => void,
 	item: typeof ExtendedItem,
 }
 
@@ -52,14 +45,9 @@ export const ItemRegister = (registerOptions:ItemRegisterOptions) => {
 			return new registerOptions.item(registerOptions, itemParams, options) as ExtendedItem;
 		}
 
-		const getCSS = () => {
-			return '';
-		}
-
 		AvailableItems.items.push({
 			view: registerOptions.view,
 			create: createItem,
-			getCSS: getCSS
 		});
 }
 

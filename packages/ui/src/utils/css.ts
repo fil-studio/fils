@@ -6,14 +6,14 @@ const css = {
 		style.innerHTML = css;
 		document.head.appendChild(style);
 	},
-	merge: (css: string, items: Array<AvailableItem>):string => {
-		let style = css;
-		for(const item of items){
-			const itemCss = item.getCSS();
-			if(itemCss) style += itemCss;
-		}
-		return style;
-	}
+	// merge: (css: string, items: Array<AvailableItem>):string => {
+	// 	let style = css;
+	// 	for(const item of items){
+	// 		const itemCss = item.getCSS();
+	// 		if(itemCss) style += itemCss;
+	// 	}
+	// 	return style;
+	// }
 }
 
 

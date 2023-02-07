@@ -2,15 +2,14 @@
 import { el, generateUniqueId } from '../../../utils/lib/Utils';
 import styles from '../bundle/bundle.min.css';
 import { CSS_UI } from '../partials/cssClasses';
-import { AvailableItems } from '../partials/ItemFactory';
 import { RegisterBaseComponents } from '../partials/RegisterBaseItems';
 import css from '../utils/css';
 import dom, { RowTypes } from '../utils/dom';
 import { Group, GroupDom, GroupParams } from './Group';
 
 RegisterBaseComponents();
-const mergedCss = css.merge(styles, AvailableItems.items);
-css.inject(mergedCss);
+// const mergedCss = css.merge(styles, AvailableItems.items);
+css.inject(styles);
 
 
 interface UIParams extends GroupParams {

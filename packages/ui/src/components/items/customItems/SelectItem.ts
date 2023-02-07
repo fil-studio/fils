@@ -21,7 +21,7 @@ export class SelectItem extends ExtendedItem {
 	protected activeOption: HTMLElement;
 
 	beforeCreate(): void {
-		this.panel = new this.panels[0](this) as SelectPanel;
+		this.panel = new SelectPanel(this);
 	}
 
 	protected addEventListeners(): void {
