@@ -15,21 +15,11 @@ export class DropdownPanel extends Panel {
 
 	constructor(parent: SelectItem) {
 		super(parent);
-		this.dom = this.dom as DropdownPanelDom;
-		this.dom.options = [];
-	}
 
-	positionPanel(): void {
-		if (!this.created) return;
-
-		this.dom.el.classList.add(CSS_UI.panel.dropdown);
-
-		const r = this.dom.parent.content.getBoundingClientRect();
-		console.log(r);
-
-		this.dom.el.style.top = `${r.top + r.height}px`;
-		this.dom.el.style.width = `${r.width}px`;
-		this.dom.el.style.left = `${r.left}px`;
+		this.dom = {
+			...this.dom,
+			options: []
+		}
 	}
 
 

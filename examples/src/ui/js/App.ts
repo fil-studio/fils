@@ -116,6 +116,11 @@ export class App {
 		// 	title: 'Color Test',
 		// 	view: 'color'
 		// });
+		group.add(this.obj, 'colorTest', {
+			title: 'COLOR',
+			view: 'color'
+		});
+
 		group.add(this.obj, 'uploadTest', {
 			title: 'Upload Button',
 			text: 'Upload',

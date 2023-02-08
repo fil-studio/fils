@@ -660,11 +660,11 @@
   color: var(--white);
   transform: translateY(-50%) rotate(90deg);
 }
-._ui-wrapper ._ui-texture {
-  position: relative;
-  float: left;
+._ui-wrapper ._ui-color div {
+  justify-content: flex-end;
+  align-items: center;
 }
-._ui-wrapper ._ui-texture ._ui-texture-input {
+._ui-wrapper ._ui-color input {
   width: 100%;
   min-height: 2rem;
   padding: var(--padding);
@@ -674,21 +674,17 @@
   display: flex;
   align-items: center;
   cursor: pointer;
+  max-width: 70px;
 }
-._ui-wrapper ._ui-texture ._ui-texture-input * {
-  pointer-events: none;
-}
-._ui-wrapper ._ui-texture ._ui-texture-input svg {
-  width: 20px;
-  position: absolute;
-  right: 11px;
-  top: 50%;
-  transition: all var(--duration) var(--timing);
-  transform: translateY(-50%) rotate(0deg);
-}
-._ui-wrapper ._ui-texture._ui-texture-open ._ui-texture-input svg {
-  color: var(--white);
-  transform: translateY(-50%) rotate(90deg);
+._ui-wrapper ._ui-color ._ui-color-box {
+  width: calc(2rem - 8px);
+  height: calc(2rem - 8px);
+  margin-right: 10px;
+  border-radius: var(--radius-0);
+  flex-shrink: 0;
+  flex-grow: 0;
+  cursor: pointer;
+  background-color: var(--active-color);
 }
 
 ._ui-panel {
