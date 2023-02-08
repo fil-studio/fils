@@ -1,17 +1,35 @@
+import { el } from "@fils/utils";
+import check from "../../../utils/check";
 import { Item } from "../Item";
 
 export class StringItem extends Item {
+	input: HTMLInputElement;
 
 	protected addEventListeners(): void {
-		const input = this.dom.el.querySelector('input');
-		input.value = this.value;
-		input.addEventListener('change', () => {
-			this.setValue(input.value);
+		this.input.addEventListener('change', () => {
+			this.setValue(this.input.value);
 		});
 	}
 
 	protected createContent(): void {
-		this.dom.content.innerHTML = `<input type="text" placeholder="String" />`;
+		this.input = el('input') as HTMLInputElement;
+		this.input.placeholder = 'String';
+		this.input.type = 'text';
+		this.dom.content.appendChild(this.input);
+	}
+
+	setValue(_value: any): void {
+		let value = _value;
+
+		if (check.isNull(value) || check.isUndefined(value)) {
+			value = 'String';
+		}
+		super.setValue(value);
+	}
+
+	refreshDom(): void {
+		this.input.value = this.value;
+		super.refreshDom();
 	}
 
 }

@@ -20,14 +20,14 @@ export class App {
 			booleanTest: false,
 			stringTest: 'Test',
 			// numberTest: 1,
-			numberTest: [1,2],
+			// numberTest: [1,2],
 			// numberTest: [1, 2, 3, 4],
-			// numberTest: {
-			// 	x: 1,
-			// 	y: 2,
-			// 	z: 3,
-			// 	w: 5
-			// },
+			numberTest: {
+				x: 1,
+				y: 2,
+				z: 3,
+				w: 5
+			},
 			uploadTest: null,
 			numberTestSlider: 0,
 			numberTestFloat: 0.5,
@@ -65,7 +65,7 @@ export class App {
 		this.ui = new UI({
 			title: 'UI',
 			icon: uiBrushData,
-			parent: document.querySelector('.parent-example') as HTMLElement,
+			parentElement: document.querySelector('.parent-example') as HTMLElement,
 		});
 
 		const group = this.ui.addGroup({

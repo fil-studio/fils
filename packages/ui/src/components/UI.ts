@@ -27,8 +27,6 @@ export class UI extends Group {
 
 	resizable: boolean;
 
-	depth: number = 0;
-
 	constructor({
 		resizable = true,
 		parentElement,
@@ -36,14 +34,12 @@ export class UI extends Group {
 	}: UIParams) {
 		super({...arguments[0] });
 
-		this.parent = null;
+		this.resizable = parentElement ? false : resizable;
 
 		this.init(0);
 
 		this.addIcon(icon);
 		this.appendTo(parentElement);
-		this.resizable = parentElement ? false : resizable;
-		this.addDragListeners();
 
 	}
 
@@ -63,12 +59,11 @@ export class UI extends Group {
 
 	createDom(): void {
 		super.createDom();
+
 		this.dom = {
 			wrapper: null,
 			...this.dom
 		};
-
-
 
 		/*
 		* Main UI requires an extra wrapper
@@ -79,11 +74,11 @@ export class UI extends Group {
 		});
 
 		this.dom.wrapper.appendChild(this.dom.el);
-		console.log(this.dom);
-
 	}
 
-	addDragListeners(){
+	protected addEventListeners(){
+		super.addEventListeners();
+
 		if(!this.resizable) return;
 
 		// Create resizer element

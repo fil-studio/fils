@@ -35,8 +35,6 @@ export const ItemRegister = (registerOptions:ItemRegisterOptions) => {
 
 export const ItemFactory = (createParams:CreateItemParams) => {
 
-	console.log('ItemFactory', createParams);
-
 	const params = createParams.params;
 
 	if(!createParams.object) throw new Error('ItemFactory - object is required');

@@ -35,6 +35,17 @@ const check = {
 
 	isFunction: function(obj) {
 		return obj instanceof Function;
+	},
+
+	getType: function(obj) {
+		if (check.isUndefined(obj)) return 'undefined';
+		if (check.isNull(obj)) return 'null';
+		if (check.isArray(obj)) return 'array';
+		if (check.isObject(obj)) return 'object';
+		if (check.isNumber(obj)) return 'number';
+		if (check.isString(obj)) return 'string';
+		if (check.isBoolean(obj)) return 'boolean';
+		if (check.isFunction(obj)) return 'function';
 	}
 }
 

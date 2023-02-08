@@ -10,9 +10,11 @@ const c = CSS_UI.getItemClasses('boolean');
 export class BooleanItem extends Item {
 
 	protected addEventListeners(): void {
-		 	this.dom.el.addEventListener('click', () => {
+
+		this.dom.el.addEventListener('click', () => {
 			this.setValue(!this.value);
  		});
+
 	}
 
 	protected createContent(): void {

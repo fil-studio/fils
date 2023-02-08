@@ -5,7 +5,7 @@ import { uiDownarrowHlt } from '../../../../../ui-icons/lib/Icons';
 import { CSS_UI } from "../../../partials/cssClasses";
 import { Item } from "../Item";
 
-type item = {
+type inputElement = {
 	value: number;
 	placeholder: string;
 	wrapper: HTMLElement;
@@ -26,12 +26,14 @@ const c = CSS_UI.getItemClasses('number');
 export class NumberItem extends Item {
 	params: NumberItemParameters;
 
-	private items: item[];
+	private inputElements: inputElement[];
 
 	max: number;
 	min: number;
 	step: number;
 	decimals: number;
+
+	originalDataType: string;
 
 	limitNumber = (value: number):number => {
 
@@ -47,28 +49,28 @@ export class NumberItem extends Item {
 
 	protected addEventListeners(): void {
 
-		for(const item of this.items) {
+		for (const inputElement of this.inputElements) {
 
-			item.input.valueAsNumber = item.value;
+			inputElement.input.valueAsNumber = inputElement.value;
 
-			item.input.addEventListener('change', () => {
-				item.value = item.input.valueAsNumber;
-				item.value = this.limitNumber(item.value);
-				item.input.valueAsNumber = item.value;
+			inputElement.input.addEventListener('change', () => {
+				inputElement.value = inputElement.input.valueAsNumber;
+				inputElement.value = this.limitNumber(inputElement.value);
+				inputElement.input.valueAsNumber = inputElement.value;
 				this.setValue();
 			});
 
-			item.buttonIncrease.addEventListener('click', () => {
-				item.value += this.step;
-				item.value = this.limitNumber(item.value);
-				item.input.valueAsNumber = item.value;
+			inputElement.buttonIncrease.addEventListener('click', () => {
+				inputElement.value += this.step;
+				inputElement.value = this.limitNumber(inputElement.value);
+				inputElement.input.valueAsNumber = inputElement.value;
 				this.setValue();
 			});
 
-			item.buttonDecrease.addEventListener('click', () => {
-				item.value -= this.step;
-				item.value = this.limitNumber(item.value);
-				item.input.valueAsNumber = item.value;
+			inputElement.buttonDecrease.addEventListener('click', () => {
+				inputElement.value -= this.step;
+				inputElement.value = this.limitNumber(inputElement.value);
+				inputElement.input.valueAsNumber = inputElement.value;
 				this.setValue();
 			});
 
@@ -76,37 +78,35 @@ export class NumberItem extends Item {
 
 	}
 
-	setValue(_value:any): void {
 
-		let value;
+	setValue(_value?:any): void {
 
-		if(this.created){
+		// Only first setValue will have a value
+		if(_value) this.originalDataType = check.getType(_value);
 
-			if (check.isNumber(this.value)) {
-				value = this.items[0].value;
-			} else if (check.isArray(this.value)) {
-				value = [];
-				for (let i = 0; i < this.items.length; i++) {
-					value.push(this.items[i].value);
-				}
-			} else if (check.isObject(this.value)) {
-				let i = 0;
-				value = {};
-				for (const key in this.value as Object) {
-					value[key] = this.items[i].value;
-					i++;
-				}
+		// Update this value to the current value
+		let inputsValue = [];
+		for(const inputElement of this.inputElements) inputsValue.push(inputElement.value);
+		this.value = inputsValue;
+
+		// Translate from array to the original data type
+		let valueForOutput = null;
+		if(this.originalDataType === 'number') valueForOutput = inputsValue[0];
+		else if(this.originalDataType === 'array') valueForOutput = inputsValue;
+		else if(this.originalDataType === 'object') {
+			valueForOutput = {};
+			let i = 0;
+			for (const [key, value] of Object.entries(this.object[this.key])) {
+				valueForOutput[key] = inputsValue[i];
 			}
-
-		} else {
-			value = _value;
 		}
 
-		super.setValue(value);
+		this.object[this.key] = valueForOutput;
+		this.refreshDom();
 	}
 
-	protected createItem(value:number): item {
-		const item = {
+	protected createInput(value: number): inputElement {
+		const inputElement = {
 			value,
 			placeholder: 'Value',
 			wrapper: null,
@@ -114,27 +114,69 @@ export class NumberItem extends Item {
 			buttonIncrease: null,
 			buttonDecrease: null
 		}
-		return item;
+		return inputElement;
 	}
 
-	protected createItems(value: number | number[] | Object): void {
+	protected createInputs(value: number | number[] | Object): void {
 
-		this.items = [];
+		this.inputElements = [];
 
-		if (check.isNumber(value)) {
-			this.items.push(this.createItem(value as number));
-		} else if (check.isArray(value)) {
+		// If value is a number, create one input
+		if (check.isNumber(value)) this.inputElements.push(this.createInput(value as number));
+
+		// If value is an array, create one input for each item
+		else if (check.isArray(value)) {
 			for (const item of value as number[]) {
-				this.items.push(this.createItem(item));
-			}
-		} else if (check.isObject(value)) {
-			for (const key in value as Object) {
-				const item = this.createItem(value[key]);
-				item.placeholder = key;
-				this.items.push(item);
+				this.inputElements.push(this.createInput(item));
 			}
 		}
 
+		// If value is an object, create one input for each key
+		else if (check.isObject(value)) {
+			for (const key in value as Object) {
+				const item = this.createInput(value[key]);
+				item.placeholder = key;
+				this.inputElements.push(item);
+			}
+		}
+
+	}
+
+	protected createInputContent(inputElement: inputElement): void {
+
+		// Create wrapper
+		inputElement.wrapper = el('div', c.input);
+
+		// Create input
+		inputElement.input = el('input') as HTMLInputElement;;
+		inputElement.input.type = 'number';
+		inputElement.input.placeholder = inputElement.placeholder;
+		if(this.min) inputElement.input.min = this.min.toString();
+		if(this.max) inputElement.input.max = this.max.toString();
+		if(this.step) inputElement.input.step = this.step.toString();
+
+		// Append input to wrapper
+		inputElement.wrapper.appendChild(inputElement.input);
+
+		// Create buttons
+		const btns = el('div', c.buttons);
+
+		inputElement.buttonIncrease = el('button', c.btnIncrease) as HTMLButtonElement;
+		inputElement.buttonIncrease.innerHTML = uiDownarrowHlt;
+
+		inputElement.buttonDecrease = el('button', c.btnDecrease) as HTMLButtonElement;
+		inputElement.buttonDecrease.innerHTML = uiDownarrowHlt;
+
+		btns.appendChild(inputElement.buttonIncrease);
+		btns.appendChild(inputElement.buttonDecrease);
+		inputElement.wrapper.appendChild(btns);
+
+		if (this.inputElements.length > 2) {
+			inputElement.buttonIncrease.classList.add(`.${CSS_UI.utility.hidden}`);
+			inputElement.buttonDecrease.classList.add(`.${CSS_UI.utility.hidden}`);
+		}
+
+		this.dom.content.appendChild(inputElement.wrapper);
 	}
 
 	protected createContent(): void {
@@ -144,36 +186,10 @@ export class NumberItem extends Item {
 		this.step = this.params.step || 0.01;
 		this.decimals = this.params.decimals || 2;
 
-		this.createItems(this.object[this.key]);
+		this.createInputs(this.object[this.key]);
 
-		for(const item of this.items) {
-
-			item.wrapper = el('div', c.input);
-
-			item.wrapper.innerHTML = `<input type="number" placeholder="${item.placeholder}" />`;
-			item.input = item.wrapper.querySelector('input');
-			if(this.min) item.input.setAttribute('min', this.min.toString());
-			if(this.max) item.input.setAttribute('max', this.max.toString());
-			if(this.step) item.input.setAttribute('step', this.step.toString());
-
-			const btns = el('div', c.buttons);
-
-			item.buttonIncrease = el('button', c.btnIncrease) as HTMLButtonElement;
-			item.buttonIncrease.innerHTML = uiDownarrowHlt;
-
-			item.buttonDecrease = el('button', c.btnDecrease) as HTMLButtonElement;
-			item.buttonDecrease.innerHTML = uiDownarrowHlt;
-
-			btns.appendChild(item.buttonIncrease);
-			btns.appendChild(item.buttonDecrease);
-			item.wrapper.appendChild(btns);
-
-			if(this.items.length > 2) {
-				item.buttonIncrease.style.display = 'none';
-				item.buttonDecrease.style.display = 'none';
-			}
-
-			this.dom.content.appendChild(item.wrapper);
+		for(const inputElement of this.inputElements) {
+			this.createInputContent(inputElement);
 		}
 	}
 

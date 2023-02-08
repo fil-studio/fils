@@ -3,11 +3,12 @@ import { UI } from "../main";
 import { CSS_UI } from "../partials/cssClasses";
 import { EventsManager } from "../partials/EventsManager";
 import { CreateItemParams, ItemFactory } from "../partials/ItemFactory";
-import dom, { RowTypes } from "../utils/dom";
+import { RowTypes } from "../utils/dom";
 import { Button } from "./Button";
-import { Dom, Item } from "./items/Item";
+import { Item } from "./items/Item";
 import { ItemParameters } from "./items/ItemParameters";
 import { Spacer, SpacerParams } from "./Spacer";
+import { Dom, UIElement } from "./UiElement";
 
 
 export interface GroupParams {
@@ -23,15 +24,10 @@ export interface GroupDom extends Dom {
 	foldWrapper: HTMLElement
 }
 
-export class Group extends EventsManager {
-	title: string;
-
+export class Group extends UIElement {
 	dom: GroupDom;
 
-	protected parent: Group | UI;
 	protected children: Array<Group | Item | Button | Spacer> = [];
-
-	public depth: number = 0;
 
 	folded: boolean;
 	foldable: boolean;
@@ -43,9 +39,7 @@ export class Group extends EventsManager {
 		folded = false,
 		foldable = true,
 	}: GroupParams) {
-		super();
-
-		this.title = title || '';
+		super(RowTypes.group, title);
 
 		// Is it folded or not? If it's not foldable, it's not folded
 		this.folded = foldable ? folded : false;
@@ -53,36 +47,20 @@ export class Group extends EventsManager {
 
 	}
 
-	init(depth: number = 0): void {
-		this.depth = depth;
-		this.createDom();
-		this.addFoldListeners();
-	}
-
 	createDom(): void {
 
+		super.createDom();
+
 		this.dom = {
-			el: null,
+			...this.dom,
 			content: null,
 			foldWrapper: null
 		}
 
-		this.dom.el = dom.createRow({
-			type: RowTypes.group,
-			depth: this.depth,
-			title: this.title,
-			foldable: this.foldable
-		});
-
 		this.dom.content = this.dom.el.querySelector(`.${CSS_UI.section.content}`);
 	}
 
-	setParent(parent: Group | UI) {
-		this.parent = parent;
-		this.depth = parent.depth + 1;
-	}
-
-	protected addFoldListeners(){
+	protected addEventListeners(){
 
 		if(!this.foldable) return;
 
@@ -125,10 +103,6 @@ export class Group extends EventsManager {
 		}
 
 		this.emit('fold');
-	}
-
-	destroy(): void {
-		this.dom.el.remove();
 	}
 
 	/**

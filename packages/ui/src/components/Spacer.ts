@@ -1,6 +1,6 @@
 import { CSS_UI } from "../partials/cssClasses";
-import dom, { RowTypes } from "../utils/dom";
-import { Dom } from "./items/Item";
+import { RowTypes } from "../utils/dom";
+import { UIElement } from "./UIElement";
 
 export enum SpacerSize {
 	small = 'small',
@@ -13,27 +13,18 @@ export interface SpacerParams {
 	line?: boolean;
 }
 
-export class Spacer {
+export class Spacer extends UIElement  {
 	type: RowTypes = RowTypes.spacer;
-	dom: Dom;
 
 	constructor(depth:number, {
 		size = SpacerSize.medium,
 		line = true,
 	}: SpacerParams) {
+		super(RowTypes.spacer);
 
-		this.dom = {
-			el: null
-		}
-
-		this.dom.el = dom.createRow({
-			type: RowTypes.spacer,
-			depth,
-		});
+		this.init(depth)
 
 		if (line) this.dom.el.classList.add(CSS_UI.spacer.hasLine);
 		this.dom.el.classList.add(CSS_UI.spacer.size[size]);
-
 	}
-
 }

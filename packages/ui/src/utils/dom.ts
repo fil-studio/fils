@@ -15,7 +15,6 @@ interface DomOptions {
 	type: RowTypes;
 	depth: number;
 	title?: string;
-	foldable?: boolean;
 }
 
 const dom = {
@@ -44,7 +43,6 @@ const dom = {
 		type,
 		depth,
 		title,
-		foldable
 	}:DomOptions = {
 		type: RowTypes.ui,
 		depth: 0
@@ -75,9 +73,7 @@ const dom = {
 
 			const titleTab = el('header');
 
-			if(foldable){
-				dom.addIcon(titleTab);
-			}
+			dom.addIcon(titleTab);
 
 			const h3 = el('h3');
 			h3.innerText = title;
