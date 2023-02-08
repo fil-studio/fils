@@ -8,7 +8,7 @@ import { Button } from "./Button";
 import { Item } from "./items/Item";
 import { ItemParameters } from "./items/ItemParameters";
 import { Spacer, SpacerParams } from "./Spacer";
-import { Dom, UIElement } from "./UiElement";
+import { Dom, UIElement } from "./UIElement";
 
 
 export interface GroupParams {
