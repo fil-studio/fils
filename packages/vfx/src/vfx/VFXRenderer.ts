@@ -78,10 +78,11 @@ export class VFXRenderer {
 
         this.sceneRT = new WebGLMultipleRenderTargets(w, h, 2, {
             format: RGBAFormat,
-            type: UnsignedByteType
+            type: UnsignedByteType,
+            samples: settings && settings.samples ? settings.samples : 4
         });
+        
 
-        this.sceneRT['samples'] = 4;//settings && settings.samples || 4;
         this.sceneRT.texture[ 0 ].name = 'diffuse';
         this.sceneRT.texture[ 1 ].name = 'glow';
 

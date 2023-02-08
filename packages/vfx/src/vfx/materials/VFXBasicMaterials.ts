@@ -94,6 +94,7 @@ export class VFXEmissiveMaterial extends Material {
 
 export class VFXBasicMaterial extends MeshBasicMaterial {
     isVFXBasicMaterial = true;
+    shaderRef:Shader;
 
     constructor(params?:MeshBasicMaterialParameters) {
         super(params);
@@ -103,11 +104,13 @@ export class VFXBasicMaterial extends MeshBasicMaterial {
     onBeforeCompile (shader:Shader, renderer:WebGLRenderer):void {
         shader.vertexShader = vfxBasic.vertexShader;
         shader.fragmentShader = vfxBasic.fragmentShader;
+        this.shaderRef = shader;
     }
 }
 
 export class VFXPhongMaterial extends MeshPhongMaterial {
     isVFXPhongMaterial = true;
+    shaderRef:Shader;
 
     constructor(params?:MeshPhongMaterialParameters) {
         super(params);
@@ -116,11 +119,13 @@ export class VFXPhongMaterial extends MeshPhongMaterial {
     onBeforeCompile (shader:Shader, renderer:WebGLRenderer):void {
         shader.vertexShader = vfxPhong.vertexShader;
         shader.fragmentShader = vfxPhong.fragmentShader;
+        this.shaderRef = shader;
     }
 }
 
 export class VFXStandardMaterial extends MeshStandardMaterial {
     isVFXStandardMaterial = true;
+    shaderRef:Shader;
 
     constructor(params?:MeshStandardMaterialParameters) {
         super(params);
@@ -129,11 +134,13 @@ export class VFXStandardMaterial extends MeshStandardMaterial {
     onBeforeCompile (shader:Shader, renderer:WebGLRenderer):void {
         shader.vertexShader = vfxStandard.vertexShader;
         shader.fragmentShader = vfxStandard.fragmentShader;
+        this.shaderRef = shader;
     }
 }
 
 export class VFXPhysicalMaterial extends MeshPhysicalMaterial {
     isVFXPhysicalMaterial = true;
+    shaderRef:Shader;
 
     constructor(params?:MeshPhysicalMaterialParameters) {
         super(params);
@@ -142,5 +149,6 @@ export class VFXPhysicalMaterial extends MeshPhysicalMaterial {
     onBeforeCompile (shader:Shader, renderer:WebGLRenderer):void {
         shader.vertexShader = vfxPhysical.vertexShader;
         shader.fragmentShader = vfxPhysical.fragmentShader;
+        this.shaderRef = shader;
     }
 }

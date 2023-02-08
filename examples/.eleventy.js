@@ -15,6 +15,7 @@ const examples = [
   'vfx-common-pipeline',
   'vfx-pipeline',
   'vfx-materials',
+  'vfx-custom-material',
   'ui',
   'ui-icons',
   'nomad',
