@@ -1,14 +1,11 @@
 
+import { slugify } from '../../../../utils/lib/Utils';
+import { CSS_UI } from '../../partials/cssClasses';
 import { EventsManager } from '../../partials/EventsManager';
+import { CreateItemParams } from '../../partials/ItemFactory';
 import dom, { RowTypes } from '../../utils/dom';
 import { Group } from '../Group';
-import { ItemOptions } from './ItemOptions';
-
-export interface ItemParams {
-	object?: Object;
-	key?: string;
-	parent?: Group;
-}
+import { ItemParameters } from './ItemParameters';
 
 export interface Dom {
 	el: HTMLElement
@@ -20,38 +17,60 @@ export interface ItemDom extends Dom {
 
 export class Item extends EventsManager {
 
+	title: string;
+
 	dom: ItemDom;
 
 	parent: Group;
 	protected depth: number;
 
-	title: string;
-
 	protected object: Object;
 	protected key: string;
-
 	value: any;
 
 	protected created: boolean = false;
 
-	options: ItemOptions;
+	params: ItemParameters;
 
-	constructor({ parent, object, key }: ItemParams = {}, options: ItemOptions) {
+	constructor(params: CreateItemParams) {
 		super();
 
-		if(!parent) throw new Error('Item - parent is required');
-		if(!object) throw new Error('Item - object is required');
-		if(!key) throw new Error('Item - key is required');
+		this.params = params.params;
 
-		this.options = options;
+		this.object = params.object;
+		this.key = params.key;
 
-		this.depth = parent.depth + 1;
+		this.title = this.params?.title || params.key.charAt(0).toUpperCase() + params.key.slice(1);
 
-		this.object = object;
-		this.key = key;
+	}
 
-		this.title = this.options?.title || key.charAt(0).toUpperCase() + key.slice(1);
+	init(depth:number = 0): void {
 
+		this.depth = depth;
+
+		this.beforeCreate();
+		this.createDom();
+		this.createContent();
+		this.setValue(this.object[this.key]);
+		this.addEventListeners();
+		this.created = true;
+		this.afterCreate();
+	}
+
+	setValue(value: any) {
+		this.value = value;
+		this.object[this.key] = this.value;
+		this.refreshDom();
+	}
+
+	protected addEventListeners(): void {
+		// Override this method
+	}
+
+	/**
+	 * Dom
+	 */
+	private createDom() {
 		this.dom = {
 			el: null,
 			content: null,
@@ -64,32 +83,28 @@ export class Item extends EventsManager {
 		})
 
 		this.dom.content = this.dom.el.querySelector('div');
+		this.dom.el.classList.add(`${CSS_UI.baseClass}-${slugify(this.params.view)}`);
+
 	}
 
-	setValue(value: any) {
-		this.value = value;
-		if(this.created) this.refresh();
+	protected createContent() {
+		// Override this method
 	}
-
-	destroy(): void {
+	refreshDom() {
+		this.emit('__childrenChange');
+		this.emit('change');
+	}
+	destroyDom(): void {
 		this.dom.el.remove();
 	}
 
-	protected createDom() {
-		// Override this method
-	}
-
-	protected addEventListeners(): void {
-		// Override this method
-	}
-
 	/**
-	 * Refresh item dom
+	 * Lifecycle
 	 */
-	refresh() {
-		// console.log('Item - refresh:', this.title);
-		this.object[this.key] = this.value;
-		this.emit('__childrenChange');
-		this.emit('change');
+	protected beforeCreate(): void {
+		// Override this method
+	}
+	protected afterCreate(): void {
+		// Override this method
 	}
 }

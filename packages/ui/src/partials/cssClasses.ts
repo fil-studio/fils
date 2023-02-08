@@ -1,7 +1,7 @@
 export const CSS_UI = {
 	baseClass: '_ui',
 	wrapper: '_ui-wrapper',
-	embed: '_ui-wrapper-embed',
+	parent: '_ui-wrapper-has-parent',
 	resizer: '_ui-wrapper-resizer',
 	utility: {
 		hidden: '_ui--hidden',

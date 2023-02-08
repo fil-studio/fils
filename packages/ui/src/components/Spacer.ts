@@ -1,6 +1,5 @@
 import { CSS_UI } from "../partials/cssClasses";
 import dom, { RowTypes } from "../utils/dom";
-import { Group } from "./Group";
 import { Dom } from "./items/Item";
 
 export enum SpacerSize {
@@ -10,7 +9,6 @@ export enum SpacerSize {
 }
 
 export interface SpacerParams {
-	parent?: Group;
 	size?: SpacerSize;
 	line?: boolean;
 }
@@ -19,21 +17,18 @@ export class Spacer {
 	type: RowTypes = RowTypes.spacer;
 	dom: Dom;
 
-	constructor({
-		parent,
+	constructor(depth:number, {
 		size = SpacerSize.medium,
-		line = true
+		line = true,
 	}: SpacerParams) {
-
-		const depth = parent.depth + 1;
 
 		this.dom = {
 			el: null
 		}
 
-		this.dom.el = dom.createRow( {
+		this.dom.el = dom.createRow({
 			type: RowTypes.spacer,
-			depth: depth,
+			depth,
 		});
 
 		if (line) this.dom.el.classList.add(CSS_UI.spacer.hasLine);

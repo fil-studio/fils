@@ -2,10 +2,6 @@
 export class EventsManager {
 	protected subscribers: Object = {};
 
-	constructor() {
-
-	}
-
 	on(event:string, callback: Function) {
 		if (!this.subscribers[event]) {
 			this.subscribers[event] = [];

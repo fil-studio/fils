@@ -1,85 +1,58 @@
-import { Item, ItemParams } from "../components/items/Item";
-import { ExtendedItem } from "../components/items/ExtendedItem";
-import { ItemOptions } from "../components/items/ItemOptions";
-import { Panel } from "../components/panels/Panel";
+import { Item } from "../components/items/Item";
+import { ItemParameters } from "../components/items/ItemParameters";
 
 // Available items array
 export interface AvailableItem {
 	view: string,
-	create: (params: ItemParams, options) => Item,
+	create: (params: CreateItemParams) => Item,
 }
 export const AvailableItems = {
 	items: [] as AvailableItem[],
 }
 export interface ItemRegisterOptions {
 	view: string,
-	item: typeof ExtendedItem,
+	item: typeof Item,
 }
 
-// export interface ItemClassRegisterOptions extends ItemRegisterOptions {
-// 	view: string,
-// 	type: string,
-// }
-
-// export const ItemRegister = (registerOptions:ItemRegisterOptions) => {
-
-// 	const createExtendedItem = (itemParams: ItemParams, options:ItemOptions) => {
-// 		return new ExtendedItem(registerOptions, itemParams, options) as ExtendedItem;
-// 	}
-
-// 	const getCSS = () => {
-// 		return registerOptions.extendedCSS;
-// 	}
-
-// 	AvailableItems.items.push({
-// 		view: registerOptions.view,
-// 		type: registerOptions.type,
-// 		create: createExtendedItem,
-// 		getCSS: getCSS
-// 	});
-// }
+export interface CreateItemParams {
+	object: any,
+	key: string,
+	params?: ItemParameters
+}
 
 export const ItemRegister = (registerOptions:ItemRegisterOptions) => {
 
-		const createItem = (itemParams: ItemParams, options: ItemOptions) => {
-			return new registerOptions.item(registerOptions, itemParams, options) as ExtendedItem;
-		}
-
-		AvailableItems.items.push({
-			view: registerOptions.view,
-			create: createItem,
-		});
-}
-
-export const ItemFactory = (itemParams:ItemParams, options:ItemOptions) => {
-
-	if(!itemParams.object) throw new Error('ItemFactory - object is required');
-	if(!itemParams.key) throw new Error('ItemFactory - key is required');
-	if(!options.view) throw new Error('ItemFactory - view is required');
-
-	// Force item type
-	if(options.view){
-		const item = AvailableItems.items.find(item => item.view === options.view);
-		if(!item) throw new Error('ItemFactory - unknown view');
-		return item.create(itemParams, options);
+	const createItem = (createParams: CreateItemParams) => {
+		return new registerOptions.item(createParams) as Item;
 	}
 
-	// const aItems = AvailableItems.items;
+	AvailableItems.items.push({
+		view: registerOptions.view,
+		create: createItem,
+	});
+}
 
-	// const value = itemParams.object[itemParams.key];
 
-	// if(check.isBoolean(value)) {
-	// 	const item = aItems.find(item => item.type === 'boolean');
-	// 	return item.create(itemParams, options);
-	// }
-	// if(check.isString(value)) {
-	// 	const item = aItems.find(item => item.type === 'string');
-	// 	return item.create(itemParams, options);
-	// }
-	// if(check.isNumber(value)) {
-	// 	const item = aItems.find(item => item.type === 'number');
-	// 	return item.create(itemParams, options);
-	// }
+export const ItemFactory = (createParams:CreateItemParams) => {
+
+	console.log('ItemFactory', createParams);
+
+	const params = createParams.params;
+
+	if(!createParams.object) throw new Error('ItemFactory - object is required');
+	if(!createParams.key) throw new Error('ItemFactory - key is required');
+	if(!params.view) throw new Error('ItemFactory - view is required');
+
+
+	// Force item type
+	if(params.view){
+		const item = AvailableItems.items.find(item => item.view === params.view);
+		if(!item) throw new Error('ItemFactory - unknown view');
+		console.log();
+
+		return item.create(createParams);
+	}
+
 
 	throw new Error('ItemFactory - unknown type');
 }

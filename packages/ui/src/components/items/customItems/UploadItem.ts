@@ -1,12 +1,12 @@
 import { uiRemove } from '../../../../../ui-icons/lib/Icons';
 import { CSS_UI } from "../../../partials/cssClasses";
 import dom from "../../../utils/dom";
-import { ExtendedItem } from "../ExtendedItem";
-import { UploadItemOptions } from "../ItemOptions";
+import { Item } from '../Item';
+import { UploadItemParameters } from "../ItemParameters";
 
 
-export class UploadItem extends ExtendedItem {
-	options: UploadItemOptions;
+export class UploadItem extends Item {
+	params: UploadItemParameters;
 
 	protected buttonTitle: string;
 
@@ -38,11 +38,11 @@ export class UploadItem extends ExtendedItem {
 
 	}
 
-	protected createDom(): void {
+	protected createContent(): void {
 
-		this.buttonTitle = this.options.text ? this.options.text : this.title;
+		this.buttonTitle = this.params.text ? this.params.text : this.title;
 
-		this.uploadButton = dom.createButton(this.buttonTitle, this.options.icon);
+		this.uploadButton = dom.createButton(this.buttonTitle, this.params.icon);
 		this.dom.content.appendChild(this.uploadButton);
 
 		this.removeUploadButton = dom.createButton('', uiRemove);

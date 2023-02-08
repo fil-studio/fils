@@ -1,5 +1,5 @@
 // Import CSS
-import { el, generateUniqueId } from '../../../utils/lib/Utils';
+import { el } from '../../../utils/lib/Utils';
 import styles from '../bundle/bundle.min.css';
 import { CSS_UI } from '../partials/cssClasses';
 import { RegisterBaseComponents } from '../partials/RegisterBaseItems';
@@ -13,8 +13,8 @@ css.inject(styles);
 
 
 interface UIParams extends GroupParams {
+	parentElement?: HTMLElement;
 	resizable?: boolean;
-	embed?: HTMLElement,
 	icon?: string;
 }
 
@@ -23,53 +23,64 @@ interface UIDom extends GroupDom {
 }
 
 export class UI extends Group {
-
-	id: string;
-
 	dom: UIDom;
 
 	resizable: boolean;
+
 	depth: number = 0;
 
 	constructor({
 		resizable = true,
-		embed,
+		parentElement,
 		icon,
 	}: UIParams) {
 		super({...arguments[0] });
 
-		this.id = generateUniqueId('ui');
-
 		this.parent = null;
 
+		this.init(0);
+
+		this.addIcon(icon);
+		this.appendTo(parentElement);
+		this.resizable = parentElement ? false : resizable;
+		this.addDragListeners();
+
+	}
+
+	appendTo(parentElement: HTMLElement){
+		if(parentElement){
+			this.dom.wrapper.classList.add(CSS_UI.parent);
+			parentElement.appendChild(this.dom.wrapper);
+		} else {
+			document.body.appendChild(this.dom.wrapper);
+		}
+	}
+
+	addIcon(icon: string){
+		if(!icon) return;
+		dom.addIcon(this.dom.el.querySelector('header'), icon);
+	}
+
+	createDom(): void {
+		super.createDom();
 		this.dom = {
 			wrapper: null,
 			...this.dom
 		};
 
+
+
 		/*
-		 * Main UI requires an extra wrapper
-		 */
+		* Main UI requires an extra wrapper
+		*/
 		this.dom.wrapper = dom.createRow({
 			type: RowTypes.ui,
 			depth: this.depth,
 		});
 
 		this.dom.wrapper.appendChild(this.dom.el);
+		console.log(this.dom);
 
-		if(icon){
-			dom.addIcon(this.dom.el.querySelector('header'), icon);
-		}
-
-		if(embed){
-			this.dom.wrapper.classList.add(CSS_UI.embed);
-			embed.appendChild(this.dom.wrapper);
-		} else {
-			document.body.appendChild(this.dom.wrapper);
-		}
-
-		this.resizable = embed ? false : resizable;
-		this.addDragListeners();
 	}
 
 	addDragListeners(){

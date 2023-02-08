@@ -2,9 +2,9 @@ import { el } from '@fils/utils';
 import { uiDownarrowHlt } from '../../../../../ui-icons/lib/Icons';
 import { CSS_UI } from '../../../partials/cssClasses';
 import check from "../../../utils/check";
-import { SelectPanel } from '../../panels/customPanels/SelectPanel';
-import { ExtendedItem } from "../ExtendedItem";
-import { DropdownOptions } from "../ItemOptions";
+import { SelectPanel } from '../../panels/__customPanels/__SelectPanel';
+import { Item } from '../Item';
+import { DropdownOptions } from "../ItemParameters";
 
 CSS_UI.items.push({
 	type: 'select',
@@ -14,7 +14,7 @@ CSS_UI.items.push({
 });
 const c = CSS_UI.getItemClasses('select');
 
-export class SelectItem extends ExtendedItem {
+export class SelectItem extends Item {
 	panel: SelectPanel;
 	options: DropdownOptions;
 

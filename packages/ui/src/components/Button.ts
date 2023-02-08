@@ -17,11 +17,22 @@ export class Button extends EventsManager {
 
 	depth: number;
 
-	constructor(parent, { title }: ButtonOptions = {}) {
+	title: string;
+
+	constructor({ title }: ButtonOptions = {}) {
 		super();
 
-		this.depth = parent.depth + 1;
+		this.title = title || 'Button';
+	}
 
+	init(depth: number = 0): void {
+		this.depth = depth;
+		this.createDom();
+		this.addEventListeners();
+
+	}
+
+	createDom(): void {
 		this.dom = {
 			el: null,
 			button: null
@@ -30,11 +41,11 @@ export class Button extends EventsManager {
 		this.dom.el = dom.createRow( {
 			type: RowTypes.button,
 			depth: this.depth,
-			title: title || 'Button'
+			title: this.title
 		});
+
 		this.dom.button = this.dom.el.querySelector('button');
 
-		this.addEventListeners();
 	}
 
 	private addEventListeners(){

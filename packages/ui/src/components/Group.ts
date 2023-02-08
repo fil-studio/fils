@@ -2,11 +2,11 @@ import { el } from "@fils/utils";
 import { UI } from "../main";
 import { CSS_UI } from "../partials/cssClasses";
 import { EventsManager } from "../partials/EventsManager";
-import { ItemFactory } from "../partials/ItemFactory";
+import { CreateItemParams, ItemFactory } from "../partials/ItemFactory";
 import dom, { RowTypes } from "../utils/dom";
 import { Button } from "./Button";
 import { Dom, Item } from "./items/Item";
-import { ItemOptions } from "./items/ItemOptions";
+import { ItemParameters } from "./items/ItemParameters";
 import { Spacer, SpacerParams } from "./Spacer";
 
 
@@ -39,16 +39,27 @@ export class Group extends EventsManager {
 	protected timer: NodeJS.Timeout = null;
 
 	constructor({
-		parent,
 		title,
 		folded = false,
 		foldable = true,
 	}: GroupParams) {
 		super();
 
-		this.parent = parent;
 		this.title = title || '';
-		this.depth = this.parent?.depth + 1 || this.depth;
+
+		// Is it folded or not? If it's not foldable, it's not folded
+		this.folded = foldable ? folded : false;
+		this.foldable = foldable;
+
+	}
+
+	init(depth: number = 0): void {
+		this.depth = depth;
+		this.createDom();
+		this.addFoldListeners();
+	}
+
+	createDom(): void {
 
 		this.dom = {
 			el: null,
@@ -60,16 +71,15 @@ export class Group extends EventsManager {
 			type: RowTypes.group,
 			depth: this.depth,
 			title: this.title,
-			foldable: foldable
+			foldable: this.foldable
 		});
 
 		this.dom.content = this.dom.el.querySelector(`.${CSS_UI.section.content}`);
+	}
 
-		// Is it folded or not? If it's not foldable, it's not folded
-		this.folded = foldable ? folded : false;
-		this.foldable = foldable;
-		this.addFoldListeners();
-
+	setParent(parent: Group | UI) {
+		this.parent = parent;
+		this.depth = parent.depth + 1;
 	}
 
 	protected addFoldListeners(){
@@ -122,57 +132,59 @@ export class Group extends EventsManager {
 	}
 
 	/**
-	 * Enables listeners, add children to childrens array
-	 */
-	protected addChild(child: Group | Item | Button | Spacer) : Group | Item | Button {
-		this.children.push(child);
-		this.dom.content.appendChild(child.dom.el);
-		return child as Group | Item | Button;
-	}
-
-	/**
 	 * Create a button
 	 */
-	addButton(options): Button{
-		const button = new Button(this, options);
-		return this.addChild(button) as Button;
+	addButton(params): Button{
+		const button = new Button(params);
+		button.init(this.depth + 1)
+		this.dom.content.appendChild(button.dom.el);
+		return button;
 	}
 
 	/**
 	 * Create a group
 	 */
 	addGroup(params: GroupParams): Group {
-		const group = new Group({ parent: this, ...params });
+		const group = new Group(params);
 
 		group.on('__childrenChange', (target) => {
 			this.change(target as EventsManager);
 		})
 
-		return this.addChild(group) as Group;
+		group.init(this.depth + 1)
+		this.dom.content.appendChild(group.dom.el);
+
+		return group;
 	}
 
 	/**
 	 * Create spacer
 	 */
-	addSpacer(params?:SpacerParams) {
-		const spacer = new Spacer({ parent: this, ...params });
-		this.addChild(spacer);
+	addSpacer(params:SpacerParams = {}) {
+		const spacer = new Spacer(this.depth + 1, params);
+		this.dom.content.appendChild(spacer.dom.el);
 	}
 
 	/**
 	 * Create an item
 	 */
-	add(object, key, options?: ItemOptions): Item{
-		return this.addItem(object, key, options);
+	add(object: Object, key: string, params?: ItemParameters): Item{
+		return this.addItem(object, key, params);
 	}
-	addItem(object, key, options?: ItemOptions): Item {
-		const item = ItemFactory({parent: this, object, key}, options);
+	addItem(object:Object, key: string, params?:ItemParameters): Item {
+
+		const createItemParams: CreateItemParams = { object, key, params };
+		const item = ItemFactory(createItemParams);
 
 		item.on('__childrenChange', () => {
 			this.change(item as EventsManager);
 		})
 
-		return this.addChild(item) as Item;
+		item.init(this.depth + 1)
+		this.dom.content.appendChild(item.dom.el);
+
+
+		return item;
 	}
 
  	change(target:EventsManager){

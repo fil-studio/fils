@@ -31,25 +31,7 @@ export class App {
 			uploadTest: null,
 			numberTestSlider: 0,
 			numberTestFloat: 0.5,
-			optionsTestActiveObject: null,
-			optionsTestActiveArray: null,
-			optionsTestArray: [
-				'One Array',
-				'Two Array',
-				'Three Array',
-				'Four Array',
-				'Five Array',
-				'Six Array',
-				'Seven Array',
-				'Eight Array',
-				'Nine Array',
-				'Ten Array',
-				'Eleven Array',
-				'Twelve Array',
-				'Thirteen Array',
-				'Fourteen Array',
-				'Fifteen Array',
-			],
+			testArray: null,
 			textureTest: null,
 			textures: [],
 			materialTest: 'asdapewoiewitureoiwoie09013oiasd',
@@ -83,7 +65,7 @@ export class App {
 		this.ui = new UI({
 			title: 'UI',
 			icon: uiBrushData,
-			embed: document.querySelector('.embed-example') as HTMLElement,
+			parent: document.querySelector('.parent-example') as HTMLElement,
 		});
 
 		const group = this.ui.addGroup({
@@ -100,20 +82,38 @@ export class App {
 		* Key
 		* Options
 		*/
-		group.add(this.obj, 'textureTest', {
-			title: 'Texture Test',
-			text: 'Texture',
-			view: 'texture',
-			options: this.obj.textures,
-			optionLabel: 'name',
-		});
+		// group.add(this.obj, 'textureTest', {
+		// 	title: 'Texture Test',
+		// 	text: 'Texture',
+		// 	view: 'texture',
+		// 	options: this.obj.textures,
+		// 	optionLabel: 'name',
+		// });
 
-		group.add(this.obj, 'optionsTestActiveArray', {
-			title: 'Select Array',
-			view: 'select',
-			options: this.obj.optionsTestArray,
-			optionLabel: 'name',
-		});
+		const dataArrayExample = [
+			'One Array',
+			'Two Array',
+			'Three Array',
+			'Four Array',
+			'Five Array',
+			'Six Array',
+			'Seven Array',
+			'Eight Array',
+			'Nine Array',
+			'Ten Array',
+			'Eleven Array',
+			'Twelve Array',
+			'Thirteen Array',
+			'Fourteen Array',
+			'Fifteen Array',
+		];
+
+		// group.add(this.obj, 'testArray', {
+		// 	title: 'Select Array',
+		// 	view: 'select',
+		// 	options: dataArrayExample,
+		// 	optionLabel: 'name',
+		// });
 
 		// group.add(this.obj, 'colorTest', {
 		// 	title: 'Color Test',

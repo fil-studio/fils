@@ -2,8 +2,8 @@ import { MathUtils } from "@fils/math";
 import { CSS_UI } from "../../../partials/cssClasses";
 import check from "../../../utils/check";
 import { ItemDom } from "../Item";
-import { ExtendedItem } from "../ExtendedItem";
-import { RangeItemOptions } from "../ItemOptions";
+import { Item } from "../Item";
+import { RangeItemParameters } from "../ItemParameters";
 
 CSS_UI.items.push({
 	type: 'range',
@@ -22,9 +22,8 @@ interface RangeDom extends ItemDom {
 	thumb: HTMLElement
 }
 
-export class RangeItem extends ExtendedItem {
-
-	options: RangeItemOptions;
+export class RangeItem extends Item {
+	params: RangeItemParameters;
 
 	dom: RangeDom;
 
@@ -130,12 +129,12 @@ export class RangeItem extends ExtendedItem {
 		return MathUtils.clamp(MathUtils.map(this.value, this.min, this.max, 0, 1), 0, 1);
 	}
 
-	protected createDom(): void {
+	protected createContent(): void {
 
-		this.max = this.options.max || undefined;
-		this.min = this.options.min || undefined;
-		this.step = this.options.step || 0.01;
-		this.decimals = this.options.decimals || 2;
+		this.max = this.params.max || undefined;
+		this.min = this.params.min || undefined;
+		this.step = this.params.step || 0.01;
+		this.decimals = this.params.decimals || 2;
 
 		this.dom.content.innerHTML = `
 			<div class="${c.input}">
@@ -160,21 +159,21 @@ export class RangeItem extends ExtendedItem {
 		this.dom.input.min = `${this.min}`;
 		this.dom.input.max = `${this.max}`;
 
-		this.step = this.options.step || 0.01;
+		this.step = this.params.step || 0.01;
 		if(this.step === 0) this.step = 0.01;
 
 		this.dom.input.step = `${this.step}`;
 	}
 
 	protected setUpOverExpose(): void {
-		const overExpose = this.options.overExpose || [0, 0];
+		const overExpose = this.params.overExpose || [0, 0];
 		let limits = [0, 0] as [number, number];
 
 		if (!check.isArray(overExpose)) limits = [overExpose as number, overExpose as number];
 		else limits = overExpose as [number, number];
 
-		this.min = this.options.min - limits[0];
-		this.max = this.options.max + limits[1];
+		this.min = this.params.min - limits[0];
+		this.max = this.params.max + limits[1];
 
 		const overExposeEls = this.dom.content.querySelectorAll(`.${c.overExpose}`) as NodeListOf<HTMLElement>;
 

@@ -44,7 +44,7 @@
 	width: var(--wrapper-width);
 	min-width: 300px;
 
-	&._ui-wrapper-embed {
+	&._ui-wrapper-has-parent {
 		position: relative;
 		top: unset;
 		right: unset;

@@ -1,6 +1,6 @@
 import { el } from "@fils/utils";
 import { CSS_UI } from "../../partials/cssClasses";
-import { SelectItem } from "../items/customItems/SelectItem";
+import { SelectItem } from "../items/customItems/_SelectItem";
 import { Panel, PanelDom } from "./Panel";
 
 interface DropdownPanelDom extends PanelDom {

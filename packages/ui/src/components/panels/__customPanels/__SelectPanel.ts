@@ -1,4 +1,4 @@
-import { SelectItem } from "../../items/customItems/SelectItem";
+import { SelectItem } from "../../items/customItems/_SelectItem";
 import { DropdownPanel } from "../DropdownPanel";
 
 export class SelectPanel extends DropdownPanel {

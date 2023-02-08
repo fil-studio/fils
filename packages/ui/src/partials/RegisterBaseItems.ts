@@ -6,11 +6,8 @@ import { StringItem } from "../components/items/customItems/StringItem";
 
 import { ColorItem } from "../components/items/customItems/ColorItem";
 
-import { TextureItem } from "../components/items/customItems/TextureItem";
-
-import { MaterialItem } from "../components/items/customItems/MaterialItem";
 import { RangeItem } from "../components/items/customItems/RangeItem";
-import { SelectItem } from "../components/items/customItems/SelectItem";
+import { SelectItem } from "../components/items/customItems/_SelectItem";
 import { UploadItem } from "../components/items/customItems/UploadItem";
 
 export const RegisterBaseComponents = () => {
@@ -35,10 +32,10 @@ export const RegisterBaseComponents = () => {
 		item: RangeItem
 	})
 
-	ItemRegister({
-		view: 'select',
-		item: SelectItem,
-	})
+	// ItemRegister({
+	// 	view: 'select',
+	// 	item: SelectItem,
+	// })
 
 	ItemRegister({
 		view: 'upload',
@@ -48,15 +45,5 @@ export const RegisterBaseComponents = () => {
 	ItemRegister({
 		view: 'color',
 		item: ColorItem,
-	})
-
-	ItemRegister({
-		view: 'texture',
-		item: TextureItem,
-	})
-
-	ItemRegister({
-		view: 'material',
-		item: MaterialItem,
 	})
 }

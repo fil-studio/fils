@@ -1,9 +1,9 @@
 import { el } from "@fils/utils";
 import check from "../../../utils/check";
-import { ExtendedItem } from "../ExtendedItem";
-import { NumberItemOptions } from "../ItemOptions";
+import { NumberItemParameters } from "../ItemParameters";
 import { uiDownarrowHlt } from '../../../../../ui-icons/lib/Icons';
 import { CSS_UI } from "../../../partials/cssClasses";
+import { Item } from "../Item";
 
 type item = {
 	value: number;
@@ -23,8 +23,8 @@ CSS_UI.items.push({
 });
 const c = CSS_UI.getItemClasses('number');
 
-export class NumberItem extends ExtendedItem {
-	options: NumberItemOptions;
+export class NumberItem extends Item {
+	params: NumberItemParameters;
 
 	private items: item[];
 
@@ -76,7 +76,7 @@ export class NumberItem extends ExtendedItem {
 
 	}
 
-	setValue(_value?:any): void {
+	setValue(_value:any): void {
 
 		let value;
 
@@ -137,12 +137,12 @@ export class NumberItem extends ExtendedItem {
 
 	}
 
-	protected createDom(): void {
+	protected createContent(): void {
 
-		this.max = this.options.max || undefined;
-		this.min = this.options.min || undefined;
-		this.step = this.options.step || 0.01;
-		this.decimals = this.options.decimals || 2;
+		this.max = this.params.max || undefined;
+		this.min = this.params.min || undefined;
+		this.step = this.params.step || 0.01;
+		this.decimals = this.params.decimals || 2;
 
 		this.createItems(this.object[this.key]);
 

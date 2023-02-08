@@ -1,7 +1,7 @@
 import { uiTexture } from "../../../../../ui-icons/lib/Icons";
 import { TextureItem } from "../../items/customItems/TextureItem";
 import { UI } from "../../UI";
-import { FloatingPanel } from "../FloatingPanel";
+import { FloatingPanel } from "../__FloatingPanel";
 
 export class NewTexturePanel extends FloatingPanel {
 	parent: TextureItem;
@@ -24,7 +24,7 @@ export class NewTexturePanel extends FloatingPanel {
 		this.ui = new UI({
 			title: 'New Texture',
 			icon: uiTexture,
-			embed: this.dom.el as HTMLElement,
+			parent: this.dom.el as HTMLElement,
 		});
 
 		this.ui.addItem(newTexture, 'name', {

@@ -1,24 +1,17 @@
-import { ExtendedItem } from "../ExtendedItem";
+import { Item } from "../Item";
 
-export class StringItem extends ExtendedItem {
+export class StringItem extends Item {
 
 	protected addEventListeners(): void {
-
 		const input = this.dom.el.querySelector('input');
 		input.value = this.value;
 		input.addEventListener('change', () => {
-			this.refresh();
+			this.setValue(input.value);
 		});
-
 	}
 
-	protected createDom(): void {
+	protected createContent(): void {
 		this.dom.content.innerHTML = `<input type="text" placeholder="String" />`;
 	}
 
-	refresh(): void {
-		const input = this.dom.el.querySelector('input');
-		this.value = input.value;
-		super.refresh();
-	}
 }
