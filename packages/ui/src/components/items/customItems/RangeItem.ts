@@ -194,4 +194,10 @@ export class RangeItem extends Item {
 		this.dom.input.value = `${this.value.toFixed(2)}`;
 	}
 
+	refreshDom(): void {
+		this.updateInput();
+		this.updateRange();
+		super.refreshDom();
+	}
+
 }

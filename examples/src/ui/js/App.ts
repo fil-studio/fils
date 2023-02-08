@@ -57,9 +57,6 @@ export class App {
 	createUI() {
 		console.log(this.obj.textures);
 
-		// const tmp = new Vector3(1, 2, 3);
-		// console.log(tmp);
-
 		console.log('UI');
 
 		this.ui = new UI({
