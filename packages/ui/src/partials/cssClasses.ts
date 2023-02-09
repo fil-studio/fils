@@ -8,6 +8,7 @@ export const CSS_UI = {
 		grab: '_ui--grab',
 		active: '_ui--active',
 		loaded: '_ui--loaded',
+		error: '_ui--error',
 	},
 	row: {
 		baseClass: '_ui-row',

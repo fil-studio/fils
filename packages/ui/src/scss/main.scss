@@ -33,6 +33,13 @@
 		display: none !important;
 		pointer-events: none;
 	}
+
+	._ui--error {
+		box-shadow: 0px 0px 4px 0px var(--error-color);
+		transition-duration: var(--duration);
+		transition-timing-function: var(--timing);
+		transition-property: box-shadow;
+	}
 }
 
 ._ui-wrapper {

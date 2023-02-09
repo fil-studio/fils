@@ -1,9 +1,9 @@
 import { el } from "@fils/utils";
+import { drawColorPickerBar, drawColorPickerSL, HSBColor, hsbToHex, hexToRgb, rgbToHsb } from '../../../../../color/lib/main';
 import { CSS_UI } from "../../../partials/cssClasses";
 import check from "../../../utils/check";
 import { Panel } from "../../panels/Panel";
 import { Item } from "../Item";
-import { drawColorPickerBar, drawColorPickerSL, HSBColor, hsbToHex, hsbToRgb, hsbToString, rgbToString } from '../../../../../color/lib/main';
 
 CSS_UI.items.push({
 	type: 'color',
@@ -19,6 +19,22 @@ CSS_UI.items.push({
 });
 const c = CSS_UI.getItemClasses('color');
 
+const fixHexColor = (color: string): string => {
+	let fixedColor = color;
+	if (fixedColor.substring(0, 1) !== "#") {
+		fixedColor = "#" + fixedColor;
+	}
+	fixedColor = fixedColor.toUpperCase();
+	fixedColor = fixedColor.substring(0, 7);
+	if (fixedColor.length === 4) {
+		fixedColor = "#" + fixedColor[1] + fixedColor[1] + fixedColor[2] + fixedColor[2] + fixedColor[3] + fixedColor[3];
+	}
+	while (fixedColor.length < 7) {
+		fixedColor += "F";
+	}
+	return fixedColor;
+}
+
 export class ColorPanel extends Panel {
 	view: HTMLElement;
 	info: HTMLElement;
@@ -27,7 +43,6 @@ export class ColorPanel extends Panel {
 	canvas2: HTMLCanvasElement;
 
 	width: number = 0;
-	angle: number = 180;
 	color: HSBColor;
 
 	target: HTMLElement;
@@ -52,16 +67,7 @@ export class ColorPanel extends Panel {
 		this.canvas2.height = 20;
 
 		// Aixo dinamic
-		this.width = 0;
-
-		this.color = {
-			h: this.angle,
-			s: 50,
-			b: 50
-		}
-
-		drawColorPickerSL(this.canvas1, this.angle);
-		drawColorPickerBar(this.canvas2);
+		setTimeout(() => this.reverseUpdate(), 10);
 	}
 
 	addEventListeners(): void {
@@ -102,11 +108,37 @@ export class ColorPanel extends Panel {
 		});
 	}
 
-	update(){
-		this.color.h = this.angle;
+	reverseUpdate(){
+
+		this.color = rgbToHsb(hexToRgb(this.parent.value));
+
 		this.width = this.view.getBoundingClientRect().width;
 
-		drawColorPickerSL(this.canvas1, this.angle);
+		let x = 0;
+		let y = 0;
+
+		// Canvas 1
+		x = this.color.s * this.width / 100;
+		y = this.width - this.color.b * this.width / 100;
+		this.target.style.left = `${x}px`;
+		this.target.style.top = `${y}px`;
+
+
+		// Canvas 2
+		x = this.color.h * this.width / 360;
+		console.log(this.width);
+
+		this.dragger.style.left = `${x}px`;
+
+		drawColorPickerSL(this.canvas1, this.color.h);
+		drawColorPickerBar(this.canvas2);
+
+	}
+
+	update(){
+		this.width = this.view.getBoundingClientRect().width;
+
+		drawColorPickerSL(this.canvas1, this.color.h);
 		drawColorPickerBar(this.canvas2);
 
 		// Todo aqui update de l'Item parent
@@ -133,14 +165,12 @@ export class ColorPanel extends Panel {
 		const r = this.canvas2.getBoundingClientRect();
 		x = Math.min(Math.max(x - r.left, 1), this.width - 1);
 
-		this.angle = 360 * x / this.width;
-		this.color.h = this.angle;
+		this.color.h = 360 * x / this.width;
 
 		this.dragger.style.left = `${x}px`;
 
 		this.update();
 	}
-
 
 	destroy(): void {
 		this.view = null;
@@ -167,8 +197,14 @@ export class ColorItem extends Item {
 		});
 
 		this.colorBox.addEventListener('click', () => {
-			this.panel.create();
+			if(!this.panel.created) this.panel.create();
+			else this.panel.destroy();
 		});
+
+		window.addEventListener('keydown', (e)=> {
+			if(e.key === 'Enter') this.setValue(this.input.value);
+		});
+
 
 	}
 
@@ -185,12 +221,12 @@ export class ColorItem extends Item {
 
 	}
 
-	setValue(_value: any): void {
-		let value = _value;
+	setValue(value: any): void {
 
 		if (check.isNull(value) || check.isUndefined(value) || value === '') {
 			value = '#FFFFFF';
 		}
+		value = fixHexColor(value);
 
 		super.setValue(value);
 	}

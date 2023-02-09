@@ -16,7 +16,7 @@ export class App {
 	constructor() {
 
 		this.obj = {
-			colorTest: '#ff0000',
+			colorTest: '#0D5417',
 			booleanTest: false,
 			stringTest: 'Test',
 			// numberTest: 1,
