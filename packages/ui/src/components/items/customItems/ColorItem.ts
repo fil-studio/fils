@@ -205,7 +205,6 @@ export class ColorItem extends Item {
 			if(e.key === 'Enter') this.setValue(this.input.value);
 		});
 
-
 	}
 
 	protected createContent(): void {
