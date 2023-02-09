@@ -228,6 +228,10 @@ export class ColorItem extends Item {
 		}
 		value = fixHexColor(value);
 
+		if(this.panel.created){
+			this.panel.reverseUpdate();
+		}
+
 		super.setValue(value);
 	}
 
