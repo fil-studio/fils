@@ -7,7 +7,7 @@ import { StringItem } from "../components/items/customItems/StringItem";
 import { ColorItem } from "../components/items/customItems/ColorItem";
 
 import { RangeItem } from "../components/items/customItems/RangeItem";
-import { SelectItem } from "../components/items/customItems/_SelectItem";
+import { SelectItem } from "../components/items/customItems/SelectItem";
 import { UploadItem } from "../components/items/customItems/UploadItem";
 
 export const RegisterBaseComponents = () => {
@@ -32,10 +32,10 @@ export const RegisterBaseComponents = () => {
 		item: RangeItem
 	})
 
-	// ItemRegister({
-	// 	view: 'select',
-	// 	item: SelectItem,
-	// })
+	ItemRegister({
+		view: 'select',
+		item: SelectItem,
+	})
 
 	ItemRegister({
 		view: 'upload',

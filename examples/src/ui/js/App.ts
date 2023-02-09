@@ -105,12 +105,12 @@ export class App {
 			'Fifteen Array',
 		];
 
-		// group.add(this.obj, 'testArray', {
-		// 	title: 'Select Array',
-		// 	view: 'select',
-		// 	options: dataArrayExample,
-		// 	optionLabel: 'name',
-		// });
+		group.add(this.obj, 'testArray', {
+			title: 'Select Array',
+			view: 'select',
+			options: dataArrayExample,
+			optionLabel: 'name',
+		});
 
 		// group.add(this.obj, 'colorTest', {
 		// 	title: 'Color Test',

@@ -20,4 +20,8 @@ export interface UploadItemParameters extends ItemParametersInterface {
 	text: string;
 }
 
-export type ItemParameters = ItemParametersInterface | NumberItemParameters | RangeItemParameters | UploadItemParameters;
+export interface SelectItemParameters extends ItemParametersInterface {
+	options: Object;
+}
+
+export type ItemParameters = ItemParametersInterface | NumberItemParameters | RangeItemParameters | UploadItemParameters | SelectItemParameters;

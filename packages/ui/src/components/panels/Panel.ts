@@ -52,11 +52,6 @@ export class Panel {
 		this.created = true;
 
 		// This needs to be provided by the parent each time as the dom changes
-
-		const section = this.parent.dom.el.closest('section');
-		console.log(section);
-
-
 		const parentDomStyle = getComputedStyle(this.dom.appendTo.closest('section'));
 		const bg0 = parentDomStyle.getPropertyValue('--section-bg-0');
 		const bg1 = parentDomStyle.getPropertyValue('--section-bg-1');
