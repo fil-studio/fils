@@ -55,9 +55,6 @@ export class App {
 	}
 
 	createUI() {
-		console.log(this.obj.textures);
-
-		console.log('UI');
 
 		this.ui = new UI({
 			title: 'UI',
@@ -93,6 +90,22 @@ export class App {
 			text4: "test text 4",
 			text5: "test text 5",
 			"Lorem Ipsum": "Lorem Ipsum text",
+			"YaOY": "test text",
+			texasdt4: "test text 4",
+			texasdt5: "test text 5",
+			"Loasdrem Ipsum": "Lorem Ipsum text",
+			"YOasdY": "test text",
+			texast4: "test text 4",
+			texat5: "test text 5",
+			"Ladsaorem Ipsum": "Lorem Ipsum text",
+			"YasOY": "test text",
+			teasdxt4: "test text 4",
+			teaaxt5: "test text 5",
+			"Loaarem Ipsum": "Lorem Ipsum text",
+			"YOaaY": "test text",
+			texat4: "test text 4",
+			textasd5: "test text 5",
+			"Loraaem Ipsum": "Lorem Ipsum text",
 		};
 
 		group.add(this.obj, 'testArray', {

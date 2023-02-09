@@ -27,7 +27,10 @@
 	}
 }
 
-._ui-panel-select {
+._ui-panel._ui-panel-select {
+	height: auto;
+	max-height: 300px;
+	overflow-y: scroll;
 
 	._ui-panel-select-button,
 	._ui-panel-select-search,
