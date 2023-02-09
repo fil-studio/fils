@@ -15,11 +15,12 @@
 	cursor: pointer;
 }
 
+@import "./partials/vars";
+@import "./partials/reset";
+@import "./partials/fonts";
+
 ._ui-wrapper,
 ._ui-panel {
-	@import "./partials/vars";
-	@import "./partials/reset";
-	@import "./partials/fonts";
 
 	* {
 		&::selection {
@@ -60,22 +61,22 @@
 		cursor: ew-resize;
 		z-index: 1;
 	}
-
-	@import "./partials/base-components/section";
-	@import "./partials/fold";
-
-	@import "./partials/base-components/header";
-	@import "./partials/base-components/fieldset";
-	@import "./partials/base-components/button";
-	@import "./partials/base-components/spacer";
-
-	// Base Items
-	@import "./items/boolean";
-	@import "./items/string";
-	@import "./items/number";
-	@import "./items/range";
-	@import "./items/select";
-	@import "./items/color";
 }
+
+@import "./partials/base-components/section";
+@import "./partials/fold";
+
+@import "./partials/base-components/header";
+@import "./partials/base-components/fieldset";
+@import "./partials/base-components/button";
+@import "./partials/base-components/spacer";
+
+// Base Items
+@import "./items/boolean";
+@import "./items/string";
+@import "./items/number";
+@import "./items/range";
+@import "./items/select";
+@import "./items/color";
 
 @import "./partials/base-components/panel";

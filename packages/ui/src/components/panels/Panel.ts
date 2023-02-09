@@ -4,7 +4,7 @@ import { Item } from "../items/Item";
 import { Dom } from "../UIElement";
 
 export interface PanelDom extends Dom {
-	parent: HTMLElement;
+	appendTo: HTMLElement;
 }
 
 export class Panel {
@@ -13,25 +13,36 @@ export class Panel {
 
 	created: boolean = false;
 
-	constructor(parent: Item) {
+	constructor(parent: Item, appendTo?: HTMLElement) {
 		this.dom = {
 			el: null,
-			parent: null
+			appendTo: null
 		}
 
 		this.parent = parent;
+		this.dom.appendTo = appendTo ? appendTo : parent.dom.content;
 
 		this.addEventListeners();
 	}
 
 	addEventListeners(): void {
-		// Override this
+
+		window.addEventListener('click', (e) => {
+			if(!this.created) return;
+			const target = e.target as HTMLElement;
+			if(this.dom.el?.contains(target)) return;
+			if(this.parent.dom.el.contains(target)) return;
+			this.destroy();
+		});
+
+		window.addEventListener('resize', () => this.onResize());
+
 	}
 
 	positionPanel(): void {
 		if (!this.created) return;
 
-		const r = this.dom.parent.getBoundingClientRect();
+		const r = this.dom.appendTo.getBoundingClientRect();
 		console.log(r);
 
 		this.dom.el.style.top = `${r.top + r.height}px`;
@@ -49,7 +60,12 @@ export class Panel {
 		this.created = true;
 
 		// This needs to be provided by the parent each time as the dom changes
-		const parentDomStyle = getComputedStyle(this.dom.parent.closest('section'));
+
+		const section = this.parent.dom.el.closest('section');
+		console.log(section);
+
+
+		const parentDomStyle = getComputedStyle(this.dom.appendTo.closest('section'));
 		const bg0 = parentDomStyle.getPropertyValue('--section-bg-0');
 		const bg1 = parentDomStyle.getPropertyValue('--section-bg-1');
 
