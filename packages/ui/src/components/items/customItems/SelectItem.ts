@@ -1,68 +1,134 @@
 import { el } from '@fils/utils';
 import { uiDownarrowHlt } from '../../../../../ui-icons/lib/Icons';
 import { CSS_UI } from '../../../partials/cssClasses';
+import check from '../../../utils/check';
 import { Panel } from '../../panels/Panel';
 import { Item } from '../Item';
+import { SelectItemParameters } from '../ItemParameters';
 
 CSS_UI.items.push({
 	type: 'select',
 	input: '_ui-select-input',
 	label: '_ui-select-label',
 	open: '_ui-select-open',
-	panel: '_ui-panel-select'
+
+	panel: '_ui-panel-select',
+	option: '_ui-panel-select-option',
+	search: '_ui-panel-select-search',
+	optionNone: '_ui-panel-select-option-none',
+	searchInput: '_ui-panel-select-search-input',
 });
 const c = CSS_UI.getItemClasses('select');
 
 export class SelectPanel extends Panel {
-	domOptions: Array<HTMLElement> = [];
+	parent: SelectItem;
 
-	// createPanelContent(): void {
+	search: HTMLElement;
+	searchInput: HTMLInputElement;
+	optionNone: HTMLElement;
 
-	// 	this.options = this.parent.options.options as Array<Object>;
-	// 	this.createSearch();
-	// 	this.createOptions();
+	options: Array<{
+		key: string;
+		value: any;
+		dom: HTMLElement;
+	}> = [];
 
-	// 	this.addEventListeners();
+	addEventListeners(): void {
+		super.addEventListeners();
 
-	// }
+		window.addEventListener('click', (e) => {
+			if(!this.created) return;
+			const t = e.target as HTMLElement;
+			if (this.dom.el.contains(t)) return;
+			if(this.parent.dom.el.contains(t)) return;
 
-	// createSearch(): void {
+			this.destroy();
+			this.parent.close();
+		});
 
-	// 	const search = el('div', CSS_UI.panel.search);
-	// 	const p = el('p');
-	// 	p.innerHTML = 'Search';
-	// 	search.appendChild(p);
-	// 	this.dom.el.appendChild(search);
+	}
 
-	// 	if(this.options.length < 10) {
-	// 		search.classList.add(`.${CSS_UI.utility.hidden}`);
-	// 	}
+	createPanelContent(): void {
 
-	// }
+		this.createSearch();
 
-	// createOption(_value: Object | string | Array<any>): void {
+		const parentContent = this.parent.params.options;
 
-	// 	const option = el('div', CSS_UI.panel.option);
-	// 	const p = el('p');
-	// 	p.innerHTML = this.parent.getLabel(_value);
-	// 	option.appendChild(p);
+		this.options = Object.keys(parentContent).map((key) => {
 
-	// 	this.dom.el.appendChild(option);
-	// 	this.dom.options.push(option);
-	// }
+			// Create option
+			const div = el('div', c.option);
+			const p = el('p');
+			p.innerHTML = key;
+			div.appendChild(p);
+			this.dom.el.appendChild(div);
 
-	// private createOptions(): void {
+			// Hide selected option
+			if (this.parent.value === parentContent[key]) div.classList.add(CSS_UI.utility.hidden);
 
-	// 	for(let i = 0; i < this.options.length; i++) {
-	// 		this.createOption(this.options[i]);
-	// 	}
+			// Add event listener
+			div.addEventListener('click', () => {
+				this.parent.setValue(parentContent[key]);
+				this.destroy();
+				this.parent.close();
+			});
 
-	// }
+			return {
+				key,
+				value: parentContent[key],
+				dom: div,
+			}
+		});
 
+		// Empty options message
+		this.optionNone = el('div', c.optionNone);
+		const p = el('p');
+		p.innerHTML = 'No options found';
+		this.optionNone.appendChild(p);
+		this.dom.el.appendChild(this.optionNone);
+		this.optionNone.classList.add(CSS_UI.utility.hidden);
+
+		setTimeout(() => this.searchInput.focus(), 10);
+
+	}
+
+	searchOptions(): void {
+		const search = this.searchInput.value.toLowerCase();
+
+		this.optionNone.classList.remove(CSS_UI.utility.hidden);
+
+		this.options.map(option => {
+			if (option.key.toLowerCase().includes(search) || String(option.value).toLowerCase().includes(search) || search === '') {
+				option.dom.classList.remove(CSS_UI.utility.hidden);
+				this.optionNone.classList.add(CSS_UI.utility.hidden);
+			} else {
+				option.dom.classList.add(CSS_UI.utility.hidden);
+			}
+		});
+
+	}
+
+	createSearch(): void {
+
+		this.search = el('div', c.search, this.dom.el);
+		this.searchInput = el('input', c.searchInput ) as HTMLInputElement;
+		this.searchInput.placeholder = 'Search';
+		this.searchInput.type = 'text';
+		this.search.appendChild(this.searchInput);
+
+		this.dom.el.appendChild(this.search);
+
+		this.searchInput.addEventListener('input', () => {
+			this.searchOptions();
+		});
+
+	}
 }
 export class SelectItem extends Item {
+	params: SelectItemParameters;
+
 	panel: SelectPanel;
-	options: Array<any> | Object;
+	options: Object;
 
 	input: HTMLElement;
 	label: HTMLElement;
@@ -71,15 +137,30 @@ export class SelectItem extends Item {
 
 	afterCreate(): void {
 		this.panel = new SelectPanel(this);
+
 	}
 
 	protected addEventListeners(): void {
 		super.addEventListeners();
 
 		this.input.addEventListener('click', () => {
-			if(this.panel.created) this.dom.el.classList.remove(c.open);
-			else this.dom.el.classList.add(c.open);
+
+			if(!this.panel.created) {
+				this.panel.create();
+				this.open();
+			} else {
+				this.panel.destroy();
+				this.close();
+			}
 		});
+	}
+
+	open() {
+		this.dom.el.classList.add(c.open);
+	}
+
+	close() {
+		this.dom.el.classList.remove(c.open);
 	}
 
 	protected createContent(): void {
@@ -91,7 +172,7 @@ export class SelectItem extends Item {
 	}
 
 	setValue(value: any): void {
-		this.label.innerHTML = value ? value : 'Select...';
+		this.label.innerHTML = check.isNull(value) || check.isUndefined(value) ? 'Select...' : value;
 		super.setValue(value);
 	}
 }

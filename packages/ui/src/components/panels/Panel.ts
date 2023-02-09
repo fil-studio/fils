@@ -35,7 +35,6 @@ export class Panel {
 		if (!this.created) return;
 
 		const r = this.dom.appendTo.getBoundingClientRect();
-		console.log(r);
 
 		this.dom.el.style.top = `${r.top + r.height}px`;
 		this.dom.el.style.width = `${r.width}px`;

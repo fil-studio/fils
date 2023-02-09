@@ -87,29 +87,18 @@ export class App {
 		// 	optionLabel: 'name',
 		// });
 
-		const dataArrayExample = [
-			'One Array',
-			'Two Array',
-			'Three Array',
-			'Four Array',
-			'Five Array',
-			'Six Array',
-			'Seven Array',
-			'Eight Array',
-			'Nine Array',
-			'Ten Array',
-			'Eleven Array',
-			'Twelve Array',
-			'Thirteen Array',
-			'Fourteen Array',
-			'Fifteen Array',
-		];
+		const dataArrayExample = {
+			"Yay": 0,
+			"YOY": "test text",
+			text4: "test text 4",
+			text5: "test text 5",
+			"Lorem Ipsum": "Lorem Ipsum text",
+		};
 
 		group.add(this.obj, 'testArray', {
 			title: 'Select Array',
 			view: 'select',
 			options: dataArrayExample,
-			optionLabel: 'name',
 		});
 
 		// group.add(this.obj, 'colorTest', {
