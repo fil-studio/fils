@@ -18,14 +18,12 @@ const SHADER = new RawShaderMaterial({
         debug: { value: false }
     }
 });
-class DoFSettings {
-}
 const DEFAULTS = {
     blur: {
-        scale: .25,
-        radius: 2,
+        scale: 1,
+        radius: 1,
         iterations: 4,
-        quality: 0
+        quality: 2
     },
     camNear: 0,
     camFar: 100,
@@ -33,15 +31,17 @@ const DEFAULTS = {
     aperture: 5
 };
 export class DoFPass extends RenderPass {
-    constructor(width, height, settings = {}) {
+    constructor(width, height, settings) {
         super();
-        this.blurPass = new BlurPass(null, width, height, settings.blur);
+        this.blurPass = new BlurPass(null, width, height, settings && settings.blur ? settings.blur : DEFAULTS.blur);
         ShaderChunk.depth = depth;
+        const s = settings ? settings : DEFAULTS;
         this.shader = SHADER.clone();
-        this.shader.uniforms.cameraNear.value = settings.camNear || DEFAULTS.camNear;
-        this.shader.uniforms.cameraFar.value = settings.camFar || DEFAULTS.camFar;
-        this.shader.uniforms.focalDistance.value = settings.focalDistance || DEFAULTS.focalDistance;
-        this.shader.uniforms.aperture.value = settings.aperture || DEFAULTS.aperture;
+        for (const key in DEFAULTS) {
+            if (!this.shader.uniforms[key])
+                continue;
+            this.shader.uniforms[key].value = s[key] === undefined ? DEFAULTS[key] : s[key];
+        }
     }
     setSize(width, height) {
         this.blurPass.setSize(width, height);

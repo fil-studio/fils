@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.slugify = exports.copyToClipboard = exports.hasGetUserMedia = exports.isTouchDevice = exports.isDesktop = exports.getIOSVersion = exports.isIpad = exports.isIphone = exports.getAndroidVersion = exports.isSafari = exports.isBrowser = exports.isMobile = exports.getDocumentHeight = exports.webgl = exports.webgl2 = exports.el = void 0;
+exports.getWorkerURL = exports.slugify = exports.copyToClipboard = exports.hasGetUserMedia = exports.isTouchDevice = exports.isDesktop = exports.getIOSVersion = exports.isIpad = exports.isIphone = exports.getAndroidVersion = exports.isSafari = exports.isBrowser = exports.isMobile = exports.getDocumentHeight = exports.webgl = exports.webgl2 = exports.el = void 0;
 function el(type, className, parent) {
     var e = document.createElement(type);
     if (className != undefined)
@@ -95,3 +95,8 @@ function slugify(str) {
         .replace(/-+$/, '');
 }
 exports.slugify = slugify;
+function getWorkerURL(url) {
+    var content = "importScripts( \"".concat(url, "\" );");
+    return URL.createObjectURL(new Blob([content], { type: "text/javascript" }));
+}
+exports.getWorkerURL = getWorkerURL;

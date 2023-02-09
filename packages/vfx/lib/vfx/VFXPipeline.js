@@ -25,7 +25,6 @@ export class VFXPipeline {
         this.blockScreen = params.neverToScreen === true;
         this.front = new WebGLRenderTarget(w, h);
         if (rnd['isWebGLRenderer']) {
-            this.front.samples = params.samples || 4;
             this.type = "WebGLRenderer";
         }
         else {
@@ -35,6 +34,7 @@ export class VFXPipeline {
         }
         this.back = this.front.clone();
         this.sceneRT = this.front.clone();
+        this.sceneRT.samples = params.samples || 4;
         if (params.useDepth) {
             this.sceneRT.depthTexture = new DepthTexture(w, h, FloatType);
             this.sceneRT.depthTexture.format = DepthFormat;
@@ -136,6 +136,12 @@ export class VFXPipeline {
                 this.renderer.render(scene, camera, this.write);
             this.swapBuffers();
             for (let k = 0; k < stack.length; k++) {
+                if (stack[k].shader.uniforms['cameraNear']) {
+                    stack[k].shader.uniforms['cameraNear'].value = camera.near;
+                }
+                if (stack[k].shader.uniforms['cameraFar']) {
+                    stack[k].shader.uniforms['cameraFar'].value = camera.far;
+                }
                 this.renderPass(stack[k], k === stack.length - 1);
                 this.firstPass = false;
             }

@@ -13,6 +13,7 @@ export declare class VFXRenderer {
     rnd: WebGLRenderer;
     sceneRT: WebGLMultipleRenderTargets;
     glow: BlurPass;
+    showBackground: boolean;
     showGlow: boolean;
     showScene: boolean;
     exposure: number;

@@ -96,3 +96,8 @@ export function slugify(str: string): string {
 		.replace(/^-+/, '')
 		.replace(/-+$/, '');
 }
+
+export function getWorkerURL( url: string ) {
+	const content = `importScripts( "${ url }" );`;
+	return URL.createObjectURL( new Blob( [ content ], { type: "text/javascript" } ) );
+}

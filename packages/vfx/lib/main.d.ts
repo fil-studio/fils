@@ -6,8 +6,10 @@ export * from './vfx/pipeline/DoFPass';
 export * from './vfx/pipeline/FXAAPass';
 export * from './vfx/pipeline/LutPass';
 export * from './vfx/pipeline/RetroPass';
+export * from './vfx/CommonVFXPipeline';
 export * from './vfx/VFXPipeline';
-export * from './vfx/MaterialUtils';
+export * from './vfx/materials/MaterialUtils';
+export * from './vfx/materials/VFXBasicMaterials';
 declare const vfxShaders: {
     rgbSplit: string;
     dithering: string;

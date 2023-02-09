@@ -14,3 +14,4 @@ export declare function isTouchDevice(): boolean;
 export declare function hasGetUserMedia(): boolean;
 export declare function copyToClipboard(str: string): void;
 export declare function slugify(str: string): string;
+export declare function getWorkerURL(url: string): string;

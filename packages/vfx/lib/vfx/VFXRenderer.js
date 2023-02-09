@@ -1,6 +1,6 @@
 import { DepthFormat, DepthTexture, FloatType, RawShaderMaterial, RGBAFormat, Scene, UnsignedByteType, WebGLMultipleRenderTargets, WebGLRenderTarget } from "three";
 import { BlurPass } from "../main";
-import vert from '../glsl/fbo.vert';
+import vert from '../glsl/vfx/comp.vert';
 import frag from '../glsl/vfx/comp.frag';
 import { RTUtils } from "@fils/gfx";
 const COMP = new RawShaderMaterial({
@@ -12,6 +12,7 @@ const COMP = new RawShaderMaterial({
         tGlow: { value: null },
         exposure: { value: 1 },
         gamma: { value: 1 },
+        renderBackground: { value: true },
         renderGlow: { value: true },
         renderScene: { value: true }
     },
@@ -25,6 +26,7 @@ const GLOW_DEFAULTS = {
 };
 export class VFXRenderer {
     constructor(renderer, width, height, settings) {
+        this.showBackground = true;
         this.showGlow = true;
         this.showScene = true;
         this.exposure = COMP.uniforms.exposure.value;
@@ -35,9 +37,9 @@ export class VFXRenderer {
         const h = height * window.devicePixelRatio;
         this.sceneRT = new WebGLMultipleRenderTargets(w, h, 2, {
             format: RGBAFormat,
-            type: UnsignedByteType
+            type: UnsignedByteType,
+            samples: settings && settings.samples ? settings.samples : 4
         });
-        this.sceneRT['samples'] = settings.samples || 4;
         this.sceneRT.texture[0].name = 'diffuse';
         this.sceneRT.texture[1].name = 'glow';
         if (settings.useDepth) {
@@ -80,6 +82,7 @@ export class VFXRenderer {
         const u = this.shader.uniforms;
         u.exposure.value = this.exposure;
         u.gamma.value = this.gamma;
+        u.renderBackground.value = this.showBackground;
         u.renderGlow.value = this.showGlow;
         u.renderScene.value = this.showScene;
         u.tScene.value = this.sceneRT.texture[0];
