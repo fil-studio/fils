@@ -27,14 +27,6 @@ export class Panel {
 
 	addEventListeners(): void {
 
-		window.addEventListener('click', (e) => {
-			if(!this.created) return;
-			const target = e.target as HTMLElement;
-			if(this.dom.el?.contains(target)) return;
-			if(this.parent.dom.el.contains(target)) return;
-			this.destroy();
-		});
-
 		window.addEventListener('resize', () => this.onResize());
 
 	}
