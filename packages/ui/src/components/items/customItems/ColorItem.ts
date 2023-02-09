@@ -110,6 +110,7 @@ export class ColorPanel extends Panel {
 		drawColorPickerBar(this.canvas2);
 
 		// Todo aqui update de l'Item parent
+		this.parent.setValue(hsbToHex(this.color));
 	}
 
 	updateCanvas1(x:number, y:number): void {
