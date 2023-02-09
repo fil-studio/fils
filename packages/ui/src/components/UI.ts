@@ -16,6 +16,7 @@ interface UIParams extends GroupParams {
 	parentElement?: HTMLElement;
 	resizable?: boolean;
 	icon?: string;
+	width?: number;
 }
 
 interface UIDom extends GroupDom {
@@ -31,6 +32,7 @@ export class UI extends Group {
 		resizable = true,
 		parentElement,
 		icon,
+		width
 	}: UIParams) {
 		super({...arguments[0] });
 
@@ -40,6 +42,11 @@ export class UI extends Group {
 
 		this.addIcon(icon);
 		this.appendTo(parentElement);
+
+		if(width){
+			this.dom.wrapper.style.setProperty('--wrapper-width', `${width}px`);
+		}
+
 
 	}
 
