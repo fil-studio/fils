@@ -149,3 +149,50 @@ export function hsbToString(color:HSBColor):string {
     return `H: ${color.h}, S: ${color.s}, B: ${color.b}`;
 }
 
+export function fixHex(color: string):string {
+    let fixedColor = color;
+    if (fixedColor.substring(0, 1) !== "#") {
+        fixedColor = "#" + fixedColor;
+    }
+    fixedColor = fixedColor.toUpperCase();
+    fixedColor = fixedColor.substring(0, 7);
+    if (fixedColor.length === 4) {
+        fixedColor = "#" + fixedColor[1] + fixedColor[1] + fixedColor[2] + fixedColor[2] + fixedColor[3] + fixedColor[3];
+    }
+    while (fixedColor.length < 7) {
+        fixedColor += "F";
+    }
+
+    // Replace invalid characters with their closest valid hexadecimal equivalent using a regular expression
+    fixedColor = fixedColor.replace(/[^A-F0-9]/g, (c) => {
+        switch (c) {
+            case "#":
+                return "#";
+            case "G":
+            case "H":
+            case "I":
+            case "J":
+            case "K":
+            case "L":
+            case "M":
+            case "N":
+            case "O":
+            case "P":
+            case "Q":
+            case "R":
+            case "S":
+            case "T":
+            case "U":
+            case "V":
+            case "W":
+            case "X":
+            case "Y":
+            case "Z":
+                return "F";
+            default:
+                return "0";
+        }
+    });
+
+    return fixedColor;
+}

@@ -1,5 +1,5 @@
 import { el } from "@fils/utils";
-import { drawColorPickerBar, drawColorPickerSL, HSBColor, hsbToHex, hexToRgb, rgbToHsb } from '../../../../../color/lib/main';
+import { drawColorPickerBar, drawColorPickerSL, HSBColor, hsbToHex, hexToRgb, rgbToHsb, fixHex } from '../../../../../color/lib/main';
 import { CSS_UI } from "../../../partials/cssClasses";
 import check from "../../../utils/check";
 import { Panel } from "../../panels/Panel";
@@ -19,21 +19,7 @@ CSS_UI.items.push({
 });
 const c = CSS_UI.getItemClasses('color');
 
-const fixHexColor = (color: string): string => {
-	let fixedColor = color;
-	if (fixedColor.substring(0, 1) !== "#") {
-		fixedColor = "#" + fixedColor;
-	}
-	fixedColor = fixedColor.toUpperCase();
-	fixedColor = fixedColor.substring(0, 7);
-	if (fixedColor.length === 4) {
-		fixedColor = "#" + fixedColor[1] + fixedColor[1] + fixedColor[2] + fixedColor[2] + fixedColor[3] + fixedColor[3];
-	}
-	while (fixedColor.length < 7) {
-		fixedColor += "F";
-	}
-	return fixedColor;
-}
+
 
 export class ColorPanel extends Panel {
 	view: HTMLElement;
@@ -126,7 +112,6 @@ export class ColorPanel extends Panel {
 
 		// Canvas 2
 		x = this.color.h * this.width / 360;
-		console.log(this.width);
 
 		this.dragger.style.left = `${x}px`;
 
@@ -225,7 +210,7 @@ export class ColorItem extends Item {
 		if (check.isNull(value) || check.isUndefined(value) || value === '') {
 			value = '#FFFFFF';
 		}
-		value = fixHexColor(value);
+		value = fixHex(value);
 
 		if(this.panel.created){
 			this.panel.reverseUpdate();
