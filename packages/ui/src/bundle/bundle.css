@@ -180,20 +180,15 @@
 ._ui-panel {
   box-sizing: border-box;
 }
-._ui-wrapper fieldset,
-._ui-panel fieldset {
+
+fieldset {
   min-inline-size: unset;
 }
-._ui-wrapper small,
-._ui-wrapper input,
-._ui-wrapper textarea,
-._ui-wrapper select,
-._ui-wrapper button,
-._ui-panel small,
-._ui-panel input,
-._ui-panel textarea,
-._ui-panel select,
-._ui-panel button {
+
+input,
+textarea,
+select,
+button {
   padding: 0;
   margin: 0;
   border: none;
@@ -205,31 +200,21 @@
   text-transform: inherit;
   letter-spacing: inherit;
 }
-._ui-wrapper h1,
-._ui-wrapper h2,
-._ui-wrapper h3,
-._ui-wrapper h4,
-._ui-wrapper h5,
-._ui-wrapper h6,
-._ui-wrapper small,
-._ui-wrapper p,
-._ui-wrapper a,
-._ui-panel h1,
-._ui-panel h2,
-._ui-panel h3,
-._ui-panel h4,
-._ui-panel h5,
-._ui-panel h6,
-._ui-panel small,
-._ui-panel p,
-._ui-panel a {
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a {
   margin: 0;
   font: inherit;
 }
-._ui-wrapper input[type=number]::-webkit-inner-spin-button,
-._ui-wrapper input[type=number]::-webkit-outer-spin-button,
-._ui-panel input[type=number]::-webkit-inner-spin-button,
-._ui-panel input[type=number]::-webkit-outer-spin-button {
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
