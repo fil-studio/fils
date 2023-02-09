@@ -84,51 +84,51 @@ export class App {
 		// 	optionLabel: 'name',
 		// });
 
-		const dataArrayExample = {
-			"Yay": 0,
-			"YOY": "test text",
-			text4: "test text 4",
-			text5: "test text 5",
-			"Lorem Ipsum": "Lorem Ipsum text",
-			"YaOY": "test text",
-			texasdt4: "test text 4",
-			texasdt5: "test text 5",
-			"Loasdrem Ipsum": "Lorem Ipsum text",
-			"YOasdY": "test text",
-			texast4: "test text 4",
-			texat5: "test text 5",
-			"Ladsaorem Ipsum": "Lorem Ipsum text",
-			"YasOY": "test text",
-			teasdxt4: "test text 4",
-			teaaxt5: "test text 5",
-			"Loaarem Ipsum": "Lorem Ipsum text",
-			"YOaaY": "test text",
-			texat4: "test text 4",
-			textasd5: "test text 5",
-			"Loraaem Ipsum": "Lorem Ipsum text",
-		};
+		// const dataArrayExample = {
+		// 	"Yay": 0,
+		// 	"YOY": "test text",
+		// 	text4: "test text 4",
+		// 	text5: "test text 5",
+		// 	"Lorem Ipsum": "Lorem Ipsum text",
+		// 	"YaOY": "test text",
+		// 	texasdt4: "test text 4",
+		// 	texasdt5: "test text 5",
+		// 	"Loasdrem Ipsum": "Lorem Ipsum text",
+		// 	"YOasdY": "test text",
+		// 	texast4: "test text 4",
+		// 	texat5: "test text 5",
+		// 	"Ladsaorem Ipsum": "Lorem Ipsum text",
+		// 	"YasOY": "test text",
+		// 	teasdxt4: "test text 4",
+		// 	teaaxt5: "test text 5",
+		// 	"Loaarem Ipsum": "Lorem Ipsum text",
+		// 	"YOaaY": "test text",
+		// 	texat4: "test text 4",
+		// 	textasd5: "test text 5",
+		// 	"Loraaem Ipsum": "Lorem Ipsum text",
+		// };
 
-		group.add(this.obj, 'testArray', {
-			title: 'Select Array',
-			view: 'select',
-			options: dataArrayExample,
-		});
+		// group.add(this.obj, 'testArray', {
+		// 	title: 'Select Array',
+		// 	view: 'select',
+		// 	options: dataArrayExample,
+		// });
 
 		// group.add(this.obj, 'colorTest', {
 		// 	title: 'Color Test',
 		// 	view: 'color'
 		// });
-		group.add(this.obj, 'colorTest', {
-			title: 'COLOR',
-			view: 'color'
-		});
+		// group.add(this.obj, 'colorTest', {
+		// 	title: 'COLOR',
+		// 	view: 'color'
+		// });
 
-		group.add(this.obj, 'uploadTest', {
-			title: 'Upload Button',
-			text: 'Upload',
-			icon: uiAppendBlend,
-			view: 'upload'
-		});
+		// group.add(this.obj, 'uploadTest', {
+		// 	title: 'Upload Button',
+		// 	text: 'Upload',
+		// 	icon: uiAppendBlend,
+		// 	view: 'upload'
+		// });
 
 		group.addSpacer();
 
@@ -148,6 +148,7 @@ export class App {
 			title: 'Number Test',
 			view: 'number'
 		});
+		return
 
 		group.addSpacer();
 
