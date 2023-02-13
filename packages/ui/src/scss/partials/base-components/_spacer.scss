@@ -1,0 +1,28 @@
+._ui-spacer {
+	width: 100%;
+	display: block;
+	margin-bottom: calc(-1 * var(--spacer));
+
+	&._ui-spacer-small {
+		padding: 10px 0;
+	}
+
+	&._ui-spacer-medium {
+		padding: 15px 0;
+	}
+
+	&._ui-spacer-large {
+		padding: 20px 0;
+	}
+
+	&._ui-spacer-has-line {
+		&:before {
+			content: "";
+			display: block;
+			width: calc(100% - 0.25rem);
+			margin: 0 auto;
+			height: 1px;
+			background: var(--section-bg-1);
+		}
+	}
+}

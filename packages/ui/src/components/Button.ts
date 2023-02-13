@@ -1,46 +1,37 @@
-import { EventsHandler } from "../partials/Events";
-import dom, { RowTypes } from "../utils/dom";
+import { RowTypes } from "../utils/dom";
+import { Dom, UIElement } from "./UIElement";
 
 export interface ButtonOptions {
 	title?: string;
-	onChangeCallback?: Function;
 }
 
-export class Button extends EventsHandler {
-	type: RowTypes = RowTypes.button;
+interface ButtonDom extends Dom {
+	button: HTMLButtonElement
+}
 
-	dom: HTMLElement;
-	button: HTMLButtonElement;
-	depth: number;
-	onChangeCallback: Function;
+export class Button extends UIElement {
+	dom: ButtonDom;
 
-	constructor(parent, { title, onChangeCallback }: ButtonOptions = {}) {
-		super(parent);
-
-		this.onChangeCallback = onChangeCallback || function(e){
-			console.log('Button - onChangeCallback:', e);
-		};
-
-		this.depth = parent.depth + 1;
-
-		this.dom = dom.createRow( {
-			type: RowTypes.button,
-			depth: this.depth,
-			title: title || 'Button'
-		});
-		this.button = this.dom.querySelector('button');
-
-		this.addEventListeners();
+	constructor({ title }: ButtonOptions = {}) {
+		const _title = title || 'Button'
+		super(RowTypes.button, _title);
 	}
 
-	private addEventListeners(){
-		this.button.addEventListener('click', (e) => {
-			this.onChangeCallback(e);
-			this.__onChange();
-		});
+	protected createDom(): void {
+		super.createDom();
+
+		this.dom = {
+			...this.dom,
+			button: null
+		}
+
+		this.dom.button = this.dom.el.querySelector('button');
+
 	}
 
-	destroy(){
-		this.button.remove();
+	protected addEventListeners(){
+		this.dom.button.addEventListener('click', (e) => {
+			this.emit('click');
+		});
 	}
 }

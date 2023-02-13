@@ -1,6 +1,6 @@
 {
 	"name": "@fils/color",
-	"version": "0.0.1",
+	"version": "0.0.5",
 	"description": "Color Package written in TypeScript",
 	"main": "lib/main.js",
 	"repository": "git@github.com:fil-studio/fils.git",
@@ -9,6 +9,7 @@
 	"license": "Apache-2.0",
 	"private": false,
 	"scripts": {
+		"publish": "yarn build && npm publish --access public",
 		"prepare": "yarn build",
 		"build": "tsc --build tsconfig.color.json"
 	},

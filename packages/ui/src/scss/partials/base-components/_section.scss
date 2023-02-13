@@ -1,18 +1,48 @@
 section {
+	--section-bg-0: var(--bg-1);
+	--section-bg-1: var(--bg-0);
+
+	&[ui-depth="0"],
+	&[ui-depth="2"],
+	&[ui-depth="4"],
+	&[ui-depth="6"],
+	&[ui-depth="8"],
+	&[ui-depth="10"] {
+		--section-bg-0: var(--bg-0);
+		--section-bg-1: var(--bg-1);
+	}
+
+	// It's just like a flag to tell the user is going too deep for it to make anys fucking sense
+	[ui-depth="12"]{
+		--section-bg-0: red;
+		--section-bg-1: green;
+	}
+
 	position: relative;
 	width: 100%;
 	height: auto;
 
-	background-color: var(--bg-1);
+	border-radius: var(--radius-1);
 
-	border-radius: var(--border-radius);
+	background-color: var(--section-bg-0);
 
-	&[ui-depth="0"],
-	&:nth-child(even) {
-		background-color: var(--bg-0);
+	&:not([ui-depth="0"]) {
+		margin-top: var(--spacer);
 	}
 
-	._ui-content-wrapper {
-		padding: 0 var(--line-separator) var(--line-separator) var(--line-separator);
+	._ui-section-content {
+		padding: 0 var(--spacer) var(--spacer) var(--spacer);
+		position: relative;
+		float: left;
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+
+		fieldset:first-of-type{
+			margin-top: 0.5rem;
+		}
+		fieldset:last-child {
+			margin-bottom: 0.5rem;
+		}
 	}
 }

@@ -1,22 +1,29 @@
 
-& {
 
-	--height: 40px;
-	--border-radius: 8px;
-	--padding: 10px 8px;
-	--line-separator: 3px;
+:root {
+
+	// Border radius
+	--radius-0: 4px;
+	--radius-1: 8px;
+
+	// Inputs - Groups paddings
+	--padding: 0.2rem 0.4rem;
+
+	// Distance between fieldsets - vertical
+	--spacer: 0.25rem;
 
 	// Transitions
 	--duration: .3s;
 	--timing: cubic-bezier(.6, 0, .4, 1);
 
-
 	// Colors
-	--accent-color: #2871C7;
+	--accent: #2871C7;
+	--error-color: #8f0000;
 	--bg-0: #303030;
 	--bg-1: #191919;
+	--white: #FFF;
 	--color-0: #CCCCCC;
 	--color-1: #999999;
 	--color-2: #666666;
-}
 
+}

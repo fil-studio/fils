@@ -34,6 +34,10 @@ export function hexToRgb(hex: string): RGBColor {
    } : {r:0, g:0, b:0};
 }
 
+export function hexToHsb(hex: string): HSBColor {
+    return rgbToHsb(hexToRgb(hex));
+}
+
 export function rgbToHsl(color:RGBColor):HSLColor {
     const r = color.r /255, g = color.g/255, b = color.b/255;
     const max = Math.max(r, g, b);
@@ -96,7 +100,7 @@ export function rgbToHsb(color:RGBColor): HSBColor {
   const r = color.r / 255;
   const g = color.g / 255;
   const b = color.b / 255;
-  
+
   const max = Math.max(r, g, b), min = Math.min(r, g, b);
   let h = 0, s = 0, v = max;
 
@@ -121,10 +125,10 @@ export function hsbToRgb(color:HSBColor): RGBColor {
     let h = color.h, s = color.s, b = color.b;
     s /= 100;
     b /= 100;
-  
+
     const k = (n) => (n + h / 60) % 6;
     const f = (n) => b * (1 - s * Math.max(0, Math.min(k(n), 4 - k(n), 1)));
-    
+
     return {
         r: Math.round(255 * f(5)),
         g: Math.round(255 * f(3)),
@@ -134,7 +138,6 @@ export function hsbToRgb(color:HSBColor): RGBColor {
 
 export function hsbToHex(color:HSBColor):string {
     const rgb:RGBColor = hsbToRgb(color);
-    // console.log(rgb);
     return rgbToHex(rgb);
 }
 
@@ -144,4 +147,52 @@ export function rgbToString(color:RGBColor):string {
 
 export function hsbToString(color:HSBColor):string {
     return `H: ${color.h}, S: ${color.s}, B: ${color.b}`;
+}
+
+export function fixHex(color: string):string {
+    let fixedColor = color;
+    if (fixedColor.substring(0, 1) !== "#") {
+        fixedColor = "#" + fixedColor;
+    }
+    fixedColor = fixedColor.toUpperCase();
+    fixedColor = fixedColor.substring(0, 7);
+    if (fixedColor.length === 4) {
+        fixedColor = "#" + fixedColor[1] + fixedColor[1] + fixedColor[2] + fixedColor[2] + fixedColor[3] + fixedColor[3];
+    }
+    while (fixedColor.length < 7) {
+        fixedColor += "F";
+    }
+
+    // Replace invalid characters with their closest valid hexadecimal equivalent using a regular expression
+    fixedColor = fixedColor.replace(/[^A-F0-9]/g, (c) => {
+        switch (c) {
+            case "#":
+                return "#";
+            case "G":
+            case "H":
+            case "I":
+            case "J":
+            case "K":
+            case "L":
+            case "M":
+            case "N":
+            case "O":
+            case "P":
+            case "Q":
+            case "R":
+            case "S":
+            case "T":
+            case "U":
+            case "V":
+            case "W":
+            case "X":
+            case "Y":
+            case "Z":
+                return "F";
+            default:
+                return "0";
+        }
+    });
+
+    return fixedColor;
 }

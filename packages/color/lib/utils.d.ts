@@ -16,6 +16,7 @@ export type HSLColor = {
 export declare function componentToHex(c: number): string;
 export declare function rgbToHex(color: RGBColor): string;
 export declare function hexToRgb(hex: string): RGBColor;
+export declare function hexToHsb(hex: string): HSBColor;
 export declare function rgbToHsl(color: RGBColor): HSLColor;
 export declare function hslToRgb(color: HSLColor): RGBColor;
 export declare function hslToHex(color: HSLColor): string;
@@ -24,3 +25,4 @@ export declare function hsbToRgb(color: HSBColor): RGBColor;
 export declare function hsbToHex(color: HSBColor): string;
 export declare function rgbToString(color: RGBColor): string;
 export declare function hsbToString(color: HSBColor): string;
+export declare function fixHex(color: string): string;

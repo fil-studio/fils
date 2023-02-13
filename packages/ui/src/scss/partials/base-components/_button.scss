@@ -1,7 +1,35 @@
-button {
-	width: 100%;
-	display: flex;
+
+._ui-button {
+	@include item;
+	padding: 0.2rem 0.7rem;
 	justify-content: center;
-	align-items: center;
-	padding: 8px 10px;
+
+	transition: var(--duration) var(--timing);
+	margin-top: var(--animation-space);
+
+	&:active {
+		background-color: var(--accent);
+		color: var(--white);
+		transition: 0s;
+	}
+
+	h3 {
+		text-overflow: ellipsis;
+		overflow: hidden;
+	}
+}
+
+._ui-button-has-icon {
+	justify-content: space-between;
+
+	._ui-button-icon {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		svg {
+			width: 20px;
+		}
+	}
+
 }

@@ -1,69 +1,133 @@
-
 // Import CSS
+import { el } from '@fils/utils';
 import styles from '../bundle/bundle.min.css';
-import { Group, GroupParams } from './Group';
-import { AvailableItems } from '../partials/ItemFactory';
+import { CSS_UI } from '../partials/cssClasses';
 import { RegisterBaseComponents } from '../partials/RegisterBaseItems';
 import css from '../utils/css';
-import dom, { EMBED_WRAPPER_CLASS, RowTypes } from '../utils/dom';
+import dom, { RowTypes } from '../utils/dom';
+import { Group, GroupDom, GroupParams } from './Group';
 
 RegisterBaseComponents();
-const mergedCss = css.merge(styles, AvailableItems.items);
-css.inject(mergedCss);
+// const mergedCss = css.merge(styles, AvailableItems.items);
+css.inject(styles);
 
 
 interface UIParams extends GroupParams {
-	embed?: HTMLElement,
-	onChangeCallback?: Function;
+	parentElement?: HTMLElement;
+	resizable?: boolean;
 	icon?: string;
+	width?: number;
 }
-export class UI extends Group {
-	domWrapper: HTMLElement;
-	depth: number = 0;
 
-	onChangeCallback: Function;
+interface UIDom extends GroupDom {
+	wrapper: HTMLElement
+}
+
+export class UI extends Group {
+	dom: UIDom;
+
+	resizable: boolean;
 
 	constructor({
-		embed,
-		onChangeCallback,
+		resizable = true,
+		parentElement,
 		icon,
+		width
 	}: UIParams) {
 		super({...arguments[0] });
 
-		this.parent = null;
+		this.resizable = parentElement ? false : resizable;
+
+		this.init(0);
+
+		this.addIcon(icon);
+		this.appendTo(parentElement);
+
+		if(width){
+			this.dom.wrapper.style.setProperty('--wrapper-width', `${width}px`);
+		}
+
+
+	}
+
+	appendTo(parentElement: HTMLElement){
+		if(parentElement){
+			this.dom.wrapper.classList.add(CSS_UI.parent);
+			parentElement.appendChild(this.dom.wrapper);
+		} else {
+			document.body.appendChild(this.dom.wrapper);
+		}
+	}
+
+	addIcon(icon: string){
+		if(!icon) return;
+		dom.addIcon(this.dom.el.querySelector('header'), icon);
+	}
+
+	createDom(): void {
+		super.createDom();
+
+		this.dom = {
+			wrapper: null,
+			...this.dom
+		};
 
 		/*
-		 * Main UI requires an extra wrapper
-		 */
-		this.domWrapper = dom.createRow({
+		* Main UI requires an extra wrapper
+		*/
+		this.dom.wrapper = dom.createRow({
 			type: RowTypes.ui,
 			depth: this.depth,
 		});
-		this.domWrapper.appendChild(this.dom);
 
-		if(icon){
-			dom.addIcon(this.dom.querySelector('header'), icon);
-		}
-
-		if(embed){
-			this.domWrapper.classList.add(EMBED_WRAPPER_CLASS);
-			embed.appendChild(this.domWrapper);
-		} else {
-			document.body.appendChild(this.domWrapper);
-		}
-
-		/**
-		 * onChangeCallback is called when a value is changed
-		 * todo - everything needs a callback
-		 */
-		this.onChangeCallback = onChangeCallback ? onChangeCallback : function(e?:CustomEvent){
-			console.log('UI onChangeCallback', e);
-		};
+		this.dom.wrapper.appendChild(this.dom.el);
 	}
 
-	onChange(e?: CustomEvent): void {
-		this.onChangeCallback(e);
-	}
+	protected addEventListeners(){
+		super.addEventListeners();
 
+		if(!this.resizable) return;
+
+		// Create resizer element
+		const resizer = el('div', CSS_UI.resizer);
+		this.dom.wrapper.appendChild(resizer);
+
+
+		const resize = (w, x) => {
+
+			if(x < 0 && w + x < 300) return;
+			this.dom.wrapper.style.setProperty('--wrapper-width', `${w + x}px`);
+
+			this.emit('resize');
+		}
+
+
+		// Handle resize events
+		let dragging = false;
+		let x = 0;
+		let distance = 0;
+
+		let width = 0;
+
+		resizer.addEventListener('mousedown', (e) => {
+			dragging = true;
+			x = e.clientX;
+			width = this.dom.wrapper.getBoundingClientRect().width;
+		});
+
+		window.addEventListener('mousemove', (e) => {
+			if(!dragging) return;
+			e.preventDefault();
+			distance = x - e.clientX;
+			resize(width, distance);
+		});
+
+		window.addEventListener('mouseup', (e) => {
+			if(!dragging) return;
+			e.preventDefault();
+			dragging = false;
+		});
+
+	}
 
 }

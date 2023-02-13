@@ -1,26 +1,39 @@
-._ui-boolean-item {
-	width: $fil__height * 1.5;
-	height: $fil__height * .70;
-	border-radius: $fil__height;
-	display: flex;
-	justify-content: flex-start;
 
-	div {
-		width: $fil__height * .70;
-		height: $fil__height * .70;
-		border-radius: 50%;
-		// background-color: $fil__color--tool;
-		transition: all .2s ease-in-out;
+._ui-boolean {
+	cursor: pointer;
+
+	._ui-toggle {
+		width: 40px;
+		height: 25px;
+		border-radius: 15px;
+
+		background-color: var(--section-bg-1);
+		position: relative;
+		transition: var(--duration) var(--timing);
+
+
+		div{
+			width: 25px;
+			height: 25px;
+			border-radius: 100%;
+			background-color: var(--white);
+			position: absolute;
+			top: 50%;
+			left: 0;
+			transform: translate3d(0%, -50%, 0);
+
+			transition: inherit;
+		}
+	}
+
+	&._ui--active {
+		._ui-toggle {
+			background-color: var(--accent);
+
+			div {
+				left: 100%;
+				transform: translate3d(-100%, -50%, 0);
+			}
+		}
 	}
 }
-
-// .active {
-// 	._ui-boolean-item {
-// 		// background-color: $fil__color--active;
-// 		justify-content: flex-end;
-
-// 		div {
-// 			// background-color: $fil__color--tool;
-// 		}
-// 	}
-// }

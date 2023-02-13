@@ -13,6 +13,9 @@ export function hexToRgb(hex) {
         b: parseInt(result[3], 16)
     } : { r: 0, g: 0, b: 0 };
 }
+export function hexToHsb(hex) {
+    return rgbToHsb(hexToRgb(hex));
+}
 export function rgbToHsl(color) {
     const r = color.r / 255, g = color.g / 255, b = color.b / 255;
     const max = Math.max(r, g, b);
@@ -126,4 +129,48 @@ export function rgbToString(color) {
 }
 export function hsbToString(color) {
     return `H: ${color.h}, S: ${color.s}, B: ${color.b}`;
+}
+export function fixHex(color) {
+    let fixedColor = color;
+    if (fixedColor.substring(0, 1) !== "#") {
+        fixedColor = "#" + fixedColor;
+    }
+    fixedColor = fixedColor.toUpperCase();
+    fixedColor = fixedColor.substring(0, 7);
+    if (fixedColor.length === 4) {
+        fixedColor = "#" + fixedColor[1] + fixedColor[1] + fixedColor[2] + fixedColor[2] + fixedColor[3] + fixedColor[3];
+    }
+    while (fixedColor.length < 7) {
+        fixedColor += "F";
+    }
+    fixedColor = fixedColor.replace(/[^A-F0-9]/g, (c) => {
+        switch (c) {
+            case "#":
+                return "#";
+            case "G":
+            case "H":
+            case "I":
+            case "J":
+            case "K":
+            case "L":
+            case "M":
+            case "N":
+            case "O":
+            case "P":
+            case "Q":
+            case "R":
+            case "S":
+            case "T":
+            case "U":
+            case "V":
+            case "W":
+            case "X":
+            case "Y":
+            case "Z":
+                return "F";
+            default:
+                return "0";
+        }
+    });
+    return fixedColor;
 }

@@ -1,7 +1,8 @@
-import { ItemRegister } from '../../../../packages/ui/src/partials/ItemFactory';
+import { uiAppendBlend, uiBrushData, uiTexture } from '../../../../packages/ui-icons/lib/Icons';
+import { SpacerSize } from '../../../../packages/ui/src/components/Spacer';
 import { UI } from '../../../../packages/ui/src/main';
 
-import { uiMaterialData } from '../../../../packages/ui-icons/lib/Icons';
+import { Texture, TextureLoader } from 'three';
 
 /**
  * S'ha de poder crear els components manualment
@@ -11,82 +12,199 @@ import { uiMaterialData } from '../../../../packages/ui-icons/lib/Icons';
 
 export class App {
 	ui: UI;
+	obj: any;
 	constructor() {
 
-		const obj = {
-			colorTest: '#ff0000',
+		this.obj = {
+			colorTest: '#0D5417',
 			booleanTest: false,
 			stringTest: 'Test',
-			numberTest: 1,
+			// numberTest: 1,
+			// numberTest: [1,2],
+			// numberTest: [1, 2, 3, 4],
+			numberTest: {
+				x: 1,
+				y: 2,
+				z: 3,
+				w: 5
+			},
+			uploadTest: null,
+			numberTestSlider: 0,
 			numberTestFloat: 0.5,
-			textureTest: 'asdapewoiewitureoiwoie09013oiasd',
-			materialTest: 'asdapewoiewitureoiwoie09013oiasd'
-		}
-
-		let obj1 = {
-			view: 'test',
-			type: 'boolean',
-			extendedHTML: '<div>Frontend injected</div>',
-			extendedCSS: '',
-		}
-		let obj2 = {
-			...obj1,
-			view: 'test2',
-			extendedHTML: '<div>Frontend extended injected</div>',
+			testArray: null,
+			textureTest: null,
+			textures: [],
+			materialTest: 'asdapewoiewitureoiwoie09013oiasd',
+			multiNumberTest: [1, 2, 3],
 		}
 
 
-		ItemRegister(obj1);
-		ItemRegister(obj2);
+		const loader = new TextureLoader();
+
+		let loaded = 0;
+		for(let i = 0; i <= 10; i++) {
+			loader.load('../assets/texture-test.png', (texture:Texture) => {
+				texture.name = `Texture ${i}`;
+
+				this.obj.textures.push(texture);
+				loaded++;
+				if(loaded === 10) this.createUI();
+			});
+		}
+
+	}
+
+	createUI() {
 
 		this.ui = new UI({
 			title: 'UI',
-			icon: uiMaterialData
+			icon: uiBrushData,
+			parentElement: document.querySelector('.parent-example') as HTMLElement,
 		});
 
 		const group = this.ui.addGroup({
 			title: 'Group Test',
 		});
+
+		this.ui.on('change', (target) => {
+			console.log('change', target);
+		});
 		// const group = this.ui;
 
 		/**
-		 * Object
-		 * Key
-		 * Options
-		 */
-		group.add(obj, 'colorTest', {
-			title: 'Color Test',
-			view: 'color'
-		});
-		group.add(obj, 'booleanTest', {
+		* Object
+		* Key
+		* Options
+		*/
+		// group.add(this.obj, 'textureTest', {
+		// 	title: 'Texture Test',
+		// 	text: 'Texture',
+		// 	view: 'texture',
+		// 	options: this.obj.textures,
+		// 	optionLabel: 'name',
+		// });
+
+		// const dataArrayExample = {
+		// 	"Yay": 0,
+		// 	"YOY": "test text",
+		// 	text4: "test text 4",
+		// 	text5: "test text 5",
+		// 	"Lorem Ipsum": "Lorem Ipsum text",
+		// 	"YaOY": "test text",
+		// 	texasdt4: "test text 4",
+		// 	texasdt5: "test text 5",
+		// 	"Loasdrem Ipsum": "Lorem Ipsum text",
+		// 	"YOasdY": "test text",
+		// 	texast4: "test text 4",
+		// 	texat5: "test text 5",
+		// 	"Ladsaorem Ipsum": "Lorem Ipsum text",
+		// 	"YasOY": "test text",
+		// 	teasdxt4: "test text 4",
+		// 	teaaxt5: "test text 5",
+		// 	"Loaarem Ipsum": "Lorem Ipsum text",
+		// 	"YOaaY": "test text",
+		// 	texat4: "test text 4",
+		// 	textasd5: "test text 5",
+		// 	"Loraaem Ipsum": "Lorem Ipsum text",
+		// };
+
+		// group.add(this.obj, 'testArray', {
+		// 	title: 'Select Array',
+		// 	view: 'select',
+		// 	options: dataArrayExample,
+		// });
+
+		// group.add(this.obj, 'colorTest', {
+		// 	title: 'Color Test',
+		// 	view: 'color'
+		// });
+		// group.add(this.obj, 'colorTest', {
+		// 	title: 'COLOR',
+		// 	view: 'color'
+		// });
+
+		// group.add(this.obj, 'uploadTest', {
+		// 	title: 'Upload Button',
+		// 	text: 'Upload',
+		// 	icon: uiAppendBlend,
+		// 	view: 'upload'
+		// });
+
+		group.addSpacer();
+
+		group.add(this.obj, 'booleanTest', {
 			title: 'Boolean Test',
-			view: 'test'
-		});
-		group.add(obj, 'booleanTest', {
-			title: 'Boolean Test',
-			view: 'test2'
-		});
-		group.addItem(obj, 'stringTest', {
-			title: 'String Test'
-		});
-		group.add(obj, 'numberTest', {
-			title: 'Number Test',
+			view: 'boolean'
+		})
+		group.addItem(this.obj, 'stringTest', {
+			title: 'String Test',
+			view: 'string'
 		});
 
-		const g2 = group.addGroup({
-			title: 'Subgroup Test',
+
+		group.addSpacer();
+
+		group.add(this.obj, 'numberTest', {
+			title: 'Number Test',
+			view: 'number'
+		});
+		return
+
+		group.addSpacer();
+
+		group.add(this.obj, 'numberTestSlider', {
+			title: 'Slider Test with long text example',
+				view: 'range',
+				min: -10,
+				max: 10,
+				step: 0.1,
+				// overExpose: [0, 10],
 		})
+
+
+
+
+		const g2 = this.ui.addGroup({
+			title: 'Subgroup Test',
+			folded: true
+		});
+
+		g2.on('fold', () => {
+			console.log('fold');
+		})
+
 		const g4 = g2.addGroup({
 			title: 'Subgroup Test 2',
-		})
-
-		this.ui.add(obj, 'textureTest', {
-			title: 'Texture Test',
-			view: 'texture'
+			folded: true
 		});
 
+		g4.add(this.obj, 'booleanTest', {
+			title: 'Boolean Test',
+			view: 'boolean'
+		});
+
+		g4.addItem(this.obj, 'stringTest', {
+			title: 'String Test',
+			view: 'string'
+		});
+
+		g4.add(this.obj, 'numberTest', {
+			title: 'Number Test',
+			view: 'number'
+		});
+
+		g4.addButton({
+			title: 'Button Test g4',
+		}).on('click', () => {
+			console.log('Button Test g4');
+		})
+
+		g2.addButton({
+			title: 'Button Test g2',
+		}).on('click', () => {
+			console.log('Button Test g2');
+		});
 
 		console.log('UI', this.ui);
-
 	}
 }

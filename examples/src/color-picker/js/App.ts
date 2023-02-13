@@ -4,7 +4,7 @@
 import { drawColorPickerBar, drawColorPickerSL, HSBColor, hsbToHex, hsbToRgb, hsbToString, rgbToString } from '@fils/color';
 
 export class App {
-    
+
     constructor() {
         const width = 400;
 
@@ -31,7 +31,7 @@ export class App {
             s: 50,
             b: 50
         }
-        
+
         // drawColorPickerSL(canvas1, angle);
         drawColorPickerBar(canvas2);
 

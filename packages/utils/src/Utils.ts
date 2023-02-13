@@ -101,3 +101,6 @@ export function getWorkerURL( url: string ) {
 	const content = `importScripts( "${ url }" );`;
 	return URL.createObjectURL( new Blob( [ content ], { type: "text/javascript" } ) );
 }
+export function generateUniqueId(prefix:string = '') {
+	return `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+}

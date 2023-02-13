@@ -1,0 +1,56 @@
+._ui-number {
+
+	._ui-number-input {
+		flex-grow: 1;
+		position: relative;
+		float: left;
+
+		&:not(:last-of-type){
+			margin: 0 var(--spacer) 0 0;
+		}
+	}
+
+	input {
+		@include item;
+	}
+
+	._ui-number-buttons {
+		position: absolute;
+		top: 0;
+		right: 0;
+		height: 100%;
+		width: auto;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+
+		button {
+			padding: 0;
+			display: flex;
+			justify-content: flex-start;
+			align-items: center;
+			height: 50%;
+			width: 20px;
+			cursor: pointer;
+
+			&:active {
+				color: var(--white);
+				transition: 0s;
+			}
+		}
+
+		svg {
+			width: 20px;
+		}
+
+		._ui-number-btn-increase {
+
+			svg {
+				transform: rotate(180deg);
+				transform-origin: center;
+			}
+
+		}
+	}
+
+}

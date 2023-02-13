@@ -1,36 +1,89 @@
 
 
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;700&display=swap');
+// @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;700&display=swap');
+@import "./partials/google-font";
 
+@mixin item {
+	width: 100%;
+	min-height: 2rem;
+	padding: var(--padding);
+	text-align: left;
+	background-color: var(--section-bg-1);
+	border-radius: var(--radius-0);
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+}
+
+@import "./partials/vars";
+@import "./partials/reset";
+@import "./partials/fonts";
+
+._ui-wrapper,
+._ui-panel {
+
+	* {
+		&::selection {
+			background: var(--white);
+			color: var(--accent);
+		}
+	}
+
+	._ui--hidden {
+		display: none !important;
+		pointer-events: none;
+	}
+
+	._ui--error {
+		box-shadow: 0px 0px 4px 0px var(--error-color);
+		transition-duration: var(--duration);
+		transition-timing-function: var(--timing);
+		transition-property: box-shadow;
+	}
+}
 
 ._ui-wrapper {
 
-	@import "./partials/vars";
-	@import "./partials/fonts";
+	--wrapper-width: 300px;
 
 	position: fixed;
 	top: 5px;
 	right: 5px;
-	width: 275px;
+	width: var(--wrapper-width);
+	min-width: 300px;
 
-	&._ui-embed-wrapper {
+	&._ui-wrapper-has-parent {
 		position: relative;
 		top: unset;
 		right: unset;
 		width: 100%;
 	}
 
-	@import "./partials/fold";
-
-	@import "./partials/base-components/header";
-	@import "./partials/base-components/section";
-	@import "./partials/base-components/fieldset";
-	@import "./partials/base-components/button";
-	@import "./partials/base-components/input-controller";
-
+	._ui-wrapper-resizer {
+		position: absolute;
+		width: 4px;
+		height: calc(100% - 4px);
+		top: 4px;
+		left: 0;
+		cursor: ew-resize;
+		z-index: 1;
+	}
 }
 
+@import "./partials/base-components/section";
+@import "./partials/fold";
 
+@import "./partials/base-components/header";
+@import "./partials/base-components/fieldset";
+@import "./partials/base-components/button";
+@import "./partials/base-components/spacer";
 
+// Base Items
+@import "./items/boolean";
+@import "./items/string";
+@import "./items/number";
+@import "./items/range";
+@import "./items/select";
+@import "./items/color";
 
-// @import "./items/boolean";
+@import "./partials/base-components/panel";
