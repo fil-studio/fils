@@ -1,5 +1,5 @@
 // Import CSS
-import { el } from '../../../utils/lib/Utils';
+import { el } from '@fils/utils';
 import styles from '../bundle/bundle.min.css';
 import { CSS_UI } from '../partials/cssClasses';
 import { RegisterBaseComponents } from '../partials/RegisterBaseItems';

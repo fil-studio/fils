@@ -1,5 +1,5 @@
 
-import { slugify } from '../../../../utils/lib/Utils';
+import { slugify } from '@fils/utils';
 import { CSS_UI } from '../../partials/cssClasses';
 import { CreateItemParams } from '../../partials/ItemFactory';
 import { RowTypes } from '../../utils/dom';
