@@ -8,6 +8,7 @@
   "author": "fil studio <hello@fil.studio>",
   "license": "Apache-2.0",
   "scripts": {
+    "publish": "npm run build && npm publish --access public",
     "prepare": "npm run build",
     "build": "tsc --build tsconfig.phy.json"
   },

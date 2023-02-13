@@ -9,6 +9,7 @@
 	"license": "Apache-2.0",
 	"private": false,
 	"scripts": {
+		"publish": "npm run build && npm publish --access public",
 		"prepare": "yarn build",
 		"build": "tsc --build tsconfig.nomad.json"
 	},

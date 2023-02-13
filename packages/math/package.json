@@ -9,6 +9,7 @@
   "main": "lib/main.js",
   "typings": "lib/main.d.ts",
   "scripts": {
+    "publish": "npm run build && npm publish --access public",
     "prepare": "npm run build",
     "build": "tsc --build tsconfig.math.json"
   },
