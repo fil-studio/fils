@@ -5,35 +5,25 @@ import { uiDownarrowHlt } from '../../../../../ui-icons/lib/Icons';
 import { CSS_UI } from "../../../partials/cssClasses";
 import { Item } from "../Item";
 
-type inputElement = {
-	value: number;
-	placeholder: string;
-	wrapper: HTMLElement;
-	input: HTMLInputElement;
-	buttonIncrease: HTMLButtonElement;
-	buttonDecrease: HTMLButtonElement;
-}
 
-CSS_UI.items.push({
+const c = {
 	type: 'number',
 	input: '_ui-number-input',
 	buttons: '_ui-number-buttons',
 	btnIncrease: '_ui-number-btn-increase',
 	btnDecrease: '_ui-number-btn-decrease',
-});
-const c = CSS_UI.getItemClasses('number');
-
+};
 export class NumberItem extends Item {
-	params: NumberItemParameters;
+	params!: NumberItemParameters;
 
-	private inputElements: inputElement[];
+	private inputElements:Array<any> = [];
 
-	max: number;
-	min: number;
-	step: number;
-	decimals: number;
+	max: number | null = null;
+	min: number | null = null;
+	step: number = 0.01
+	decimals: number = 2;
 
-	originalDataType: string;
+	originalDataType: string = 'number';
 
 	limitNumber = (value: number):number => {
 
@@ -78,11 +68,10 @@ export class NumberItem extends Item {
 
 	}
 
-
-	setValue(_value?:any): void {
+	setValue(_value?: string | Array<number> | Object ): void {
 
 		// Only first setValue will have a value
-		if(_value) this.originalDataType = check.getType(_value);
+		if(_value) this.originalDataType = check.getType(_value) as string;
 
 		// Update this value to the current value
 		let inputsValue = [];
@@ -94,10 +83,10 @@ export class NumberItem extends Item {
 		if(this.originalDataType === 'number') valueForOutput = inputsValue[0];
 		else if(this.originalDataType === 'array') valueForOutput = inputsValue;
 		else if(this.originalDataType === 'object') {
-			valueForOutput = {};
+			valueForOutput = {} as Object;
 			let i = 0;
-			for (const [key, value] of Object.entries(this.object[this.key])) {
-				valueForOutput[key] = inputsValue[i];
+			for (const key in this.object[this.key]) {
+				valueForOutput[key] = inputsValue[i] as number;
 			}
 		}
 
@@ -105,7 +94,7 @@ export class NumberItem extends Item {
 		this.refreshDom();
 	}
 
-	protected createInput(value: number): inputElement {
+	protected createInput(value: number) {
 		const inputElement = {
 			value,
 			placeholder: 'Value',
@@ -142,7 +131,7 @@ export class NumberItem extends Item {
 
 	}
 
-	protected createInputContent(inputElement: inputElement): void {
+	protected createInputContent(inputElement:any): void {
 
 		// Create wrapper
 		inputElement.wrapper = el('div', c.input);
@@ -176,15 +165,15 @@ export class NumberItem extends Item {
 			inputElement.buttonDecrease.classList.add(`.${CSS_UI.utility.hidden}`);
 		}
 
-		this.dom.content.appendChild(inputElement.wrapper);
+		this.content.appendChild(inputElement.wrapper);
 	}
 
 	protected createContent(): void {
 
-		this.max = this.params.max || undefined;
-		this.min = this.params.min || undefined;
-		this.step = this.params.step || 0.01;
-		this.decimals = this.params.decimals || 2;
+		this.max = this.params.max ? this.params.max : null;
+		this.min = this.params.min ? this.params.min : null;
+		this.step = this.params.step ? this.params.step : this.step;
+		this.decimals = this.params.decimals ? this.params.decimals : this.decimals;
 
 		this.createInputs(this.object[this.key]);
 

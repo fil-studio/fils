@@ -8,7 +8,7 @@ import { Button } from "./Button";
 import { Item } from "./items/Item";
 import { ItemParameters } from "./items/ItemParameters";
 import { Spacer, SpacerParams } from "./Spacer";
-import { Dom, UIElement } from "./UIElement";
+import { UIElement } from "./UIElement";
 
 
 export interface GroupParams {
@@ -18,21 +18,17 @@ export interface GroupParams {
 	folded?: boolean;
 	foldable?: boolean;
 }
-
-export interface GroupDom extends Dom {
-	content: HTMLElement
-	foldWrapper: HTMLElement
-}
-
 export class Group extends UIElement {
-	dom: GroupDom;
-
 	protected children: Array<Group | Item | Button | Spacer> = [];
 
 	folded: boolean;
 	foldable: boolean;
 	protected height: number = 0;
-	protected timer: NodeJS.Timeout = null;
+	protected timer: any;
+
+	content!: HTMLElement;
+	foldWrapper!: HTMLElement;
+
 
 	constructor({
 		title,
@@ -51,26 +47,20 @@ export class Group extends UIElement {
 
 		super.createDom();
 
-		this.dom = {
-			...this.dom,
-			content: null,
-			foldWrapper: null
-		}
-
-		this.dom.content = this.dom.el.querySelector(`.${CSS_UI.section.content}`);
+		this.content = this.el.querySelector(`.${CSS_UI.section.content}`) as HTMLElement;
 	}
 
 	protected addEventListeners(){
 
 		if(!this.foldable) return;
 
-		this.dom.el.classList.add(CSS_UI.section.foldable);
+		this.el.classList.add(CSS_UI.section.foldable);
 
-		this.dom.foldWrapper = el('div', CSS_UI.section.foldableElement);
-		this.dom.el.appendChild(this.dom.foldWrapper);
-		this.dom.foldWrapper.appendChild(this.dom.content);
+		this.foldWrapper = el('div', CSS_UI.section.foldableElement);
+		this.el.appendChild(this.foldWrapper);
+		this.foldWrapper.appendChild(this.content);
 
-		const header = this.dom.el.querySelector('header');
+		const header = this.el.querySelector('header') as HTMLElement;
 
 		header.addEventListener('click', () => {
 			this.folded = !this.folded;
@@ -83,22 +73,22 @@ export class Group extends UIElement {
 	protected onFold(){
 
 		if(!this.foldable) return;
-		const h = this.dom.content.getBoundingClientRect().height;
+		const h = this.content.getBoundingClientRect().height;
 
-		this.dom.foldWrapper.style.height = `${h}px`;
+		this.foldWrapper!.style.height = `${h}px`;
 
 		if(this.timer) clearTimeout(this.timer);
 
 		// Just go with it, without the timeout, it doesn't work
 		setTimeout(() => {
-			if(this.folded) this.dom.el.classList.add(CSS_UI.section.folded);
-			else this.dom.el.classList.remove(CSS_UI.section.folded);
+			if(this.folded) this.el.classList.add(CSS_UI.section.folded);
+			else this.el.classList.remove(CSS_UI.section.folded);
 		}, 5);
 
 		if(!this.folded) {
-			const d = parseFloat(getComputedStyle(this.dom.foldWrapper).transitionDuration) * 1000;
+			const d = parseFloat(getComputedStyle(this.foldWrapper as HTMLElement).transitionDuration) * 1000;
 			this.timer = setTimeout(() => {
-				this.dom.foldWrapper.style.height = `auto`;
+				this.foldWrapper.style.height = `auto`;
 			}, d);
 		}
 
@@ -108,10 +98,14 @@ export class Group extends UIElement {
 	/**
 	 * Create a button
 	 */
-	addButton(params): Button{
+	addButton(params:any): Button{
 		const button = new Button(params);
-		button.init(this.depth + 1)
-		this.dom.content.appendChild(button.dom.el);
+
+		if (button) {
+			button.init(this.depth + 1);
+			this.content.appendChild(button.el);
+		}
+
 		return button;
 	}
 
@@ -121,12 +115,15 @@ export class Group extends UIElement {
 	addGroup(params: GroupParams): Group {
 		const group = new Group(params);
 
-		group.on('__childrenChange', (target) => {
-			this.change(target as EventsManager);
-		})
+		if (group) {
 
-		group.init(this.depth + 1)
-		this.dom.content.appendChild(group.dom.el);
+			group.on('__childrenChange', (target:any) => {
+				this.change(target as EventsManager);
+			})
+
+			group.init(this.depth + 1);
+			this.content.appendChild(group.el);
+		}
 
 		return group;
 	}
@@ -136,7 +133,7 @@ export class Group extends UIElement {
 	 */
 	addSpacer(params:SpacerParams = {}) {
 		const spacer = new Spacer(this.depth + 1, params);
-		this.dom.content.appendChild(spacer.dom.el);
+		if(spacer && spacer.el) this.content.appendChild(spacer.el);
 	}
 
 	/**
@@ -148,17 +145,19 @@ export class Group extends UIElement {
 	addItem(object:Object, key: string, params?:ItemParameters): Item {
 
 		const createItemParams: CreateItemParams = { object, key, params };
+
 		const item = ItemFactory(createItemParams);
 
-		item.on('__childrenChange', () => {
-			this.change(item as EventsManager);
-		})
+		if (item){
+			item.on('__childrenChange', () => {
+				this.change(item as EventsManager);
+			})
 
-		item.init(this.depth + 1)
-		this.dom.content.appendChild(item.dom.el);
+			item.init(this.depth + 1)
+			this.content.appendChild(item.el);
+		}
 
-
-		return item;
+		return item as Item;
 	}
 
  	change(target:EventsManager){

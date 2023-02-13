@@ -1,3 +1,4 @@
+import { el } from '@fils/utils';
 import { uiRemove } from '../../../../../ui-icons/lib/Icons';
 import { CSS_UI } from "../../../partials/cssClasses";
 import dom from "../../../utils/dom";
@@ -6,13 +7,15 @@ import { UploadItemParameters } from "../ItemParameters";
 
 
 export class UploadItem extends Item {
-	params: UploadItemParameters;
+	params: UploadItemParameters = {
+		text: '',
+	}
 
-	protected buttonTitle: string;
+	protected buttonTitle: string = '';
 
-	protected uploadButton: HTMLElement;
-	protected removeUploadButton: HTMLElement;
-	protected input: HTMLInputElement;
+	protected uploadButton: HTMLElement = el('div');
+	protected removeUploadButton: HTMLElement = el('div')
+	protected input: HTMLInputElement = el('input') as HTMLInputElement;
 
 	protected addEventListeners(): void {
 
@@ -20,11 +23,11 @@ export class UploadItem extends Item {
 			this.input.click();
 		});
 
-		this.input.addEventListener('change', (e) => {
-			const file = (e.target as HTMLInputElement).files[0];
+		this.input.addEventListener('change', () => {
+			const file = this.input && this.input.files && this.input.files[0] ? this.input.files[0] : null;
 			if(!file) return;
 
-			this.removeUploadButton.querySelector('h3').innerText = file.name;
+			this.removeUploadButton.querySelector('h3')!.innerText = file.name;
 			this.removeUploadButton.classList.remove(`${CSS_UI.utility.hidden}`);
 			this.uploadButton.classList.add(`${CSS_UI.utility.hidden}`);
 			this.setValue(file);
@@ -43,18 +46,18 @@ export class UploadItem extends Item {
 		this.buttonTitle = this.params.text ? this.params.text : this.title;
 
 		this.uploadButton = dom.createButton(this.buttonTitle, this.params.icon);
-		this.dom.content.appendChild(this.uploadButton);
+		this.content.appendChild(this.uploadButton);
 
 		this.removeUploadButton = dom.createButton('', uiRemove);
 		this.removeUploadButton.classList.add(`${CSS_UI.utility.hidden}`);
-		this.dom.content.appendChild(this.removeUploadButton);
+		this.content.appendChild(this.removeUploadButton);
 
-		this.dom.el.classList.add(CSS_UI.row.vertical);
+		this.el.classList.add(CSS_UI.row.vertical);
 
 		this.input = document.createElement('input');
 		this.input.type = 'file';
 		this.input.style.display = 'none';
-		this.dom.content.appendChild(this.input);
+		this.content.appendChild(this.input);
 
 
 	}

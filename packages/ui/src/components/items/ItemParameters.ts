@@ -16,7 +16,7 @@ export interface RangeItemParameters extends NumberItemParameters {
 }
 
 export interface UploadItemParameters extends ItemParametersInterface {
-	icon: string;
+	icon?: string;
 	text: string;
 }
 

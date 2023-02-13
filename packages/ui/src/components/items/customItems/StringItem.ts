@@ -3,7 +3,7 @@ import check from "../../../utils/check";
 import { Item } from "../Item";
 
 export class StringItem extends Item {
-	input: HTMLInputElement;
+	input: HTMLInputElement = el('input') as HTMLInputElement;
 
 	protected addEventListeners(): void {
 		this.input.addEventListener('change', () => {
@@ -15,7 +15,7 @@ export class StringItem extends Item {
 		this.input = el('input') as HTMLInputElement;
 		this.input.placeholder = 'String';
 		this.input.type = 'text';
-		this.dom.content.appendChild(this.input);
+		this.content.appendChild(this.input);
 	}
 
 	setValue(_value: any): void {

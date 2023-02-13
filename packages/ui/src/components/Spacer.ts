@@ -24,7 +24,7 @@ export class Spacer extends UIElement  {
 
 		this.init(depth)
 
-		if (line) this.dom.el.classList.add(CSS_UI.spacer.hasLine);
-		this.dom.el.classList.add(CSS_UI.spacer.size[size]);
+		if (line) this.el.classList.add(CSS_UI.spacer.hasLine);
+		this.el.classList.add(CSS_UI.spacer.size[size]);
 	}
 }

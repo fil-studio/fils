@@ -1,11 +1,11 @@
 import { el } from "@fils/utils";
-import { drawColorPickerBar, drawColorPickerSL, HSBColor, hsbToHex, hexToRgb, rgbToHsb, fixHex } from '../../../../../color/lib/main';
+import { drawColorPickerBar, drawColorPickerSL, HSBColor, hsbToHex, hexToRgb, rgbToHsb, fixHex } from '@fils/color';
 import { CSS_UI } from "../../../partials/cssClasses";
 import check from "../../../utils/check";
-import { Panel } from "../../panels/Panel";
+import { Panel } from "../../Panel";
 import { Item } from "../Item";
 
-CSS_UI.items.push({
+const c = {
 	type: 'color',
 	input: '_ui-color-input',
 	box: '_ui-color-box',
@@ -16,31 +16,29 @@ CSS_UI.items.push({
 
 	target: '_ui-color-target',
 	dragger: '_ui-color-dragger',
-});
-const c = CSS_UI.getItemClasses('color');
-
+};
 
 
 export class ColorPanel extends Panel {
-	view: HTMLElement;
-	info: HTMLElement;
+	view: HTMLElement = el('div');
+	info: HTMLElement = el('div');
 
-	canvas1: HTMLCanvasElement;
-	canvas2: HTMLCanvasElement;
+	canvas1: HTMLCanvasElement = el('canvas') as HTMLCanvasElement;
+	canvas2: HTMLCanvasElement = el('canvas') as HTMLCanvasElement;
 
 	width: number = 0;
-	color: HSBColor;
+	color: HSBColor = { h: 0, s: 0, b: 0 };
 
-	target: HTMLElement;
-	dragger: HTMLElement;
+	target: HTMLElement = el('div');
+	dragger: HTMLElement = el('div');
 
 	dragging1: boolean = false;
 	dragging2: boolean = false;
 
 	createPanelContent(): void {
 
-		this.view = el('div', c.view, this.dom.el);
-		this.info = el('div', c.info, this.dom.el);
+		this.view = el('div', c.view, this.el);
+		this.info = el('div', c.info, this.el);
 
 		this.target = el('div', c.target, this.view);
 		this.dragger = el('div', c.dragger, this.info);
@@ -60,7 +58,7 @@ export class ColorPanel extends Panel {
 
 		super.addEventListeners();
 
-		window.addEventListener('mouseup', (e) => {
+		window.addEventListener('mouseup', (e: MouseEvent) => {
 			if(!this.created) return;
 
 			if(this.dragging1 || this.dragging2){
@@ -69,13 +67,13 @@ export class ColorPanel extends Panel {
 				return;
 			}
 			const target = e.target as HTMLElement;
-			if(this.dom.el?.contains(target)) return;
-			if(this.parent.dom.el.contains(target)) return;
+			if(this.el?.contains(target)) return;
+			if(this.parent!.el.contains(target)) return;
 
 			this.destroy();
 		});
 
-		window.addEventListener('mousedown', (e) => {
+		window.addEventListener('mousedown', (e: MouseEvent) => {
 			if(!this.created) return;
 			const t = e.target;
 			if(t === this.canvas1 || t === this.target) this.dragging1 = true;
@@ -85,7 +83,7 @@ export class ColorPanel extends Panel {
 			if(this.dragging2) this.updateCanvas2(e.pageX);
 		});
 
-		window.addEventListener('mousemove', (e) => {
+		window.addEventListener('mousemove', (e: MouseEvent) => {
 			if(!this.created) return;
 			if(!this.dragging1 && !this.dragging2) return;
 
@@ -96,7 +94,7 @@ export class ColorPanel extends Panel {
 
 	reverseUpdate(){
 
-		this.color = rgbToHsb(hexToRgb(this.parent.value));
+		this.color = rgbToHsb(hexToRgb(this.parent!.value));
 
 		this.width = this.view.getBoundingClientRect().width;
 
@@ -127,7 +125,7 @@ export class ColorPanel extends Panel {
 		drawColorPickerBar(this.canvas2);
 
 		// Todo aqui update de l'Item parent
-		this.parent.setValue(hsbToHex(this.color));
+		this.parent!.setValue(hsbToHex(this.color));
 	}
 
 	updateCanvas1(x:number, y:number): void {
@@ -157,22 +155,15 @@ export class ColorPanel extends Panel {
 		this.update();
 	}
 
-	destroy(): void {
-		this.view = null;
-		this.info = null;
-		this.canvas1 = null;
-		this.canvas2 = null;
-		super.destroy();
-	}
 
 }
 export class ColorItem extends Item {
-	input: HTMLInputElement;
-	colorBox: HTMLElement;
-	panel: ColorPanel;
+	input: HTMLInputElement = el('input') as HTMLInputElement;
+	colorBox: HTMLElement = el('div');
+	panel: ColorPanel | null = null;
 
 	afterCreate(): void {
-		this.panel = new ColorPanel(this, this.dom.el);
+		this.panel! = new ColorPanel(this, this.el);
 	}
 
 	protected addEventListeners(): void {
@@ -182,11 +173,11 @@ export class ColorItem extends Item {
 		});
 
 		this.colorBox.addEventListener('click', () => {
-			if(!this.panel.created) this.panel.create();
-			else this.panel.destroy();
+			if(!this.panel!.created) this.panel!.create();
+			else this.panel!.destroy();
 		});
 
-		window.addEventListener('keydown', (e)=> {
+		window.addEventListener('keydown', (e:KeyboardEvent)=> {
 			if(e.key === 'Enter') this.setValue(this.input.value);
 		});
 
@@ -195,12 +186,12 @@ export class ColorItem extends Item {
 	protected createContent(): void {
 		this.colorBox = el('div', );
 		this.colorBox.classList.add(c.box);
-		this.dom.content.appendChild(this.colorBox);
+		this.content.appendChild(this.colorBox);
 
 		this.input = el('input') as HTMLInputElement;
 		this.input.type = 'text';
 		this.input.classList.add(c.input);
-		this.dom.content.appendChild(this.input);
+		this.content.appendChild(this.input);
 
 
 	}
@@ -212,8 +203,8 @@ export class ColorItem extends Item {
 		}
 		value = fixHex(value);
 
-		if(this.panel.created){
-			this.panel.reverseUpdate();
+		if(this.panel!.created){
+			this.panel!.reverseUpdate();
 		}
 
 		super.setValue(value);

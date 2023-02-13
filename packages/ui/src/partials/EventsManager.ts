@@ -1,6 +1,6 @@
 
 export class EventsManager {
-	protected subscribers: Object = {};
+	protected subscribers!: { [key: string]: Array<any> }
 
 	on(event:string, callback: Function) {
 		if (!this.subscribers[event]) {

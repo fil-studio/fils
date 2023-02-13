@@ -1,43 +1,43 @@
 
 
 const check = {
-	isUndefined: function(obj) {
+	isUndefined: function (obj: any) {
 		return obj === undefined;
 	},
 
-	isNull: function(obj) {
+	isNull: function (obj: any) {
 		return obj === null;
 	},
 
-	isNaN: function(obj) {
+	isNaN: function (obj: any) {
 		return isNaN(obj);
 	},
 
-	isArray: Array.isArray || function(obj) {
+	isArray: Array.isArray || function (obj: any) {
 		return obj.constructor === Array;
 	},
 
-	isObject: function(obj) {
+	isObject: function (obj: any) {
 		return obj === Object(obj);
 	},
 
-	isNumber: function(obj) {
+	isNumber: function (obj: any) {
 		return obj === obj + 0;
 	},
 
-	isString: function(obj) {
+	isString: function (obj: any) {
 		return obj === obj + '';
 	},
 
-	isBoolean: function(obj) {
+	isBoolean: function (obj: any) {
 		return obj === false || obj === true;
 	},
 
-	isFunction: function(obj) {
+	isFunction: function(obj:any) {
 		return obj instanceof Function;
 	},
 
-	getType: function(obj) {
+	getType: function (obj: any) {
 		if (check.isUndefined(obj)) return 'undefined';
 		if (check.isNull(obj)) return 'null';
 		if (check.isArray(obj)) return 'array';

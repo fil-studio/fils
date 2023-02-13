@@ -8,7 +8,7 @@ export interface AvailableItem {
 	create: (params: CreateItemParams) => Item,
 }
 export const AvailableItems = {
-	items: [] as AvailableItem[],
+	items: [] as Array<AvailableItem>,
 }
 export interface ItemRegisterOptions {
 	view: string,
@@ -19,6 +19,19 @@ export interface CreateItemParams {
 	object: any,
 	key: string,
 	params?: ItemParameters
+}
+
+const compareArrays = (a: any[], b: any[]) => {
+	if(a.length !== b.length) return false;
+
+
+	for (const item of a) {
+		if (b.indexOf(item) === -1) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 export const ItemRegister = (registerOptions:ItemRegisterOptions) => {
@@ -39,38 +52,38 @@ export const ItemFactory = (createParams:CreateItemParams) => {
 
 	if(!createParams.object) throw new Error('ItemFactory - object is required');
 	if(!createParams.key) throw new Error('ItemFactory - key is required');
-	if(!params.view) throw new Error('ItemFactory - view is required');
 
 	// Force item type
-	if(params.view){
+	if(params && params.view){
 		const item = AvailableItems.items.find(item => item.view === params.view);
 		if(!item) throw new Error('ItemFactory - unknown view');
 		return item.create(createParams);
 	}
 
 	const item = getItemByValue(createParams.object[createParams.key], createParams.params);
+	if(item) {
+		createParams.params!.view = item.view;
+		return item.create(createParams);
+	}
 
-	if(item) return item.create(createParams);
-
-	throw new Error('ItemFactory - unknown type');
 }
 
-const getItemByValue = (value, params): AvailableItem => {
+const getItemByValue = (value:any, params:any): AvailableItem | undefined => {
 
 	if(check.isObject(value)) {
 
 		let keys = Object.keys(value);
+		keys = keys.map(key => key.toLowerCase());
 
 		const c1 = ['r', 'g', 'b'];
 		const c2 = ['h', 's', 'b'];
 		const c3 = ['h', 's', 'l'];
-		if(keys === c1 || keys === c2 || keys === c3) return AvailableItems.items.find(item => item.view === 'color');
+		if (compareArrays(keys, c1) || compareArrays(keys, c2) || compareArrays(keys, c3)) return AvailableItems.items.find(item => item.view === 'color');
 
 		const n1 = ['x', 'y'];
 		const n2 = ['x', 'y', 'z'];
 		const n3 = ['x', 'y', 'z', 'w'];
-		if(keys === n1 || keys === n2 || keys === n3) return AvailableItems.items.find(item => item.view === 'number');
-
+		if (compareArrays(keys, n1) || compareArrays(keys, n2) || compareArrays(keys, n3)) return AvailableItems.items.find(item => item.view === 'number');
 	}
 
 	// If min max or step use range
@@ -89,6 +102,6 @@ const getItemByValue = (value, params): AvailableItem => {
 
 	if(check.isBoolean(value)) return AvailableItems.items.find(item => item.view === 'boolean');
 
-	return null;
+	return undefined;
 
 }

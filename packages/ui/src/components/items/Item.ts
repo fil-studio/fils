@@ -1,33 +1,27 @@
 
-import { slugify } from '@fils/utils';
 import { CSS_UI } from '../../partials/cssClasses';
 import { CreateItemParams } from '../../partials/ItemFactory';
 import { RowTypes } from '../../utils/dom';
-import { Dom, UIElement } from '../UIElement';
+import { UIElement } from '../UIElement';
 import { ItemParameters } from './ItemParameters';
-
-export interface ItemDom extends Dom {
-	content: HTMLElement
-}
-
 export class Item extends UIElement {
 
-	dom: ItemDom;
+	content!:HTMLElement;
 
-	protected object: Object;
-	protected key: string;
-	value: any;
+	protected object!: Object;
+	protected key!: keyof Object;
+	value!: any;
 
-	params: ItemParameters;
+	params!: ItemParameters;
 
 	constructor(params: CreateItemParams) {
 		const title = params.params?.title || params.key.charAt(0).toUpperCase() + params.key.slice(1);
 		super(RowTypes.item, title);
 
-		this.params = params.params;
+		this.params = params.params as ItemParameters;
 
 		this.object = params.object;
-		this.key = params.key;
+		this.key = params.key as keyof Object;
 	}
 
 	init(depth:number = 0): void {
@@ -46,14 +40,10 @@ export class Item extends UIElement {
 	 */
 	protected createDom() {
 		super.createDom();
-		this.dom = {
-			...this.dom,
-			content: null,
-		}
 
-		this.dom.content = this.dom.el.querySelector('div');
+		this.content = this.el.querySelector('div') as HTMLElement;
 
-		this.dom.el.classList.add(`${CSS_UI.baseClass}-${slugify(this.params.view)}`);
+		this.el.classList.add(`${CSS_UI.baseClass}-${this.params.view}`);
 	}
 
 	refreshDom() {

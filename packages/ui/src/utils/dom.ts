@@ -75,10 +75,13 @@ const dom = {
 
 			dom.addIcon(titleTab);
 
-			const h3 = el('h3');
-			h3.innerText = title;
-			h3.title = title;
-			titleTab.appendChild(h3);
+			const h3 = el('h3') as HTMLHeadingElement;
+			if(h3 && title){
+				h3.innerText = title;
+				h3.title = title;
+				titleTab.appendChild(h3);
+			}
+
 
 			row.appendChild(titleTab);
 
@@ -106,9 +109,11 @@ const dom = {
 		 * Create a Button Row
 		 */
 		if(type === RowTypes.button) {
-			const button = dom.createButton(title);
-			row.appendChild(button);
-			row.classList.add(CSS_UI.row.hasButton);
+			if(title){
+				const button = dom.createButton(title);
+				row.appendChild(button);
+				row.classList.add(CSS_UI.row.hasButton);
+			}
 		}
 
 		/**
@@ -122,7 +127,7 @@ const dom = {
 	},
 	addIcon: (header:HTMLElement, icon?:string) => {
 		const iconClass = CSS_UI.section.header.icon;
-		const iconWrapper = header.querySelector(`.${iconClass}`) ? header.querySelector(`.${iconClass}`) : el('div', iconClass);
+		const iconWrapper = header.querySelector(`.${iconClass}`) ? header.querySelector(`.${iconClass}`) as HTMLElement : el('div', iconClass) as HTMLElement;
 		iconWrapper.innerHTML = icon ? icon : uiTriaDown;
 		header.prepend(iconWrapper);
 	},

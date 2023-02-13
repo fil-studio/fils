@@ -2,11 +2,11 @@ import { el } from '@fils/utils';
 import { uiDownarrowHlt } from '../../../../../ui-icons/lib/Icons';
 import { CSS_UI } from '../../../partials/cssClasses';
 import check from '../../../utils/check';
-import { Panel } from '../../panels/Panel';
+import { Panel } from '../../Panel';
 import { Item } from '../Item';
 import { SelectItemParameters } from '../ItemParameters';
 
-CSS_UI.items.push({
+const c = {
 	type: 'select',
 	input: '_ui-select-input',
 	label: '_ui-select-label',
@@ -17,15 +17,13 @@ CSS_UI.items.push({
 	search: '_ui-panel-select-search',
 	optionNone: '_ui-panel-select-option-none',
 	searchInput: '_ui-panel-select-search-input',
-});
-const c = CSS_UI.getItemClasses('select');
-
+};
 export class SelectPanel extends Panel {
-	parent: SelectItem;
+	parent: SelectItem | null = null;
 
-	search: HTMLElement;
-	searchInput: HTMLInputElement;
-	optionNone: HTMLElement;
+	search: HTMLElement = el('div');
+	searchInput: HTMLInputElement = el('input') as HTMLInputElement;
+	optionNone: HTMLElement = el('div');
 
 	options: Array<{
 		key: string;
@@ -36,14 +34,14 @@ export class SelectPanel extends Panel {
 	addEventListeners(): void {
 		super.addEventListeners();
 
-		window.addEventListener('click', (e) => {
+		window.addEventListener('click', (e: MouseEvent) => {
 			if(!this.created) return;
 			const t = e.target as HTMLElement;
-			if (this.dom.el.contains(t)) return;
-			if(this.parent.dom.el.contains(t)) return;
+			if (this.el.contains(t)) return;
+			if(this.parent!.el.contains(t)) return;
 
 			this.destroy();
-			this.parent.close();
+			this.parent!.close();
 		});
 
 	}
@@ -52,7 +50,7 @@ export class SelectPanel extends Panel {
 
 		this.createSearch();
 
-		const parentContent = this.parent.params.options;
+		const parentContent = this.parent!.params.options;
 
 		this.options = Object.keys(parentContent).map((key) => {
 
@@ -61,21 +59,23 @@ export class SelectPanel extends Panel {
 			const p = el('p');
 			p.innerHTML = key;
 			div.appendChild(p);
-			this.dom.el.appendChild(div);
+			this.el.appendChild(div);
+
+			const value = (parentContent as Record<string, unknown>)[key];
 
 			// Hide selected option
-			if (this.parent.value === parentContent[key]) div.classList.add(CSS_UI.utility.hidden);
+			if (this.parent!.value === value ) div.classList.add(CSS_UI.utility.hidden);
 
 			// Add event listener
 			div.addEventListener('click', () => {
-				this.parent.setValue(parentContent[key]);
+				this.parent!.setValue(value);
 				this.destroy();
-				this.parent.close();
+				this.parent!.close();
 			});
 
 			return {
 				key,
-				value: parentContent[key],
+				value,
 				dom: div,
 			}
 		});
@@ -85,7 +85,7 @@ export class SelectPanel extends Panel {
 		const p = el('p');
 		p.innerHTML = 'No options found';
 		this.optionNone.appendChild(p);
-		this.dom.el.appendChild(this.optionNone);
+		this.el.appendChild(this.optionNone);
 		this.optionNone.classList.add(CSS_UI.utility.hidden);
 
 		setTimeout(() => this.searchInput.focus(), 10);
@@ -98,7 +98,7 @@ export class SelectPanel extends Panel {
 		this.optionNone.classList.remove(CSS_UI.utility.hidden);
 
 		this.options.map(option => {
-			if (option.key.toLowerCase().includes(search) || String(option.value).toLowerCase().includes(search) || search === '') {
+			if (option.key.toLowerCase().indexOf(search) >= 0 || String(option.value).toLowerCase().indexOf(search) >= 0 || search === '') {
 				option.dom.classList.remove(CSS_UI.utility.hidden);
 				this.optionNone.classList.add(CSS_UI.utility.hidden);
 			} else {
@@ -110,13 +110,13 @@ export class SelectPanel extends Panel {
 
 	createSearch(): void {
 
-		this.search = el('div', c.search, this.dom.el);
+		this.search = el('div', c.search, this.el);
 		this.searchInput = el('input', c.searchInput ) as HTMLInputElement;
 		this.searchInput.placeholder = 'Search';
 		this.searchInput.type = 'text';
 		this.search.appendChild(this.searchInput);
 
-		this.dom.el.appendChild(this.search);
+		this.el.appendChild(this.search);
 
 		this.searchInput.addEventListener('input', () => {
 			this.searchOptions();
@@ -125,15 +125,15 @@ export class SelectPanel extends Panel {
 	}
 }
 export class SelectItem extends Item {
-	params: SelectItemParameters;
+	params!: SelectItemParameters;
 
-	panel: SelectPanel;
-	options: Object;
+	panel?: SelectPanel;
+	options: Object = {};
 
-	input: HTMLElement;
-	label: HTMLElement;
+	input: HTMLElement = el('div');
+	label: HTMLElement = el('div');
 
-	protected activeOption: HTMLElement;
+	protected activeOption: HTMLElement = el('div');
 
 	afterCreate(): void {
 		this.panel = new SelectPanel(this);
@@ -145,27 +145,27 @@ export class SelectItem extends Item {
 
 		this.input.addEventListener('click', () => {
 
-			if(!this.panel.created) {
-				this.panel.create();
+			if(!this.panel!.created) {
+				this.panel!.create();
 				this.open();
 			} else {
-				this.panel.destroy();
+				this.panel!.destroy();
 				this.close();
 			}
 		});
 	}
 
 	open() {
-		this.dom.el.classList.add(c.open);
+		this.el.classList.add(c.open);
 	}
 
 	close() {
-		this.dom.el.classList.remove(c.open);
+		this.el.classList.remove(c.open);
 	}
 
 	protected createContent(): void {
 
-		this.input = el('div', c.input, this.dom.content) as HTMLElement;
+		this.input = el('div', c.input, this.content) as HTMLElement;
 		this.input.innerHTML = uiDownarrowHlt;
 		this.label = el('p', c.label, this.input);
 

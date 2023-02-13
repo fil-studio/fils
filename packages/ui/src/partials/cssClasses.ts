@@ -44,10 +44,4 @@ export const CSS_UI = {
 	panel: {
 		baseClass: '_ui-panel',
 	},
-
-	// Custom items will be injected here
-	items: [],
-	getItemClasses: function(itemType) {
-		return this.items.find(item => item.type === itemType);
-	}
 };

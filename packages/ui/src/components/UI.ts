@@ -5,7 +5,7 @@ import { CSS_UI } from '../partials/cssClasses';
 import { RegisterBaseComponents } from '../partials/RegisterBaseItems';
 import css from '../utils/css';
 import dom, { RowTypes } from '../utils/dom';
-import { Group, GroupDom, GroupParams } from './Group';
+import { Group, GroupParams } from './Group';
 
 RegisterBaseComponents();
 // const mergedCss = css.merge(styles, AvailableItems.items);
@@ -19,12 +19,8 @@ interface UIParams extends GroupParams {
 	width?: number;
 }
 
-interface UIDom extends GroupDom {
-	wrapper: HTMLElement
-}
-
 export class UI extends Group {
-	dom: UIDom;
+	wrapper: HTMLElement = el('div');
 
 	resizable: boolean;
 
@@ -40,47 +36,39 @@ export class UI extends Group {
 
 		this.init(0);
 
-		this.addIcon(icon);
-		this.appendTo(parentElement);
+		this.addIcon(icon as string);
+		this.appendTo(parentElement as HTMLElement);
 
 		if(width){
-			this.dom.wrapper.style.setProperty('--wrapper-width', `${width}px`);
+			this.wrapper.style.setProperty('--wrapper-width', `${width}px`);
 		}
-
-
 	}
 
 	appendTo(parentElement: HTMLElement){
+
 		if(parentElement){
-			this.dom.wrapper.classList.add(CSS_UI.parent);
-			parentElement.appendChild(this.dom.wrapper);
+			this.wrapper.classList.add(CSS_UI.parent);
+			parentElement.appendChild(this.wrapper);
 		} else {
-			document.body.appendChild(this.dom.wrapper);
+			document.body.appendChild(this.wrapper);
 		}
 	}
 
 	addIcon(icon: string){
 		if(!icon) return;
-		dom.addIcon(this.dom.el.querySelector('header'), icon);
+		dom.addIcon(this.el.querySelector('header') as HTMLElement, icon);
 	}
 
 	createDom(): void {
 		super.createDom();
 
-		this.dom = {
-			wrapper: null,
-			...this.dom
-		};
-
-		/*
-		* Main UI requires an extra wrapper
-		*/
-		this.dom.wrapper = dom.createRow({
+		this.wrapper = dom.createRow({
 			type: RowTypes.ui,
 			depth: this.depth,
-		});
+		})
 
-		this.dom.wrapper.appendChild(this.dom.el);
+		this.wrapper.appendChild(this.el);
+
 	}
 
 	protected addEventListeners(){
@@ -90,13 +78,13 @@ export class UI extends Group {
 
 		// Create resizer element
 		const resizer = el('div', CSS_UI.resizer);
-		this.dom.wrapper.appendChild(resizer);
+		this.wrapper.appendChild(resizer);
 
 
-		const resize = (w, x) => {
+		const resize = (w:number, x:number) => {
 
 			if(x < 0 && w + x < 300) return;
-			this.dom.wrapper.style.setProperty('--wrapper-width', `${w + x}px`);
+			this.wrapper!.style.setProperty('--wrapper-width', `${w + x}px`);
 
 			this.emit('resize');
 		}
@@ -109,20 +97,20 @@ export class UI extends Group {
 
 		let width = 0;
 
-		resizer.addEventListener('mousedown', (e) => {
+		resizer.addEventListener('mousedown', (e:MouseEvent) => {
 			dragging = true;
 			x = e.clientX;
-			width = this.dom.wrapper.getBoundingClientRect().width;
+			width = this.wrapper!.getBoundingClientRect().width;
 		});
 
-		window.addEventListener('mousemove', (e) => {
+		window.addEventListener('mousemove', (e: MouseEvent) => {
 			if(!dragging) return;
 			e.preventDefault();
 			distance = x - e.clientX;
 			resize(width, distance);
 		});
 
-		window.addEventListener('mouseup', (e) => {
+		window.addEventListener('mouseup', (e: MouseEvent) => {
 			if(!dragging) return;
 			e.preventDefault();
 			dragging = false;

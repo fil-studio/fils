@@ -1,15 +1,12 @@
 import { EventsManager } from "../partials/EventsManager";
 import dom, { RowTypes } from "../utils/dom";
 
-export interface Dom {
-	el: HTMLElement
-}
-
 export class UIElement extends EventsManager {
-	protected depth: number;
+	protected depth!: number;
 
-	dom: Dom;
-	type: RowTypes;
+	el!: HTMLElement;
+
+	type!: RowTypes;
 	title: string;
 
 
@@ -41,11 +38,7 @@ export class UIElement extends EventsManager {
 
 	// Create ROW
 	protected createDom(): void {
-		this.dom = {
-			el: null,
-		}
-
-		this.dom.el = dom.createRow({
+		this.el = dom.createRow({
 			type: this.type,
 			depth: this.depth,
 			title: this.title,
@@ -59,6 +52,6 @@ export class UIElement extends EventsManager {
 	protected addEventListeners(): void {}
 
 	destroy(){
-		this.dom.el.remove();
+		this.el.remove();
 	}
 }

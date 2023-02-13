@@ -1,16 +1,12 @@
 import { RowTypes } from "../utils/dom";
-import { Dom, UIElement } from "./UIElement";
+import { UIElement } from "./UIElement";
 
 export interface ButtonOptions {
 	title?: string;
 }
 
-interface ButtonDom extends Dom {
-	button: HTMLButtonElement
-}
-
 export class Button extends UIElement {
-	dom: ButtonDom;
+	button!: HTMLButtonElement;
 
 	constructor({ title }: ButtonOptions = {}) {
 		const _title = title || 'Button'
@@ -19,18 +15,11 @@ export class Button extends UIElement {
 
 	protected createDom(): void {
 		super.createDom();
-
-		this.dom = {
-			...this.dom,
-			button: null
-		}
-
-		this.dom.button = this.dom.el.querySelector('button');
-
+		this.button = this.el.querySelector('button') as HTMLButtonElement
 	}
 
 	protected addEventListeners(){
-		this.dom.button.addEventListener('click', (e) => {
+		this.button.addEventListener('click', () => {
 			this.emit('click');
 		});
 	}
