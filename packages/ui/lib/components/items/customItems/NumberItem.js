@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.NumberItem = void 0;
 const utils_1 = require("@fils/utils");
 const check_1 = __importDefault(require("../../../utils/check"));
-const Icons_1 = require("../../../../../ui-icons/lib/Icons");
+const ui_icons_1 = require("@fils/ui-icons");
 const cssClasses_1 = require("../../../partials/cssClasses");
 const Item_1 = require("../Item");
 const c = {
@@ -123,9 +123,9 @@ class NumberItem extends Item_1.Item {
         inputElement.wrapper.appendChild(inputElement.input);
         const btns = (0, utils_1.el)('div', c.buttons);
         inputElement.buttonIncrease = (0, utils_1.el)('button', c.btnIncrease);
-        inputElement.buttonIncrease.innerHTML = Icons_1.uiDownarrowHlt;
+        inputElement.buttonIncrease.innerHTML = ui_icons_1.uiDownarrowHlt;
         inputElement.buttonDecrease = (0, utils_1.el)('button', c.btnDecrease);
-        inputElement.buttonDecrease.innerHTML = Icons_1.uiDownarrowHlt;
+        inputElement.buttonDecrease.innerHTML = ui_icons_1.uiDownarrowHlt;
         btns.appendChild(inputElement.buttonIncrease);
         btns.appendChild(inputElement.buttonDecrease);
         inputElement.wrapper.appendChild(btns);

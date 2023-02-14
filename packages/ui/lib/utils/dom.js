@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RowTypes = void 0;
 const utils_1 = require("@fils/utils");
-const Icons_1 = require("../../../ui-icons/lib/Icons");
+const ui_icons_1 = require("@fils/ui-icons");
 const cssClasses_1 = require("../partials/cssClasses");
 var RowTypes;
 (function (RowTypes) {
@@ -86,7 +86,7 @@ const dom = {
     addIcon: (header, icon) => {
         const iconClass = cssClasses_1.CSS_UI.section.header.icon;
         const iconWrapper = header.querySelector(`.${iconClass}`) ? header.querySelector(`.${iconClass}`) : (0, utils_1.el)('div', iconClass);
-        iconWrapper.innerHTML = icon ? icon : Icons_1.uiTriaDown;
+        iconWrapper.innerHTML = icon ? icon : ui_icons_1.uiTriaDown;
         header.prepend(iconWrapper);
     },
 };

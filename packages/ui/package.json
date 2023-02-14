@@ -1,6 +1,6 @@
 {
 	"name": "@fils/ui",
-	"version": "0.0.7",
+	"version": "0.0.9",
 	"description": "Fil Studio UI library written in TypeScript",
 	"main": "lib/main.js",
 	"repository": "git@github.com:fil-studio/fils.git",
@@ -10,7 +10,7 @@
 	"scripts": {
 		"prepare": "npm run build",
 		"build": "tsc --build tsconfig.ui.json ",
-		"postbuild": "npm run scss",
+		"postbuild": "npm run scss && node postbuild.js",
 		"scss": "sass src/scss/main.scss:src/bundle/bundle.css && cleancss -o src/bundle/bundle.min.css src/bundle/bundle.css && echo \"scss compiled\"",
 		"dev": "chokidar 'src/scss/**/*.scss' -c 'sass src/scss/main.scss:src/bundle/bundle.css && cleancss -o src/bundle/bundle.min.css src/bundle/bundle.css && echo \"scss compiled\"'"
 	},

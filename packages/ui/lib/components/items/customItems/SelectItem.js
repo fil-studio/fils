@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SelectItem = exports.SelectPanel = void 0;
 const utils_1 = require("@fils/utils");
-const Icons_1 = require("../../../../../ui-icons/lib/Icons");
+const ui_icons_1 = require("@fils/ui-icons");
 const cssClasses_1 = require("../../../partials/cssClasses");
 const check_1 = __importDefault(require("../../../utils/check"));
 const Panel_1 = require("../../Panel");
@@ -133,7 +133,7 @@ class SelectItem extends Item_1.Item {
     }
     createContent() {
         this.input = (0, utils_1.el)('div', c.input, this.content);
-        this.input.innerHTML = Icons_1.uiDownarrowHlt;
+        this.input.innerHTML = ui_icons_1.uiDownarrowHlt;
         this.label = (0, utils_1.el)('p', c.label, this.input);
     }
     setValue(value) {

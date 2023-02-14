@@ -9,8 +9,9 @@ import { Group, GroupParams } from './Group';
 
 RegisterBaseComponents();
 // const mergedCss = css.merge(styles, AvailableItems.items);
-css.inject(styles);
+// css.inject(styles);
 
+export const GetUICSS = () => styles;
 
 interface UIParams extends GroupParams {
 	parentElement?: HTMLElement;
@@ -29,7 +30,7 @@ export class UI extends Group {
 		parentElement,
 		icon,
 		width
-	}: UIParams) {
+	}: UIParams = {}) {
 		super({...arguments[0] });
 
 		this.resizable = parentElement ? false : resizable;
