@@ -1,6 +1,6 @@
 {
   "name": "@fils/ani",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Animation Package written in TypeScript",
   "main": "lib/main.js",
   "repository": {

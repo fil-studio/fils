@@ -1,6 +1,6 @@
 {
 	"name": "@fils/color",
-	"version": "0.0.6",
+	"version": "0.0.8",
 	"description": "Color Package written in TypeScript",
 	"main": "lib/main.js",
 	"repository": "git@github.com:fil-studio/fils.git",

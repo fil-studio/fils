@@ -1,6 +1,6 @@
 {
   "name": "@fils/math",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Math Package in TypeScript. Part of jocabola/web packages",
   "repository": "git@github.com:fil-studio/fils.git",
   "homepage": "https://github.com/fil-studio/fils/tree/main/packages/math",

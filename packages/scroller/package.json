@@ -1,6 +1,6 @@
 {
 	"name": "@fils/scroller",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"description": "Smooth scroller by sections Package written in TypeScript",
 	"main": "lib/main.js",
 	"repository": "git@github.com:fil-studio/fils.git",
@@ -25,6 +25,6 @@
 		"registry": "https://registry.npmjs.org/"
 	},
 	"dependencies": {
-		"@fils/math": "^0.0.1-0"
+		"@fils/math": "^0.0.3"
 	}
 }

@@ -1,6 +1,6 @@
 {
 	"name": "@fils/io",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"description": "Web Assets Package written in TypeScript",
 	"main": "lib/main.js",
 	"repository": "git@github.com:fil-studio/fils.git",
@@ -17,7 +17,7 @@
 		"README.md"
 	],
 	"dependencies": {
-		"three": "^0.145.0"
+		"three": "^0.149.0"
 	},
 	"devDependencies": {
 		"typescript": "^4.8.4"

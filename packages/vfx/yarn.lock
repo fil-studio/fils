@@ -2,26 +2,40 @@
 # yarn lockfile v1
 
 
-"@fils/gfx@^0.0.3":
+"@fils/gfx@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@fils/gfx/-/gfx-0.0.5.tgz#a3e087a238d3f5b097299efa8251a1dbecc4f7f9"
+  integrity sha512-Infg2+wg5U2G1S9VsHE4ar7bLAsYQY55Aqa3SmyDs/lnFeK+yURRYtbn7PQD9pfJNQZf5N1yFPp+4SOoSsSfnA==
+  dependencies:
+    "@fils/io" "^0.0.2"
+    "@fils/math" "^0.0.2"
+    three "^0.149.0"
+
+"@fils/io@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@fils/io/-/io-0.0.2.tgz#1a982e82f3c47905ff08eb0a764a6686546ffe2e"
+  integrity sha512-1TjH69yZVOJcUYeDQjOkf3uXgqXrlXV8MeuypLovoMJdd3qZxRkOUv3aKeXrpt0pApOipGMv1i8YcTpTg7vMNQ==
+  dependencies:
+    three "^0.145.0"
+
+"@fils/io@^0.0.3":
   version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@fils/gfx/-/gfx-0.0.3.tgz#641b0c54dbd76d00aec7283bc4da8fee33cec725"
-  integrity sha512-JKmy2AtxE7qCJtc89IkbhkYs0axgDfDv4kPXhDNuWnuhjXYhPhr0WHdQMoM/DgM4sPklyva8N2xPZ+L6XPo0cA==
+  resolved "https://registry.yarnpkg.com/@fils/io/-/io-0.0.3.tgz#d2c0c7948170533df2234e977bf735d40dc65aa1"
+  integrity sha512-09JxQjdXmN+qxNOErtvp5+NUOAx+ESrJO52M3JgUHAKsdBOvYPn2H2xTUyvZqjixrJc+bz7cvCY7yVdi6kOjlA==
   dependencies:
-    "@fils/io" "workspace:^"
-    "@fils/math" "workspace:^"
-    three "^0.145.0"
+    three "^0.149.0"
 
-"@fils/io@^0.0.1-3", "@fils/io@workspace:^":
-  version "0.0.1-3"
-  resolved "https://registry.yarnpkg.com/@fils/io/-/io-0.0.1-3.tgz#343bb75874bd211c68ad58d5277bcfa65ef405a4"
-  integrity sha512-zEEsNgE7S4E+ogKt0PK9JvpNuzoPYWCxoaA74F6cP3mESYkOJ8S0Opepm4yYsjMwxdDL0gK9war3eduPjKboiQ==
+"@fils/math@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@fils/math/-/math-0.0.2.tgz#ae1c2abd6ffc6b25bf9a5669561f9e8e3dfe5d49"
+  integrity sha512-SY9CIDRxLoXyItty5cywyv0OVQ18YQbPAlXPfwcHrOKmBJpGSG1HAY1IBMs5agKB7MKVIIv0ANaOBRku/CU10A==
   dependencies:
-    three "^0.145.0"
+    mersenne "^0.0.4"
 
-"@fils/math@^0.0.1-0", "@fils/math@workspace:^":
-  version "0.0.1-0"
-  resolved "https://registry.yarnpkg.com/@fils/math/-/math-0.0.1-0.tgz#f05cae55cda4a0b0daf7fca370a33304ba94ac62"
-  integrity sha512-ZiSKiSlQWPecz7tdvnvXQYXjFrl7DEuxKa4AKo1Hq/fg8/atmmXkbGksJIOPAnFGhqzQoeTiZrsmmThoF/Bh2Q==
+"@fils/math@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@fils/math/-/math-0.0.3.tgz#4fc07c105754ed1fa9e301ead46d3831fbb34862"
+  integrity sha512-hKvrpruVkMGoMYHcoZFNalc3s4q+i7ZtiftESu5HgVoY2Es5/yA4IyChKn/2I8jwoTIwF6kJyu256WaQ81bTuA==
   dependencies:
     mersenne "^0.0.4"
 
@@ -34,6 +48,11 @@ three@^0.145.0:
   version "0.145.0"
   resolved "https://registry.yarnpkg.com/three/-/three-0.145.0.tgz#a613d71e75effc2aed88be630027ca01e2b6502e"
   integrity sha512-EKoHQEtEJ4CB6b2BGMBgLZrfwLjXcSUfoI/MiIXUuRpeYsfK5aPWbYhdtIVWOH+x6X0TouldHKHBuc/LAiFzAw==
+
+three@^0.149.0:
+  version "0.149.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.149.0.tgz#a9cf78b17d02f063ffe6dfca1e300eff2eab2927"
+  integrity sha512-tohpUxPDht0qExRLDTM8sjRLc5d9STURNrdnK3w9A+V4pxaTBfKWWT/IqtiLfg23Vfc3Z+ImNfvRw1/0CtxrkQ==
 
 typescript@^4.8.4:
   version "4.9.5"
