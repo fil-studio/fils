@@ -1,7 +1,7 @@
 import { Asset } from "./Asset";
 import { CubeTexture } from 'three';
 import { TextureOptions } from "../utils/TextureUtils";
-declare type ImgExt = 'jpg' | 'png';
+type ImgExt = 'jpg' | 'png';
 export declare class CubeTextureAsset extends Asset {
     content: CubeTexture;
     format: ImgExt;
