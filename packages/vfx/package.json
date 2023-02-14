@@ -1,6 +1,6 @@
 {
 	"name": "@fils/vfx",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"description": "Web VFX Package written in TypeScript",
 	"main": "lib/main.js",
 	"repository": "git@github.com:fil-studio/fils.git",
@@ -19,9 +19,9 @@
 		"README.md"
 	],
 	"dependencies": {
-		"@fils/gfx": "^0.0.5",
-		"@fils/io": "^0.0.3",
-		"@fils/math": "^0.0.3",
+		"@fils/gfx": "^0.0.6",
+		"@fils/io": "^0.0.4",
+		"@fils/math": "^0.0.4",
 		"three": "^0.149.0"
 	},
 	"devDependencies": {

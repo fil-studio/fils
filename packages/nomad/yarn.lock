@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@fils/utils@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@fils/utils/-/utils-0.0.5.tgz#4fc7567cb887c0cd694bdfe76b9692f7fda5d987"
-  integrity sha512-bUGlVM3Zl14G3dIGHc9UictrrtM1yvnMWQYiHcGhA1XmztPWMnmZWBkI1Zocmnw7mL35sFmnOPqQRdBOrShgNw==
+"@fils/utils@^0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@fils/utils/-/utils-0.0.6.tgz#d5f8389c1e82d671ca11b01b904cd0f21b13fabc"
+  integrity sha512-kSwU6tS98IwGLtRBj8yZpFw7ANculllSJyoreDVvtLpHwaL2wwWCZ2nRHUMcbXnvfvq47TII1t0ISNggaNcz8w==
 
 typescript@^4.5.2:
   version "4.9.5"

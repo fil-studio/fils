@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@fils/math@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@fils/math/-/math-0.0.3.tgz#4fc07c105754ed1fa9e301ead46d3831fbb34862"
-  integrity sha512-hKvrpruVkMGoMYHcoZFNalc3s4q+i7ZtiftESu5HgVoY2Es5/yA4IyChKn/2I8jwoTIwF6kJyu256WaQ81bTuA==
+"@fils/math@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@fils/math/-/math-0.0.4.tgz#96251cadab220f75f80304867ccf020c3eea93ee"
+  integrity sha512-Ghs/ZeE6vwChCAOEGCGgPc9i6v2ygcAOF4AL8OCOkqfwo5tzE6oouhaK+P//jGAiP2ia6zgeE1rAezMjhXfpdw==
   dependencies:
     mersenne "^0.0.4"
 

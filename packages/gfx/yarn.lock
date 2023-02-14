@@ -2,17 +2,17 @@
 # yarn lockfile v1
 
 
-"@fils/io@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@fils/io/-/io-0.0.2.tgz#1a982e82f3c47905ff08eb0a764a6686546ffe2e"
-  integrity sha512-1TjH69yZVOJcUYeDQjOkf3uXgqXrlXV8MeuypLovoMJdd3qZxRkOUv3aKeXrpt0pApOipGMv1i8YcTpTg7vMNQ==
+"@fils/io@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@fils/io/-/io-0.0.3.tgz#d2c0c7948170533df2234e977bf735d40dc65aa1"
+  integrity sha512-09JxQjdXmN+qxNOErtvp5+NUOAx+ESrJO52M3JgUHAKsdBOvYPn2H2xTUyvZqjixrJc+bz7cvCY7yVdi6kOjlA==
   dependencies:
-    three "^0.145.0"
+    three "^0.149.0"
 
-"@fils/math@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@fils/math/-/math-0.0.2.tgz#ae1c2abd6ffc6b25bf9a5669561f9e8e3dfe5d49"
-  integrity sha512-SY9CIDRxLoXyItty5cywyv0OVQ18YQbPAlXPfwcHrOKmBJpGSG1HAY1IBMs5agKB7MKVIIv0ANaOBRku/CU10A==
+"@fils/math@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@fils/math/-/math-0.0.3.tgz#4fc07c105754ed1fa9e301ead46d3831fbb34862"
+  integrity sha512-hKvrpruVkMGoMYHcoZFNalc3s4q+i7ZtiftESu5HgVoY2Es5/yA4IyChKn/2I8jwoTIwF6kJyu256WaQ81bTuA==
   dependencies:
     mersenne "^0.0.4"
 
@@ -20,11 +20,6 @@ mersenne@^0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/mersenne/-/mersenne-0.0.4.tgz#401fdec7ec21cdb9e03cd3d3021398da21b27085"
   integrity sha512-XoSUL+nF8hMTKGQxUs8r3Btdsf1yuKKBdCCGbh3YXgCXuVKishpZv1CNc385w9s8t4Ynwc5h61BwW/FCVulkbg==
-
-three@^0.145.0:
-  version "0.145.0"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.145.0.tgz#a613d71e75effc2aed88be630027ca01e2b6502e"
-  integrity sha512-EKoHQEtEJ4CB6b2BGMBgLZrfwLjXcSUfoI/MiIXUuRpeYsfK5aPWbYhdtIVWOH+x6X0TouldHKHBuc/LAiFzAw==
 
 three@^0.149.0:
   version "0.149.0"

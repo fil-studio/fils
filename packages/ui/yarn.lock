@@ -117,27 +117,27 @@
   resolved "https://registry.yarnpkg.com/@esbuild/win32-x64/-/win32-x64-0.17.8.tgz#200a0965cf654ac28b971358ecdca9cc5b44c335"
   integrity sha512-1iuezdyDNngPnz8rLRDO2C/ZZ/emJLb72OsZeqQ6gL6Avko/XCXZw+NuxBSNhBAP13Hie418V7VMt9et1FMvpg==
 
-"@fils/color@^0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@fils/color/-/color-0.0.8.tgz#6d5085574f61b4a1e55eb3d19387ebcfcbf1971f"
-  integrity sha512-3wy5+gnRZMigvopgXmKxui5bv0el8vIfe9hc4MIHbpyycviJwFPLApiz3cJh6n6eDmvZ1KmIduhKtbEkVjDGsA==
+"@fils/color@^0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@fils/color/-/color-0.0.9.tgz#76c9dffe225b9bb0920e4d4a0c49af9d6a630620"
+  integrity sha512-ftTOXTO27W7QSdZYLx7ywFKaoaY0xuvUxDhxoc77u/KhIEnU+PlO1Lv/JYdRZbh3kC37X5u0gjUS1B62RSZHOg==
 
-"@fils/math@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@fils/math/-/math-0.0.3.tgz#4fc07c105754ed1fa9e301ead46d3831fbb34862"
-  integrity sha512-hKvrpruVkMGoMYHcoZFNalc3s4q+i7ZtiftESu5HgVoY2Es5/yA4IyChKn/2I8jwoTIwF6kJyu256WaQ81bTuA==
+"@fils/math@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@fils/math/-/math-0.0.4.tgz#96251cadab220f75f80304867ccf020c3eea93ee"
+  integrity sha512-Ghs/ZeE6vwChCAOEGCGgPc9i6v2ygcAOF4AL8OCOkqfwo5tzE6oouhaK+P//jGAiP2ia6zgeE1rAezMjhXfpdw==
   dependencies:
     mersenne "^0.0.4"
 
-"@fils/ui-icons@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@fils/ui-icons/-/ui-icons-0.0.5.tgz#a0e625b9f85acee6b7dd48a711362e065251266d"
-  integrity sha512-kPfUD74WIbbAvGNyfoCdNygfovstciUG5wAknyGqnPSy42WHGcwrDy3i/mF1w4XDS6Qg94g8HPLEqC0/Q97OQA==
+"@fils/ui-icons@^0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@fils/ui-icons/-/ui-icons-0.0.6.tgz#b8241bdea772612f42f59dcaa2a5c35a67cb99b5"
+  integrity sha512-nZ1UQ4pcKjH391rTFmrXCHg/OCcb9lSo2G75JcxHvJ5hnT4sQTOu8KmE4+pvr14AxR5DsfVAIMQP1zYLwfkVeg==
 
-"@fils/utils@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@fils/utils/-/utils-0.0.5.tgz#4fc7567cb887c0cd694bdfe76b9692f7fda5d987"
-  integrity sha512-bUGlVM3Zl14G3dIGHc9UictrrtM1yvnMWQYiHcGhA1XmztPWMnmZWBkI1Zocmnw7mL35sFmnOPqQRdBOrShgNw==
+"@fils/utils@^0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@fils/utils/-/utils-0.0.6.tgz#d5f8389c1e82d671ca11b01b904cd0f21b13fabc"
+  integrity sha512-kSwU6tS98IwGLtRBj8yZpFw7ANculllSJyoreDVvtLpHwaL2wwWCZ2nRHUMcbXnvfvq47TII1t0ISNggaNcz8w==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"

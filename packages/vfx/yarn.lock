@@ -2,21 +2,14 @@
 # yarn lockfile v1
 
 
-"@fils/gfx@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@fils/gfx/-/gfx-0.0.5.tgz#a3e087a238d3f5b097299efa8251a1dbecc4f7f9"
-  integrity sha512-Infg2+wg5U2G1S9VsHE4ar7bLAsYQY55Aqa3SmyDs/lnFeK+yURRYtbn7PQD9pfJNQZf5N1yFPp+4SOoSsSfnA==
+"@fils/gfx@^0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@fils/gfx/-/gfx-0.0.6.tgz#95b8295e78099787cc831d1d06e42eb916f50cca"
+  integrity sha512-/ErVwiqATgpbcSx1KToWBCIPEKrreZEPGLC9JNm80Ql1E6Qn3eLwe9eq/hmbrL/9p4bG0G0Y7lSeXSHhXIcAjw==
   dependencies:
-    "@fils/io" "^0.0.2"
-    "@fils/math" "^0.0.2"
+    "@fils/io" "^0.0.3"
+    "@fils/math" "^0.0.3"
     three "^0.149.0"
-
-"@fils/io@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@fils/io/-/io-0.0.2.tgz#1a982e82f3c47905ff08eb0a764a6686546ffe2e"
-  integrity sha512-1TjH69yZVOJcUYeDQjOkf3uXgqXrlXV8MeuypLovoMJdd3qZxRkOUv3aKeXrpt0pApOipGMv1i8YcTpTg7vMNQ==
-  dependencies:
-    three "^0.145.0"
 
 "@fils/io@^0.0.3":
   version "0.0.3"
@@ -25,12 +18,12 @@
   dependencies:
     three "^0.149.0"
 
-"@fils/math@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@fils/math/-/math-0.0.2.tgz#ae1c2abd6ffc6b25bf9a5669561f9e8e3dfe5d49"
-  integrity sha512-SY9CIDRxLoXyItty5cywyv0OVQ18YQbPAlXPfwcHrOKmBJpGSG1HAY1IBMs5agKB7MKVIIv0ANaOBRku/CU10A==
+"@fils/io@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@fils/io/-/io-0.0.4.tgz#497cdfb0695f6ff288b7116b9c8123896f6f1652"
+  integrity sha512-+ul7IT+Ky9VX18ikLlaMBczfFb+77prs2CDy6qI1dZ6MwlyS9teVkrVSDPEC2GwPOVTIUzCdExdmUDlpR5YNxQ==
   dependencies:
-    mersenne "^0.0.4"
+    three "^0.149.0"
 
 "@fils/math@^0.0.3":
   version "0.0.3"
@@ -39,15 +32,17 @@
   dependencies:
     mersenne "^0.0.4"
 
+"@fils/math@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@fils/math/-/math-0.0.4.tgz#96251cadab220f75f80304867ccf020c3eea93ee"
+  integrity sha512-Ghs/ZeE6vwChCAOEGCGgPc9i6v2ygcAOF4AL8OCOkqfwo5tzE6oouhaK+P//jGAiP2ia6zgeE1rAezMjhXfpdw==
+  dependencies:
+    mersenne "^0.0.4"
+
 mersenne@^0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/mersenne/-/mersenne-0.0.4.tgz#401fdec7ec21cdb9e03cd3d3021398da21b27085"
   integrity sha512-XoSUL+nF8hMTKGQxUs8r3Btdsf1yuKKBdCCGbh3YXgCXuVKishpZv1CNc385w9s8t4Ynwc5h61BwW/FCVulkbg==
-
-three@^0.145.0:
-  version "0.145.0"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.145.0.tgz#a613d71e75effc2aed88be630027ca01e2b6502e"
-  integrity sha512-EKoHQEtEJ4CB6b2BGMBgLZrfwLjXcSUfoI/MiIXUuRpeYsfK5aPWbYhdtIVWOH+x6X0TouldHKHBuc/LAiFzAw==
 
 three@^0.149.0:
   version "0.149.0"
