@@ -1,6 +1,5 @@
-import { uiAppendBlend, uiBrushData, uiTexture } from '../../../../packages/ui-icons/lib/Icons';
-import { SpacerSize } from '../../../../packages/ui/src/components/Spacer';
-import { UI } from '../../../../packages/ui/src/main';
+import { UI } from '@fils/ui';
+import { uiBrushData } from '@fils/ui-icons';
 
 import { Texture, TextureLoader } from 'three';
 

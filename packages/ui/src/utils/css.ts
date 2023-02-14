@@ -1,4 +1,3 @@
-import { AvailableItem } from "../partials/ItemFactory";
 
 const css = {
 	inject: (css: string) => {

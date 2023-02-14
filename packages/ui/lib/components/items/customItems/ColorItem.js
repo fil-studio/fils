@@ -1,5 +1,5 @@
+import { drawColorPickerBar, drawColorPickerSL, fixHex, hexToRgb, hsbToHex, rgbToHsb } from "@fils/color";
 import { el } from "@fils/utils";
-import { drawColorPickerBar, drawColorPickerSL, hsbToHex, hexToRgb, rgbToHsb, fixHex } from "@fils/color";
 import check from "../../../utils/check";
 import { Panel } from "../../Panel";
 import { Item } from "../Item";

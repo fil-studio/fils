@@ -1,6 +1,5 @@
+import { drawColorPickerBar, drawColorPickerSL, fixHex, hexToRgb, HSBColor, hsbToHex, rgbToHsb } from '@fils/color';
 import { el } from "@fils/utils";
-import { drawColorPickerBar, drawColorPickerSL, HSBColor, hsbToHex, hexToRgb, rgbToHsb, fixHex } from '@fils/color';
-import { CSS_UI } from "../../../partials/cssClasses";
 import check from "../../../utils/check";
 import { Panel } from "../../Panel";
 import { Item } from "../Item";

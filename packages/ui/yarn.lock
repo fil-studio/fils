@@ -129,15 +129,15 @@
   dependencies:
     mersenne "^0.0.4"
 
-"@fils/ui-icons@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@fils/ui-icons/-/ui-icons-0.0.6.tgz#b8241bdea772612f42f59dcaa2a5c35a67cb99b5"
-  integrity sha512-nZ1UQ4pcKjH391rTFmrXCHg/OCcb9lSo2G75JcxHvJ5hnT4sQTOu8KmE4+pvr14AxR5DsfVAIMQP1zYLwfkVeg==
+"@fils/ui-icons@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@fils/ui-icons/-/ui-icons-0.0.7.tgz#e31a1f4d779bcc7159c0039eaf31d76f0447e702"
+  integrity sha512-X6xgIkzIEe1vjbgvac7NEQN2ef2W/HX5Ivr9eqWermvb5io+kOHSulMtQeGB/Zn8K9UyDu22fRRxvrsnQmzEbg==
 
-"@fils/utils@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@fils/utils/-/utils-0.0.6.tgz#d5f8389c1e82d671ca11b01b904cd0f21b13fabc"
-  integrity sha512-kSwU6tS98IwGLtRBj8yZpFw7ANculllSJyoreDVvtLpHwaL2wwWCZ2nRHUMcbXnvfvq47TII1t0ISNggaNcz8w==
+"@fils/utils@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@fils/utils/-/utils-0.0.7.tgz#be309cd921a49e3026efb077efda5202e78c1771"
+  integrity sha512-eU8zT4K0kOjTUWya1bTQTRA3JZ651VqaPgrqZ+ZNT9M82QlQkcHBmbBUS3858pizM9ogU6RX4n5kz59zX2cvQg==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
