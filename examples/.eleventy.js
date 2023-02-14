@@ -50,7 +50,7 @@ const compileJs = (example) => {
     bundle: true,
     minify: isProduction,
     sourcemap: !isProduction,
-    define: { DEV_MODE: !isProduction },
+    define: { DEV_MODE: `${!isProduction}` },
     loader: { '.glsl': 'text', '.vert': 'text', '.frag': 'text', '.css' : 'text' },
     outfile: `public/${example}/js/main.js`,
     plugins: [
