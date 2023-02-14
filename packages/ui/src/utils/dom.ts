@@ -1,5 +1,5 @@
 import { el } from "@fils/utils";
-import { uiTriaDown } from '../../../ui-icons/lib/Icons';
+import { uiTriaDown } from '@fils/ui-icons';
 import { CSS_UI } from "../partials/cssClasses";
 
 

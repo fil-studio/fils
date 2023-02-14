@@ -1,5 +1,5 @@
 import { el } from '@fils/utils';
-import { uiDownarrowHlt } from '../../../../../ui-icons/lib/Icons';
+import { uiDownarrowHlt } from '@fils/ui-icons';
 import { CSS_UI } from '../../../partials/cssClasses';
 import check from '../../../utils/check';
 import { Panel } from '../../Panel';
