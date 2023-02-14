@@ -5,20 +5,5 @@
   "homepage": "https://github.com/fil-studio/fils/",
   "author": "fil studio <hello@fil.studio>",
   "license": "Apache-2.0",
-  "private": false,
-  "workspaces": [
-    "./packages/ani",
-    "./packages/gen",
-    "./packages/color",
-    "./packages/gfx",
-    "./packages/vfx",
-    "./packages/io",
-    "./packages/math",
-    "./packages/nomad",
-    "./packages/phy",
-    "./packages/scroller",
-    "./packages/ui",
-    "./packages/ui-icons",
-    "./packages/utils"
-  ]
+  "private": false
 }
