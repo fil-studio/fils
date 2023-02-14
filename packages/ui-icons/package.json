@@ -1,6 +1,6 @@
 {
-	"name": "@fils/ui-utils",
-	"version": "0.0.1",
+	"name": "@fils/ui-icons",
+	"version": "0.0.5",
 	"description": "UI Icons Package written in TypeScript",
 	"main": "lib/main.js",
 	"repository": "git@github.com:fil-studio/fils.git",
@@ -8,10 +8,10 @@
 	"author": "fil studio <hello@fil.studio>",
 	"license": "Apache-2.0",
 	"scripts": {
-		"publish": "npm run build && npm publish --access public",
+		"publish": "npm run build && npm publish --access public --scope=@fils --registry=https://registry.npmjs.org/",
 		"prepare": "npm run build",
 		"create-icons": "node create-icons.js",
-		"build": "tsc --build tsconfig.utils.json"
+		"build": "tsc --build tsconfig.ui-icons.json"
 	},
 	"files": [
 		"lib",

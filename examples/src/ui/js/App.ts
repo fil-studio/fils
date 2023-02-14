@@ -67,7 +67,6 @@ export class App {
 		});
 
 		this.ui.on('change', (target) => {
-			console.log('change', target);
 		});
 		// const group = this.ui;
 
@@ -146,9 +145,8 @@ export class App {
 
 		group.add(this.obj, 'numberTest', {
 			title: 'Number Test',
-			view: 'number'
 		});
-		return
+
 
 		group.addSpacer();
 
@@ -180,17 +178,14 @@ export class App {
 
 		g4.add(this.obj, 'booleanTest', {
 			title: 'Boolean Test',
-			view: 'boolean'
 		});
 
 		g4.addItem(this.obj, 'stringTest', {
 			title: 'String Test',
-			view: 'string'
 		});
 
 		g4.add(this.obj, 'numberTest', {
 			title: 'Number Test',
-			view: 'number'
 		});
 
 		g4.addButton({
