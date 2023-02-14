@@ -1,7 +1,5 @@
 export declare class EventsManager {
-    protected subscribers: {
-        [key: string]: Array<any>;
-    };
+    protected subscribers: Object;
     on(event: string, callback: Function): void;
     emit(event: string, target?: EventsManager): void;
 }

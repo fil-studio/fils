@@ -14,6 +14,11 @@
   dependencies:
     mersenne "^0.0.4"
 
+"@fils/ui-icons@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@fils/ui-icons/-/ui-icons-0.0.5.tgz#a0e625b9f85acee6b7dd48a711362e065251266d"
+  integrity sha512-kPfUD74WIbbAvGNyfoCdNygfovstciUG5wAknyGqnPSy42WHGcwrDy3i/mF1w4XDS6Qg94g8HPLEqC0/Q97OQA==
+
 "@fils/utils@^0.0.5":
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/@fils/utils/-/utils-0.0.5.tgz#4fc7567cb887c0cd694bdfe76b9692f7fda5d987"

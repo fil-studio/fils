@@ -1,7 +1,7 @@
 import { el } from "@fils/utils";
 import check from "../../../utils/check";
 import { NumberItemParameters } from "../ItemParameters";
-import { uiDownarrowHlt } from '../../../../../ui-icons/lib/Icons';
+import { uiDownarrowHlt } from '@fils/ui-icons';
 import { CSS_UI } from "../../../partials/cssClasses";
 import { Item } from "../Item";
 
