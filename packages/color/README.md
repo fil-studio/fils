@@ -2,7 +2,7 @@
 
 Color Package written in TypeScript. Color conversion utils, wrappers for painting color picker in a Canvas Element. Morer to come.
 
-This is part of a series of packages that we use in our studio for personal and commercial web based work. It might remain undocumented for a long while but feel free to try it out!
+This is part of a series of packages that we use in our studio for personal and commercial web  based work. It might remain undocumented for a long while but feel free to try it out!
 
 ### License
 © Copyright 2022, fil studio

@@ -2,6 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EventsManager = void 0;
 class EventsManager {
+    constructor() {
+        this.subscribers = {};
+    }
     on(event, callback) {
         if (!this.subscribers[event]) {
             this.subscribers[event] = [];

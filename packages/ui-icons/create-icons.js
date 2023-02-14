@@ -9,8 +9,7 @@ function snakeToCamel(snake) {
 }
 
 // get all svg files in folder
-const svgFiles = fs.readdirSync(folderPath).filter(file => file.endsWith('.svg')); ,
-0
+const svgFiles = fs.readdirSync(folderPath).filter(file => file.endsWith('.svg'));
 // create an object to store the content of each file
 const svgContent = {};
 
