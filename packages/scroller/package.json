@@ -25,6 +25,6 @@
 		"registry": "https://registry.npmjs.org/"
 	},
 	"dependencies": {
-		"@fils/math": "workspace:^"
+		"@fils/math": "^0.0.1-0"
 	}
 }

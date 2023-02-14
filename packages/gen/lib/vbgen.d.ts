@@ -6,13 +6,13 @@ export declare enum ArrayTypes {
     UINT16 = 2,
     UINT32 = 3
 }
-export declare type VB = {
+export type VB = {
     id: string;
     array: Array<number>;
     size: number;
     type: ArrayTypes;
 };
-export declare type VBA = {
+export type VBA = {
     attributes: Array<VB>;
     index: Array<number>;
     instancedAttributes?: Array<VB>;

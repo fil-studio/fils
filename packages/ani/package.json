@@ -38,5 +38,6 @@
     "typescript",
     "easing",
     "animation"
-  ]
+  ],
+  "dependencies": {}
 }
