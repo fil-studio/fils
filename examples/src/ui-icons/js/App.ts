@@ -1,5 +1,5 @@
-import * as uiIcons from '../../../../packages/ui-icons/lib/Icons';
-import { el, copyToClipboard } from '../../../../packages/utils/lib/main';
+import * as uiIcons from '@fils/ui-icons';
+import { el, copyToClipboard } from '@fils/utils';
 
 export class App {
 	wrapper: HTMLElement;

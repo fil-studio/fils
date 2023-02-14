@@ -4,8 +4,6 @@ const css = {
 	inject: (css: string) => {
 		const style = document.createElement('style');
 		style.innerHTML = css;
-		console.log(css);
-
 		document.head.appendChild(style);
 	},
 	// merge: (css: string, items: Array<AvailableItem>):string => {

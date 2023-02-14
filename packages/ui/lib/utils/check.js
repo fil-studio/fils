@@ -1,2 +1,48 @@
-const r={isUndefined:function(n){return n===void 0},isNull:function(n){return n===null},isNaN:function(n){return isNaN(n)},isArray:Array.isArray||function(n){return n.constructor===Array},isObject:function(n){return n===Object(n)},isNumber:function(n){return n===n+0},isString:function(n){return n===n+""},isBoolean:function(n){return n===!1||n===!0},isFunction:function(n){return n instanceof Function},getType:function(n){if(r.isUndefined(n))return"undefined";if(r.isNull(n))return"null";if(r.isArray(n))return"array";if(r.isObject(n))return"object";if(r.isNumber(n))return"number";if(r.isString(n))return"string";if(r.isBoolean(n))return"boolean";if(r.isFunction(n))return"function"}};export default r;
-//# sourceMappingURL=check.js.map
+const check = {
+  isUndefined: function(obj) {
+    return obj === void 0;
+  },
+  isNull: function(obj) {
+    return obj === null;
+  },
+  isNaN: function(obj) {
+    return isNaN(obj);
+  },
+  isArray: Array.isArray || function(obj) {
+    return obj.constructor === Array;
+  },
+  isObject: function(obj) {
+    return obj === Object(obj);
+  },
+  isNumber: function(obj) {
+    return obj === obj + 0;
+  },
+  isString: function(obj) {
+    return obj === obj + "";
+  },
+  isBoolean: function(obj) {
+    return obj === false || obj === true;
+  },
+  isFunction: function(obj) {
+    return obj instanceof Function;
+  },
+  getType: function(obj) {
+    if (check.isUndefined(obj))
+      return "undefined";
+    if (check.isNull(obj))
+      return "null";
+    if (check.isArray(obj))
+      return "array";
+    if (check.isObject(obj))
+      return "object";
+    if (check.isNumber(obj))
+      return "number";
+    if (check.isString(obj))
+      return "string";
+    if (check.isBoolean(obj))
+      return "boolean";
+    if (check.isFunction(obj))
+      return "function";
+  }
+};
+export default check;

@@ -1,8 +1,6 @@
 
 const sass = require('sass');
 const CleanCSS = require('clean-css');
-
-const { dtsPlugin } = require("esbuild-plugin-d.ts");
 const { replace } = require('esbuild-plugin-replace');
 
 const { build } = require("esbuild");
@@ -10,7 +8,6 @@ const { build } = require("esbuild");
 const glob = require("glob");
 const entryPoints = glob.sync("./src/**/*.ts");
 
-// sass src/scss/main.scss:src/bundle/bundle.css && Cleancss -o src/bundle/bundle.min.css src/bundle/bundle.css && echo \"scss compiled\"
 async function compileCss() {
 
 	const result = sass.compile('./src/scss/main.scss');
@@ -26,16 +23,14 @@ compileCss().then((css) => {
 	build({
 		entryPoints,
 		outdir: "lib",
-		minify: true,
+		minify: false,
 		bundle: false,
-		sourcemap: true,
+		sourcemap: false,
 		tsconfig: "tsconfig.json",
 		plugins: [
 			replace({
 				'__css__': css
 			}),
-			dtsPlugin()
 		]
 	})
-
-});
+})

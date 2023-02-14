@@ -1,2 +1,24 @@
-import{el as t}from"@fils/utils";import{CSS_UI as o}from"../../../partials/cssClasses";import{Item as s}from"../Item";const r={type:"boolean",input:"_ui-toggle"};export class BooleanItem extends s{addEventListeners(){this.el.addEventListener("click",()=>{this.setValue(!this.value)})}createContent(){const e=t("div",r.input),i=t("div");e.appendChild(i),this.content.appendChild(e)}refreshDom(){this.el.classList.toggle(o.utility.active,this.value),super.refreshDom()}}
-//# sourceMappingURL=BooleanItem.js.map
+import { el } from "@fils/utils";
+import { CSS_UI } from "../../../partials/cssClasses";
+import { Item } from "../Item";
+const c = {
+  type: "boolean",
+  input: "_ui-toggle"
+};
+export class BooleanItem extends Item {
+  addEventListeners() {
+    this.el.addEventListener("click", () => {
+      this.setValue(!this.value);
+    });
+  }
+  createContent() {
+    const wrapper = el("div", c.input);
+    const thumb = el("div");
+    wrapper.appendChild(thumb);
+    this.content.appendChild(wrapper);
+  }
+  refreshDom() {
+    this.el.classList.toggle(CSS_UI.utility.active, this.value);
+    super.refreshDom();
+  }
+}

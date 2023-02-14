@@ -1,2 +1,38 @@
-import{ItemRegister as e}from"./ItemFactory";import{BooleanItem as m}from"../components/items/customItems/BooleanItem";import{NumberItem as t}from"../components/items/customItems/NumberItem";import{StringItem as o}from"../components/items/customItems/StringItem";import{ColorItem as i}from"../components/items/customItems/ColorItem";import{RangeItem as r}from"../components/items/customItems/RangeItem";import{SelectItem as p}from"../components/items/customItems/SelectItem";import{UploadItem as n}from"../components/items/customItems/UploadItem";export const RegisterBaseComponents=()=>{e({view:"boolean",item:m}),e({view:"string",item:o}),e({view:"number",item:t}),e({view:"range",item:r}),e({view:"select",item:p}),e({view:"upload",item:n}),e({view:"color",item:i})};
-//# sourceMappingURL=RegisterBaseItems.js.map
+import { ItemRegister } from "./ItemFactory";
+import { BooleanItem } from "../components/items/customItems/BooleanItem";
+import { NumberItem } from "../components/items/customItems/NumberItem";
+import { StringItem } from "../components/items/customItems/StringItem";
+import { ColorItem } from "../components/items/customItems/ColorItem";
+import { RangeItem } from "../components/items/customItems/RangeItem";
+import { SelectItem } from "../components/items/customItems/SelectItem";
+import { UploadItem } from "../components/items/customItems/UploadItem";
+export const RegisterBaseComponents = () => {
+  ItemRegister({
+    view: "boolean",
+    item: BooleanItem
+  });
+  ItemRegister({
+    view: "string",
+    item: StringItem
+  });
+  ItemRegister({
+    view: "number",
+    item: NumberItem
+  });
+  ItemRegister({
+    view: "range",
+    item: RangeItem
+  });
+  ItemRegister({
+    view: "select",
+    item: SelectItem
+  });
+  ItemRegister({
+    view: "upload",
+    item: UploadItem
+  });
+  ItemRegister({
+    view: "color",
+    item: ColorItem
+  });
+};

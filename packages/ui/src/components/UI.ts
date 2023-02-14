@@ -44,7 +44,7 @@ export class UI extends Group {
 		}
 	}
 
-	appendTo(parentElement: HTMLElement){
+	protected appendTo(parentElement: HTMLElement){
 
 		if(parentElement){
 			this.wrapper.classList.add(CSS_UI.parent);
@@ -54,7 +54,7 @@ export class UI extends Group {
 		}
 	}
 
-	addIcon(icon: string){
+	protected addIcon(icon: string){
 		if(!icon) return;
 		dom.addIcon(this.el.querySelector('header') as HTMLElement, icon);
 	}

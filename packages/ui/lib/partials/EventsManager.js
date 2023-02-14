@@ -1,2 +1,16 @@
-export class EventsManager{constructor(){this.subscribers={}}on(s,i){this.subscribers[s]||(this.subscribers[s]=[]),this.subscribers[s].push(i)}emit(s,i){this.subscribers[s]&&this.subscribers[s].forEach(r=>r(i||this))}}
-//# sourceMappingURL=EventsManager.js.map
+export class EventsManager {
+  constructor() {
+    this.subscribers = {};
+  }
+  on(event, callback) {
+    if (!this.subscribers[event]) {
+      this.subscribers[event] = [];
+    }
+    this.subscribers[event].push(callback);
+  }
+  emit(event, target) {
+    if (this.subscribers[event]) {
+      this.subscribers[event].forEach((subscriber) => subscriber(target ? target : this));
+    }
+  }
+}

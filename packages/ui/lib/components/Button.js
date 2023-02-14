@@ -1,2 +1,17 @@
-import{RowTypes as o}from"../utils/dom";import{UIElement as n}from"./UIElement";export class Button extends n{constructor({title:t}={}){const e=t||"Button";super(o.button,e)}createDom(){super.createDom(),this.button=this.el.querySelector("button")}addEventListeners(){this.button.addEventListener("click",()=>{this.emit("click")})}}
-//# sourceMappingURL=Button.js.map
+import { RowTypes } from "../utils/dom";
+import { UIElement } from "./UIElement";
+export class Button extends UIElement {
+  constructor({ title } = {}) {
+    const _title = title || "Button";
+    super(RowTypes.button, _title);
+  }
+  createDom() {
+    super.createDom();
+    this.button = this.el.querySelector("button");
+  }
+  addEventListeners() {
+    this.button.addEventListener("click", () => {
+      this.emit("click");
+    });
+  }
+}

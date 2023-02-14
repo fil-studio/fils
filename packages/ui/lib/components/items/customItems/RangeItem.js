@@ -1,9 +1,161 @@
-import{MathUtils as i}from"@fils/math";import{el as g}from"@fils/utils";import{CSS_UI as d}from"../../../partials/cssClasses";import E from"../../../utils/check";import{Item as b}from"../Item";const n={type:"range",input:"_ui-range-input",track:"_ui-range-track",overExpose:"_ui-range-overexpose",overExposeMin:"_ui-range-overexpose-min",overExposeMax:"_ui-range-overexpose-max",thumb:"_ui-range-thumb"};export class RangeItem extends b{constructor(){super(...arguments);this.max=0;this.min=1;this.step=.01;this.decimals=2;this.limitNumber=s=>{let t=s;return this.max&&(t=Math.min(t,this.max)),this.min&&(t=Math.max(t,this.min)),t=Math.round(t*Math.pow(10,this.decimals))/Math.pow(10,this.decimals),t}}addEventListeners(){this.input.value=`${Math.max(Math.min(this.max,this.value),this.min)}`,this.updateRange(),this.input.addEventListener("change",()=>{let e=this.input.valueAsNumber;e=this.limitNumber(e),this.input.valueAsNumber=e,this.setValue(e),this.updateRange()});let s=!1,t=0,a=0;const r=e=>{if(e.target!=this.thumb)return;s=!0,this.thumb.classList.add(d.utility.grab),t=e.clientX;const{width:m}=this.range.getBoundingClientRect();a=i.map(this.mappedValue,0,1,0,m)},h=e=>{if(!s)return;const o=a+(e.clientX-t),{width:m}=this.range.getBoundingClientRect(),u=i.clamp(i.map(o,0,m,0,1),0,1),l=i.map(u,0,1,this.min,this.max);this.value=Math.round(l/this.step)*this.step,this.updateInput(),this.updateRange()},p=e=>{if(e.target===this.thumb)return;const{left:m,width:u}=this.range.getBoundingClientRect(),l=e.clientX-m,v=i.clamp(i.map(l,0,u,0,1),0,1),x=i.map(v,0,1,this.min,this.max);this.value=Math.round(x/this.step)*this.step,this.updateInput(),this.updateRange()},c=()=>{s&&(s=!1,t=0,this.thumb.classList.remove(d.utility.grab))};this.range.addEventListener("click",e=>{p(e)}),this.range.addEventListener("mousedown",e=>{r(e)}),window.addEventListener("mousemove",e=>{h(e)}),window.addEventListener("mouseup",()=>{c()})}get mappedValue(){return i.clamp(i.map(this.value,this.min,this.max,0,1),0,1)}createContent(){this.max=this.params.max?this.params.max:this.max,this.min=this.params.min?this.params.min:this.min,this.step=this.params.step?this.params.step:.01,this.decimals=this.params.decimals?this.params.decimals:2,this.content.innerHTML=`
-			<div class="${n.input}">
-				<div class="${n.track}"></div>
-				<div class="${n.overExpose} ${n.overExposeMin}"></div>
-				<div class="${n.overExpose} ${n.overExposeMax}"></div>
-				<div class="${n.thumb}"></div>
+import { MathUtils } from "@fils/math";
+import { el } from "@fils/utils";
+import { CSS_UI } from "../../../partials/cssClasses";
+import check from "../../../utils/check";
+import { Item } from "../Item";
+const c = {
+  type: "range",
+  input: "_ui-range-input",
+  track: "_ui-range-track",
+  overExpose: "_ui-range-overexpose",
+  overExposeMin: "_ui-range-overexpose-min",
+  overExposeMax: "_ui-range-overexpose-max",
+  thumb: "_ui-range-thumb"
+};
+export class RangeItem extends Item {
+  constructor() {
+    super(...arguments);
+    this.max = 0;
+    this.min = 1;
+    this.step = 0.01;
+    this.decimals = 2;
+    this.limitNumber = (value) => {
+      let tmp = value;
+      if (this.max)
+        tmp = Math.min(tmp, this.max);
+      if (this.min)
+        tmp = Math.max(tmp, this.min);
+      tmp = Math.round(tmp * Math.pow(10, this.decimals)) / Math.pow(10, this.decimals);
+      return tmp;
+    };
+  }
+  addEventListeners() {
+    this.input.value = `${Math.max(Math.min(this.max, this.value), this.min)}`;
+    this.updateRange();
+    this.input.addEventListener("change", () => {
+      let value = this.input.valueAsNumber;
+      value = this.limitNumber(value);
+      this.input.valueAsNumber = value;
+      this.setValue(value);
+      this.updateRange();
+    });
+    let dragging = false;
+    let x = 0;
+    let originalValue = 0;
+    const mouseDown = (e) => {
+      const t = e.target;
+      if (t != this.thumb)
+        return;
+      dragging = true;
+      this.thumb.classList.add(CSS_UI.utility.grab);
+      x = e.clientX;
+      const { width } = this.range.getBoundingClientRect();
+      originalValue = MathUtils.map(this.mappedValue, 0, 1, 0, width);
+    };
+    const mouseMove = (e) => {
+      if (!dragging)
+        return;
+      const movementDistance = originalValue + (e.clientX - x);
+      const { width } = this.range.getBoundingClientRect();
+      const newValueMapped = MathUtils.clamp(MathUtils.map(movementDistance, 0, width, 0, 1), 0, 1);
+      const newValue = MathUtils.map(newValueMapped, 0, 1, this.min, this.max);
+      this.value = Math.round(newValue / this.step) * this.step;
+      this.updateInput();
+      this.updateRange();
+    };
+    const mouseClick = (e) => {
+      const t = e.target;
+      if (t === this.thumb)
+        return;
+      const { left, width } = this.range.getBoundingClientRect();
+      const newPosition = e.clientX - left;
+      const newValueMapped = MathUtils.clamp(MathUtils.map(newPosition, 0, width, 0, 1), 0, 1);
+      const newValue = MathUtils.map(newValueMapped, 0, 1, this.min, this.max);
+      this.value = Math.round(newValue / this.step) * this.step;
+      this.updateInput();
+      this.updateRange();
+    };
+    const reset = () => {
+      if (!dragging)
+        return;
+      dragging = false;
+      x = 0;
+      this.thumb.classList.remove(CSS_UI.utility.grab);
+    };
+    this.range.addEventListener("click", (e) => {
+      mouseClick(e);
+    });
+    this.range.addEventListener("mousedown", (e) => {
+      mouseDown(e);
+    });
+    window.addEventListener("mousemove", (e) => {
+      mouseMove(e);
+    });
+    window.addEventListener("mouseup", () => {
+      reset();
+    });
+  }
+  get mappedValue() {
+    return MathUtils.clamp(MathUtils.map(this.value, this.min, this.max, 0, 1), 0, 1);
+  }
+  createContent() {
+    this.max = this.params.max ? this.params.max : this.max;
+    this.min = this.params.min ? this.params.min : this.min;
+    this.step = this.params.step ? this.params.step : 0.01;
+    this.decimals = this.params.decimals ? this.params.decimals : 2;
+    this.content.innerHTML = `
+			<div class="${c.input}">
+				<div class="${c.track}"></div>
+				<div class="${c.overExpose} ${c.overExposeMin}"></div>
+				<div class="${c.overExpose} ${c.overExposeMax}"></div>
+				<div class="${c.thumb}"></div>
 			</div>
-		`,this.input=g("input"),this.input.type="number",this.input.placeholder="Value",this.min&&this.input.setAttribute("min",this.min.toString()),this.max&&this.input.setAttribute("max",this.max.toString()),this.step&&this.input.setAttribute("step",this.step.toString()),this.content.appendChild(this.input),this.range=this.content.querySelector(`.${n.input}`),this.thumb=this.content.querySelector(`.${n.thumb}`),this.setUpOverExpose(),this.input.min=`${this.min}`,this.input.max=`${this.max}`,this.step=this.params.step?this.params.step:this.step,this.step===0&&(this.step=.01),this.input.step=`${this.step}`}setUpOverExpose(){const s=this.params.overExpose||[0,0];let t=[0,0];E.isArray(s)?t=s:t=[s,s],this.min=this.params.min?this.params.min-t[0]:t[0],this.max=this.params.max?this.params.max+t[1]:t[1];const a=this.content.querySelectorAll(`.${n.overExpose}`),r=Math.abs(this.min-this.max),h=i.map(t[0],0,r,0,1),p=i.map(t[1],0,r,0,1);a[0].style.setProperty("--size",`${h}`),a[1].style.setProperty("--size",`${p}`)}updateRange(){this.range.style.setProperty("--value",`${this.mappedValue}`)}updateInput(){this.input.value=`${this.value.toFixed(2)}`}refreshDom(){this.updateInput(),this.updateRange(),super.refreshDom()}}
-//# sourceMappingURL=RangeItem.js.map
+		`;
+    this.input = el("input");
+    this.input.type = "number";
+    this.input.placeholder = "Value";
+    if (this.min)
+      this.input.setAttribute("min", this.min.toString());
+    if (this.max)
+      this.input.setAttribute("max", this.max.toString());
+    if (this.step)
+      this.input.setAttribute("step", this.step.toString());
+    this.content.appendChild(this.input);
+    this.range = this.content.querySelector(`.${c.input}`);
+    this.thumb = this.content.querySelector(`.${c.thumb}`);
+    this.setUpOverExpose();
+    this.input.min = `${this.min}`;
+    this.input.max = `${this.max}`;
+    this.step = this.params.step ? this.params.step : this.step;
+    if (this.step === 0)
+      this.step = 0.01;
+    this.input.step = `${this.step}`;
+  }
+  setUpOverExpose() {
+    const overExpose = this.params.overExpose || [0, 0];
+    let limits = [0, 0];
+    if (!check.isArray(overExpose))
+      limits = [overExpose, overExpose];
+    else
+      limits = overExpose;
+    this.min = this.params.min ? this.params.min - limits[0] : limits[0];
+    this.max = this.params.max ? this.params.max + limits[1] : limits[1];
+    const overExposeEls = this.content.querySelectorAll(`.${c.overExpose}`);
+    const distance = Math.abs(this.min - this.max);
+    const left = MathUtils.map(limits[0], 0, distance, 0, 1);
+    const right = MathUtils.map(limits[1], 0, distance, 0, 1);
+    overExposeEls[0].style.setProperty("--size", `${left}`);
+    overExposeEls[1].style.setProperty("--size", `${right}`);
+  }
+  updateRange() {
+    this.range.style.setProperty("--value", `${this.mappedValue}`);
+  }
+  updateInput() {
+    this.input.value = `${this.value.toFixed(2)}`;
+  }
+  refreshDom() {
+    this.updateInput();
+    this.updateRange();
+    super.refreshDom();
+  }
+}
