@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/components/Button.ts"],
+  "sourcesContent": ["import { RowTypes } from \"../utils/dom\";\nimport { UIElement } from \"./UIElement\";\n\nexport interface ButtonOptions {\n\ttitle?: string;\n}\n\nexport class Button extends UIElement {\n\tbutton!: HTMLButtonElement;\n\n\tconstructor({ title }: ButtonOptions = {}) {\n\t\tconst _title = title || 'Button'\n\t\tsuper(RowTypes.button, _title);\n\t}\n\n\tprotected createDom(): void {\n\t\tsuper.createDom();\n\t\tthis.button = this.el.querySelector('button') as HTMLButtonElement\n\t}\n\n\tprotected addEventListeners(){\n\t\tthis.button.addEventListener('click', () => {\n\t\t\tthis.emit('click');\n\t\t});\n\t}\n}"],
+  "mappings": "AAAA,SAAS,gBAAgB;AACzB,SAAS,iBAAiB;AAMnB,aAAM,eAAe,UAAU;AAAA,EAGrC,YAAY,EAAE,MAAM,IAAmB,CAAC,GAAG;AAC1C,UAAM,SAAS,SAAS;AACxB,UAAM,SAAS,QAAQ,MAAM;AAAA,EAC9B;AAAA,EAEU,YAAkB;AAC3B,UAAM,UAAU;AAChB,SAAK,SAAS,KAAK,GAAG,cAAc,QAAQ;AAAA,EAC7C;AAAA,EAEU,oBAAmB;AAC5B,SAAK,OAAO,iBAAiB,SAAS,MAAM;AAC3C,WAAK,KAAK,OAAO;AAAA,IAClB,CAAC;AAAA,EACF;AACD;",
+  "names": []
+}

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../../src/components/items/customItems/BooleanItem.ts"],
+  "sourcesContent": ["import { el } from \"@fils/utils\";\nimport { CSS_UI } from \"../../../partials/cssClasses\";\nimport { Item } from \"../Item\";\n\nconst c = {\n\ttype: 'boolean',\n\tinput: '_ui-toggle',\n};\nexport class BooleanItem extends Item {\n\n\tprotected addEventListeners(): void {\n\n\t\tthis.el.addEventListener('click', () => {\n\t\t\tthis.setValue(!this.value);\n \t\t});\n\n\t}\n\n\tprotected createContent(): void {\n\n\t\tconst wrapper = el('div', c.input);\n\t\tconst thumb = el('div');\n\t\twrapper.appendChild(thumb);\n\t\tthis.content.appendChild(wrapper);\n\n\t}\n\n\trefreshDom(): void {\n\t\tthis.el.classList.toggle(CSS_UI.utility.active, this.value);\n\t\tsuper.refreshDom();\n\n\t}\n}"],
+  "mappings": "AAAA,SAAS,UAAU;AACnB,SAAS,cAAc;AACvB,SAAS,YAAY;AAErB,MAAM,IAAI;AAAA,EACT,MAAM;AAAA,EACN,OAAO;AACR;AACO,aAAM,oBAAoB,KAAK;AAAA,EAE3B,oBAA0B;AAEnC,SAAK,GAAG,iBAAiB,SAAS,MAAM;AACvC,WAAK,SAAS,CAAC,KAAK,KAAK;AAAA,IACzB,CAAC;AAAA,EAEH;AAAA,EAEU,gBAAsB;AAE/B,UAAM,UAAU,GAAG,OAAO,EAAE,KAAK;AACjC,UAAM,QAAQ,GAAG,KAAK;AACtB,YAAQ,YAAY,KAAK;AACzB,SAAK,QAAQ,YAAY,OAAO;AAAA,EAEjC;AAAA,EAEA,aAAmB;AAClB,SAAK,GAAG,UAAU,OAAO,OAAO,QAAQ,QAAQ,KAAK,KAAK;AAC1D,UAAM,WAAW;AAAA,EAElB;AACD;",
+  "names": []
+}

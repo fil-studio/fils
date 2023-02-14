@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/partials/EventsManager.ts"],
+  "sourcesContent": ["\nexport class EventsManager {\n\tprotected subscribers: Object = {};\n\n\ton(event:string, callback: Function) {\n\t\tif (!this.subscribers[event]) {\n\t\t\tthis.subscribers[event] = [];\n\t\t}\n\t\tthis.subscribers[event].push(callback);\n\t}\n\n\temit(event:string, target?:EventsManager) {\n\t\tif (this.subscribers[event]) {\n\t\t\tthis.subscribers[event].forEach(subscriber => subscriber(target ? target : this));\n\t\t}\n\t}\n\n}"],
+  "mappings": "AACO,aAAM,cAAc;AAAA,EAApB;AACN,SAAU,cAAsB,CAAC;AAAA;AAAA,EAEjC,GAAG,OAAc,UAAoB;AACpC,QAAI,CAAC,KAAK,YAAY,KAAK,GAAG;AAC7B,WAAK,YAAY,KAAK,IAAI,CAAC;AAAA,IAC5B;AACA,SAAK,YAAY,KAAK,EAAE,KAAK,QAAQ;AAAA,EACtC;AAAA,EAEA,KAAK,OAAc,QAAuB;AACzC,QAAI,KAAK,YAAY,KAAK,GAAG;AAC5B,WAAK,YAAY,KAAK,EAAE,QAAQ,gBAAc,WAAW,SAAS,SAAS,IAAI,CAAC;AAAA,IACjF;AAAA,EACD;AAED;",
+  "names": []
+}
