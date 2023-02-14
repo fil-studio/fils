@@ -2,6 +2,6 @@
   "version": 3,
   "sources": ["../../src/components/Spacer.ts"],
   "sourcesContent": ["import { CSS_UI } from \"../partials/cssClasses\";\nimport { RowTypes } from \"../utils/dom\";\nimport { UIElement } from \"./UIElement\";\n\nexport enum SpacerSize {\n\tsmall = 'small',\n\tmedium = 'medium',\n\tlarge = 'large'\n}\n\nexport interface SpacerParams {\n\tsize?: SpacerSize;\n\tline?: boolean;\n}\n\nexport class Spacer extends UIElement  {\n\ttype: RowTypes = RowTypes.spacer;\n\n\tconstructor(depth:number, {\n\t\tsize = SpacerSize.medium,\n\t\tline = true,\n\t}: SpacerParams) {\n\t\tsuper(RowTypes.spacer);\n\n\t\tthis.init(depth)\n\n\t\tif (line) this.el.classList.add(CSS_UI.spacer.hasLine);\n\t\tthis.el.classList.add(CSS_UI.spacer.size[size]);\n\t}\n}"],
-  "mappings": "AAAA,SAAS,cAAc;AACvB,SAAS,gBAAgB;AACzB,SAAS,iBAAiB;AAEnB,WAAK,aAAL,kBAAKA,gBAAL;AACN,EAAAA,YAAA,WAAQ;AACR,EAAAA,YAAA,YAAS;AACT,EAAAA,YAAA,WAAQ;AAHG,SAAAA;AAAA,GAAA;AAWL,aAAM,eAAe,UAAW;AAAA,EAGtC,YAAY,OAAc;AAAA,IACzB,OAAO;AAAA,IACP,OAAO;AAAA,EACR,GAAiB;AAChB,UAAM,SAAS,MAAM;AANtB,gBAAiB,SAAS;AAQzB,SAAK,KAAK,KAAK;AAEf,QAAI;AAAM,WAAK,GAAG,UAAU,IAAI,OAAO,OAAO,OAAO;AACrD,SAAK,GAAG,UAAU,IAAI,OAAO,OAAO,KAAK,IAAI,CAAC;AAAA,EAC/C;AACD;",
-  "names": ["SpacerSize"]
+  "mappings": "AAAA,OAAS,UAAAA,MAAc,yBACvB,OAAS,YAAAC,MAAgB,eACzB,OAAS,aAAAC,MAAiB,cAEnB,WAAK,YAAAC,IACXA,EAAA,MAAQ,QACRA,EAAA,OAAS,SACTA,EAAA,MAAQ,QAHGA,IAAA,gBAWL,aAAM,eAAeD,CAAW,CAGtC,YAAYE,EAAc,CACzB,KAAAC,EAAO,SACP,KAAAC,EAAO,EACR,EAAiB,CAChB,MAAML,EAAS,MAAM,EANtB,UAAiBA,EAAS,OAQzB,KAAK,KAAKG,CAAK,EAEXE,GAAM,KAAK,GAAG,UAAU,IAAIN,EAAO,OAAO,OAAO,EACrD,KAAK,GAAG,UAAU,IAAIA,EAAO,OAAO,KAAKK,CAAI,CAAC,CAC/C,CACD",
+  "names": ["CSS_UI", "RowTypes", "UIElement", "SpacerSize", "depth", "size", "line"]
 }

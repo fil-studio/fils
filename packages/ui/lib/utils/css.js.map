@@ -2,6 +2,6 @@
   "version": 3,
   "sources": ["../../src/utils/css.ts"],
   "sourcesContent": ["import { AvailableItem } from \"../partials/ItemFactory\";\n\nconst css = {\n\tinject: (css: string) => {\n\t\tconst style = document.createElement('style');\n\t\tstyle.innerHTML = css;\n\t\tconsole.log(css);\n\n\t\tdocument.head.appendChild(style);\n\t},\n\t// merge: (css: string, items: Array<AvailableItem>):string => {\n\t// \tlet style = css;\n\t// \tfor(const item of items){\n\t// \t\tconst itemCss = item.getCSS();\n\t// \t\tif(itemCss) style += itemCss;\n\t// \t}\n\t// \treturn style;\n\t// }\n}\n\n\nexport default css;"],
-  "mappings": "AAEA,MAAM,MAAM;AAAA,EACX,QAAQ,CAACA,SAAgB;AACxB,UAAM,QAAQ,SAAS,cAAc,OAAO;AAC5C,UAAM,YAAYA;AAClB,YAAQ,IAAIA,IAAG;AAEf,aAAS,KAAK,YAAY,KAAK;AAAA,EAChC;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AASD;AAGA,eAAe;",
-  "names": ["css"]
+  "mappings": "AAEA,MAAMA,EAAM,CACX,OAASA,GAAgB,CACxB,MAAMC,EAAQ,SAAS,cAAc,OAAO,EAC5CA,EAAM,UAAYD,EAClB,QAAQ,IAAIA,CAAG,EAEf,SAAS,KAAK,YAAYC,CAAK,CAChC,CASD,EAGA,eAAeD",
+  "names": ["css", "style"]
 }

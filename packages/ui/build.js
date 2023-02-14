@@ -26,7 +26,7 @@ compileCss().then((css) => {
 	build({
 		entryPoints,
 		outdir: "lib",
-		minify: false,
+		minify: true,
 		bundle: false,
 		sourcemap: true,
 		tsconfig: "tsconfig.json",
