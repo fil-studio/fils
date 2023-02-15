@@ -1,4 +1,5 @@
 import { Group, GroupParams } from './Group';
+export declare const UIInjectCSS: () => void;
 interface UIParams extends GroupParams {
     parentElement?: HTMLElement;
     resizable?: boolean;

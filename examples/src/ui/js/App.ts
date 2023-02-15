@@ -1,5 +1,5 @@
 // import { UI } from '@fils/ui';
-import { UI } from '../../../../packages/ui/src/main';
+import { UI, UIInjectCSS } from '../../../../packages/ui/src/main';
 import { uiBrushData } from '@fils/ui-icons';
 
 import { Texture, TextureLoader } from 'three';
@@ -60,6 +60,10 @@ export class App {
 			title: 'UI',
 			icon: uiBrushData,
 			// parentElement: document.querySelector('.parent-example') as HTMLElement,
+		});
+
+		window.addEventListener('keydown', (e) => {
+			if(e.key === 'Escape') this.ui.foldToggle();
 		});
 
 		const group = this.ui.addGroup({
@@ -193,15 +197,11 @@ export class App {
 			title: 'Number Test',
 		});
 
-		g4.addButton({
-			title: 'Button Test g4',
-		}).on('click', () => {
+		g4.addButton('Button Test g4').on('click', () => {
 			console.log('Button Test g4');
 		})
 
-		g2.addButton({
-			title: 'Button Test g2',
-		}).on('click', () => {
+		g2.addButton('Button Test g2').on('click', () => {
 			console.log('Button Test g2');
 		});
 

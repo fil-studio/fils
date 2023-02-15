@@ -10,7 +10,18 @@ RegisterBaseComponents();
 
 const styles = `__css__`;
 // import styles from '../bundle/bundle.css';
-css.inject(styles);
+let injected = false;
+if(!injected){
+	injected = true;
+	css.inject(styles);
+}
+
+export const UIInjectCSS = () => {
+	if(!injected){
+		injected = true;
+		css.inject(styles);
+	}
+}
 
 interface UIParams extends GroupParams {
 	parentElement?: HTMLElement;
