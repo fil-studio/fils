@@ -177,19 +177,23 @@
   --color-2: #666666;
 }
 
-._ui-wrapper,
-._ui-panel {
+._ui-wrapper, ._ui-wrapper *,
+._ui-panel,
+._ui-panel * {
   box-sizing: border-box;
 }
-
-fieldset {
+._ui-wrapper fieldset,
+._ui-panel fieldset {
   min-inline-size: unset;
 }
-
-input,
-textarea,
-select,
-button {
+._ui-wrapper input,
+._ui-wrapper textarea,
+._ui-wrapper select,
+._ui-wrapper button,
+._ui-panel input,
+._ui-panel textarea,
+._ui-panel select,
+._ui-panel button {
   padding: 0;
   margin: 0;
   border: none;
@@ -201,21 +205,33 @@ button {
   text-transform: inherit;
   letter-spacing: inherit;
 }
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-a {
+._ui-wrapper h1,
+._ui-wrapper h2,
+._ui-wrapper h3,
+._ui-wrapper h4,
+._ui-wrapper h5,
+._ui-wrapper h6,
+._ui-wrapper p,
+._ui-wrapper a,
+._ui-panel h1,
+._ui-panel h2,
+._ui-panel h3,
+._ui-panel h4,
+._ui-panel h5,
+._ui-panel h6,
+._ui-panel p,
+._ui-panel a {
   margin: 0;
   font: inherit;
 }
-
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
+._ui-wrapper input[type=number],
+._ui-panel input[type=number] {
+  -moz-appearance: textfield;
+}
+._ui-wrapper input[type=number]::-webkit-inner-spin-button,
+._ui-wrapper input[type=number]::-webkit-outer-spin-button,
+._ui-panel input[type=number]::-webkit-inner-spin-button,
+._ui-panel input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
@@ -562,7 +578,7 @@ fieldset._ui-row-vertical > div {
 ._ui-range ._ui-range-input {
   position: relative;
   float: left;
-  width: calc(75% - 12px);
+  width: calc(65% - 12px);
   cursor: pointer;
   margin: 0 12px 0 0;
 }
@@ -631,7 +647,7 @@ fieldset._ui-row-vertical > div {
   display: flex;
   align-items: center;
   cursor: pointer;
-  width: calc(25% - var(--spacer));
+  width: calc(35% - var(--spacer));
 }
 
 ._ui-select {

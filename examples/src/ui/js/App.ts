@@ -59,7 +59,7 @@ export class App {
 		this.ui = new UI({
 			title: 'UI',
 			icon: uiBrushData,
-			parentElement: document.querySelector('.parent-example') as HTMLElement,
+			// parentElement: document.querySelector('.parent-example') as HTMLElement,
 		});
 
 		const group = this.ui.addGroup({

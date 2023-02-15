@@ -3,7 +3,7 @@
 	._ui-range-input {
 		position: relative;
 		float: left;
-		width: calc(75% - 12px);
+		width: calc(65% - 12px);
 		cursor: pointer;
 		margin: 0 12px 0 0;
 
@@ -79,6 +79,6 @@
 
 	input {
 		@include item;
-		width: calc(25% - var(--spacer));
+		width: calc(35% - var(--spacer));
 	}
 }

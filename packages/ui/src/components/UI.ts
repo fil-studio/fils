@@ -9,7 +9,7 @@ import { Group, GroupParams } from './Group';
 RegisterBaseComponents();
 
 const styles = `__css__`;
-// import styles from '../bundle/bundle.min.css';
+// import styles from '../bundle/bundle.css';
 css.inject(styles);
 
 interface UIParams extends GroupParams {

@@ -16,5 +16,6 @@ export declare class RangeItem extends Item {
     protected setUpOverExpose(): void;
     protected updateRange(): void;
     protected updateInput(): void;
+    setValue(value: any): void;
     refreshDom(): void;
 }

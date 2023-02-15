@@ -21,9 +21,13 @@ export class NumberItem extends Item {
 	max: number | null = null;
 	min: number | null = null;
 	step: number = 0.01
-	decimals: number = 2;
 
 	originalDataType: string = 'number';
+
+	getDecimals(): number {
+		const decimals = this.step.toString().split('.')[1];
+		return decimals ? decimals.length : 0;
+	}
 
 	limitNumber = (value: number):number => {
 
@@ -32,7 +36,8 @@ export class NumberItem extends Item {
 		if(this.min) tmp = Math.max(tmp, this.min);
 
 		// Round to decimals
-		tmp = Math.round(tmp * Math.pow(10, this.decimals)) / Math.pow(10, this.decimals);
+		const decimals = this.getDecimals();
+		tmp = parseFloat(tmp.toFixed(decimals));
 
 		return tmp;
 	}
@@ -173,7 +178,6 @@ export class NumberItem extends Item {
 		this.max = this.params.max ? this.params.max : null;
 		this.min = this.params.min ? this.params.min : null;
 		this.step = this.params.step ? this.params.step : this.step;
-		this.decimals = this.params.decimals ? this.params.decimals : this.decimals;
 
 		this.createInputs(this.object[this.key]);
 

@@ -27,16 +27,21 @@ export class RangeItem extends Item {
 	max: number = 0;
 	min: number = 1;
 	step: number = 0.01;
-	decimals: number = 2;
 
-	limitNumber = (value: number):number => {
+	getDecimals(): number {
+		const decimals = this.step.toString().split('.')[1];
+		return decimals ? decimals.length : 0;
+	}
+
+	limitNumber = (value: number): number => {
 
 		let tmp = value;
-		if(this.max) tmp = Math.min(tmp, this.max);
-		if(this.min) tmp = Math.max(tmp, this.min);
+		if (this.max) tmp = Math.min(tmp, this.max);
+		if (this.min) tmp = Math.max(tmp, this.min);
 
 		// Round to decimals
-		tmp = Math.round(tmp * Math.pow(10, this.decimals)) / Math.pow(10, this.decimals);
+		const decimals = this.getDecimals();
+		tmp = parseFloat(tmp.toFixed(decimals));
 
 		return tmp;
 	}
@@ -118,8 +123,7 @@ export class RangeItem extends Item {
 
 		this.max = this.params.max ? this.params.max : this.max;
 		this.min = this.params.min ? this.params.min : this.min;
-		this.step = this.params.step ? this.params.step : 0.01;
-		this.decimals = this.params.decimals ? this.params.decimals : 2;
+		this.step = this.params.step ? this.params.step : this.step;
 
 		this.content.innerHTML = `
 			<div class="${c.input}">

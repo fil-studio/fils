@@ -1,43 +1,50 @@
 
 ._ui-wrapper,
 ._ui-panel {
-	box-sizing: border-box;
-}
 
-fieldset {
-	min-inline-size: unset;
-}
+	&, * {
+		box-sizing: border-box;
+	}
 
-input,
-textarea,
-select,
-button {
-	padding: 0;
-	margin: 0;
-	border: none;
-	color: inherit;
-	background-color: transparent;
-	border-radius: 0;
-	font: inherit;
-	text-align: inherit;
-	text-transform: inherit;
-	letter-spacing: inherit;
-}
+	fieldset {
+		min-inline-size: unset;
+	}
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-a {
-	margin: 0;
-	font: inherit;
-}
+	input,
+	textarea,
+	select,
+	button {
+		padding: 0;
+		margin: 0;
+		border: none;
+		color: inherit;
+		background-color: transparent;
+		border-radius: 0;
+		font: inherit;
+		text-align: inherit;
+		text-transform: inherit;
+		letter-spacing: inherit;
+	}
 
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-	-webkit-appearance: none;
-	margin: 0;
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6,
+	p,
+	a {
+		margin: 0;
+		font: inherit;
+	}
+
+	input[type=number] {
+		-moz-appearance: textfield;
+	}
+
+	input[type="number"]::-webkit-inner-spin-button,
+	input[type="number"]::-webkit-outer-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
 }

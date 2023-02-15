@@ -30,14 +30,8 @@ export class RangeItem extends Item {
     };
   }
   addEventListeners() {
-    this.input.value = `${Math.max(Math.min(this.max, this.value), this.min)}`;
-    this.updateRange();
     this.input.addEventListener("change", () => {
-      let value = this.input.valueAsNumber;
-      value = this.limitNumber(value);
-      this.input.valueAsNumber = value;
-      this.setValue(value);
-      this.updateRange();
+      this.setValue(this.input.valueAsNumber);
     });
     let dragging = false;
     let x = 0;
@@ -59,9 +53,8 @@ export class RangeItem extends Item {
       const { width } = this.range.getBoundingClientRect();
       const newValueMapped = MathUtils.clamp(MathUtils.map(movementDistance, 0, width, 0, 1), 0, 1);
       const newValue = MathUtils.map(newValueMapped, 0, 1, this.min, this.max);
-      this.value = Math.round(newValue / this.step) * this.step;
-      this.updateInput();
-      this.updateRange();
+      const value = Math.round(newValue / this.step) * this.step;
+      this.setValue(value);
     };
     const mouseClick = (e) => {
       const t = e.target;
@@ -71,9 +64,8 @@ export class RangeItem extends Item {
       const newPosition = e.clientX - left;
       const newValueMapped = MathUtils.clamp(MathUtils.map(newPosition, 0, width, 0, 1), 0, 1);
       const newValue = MathUtils.map(newValueMapped, 0, 1, this.min, this.max);
-      this.value = Math.round(newValue / this.step) * this.step;
-      this.updateInput();
-      this.updateRange();
+      const value = Math.round(newValue / this.step) * this.step;
+      this.setValue(value);
     };
     const reset = () => {
       if (!dragging)
@@ -152,6 +144,10 @@ export class RangeItem extends Item {
   }
   updateInput() {
     this.input.value = `${this.value.toFixed(2)}`;
+  }
+  setValue(value) {
+    value = this.limitNumber(value);
+    super.setValue(value);
   }
   refreshDom() {
     this.updateInput();

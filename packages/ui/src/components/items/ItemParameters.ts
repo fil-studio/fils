@@ -8,7 +8,6 @@ export interface NumberItemParameters extends ItemParametersInterface {
 	min?: number;
 	max?: number;
 	step?: number;
-	decimals?: number;
 }
 
 export interface RangeItemParameters extends NumberItemParameters {
