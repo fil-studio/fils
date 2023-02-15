@@ -256,6 +256,10 @@
   color: var(--color-2);
 }
 
+._ui-wrapper,
+._ui-panel {
+  z-index: 999;
+}
 ._ui-wrapper *::selection,
 ._ui-panel *::selection {
   background: var(--white);
@@ -525,7 +529,11 @@
   border-radius: 15px;
   background-color: var(--section-bg-1);
   position: relative;
+  float: left;
   transition: var(--duration) var(--timing);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 ._ui-wrapper ._ui-boolean ._ui-toggle div,
 ._ui-panel ._ui-boolean ._ui-toggle div {
@@ -533,10 +541,7 @@
   height: 25px;
   border-radius: 100%;
   background-color: var(--white);
-  position: absolute;
-  top: 50%;
-  left: 0;
-  transform: translate3d(0%, -50%, 0);
+  transform: translate3d(-8px, 0, 0);
   transition: inherit;
 }
 ._ui-wrapper ._ui-boolean._ui--active ._ui-toggle,
@@ -545,8 +550,7 @@
 }
 ._ui-wrapper ._ui-boolean._ui--active ._ui-toggle div,
 ._ui-panel ._ui-boolean._ui--active ._ui-toggle div {
-  left: 100%;
-  transform: translate3d(-100%, -50%, 0);
+  transform: translate3d(8px, 0, 0);
 }
 ._ui-wrapper ._ui-string input,
 ._ui-panel ._ui-string input {
