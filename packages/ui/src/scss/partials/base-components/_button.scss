@@ -8,7 +8,7 @@
 	margin-top: var(--animation-space);
 
 	&:active {
-		background-color: var(--accent);
+		background-color: var(--accent-color);
 		color: var(--white);
 		transition: 0s;
 	}
