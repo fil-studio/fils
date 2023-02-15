@@ -4,10 +4,10 @@ import { CSS_UI } from "../partials/cssClasses";
 import { EventsManager } from "../partials/EventsManager";
 import { CreateItemParams, ItemFactory } from "../partials/ItemFactory";
 import { RowTypes } from "../utils/dom";
-import { Button } from "./Button";
+import { Button, ButtonOptions } from "./Button";
 import { Item } from "./items/Item";
 import { ItemParameters } from "./items/ItemParameters";
-import { Spacer, SpacerParams } from "./Spacer";
+import { Spacer, SpacerParams, SpacerSize } from "./Spacer";
 import { UIElement } from "./UIElement";
 
 
@@ -96,10 +96,15 @@ export class Group extends UIElement {
 	}
 
 	/**
-	 * Create a button
+	 * Creates a button with the specified title.
+	 *
+	 * @param {string} title - The title to display on the button.
+	 * @default 'Button'
+	 * @event click
+	 * @returns {Button} The newly created button element.
 	 */
-	addButton(params:any): Button{
-		const button = new Button(params);
+	addButton(title:string = 'Button'): Button{
+		const button = new Button({title} as ButtonOptions);
 
 		if (button) {
 			button.init(this.depth + 1);
@@ -110,8 +115,13 @@ export class Group extends UIElement {
 	}
 
 	/**
-	 * Create a group
-	 */
+	* Creates a group.
+	*
+	* @param {title} title - Group tab title
+	* @param {folded} folded - Is the group folded or not
+	* @param {foldable} foldable - Is the group foldable or not
+	* @returns {Group} The newly created group element.
+	*/
 	addGroup(params: GroupParams): Group {
 		const group = new Group(params);
 
@@ -129,7 +139,11 @@ export class Group extends UIElement {
 	}
 
 	/**
-	 * Create spacer
+	 * A function that does something with a widget option.
+	 *
+	 * @param {SpacerSize} option - The option to use.
+	 * @param {boolean} line - If the spacer should be a line or not
+	 * @default true
 	 */
 	addSpacer(params:SpacerParams = {}) {
 		const spacer = new Spacer(this.depth + 1, params);
@@ -137,11 +151,22 @@ export class Group extends UIElement {
 	}
 
 	/**
-	 * Create an item
+	 * A function that creates an Item.
+	 *
+	 * @param {title} title - Item title.
+	 * @param {view} view - Force item view. If not specified, it will be automatically detected.
+	 * @returns {Item} The newly created item element.
 	 */
 	add(object: Object, key: string, params?: ItemParameters): Item{
 		return this.addItem(object, key, params);
 	}
+	/**
+	* A function that creates an Item.
+	*
+	* @param {title} title - Item title.
+	* @param {view} view - Force item view. If not specified, it will be automatically detected.
+	* @returns {Item} The newly created item element.
+	*/
 	addItem(object:Object, key: string, params?:ItemParameters): Item {
 
 		const createItemParams: CreateItemParams = { object, key, params };

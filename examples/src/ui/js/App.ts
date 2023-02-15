@@ -68,6 +68,9 @@ export class App {
 
 		this.ui.on('change', (target) => {
 		});
+
+		this.ui.addButton('Hello');
+
 		// const group = this.ui;
 
 		/**
@@ -155,7 +158,7 @@ export class App {
 				view: 'range',
 				min: -10,
 				max: 10,
-				step: 0.1,
+				step: 0.001,
 				// overExpose: [0, 10],
 		}).on('change', (value) => {
 			console.log(this.obj.numberTestSlider, value);

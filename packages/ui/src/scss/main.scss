@@ -70,20 +70,24 @@
 	}
 }
 
-@import "./partials/base-components/section";
-@import "./partials/fold";
+._ui-wrapper,
+._ui-panel {
+	@import "./partials/base-components/section";
+	@import "./partials/fold";
 
-@import "./partials/base-components/header";
-@import "./partials/base-components/fieldset";
-@import "./partials/base-components/button";
-@import "./partials/base-components/spacer";
+	@import "./partials/base-components/header";
+	@import "./partials/base-components/fieldset";
+	@import "./partials/base-components/button";
+	@import "./partials/base-components/spacer";
 
-// Base Items
-@import "./items/boolean";
-@import "./items/string";
-@import "./items/number";
-@import "./items/range";
-@import "./items/select";
-@import "./items/color";
+	// Base Items
+	@import "./items/boolean";
+	@import "./items/string";
+	@import "./items/number";
+	@import "./items/range";
+	@import "./items/select";
+	@import "./items/color";
 
-@import "./partials/base-components/panel";
+	@import "./partials/base-components/panel";
+
+}

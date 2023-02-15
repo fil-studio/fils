@@ -17,7 +17,6 @@ export class NumberItem extends Item {
     this.max = null;
     this.min = null;
     this.step = 0.01;
-    this.decimals = 2;
     this.originalDataType = "number";
     this.limitNumber = (value) => {
       let tmp = value;
@@ -25,9 +24,14 @@ export class NumberItem extends Item {
         tmp = Math.min(tmp, this.max);
       if (this.min)
         tmp = Math.max(tmp, this.min);
-      tmp = Math.round(tmp * Math.pow(10, this.decimals)) / Math.pow(10, this.decimals);
+      const decimals = this.getDecimals();
+      tmp = parseFloat(tmp.toFixed(decimals));
       return tmp;
     };
+  }
+  getDecimals() {
+    const decimals = this.step.toString().split(".")[1];
+    return decimals ? decimals.length : 0;
   }
   addEventListeners() {
     for (const inputElement of this.inputElements) {
@@ -132,7 +136,6 @@ export class NumberItem extends Item {
     this.max = this.params.max ? this.params.max : null;
     this.min = this.params.min ? this.params.min : null;
     this.step = this.params.step ? this.params.step : this.step;
-    this.decimals = this.params.decimals ? this.params.decimals : this.decimals;
     this.createInputs(this.object[this.key]);
     for (const inputElement of this.inputElements) {
       this.createInputContent(inputElement);

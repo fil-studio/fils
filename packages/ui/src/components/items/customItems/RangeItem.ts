@@ -43,6 +43,8 @@ export class RangeItem extends Item {
 		const decimals = this.getDecimals();
 		tmp = parseFloat(tmp.toFixed(decimals));
 
+		console.log(tmp)
+
 		return tmp;
 	}
 
@@ -74,9 +76,7 @@ export class RangeItem extends Item {
 
 			const newValueMapped = MathUtils.clamp(MathUtils.map(movementDistance, 0, width, 0, 1), 0, 1);
 			const newValue = MathUtils.map(newValueMapped, 0, 1, this.min, this.max);
-
-			const value = Math.round(newValue / this.step) * this.step;
-			this.setValue(value);
+			this.setValue(newValue);
 		}
 
 		const mouseClick = (e:MouseEvent) => {
@@ -88,8 +88,7 @@ export class RangeItem extends Item {
 
 			const newValueMapped = MathUtils.clamp(MathUtils.map(newPosition, 0, width, 0, 1), 0, 1);
 			const newValue = MathUtils.map(newValueMapped, 0, 1, this.min, this.max);
-			const value = Math.round(newValue / this.step) * this.step;
-			this.setValue(value);
+			this.setValue(newValue);
 		}
 
 		const reset = () => {
@@ -147,14 +146,7 @@ export class RangeItem extends Item {
 
 		this.setUpOverExpose();
 
-		this.input.min = `${this.min}`;
-		this.input.max = `${this.max}`;
-
-		this.step = this.params.step ? this.params.step : this.step;
-		if(this.step === 0) this.step = 0.01;
-
-		this.input.step = `${this.step}`;
-	}
+		}
 
 	protected setUpOverExpose(): void {
 		const overExpose = this.params.overExpose || [0, 0];
@@ -182,7 +174,7 @@ export class RangeItem extends Item {
 		this.range.style.setProperty('--value', `${this.mappedValue}`);
 	}
 	protected updateInput(): void {
-		this.input.value = `${this.value.toFixed(2)}`;
+		this.input.value = `${this.value}`;
 	}
 
 	setValue(value: any): void {

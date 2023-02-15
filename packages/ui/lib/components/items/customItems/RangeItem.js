@@ -18,16 +18,20 @@ export class RangeItem extends Item {
     this.max = 0;
     this.min = 1;
     this.step = 0.01;
-    this.decimals = 2;
     this.limitNumber = (value) => {
       let tmp = value;
       if (this.max)
         tmp = Math.min(tmp, this.max);
       if (this.min)
         tmp = Math.max(tmp, this.min);
-      tmp = Math.round(tmp * Math.pow(10, this.decimals)) / Math.pow(10, this.decimals);
+      const decimals = this.getDecimals();
+      tmp = parseFloat(tmp.toFixed(decimals));
       return tmp;
     };
+  }
+  getDecimals() {
+    const decimals = this.step.toString().split(".")[1];
+    return decimals ? decimals.length : 0;
   }
   addEventListeners() {
     this.input.addEventListener("change", () => {
@@ -93,8 +97,7 @@ export class RangeItem extends Item {
   createContent() {
     this.max = this.params.max ? this.params.max : this.max;
     this.min = this.params.min ? this.params.min : this.min;
-    this.step = this.params.step ? this.params.step : 0.01;
-    this.decimals = this.params.decimals ? this.params.decimals : 2;
+    this.step = this.params.step ? this.params.step : this.step;
     this.content.innerHTML = `
 			<div class="${c.input}">
 				<div class="${c.track}"></div>

@@ -6,8 +6,8 @@ export declare class NumberItem extends Item {
     max: number | null;
     min: number | null;
     step: number;
-    decimals: number;
     originalDataType: string;
+    getDecimals(): number;
     limitNumber: (value: number) => number;
     protected addEventListeners(): void;
     setValue(_value?: string | Array<number> | Object): void;
