@@ -1,4 +1,5 @@
-import { UI } from '@fils/ui';
+// import { UI } from '@fils/ui';
+import { UI } from '../../../../packages/ui/src/main';
 import { uiBrushData } from '@fils/ui-icons';
 
 import { Texture, TextureLoader } from 'three';
@@ -156,7 +157,9 @@ export class App {
 				max: 10,
 				step: 0.1,
 				// overExpose: [0, 10],
-		})
+		}).on('change', (value) => {
+			console.log(this.obj.numberTestSlider, value);
+		});
 
 
 
