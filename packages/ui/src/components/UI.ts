@@ -71,12 +71,6 @@ export class UI extends Group {
 
 	}
 
-	foldToggle(){
-		if(!this.foldable) return;
-		this.folded = !this.folded;
-		this.onFold();
-	}
-
 	protected addEventListeners(){
 		super.addEventListeners();
 

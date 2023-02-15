@@ -10,7 +10,6 @@ import { ItemParameters } from "./items/ItemParameters";
 import { Spacer, SpacerParams, SpacerSize } from "./Spacer";
 import { UIElement } from "./UIElement";
 
-
 export interface GroupParams {
 	parent?: Group | UI;
 	title?: string;
@@ -29,7 +28,6 @@ export class Group extends UIElement {
 	content!: HTMLElement;
 	foldWrapper!: HTMLElement;
 
-
 	constructor({
 		title,
 		folded = false,
@@ -38,7 +36,7 @@ export class Group extends UIElement {
 		super(RowTypes.group, title);
 
 		// Is it folded or not? If it's not foldable, it's not folded
-		this.folded = foldable ? folded : false;
+		this.folded = foldable ? folded : true;
 		this.foldable = foldable;
 
 	}
@@ -63,16 +61,20 @@ export class Group extends UIElement {
 		const header = this.el.querySelector('header') as HTMLElement;
 
 		header.addEventListener('click', () => {
-			this.folded = !this.folded;
-			this.onFold();
+			this.foldToggle();
 		});
 
-		this.onFold();
+		this.folded = !this.folded;
+		this.foldToggle();
+
 	}
 
-	protected onFold(){
+	foldToggle(){
 
 		if(!this.foldable) return;
+
+		this.folded = !this.folded;
+
 		const h = this.content.getBoundingClientRect().height;
 
 		this.foldWrapper!.style.height = `${h}px`;

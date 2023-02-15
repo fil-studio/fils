@@ -9,6 +9,7 @@ export declare class RangeItem extends Item {
     min: number;
     step: number;
     getDecimals(): number;
+    getStringDecimals(value: number): string;
     limitNumber: (value: number) => number;
     protected addEventListeners(): void;
     protected get mappedValue(): number;

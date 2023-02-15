@@ -1,9 +1,9 @@
 import { RowTypes } from "../utils/dom";
 import { UIElement } from "./UIElement";
 export declare enum SpacerSize {
-    small = "small",
-    medium = "medium",
-    large = "large"
+    small = "Small",
+    medium = "Medium",
+    large = "Large"
 }
 export interface SpacerParams {
     size?: SpacerSize;

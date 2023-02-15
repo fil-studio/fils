@@ -33,19 +33,19 @@ export class RangeItem extends Item {
 		return decimals ? decimals.length : 0;
 	}
 
+	getStringDecimals(value:number): string {
+		return (Math.round(value * 100) / 100).toFixed(this.getDecimals());
+	}
+
 	limitNumber = (value: number): number => {
 
-		let tmp = value;
-		if (this.max) tmp = Math.min(tmp, this.max);
-		if (this.min) tmp = Math.max(tmp, this.min);
+		if (this.max) value = Math.min(value, this.max);
+		if (this.min) value = Math.max(value, this.min);
 
 		// Round to decimals
-		const decimals = this.getDecimals();
-		tmp = parseFloat(tmp.toFixed(decimals));
+		const tmp = (Math.round(value * 100) / 100).toFixed(this.getDecimals());
 
-		console.log(tmp)
-
-		return tmp;
+		return parseFloat(tmp);
 	}
 
 	protected addEventListeners(): void {
@@ -58,20 +58,20 @@ export class RangeItem extends Item {
 		let x = 0;
 		let originalValue = 0;
 
-		const mouseDown = (e: MouseEvent) => {
-			const t = e.target as HTMLElement;
+		const mouseDown = (target:HTMLElement, newX:number) => {
+			const t = target
 			if (t != this.thumb) return;
 			dragging = true;
 			this.thumb.classList.add(CSS_UI.utility.grab);
-			x = e.clientX;
+			x = newX;
 			const { width } = this.range.getBoundingClientRect();
 			originalValue = MathUtils.map(this.mappedValue, 0, 1, 0, width);
 		}
 
-		const mouseMove = (e: MouseEvent) => {
+		const mouseMove = (newX: number) => {
 			if (!dragging) return;
 
-			const movementDistance = originalValue + (e.clientX - x);
+			const movementDistance = originalValue + (newX - x);
 			const { width } = this.range.getBoundingClientRect();
 
 			const newValueMapped = MathUtils.clamp(MathUtils.map(movementDistance, 0, width, 0, 1), 0, 1);
@@ -102,15 +102,14 @@ export class RangeItem extends Item {
 			mouseClick(e);
 		})
 
-		this.range.addEventListener('mousedown', (e: MouseEvent) => {
-			mouseDown(e);
-		});
-		window.addEventListener('mousemove', (e: MouseEvent) => {
-			mouseMove(e);
-		})
-		window.addEventListener('mouseup', () => {
-			reset();
-		});
+		this.range.addEventListener('mousedown', (e: MouseEvent) => mouseDown(e.target as HTMLElement, e.clientX));
+		this.range.addEventListener('touchstart', (e: TouchEvent) => mouseDown(e.target as HTMLElement, e.touches[0].clientX));
+
+		window.addEventListener('mousemove', (e: MouseEvent) => mouseMove(e.clientX));
+		window.addEventListener('touchmove', (e: TouchEvent) => mouseMove(e.touches[0].clientX));
+
+		window.addEventListener('mouseup', () => reset());
+		window.addEventListener('touchend', () => reset());
 
 	}
 
@@ -146,7 +145,7 @@ export class RangeItem extends Item {
 
 		this.setUpOverExpose();
 
-		}
+	}
 
 	protected setUpOverExpose(): void {
 		const overExpose = this.params.overExpose || [0, 0];
@@ -174,7 +173,7 @@ export class RangeItem extends Item {
 		this.range.style.setProperty('--value', `${this.mappedValue}`);
 	}
 	protected updateInput(): void {
-		this.input.value = `${this.value}`;
+		this.input.value = this.getStringDecimals(this.value);
 	}
 
 	setValue(value: any): void {

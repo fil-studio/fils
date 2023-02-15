@@ -21,6 +21,7 @@
 
 ._ui-wrapper,
 ._ui-panel {
+	z-index: 999;
 
 	* {
 		&::selection {

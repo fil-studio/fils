@@ -6,6 +6,7 @@ const esbuild = require('esbuild');
 const alias = require('esbuild-plugin-alias');
 const chokidar = require('chokidar');
 
+const syntaxHighlight = require("@11ty/eleventy-plugin-syntaxhighlight");
 
 const isProduction = process.env.ELEVENTY_ENV === 'production';
 
@@ -100,6 +101,14 @@ buildAllCSS();
 buildAllJS();
 
 module.exports = function (eleventyConfig) {
+
+  eleventyConfig.addPlugin(syntaxHighlight);
+
+  eleventyConfig.setServerOptions({
+    module: "@11ty/eleventy-server-browsersync",
+    ghostMode: false,
+  })
+
   // Folders to copy to build dir (See. 1.1)
   eleventyConfig.addPassthroughCopy({'src/assets' : 'assets'});
 
@@ -110,10 +119,7 @@ module.exports = function (eleventyConfig) {
   // This allows Eleventy to watch for file changes during local development.
   eleventyConfig.setUseGitIgnore(false);
 
-  // browser sync options
-  eleventyConfig.setBrowserSyncConfig({
-    ghostMode: false,
-  });
+
 
   eleventyConfig.setWatchJavaScriptDependencies(false);
 
@@ -127,6 +133,5 @@ module.exports = function (eleventyConfig) {
     },
     templateFormats: ['html', 'md', 'njk'],
     htmlTemplateEngine: 'njk',
-    passthroughFileCopy: true,
   };
 };

@@ -19,19 +19,20 @@ export class RangeItem extends Item {
     this.min = 1;
     this.step = 0.01;
     this.limitNumber = (value) => {
-      let tmp = value;
       if (this.max)
-        tmp = Math.min(tmp, this.max);
+        value = Math.min(value, this.max);
       if (this.min)
-        tmp = Math.max(tmp, this.min);
-      const decimals = this.getDecimals();
-      tmp = parseFloat(tmp.toFixed(decimals));
-      return tmp;
+        value = Math.max(value, this.min);
+      const tmp = (Math.round(value * 100) / 100).toFixed(this.getDecimals());
+      return parseFloat(tmp);
     };
   }
   getDecimals() {
     const decimals = this.step.toString().split(".")[1];
     return decimals ? decimals.length : 0;
+  }
+  getStringDecimals(value) {
+    return (Math.round(value * 100) / 100).toFixed(this.getDecimals());
   }
   addEventListeners() {
     this.input.addEventListener("change", () => {
@@ -40,25 +41,24 @@ export class RangeItem extends Item {
     let dragging = false;
     let x = 0;
     let originalValue = 0;
-    const mouseDown = (e) => {
-      const t = e.target;
+    const mouseDown = (target, newX) => {
+      const t = target;
       if (t != this.thumb)
         return;
       dragging = true;
       this.thumb.classList.add(CSS_UI.utility.grab);
-      x = e.clientX;
+      x = newX;
       const { width } = this.range.getBoundingClientRect();
       originalValue = MathUtils.map(this.mappedValue, 0, 1, 0, width);
     };
-    const mouseMove = (e) => {
+    const mouseMove = (newX) => {
       if (!dragging)
         return;
-      const movementDistance = originalValue + (e.clientX - x);
+      const movementDistance = originalValue + (newX - x);
       const { width } = this.range.getBoundingClientRect();
       const newValueMapped = MathUtils.clamp(MathUtils.map(movementDistance, 0, width, 0, 1), 0, 1);
       const newValue = MathUtils.map(newValueMapped, 0, 1, this.min, this.max);
-      const value = Math.round(newValue / this.step) * this.step;
-      this.setValue(value);
+      this.setValue(newValue);
     };
     const mouseClick = (e) => {
       const t = e.target;
@@ -68,8 +68,7 @@ export class RangeItem extends Item {
       const newPosition = e.clientX - left;
       const newValueMapped = MathUtils.clamp(MathUtils.map(newPosition, 0, width, 0, 1), 0, 1);
       const newValue = MathUtils.map(newValueMapped, 0, 1, this.min, this.max);
-      const value = Math.round(newValue / this.step) * this.step;
-      this.setValue(value);
+      this.setValue(newValue);
     };
     const reset = () => {
       if (!dragging)
@@ -81,15 +80,12 @@ export class RangeItem extends Item {
     this.range.addEventListener("click", (e) => {
       mouseClick(e);
     });
-    this.range.addEventListener("mousedown", (e) => {
-      mouseDown(e);
-    });
-    window.addEventListener("mousemove", (e) => {
-      mouseMove(e);
-    });
-    window.addEventListener("mouseup", () => {
-      reset();
-    });
+    this.range.addEventListener("mousedown", (e) => mouseDown(e.target, e.clientX));
+    this.range.addEventListener("touchstart", (e) => mouseDown(e.target, e.touches[0].clientX));
+    window.addEventListener("mousemove", (e) => mouseMove(e.clientX));
+    window.addEventListener("touchmove", (e) => mouseMove(e.touches[0].clientX));
+    window.addEventListener("mouseup", () => reset());
+    window.addEventListener("touchend", () => reset());
   }
   get mappedValue() {
     return MathUtils.clamp(MathUtils.map(this.value, this.min, this.max, 0, 1), 0, 1);
@@ -119,12 +115,6 @@ export class RangeItem extends Item {
     this.range = this.content.querySelector(`.${c.input}`);
     this.thumb = this.content.querySelector(`.${c.thumb}`);
     this.setUpOverExpose();
-    this.input.min = `${this.min}`;
-    this.input.max = `${this.max}`;
-    this.step = this.params.step ? this.params.step : this.step;
-    if (this.step === 0)
-      this.step = 0.01;
-    this.input.step = `${this.step}`;
   }
   setUpOverExpose() {
     const overExpose = this.params.overExpose || [0, 0];
@@ -146,7 +136,7 @@ export class RangeItem extends Item {
     this.range.style.setProperty("--value", `${this.mappedValue}`);
   }
   updateInput() {
-    this.input.value = `${this.value.toFixed(2)}`;
+    this.input.value = this.getStringDecimals(this.value);
   }
   setValue(value) {
     value = this.limitNumber(value);

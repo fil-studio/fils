@@ -22,8 +22,8 @@ export declare class Group extends UIElement {
     constructor({ title, folded, foldable, }: GroupParams);
     createDom(): void;
     protected addEventListeners(): void;
-    protected onFold(): void;
-    addButton(params: any): Button;
+    foldToggle(): void;
+    addButton(title?: string): Button;
     addGroup(params: GroupParams): Group;
     addSpacer(params?: SpacerParams): void;
     add(object: Object, key: string, params?: ItemParameters): Item;

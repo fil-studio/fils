@@ -14,7 +14,7 @@ export class Group extends UIElement {
     super(RowTypes.group, title);
     this.children = [];
     this.height = 0;
-    this.folded = foldable ? folded : false;
+    this.folded = foldable ? folded : true;
     this.foldable = foldable;
   }
   createDom() {
@@ -30,14 +30,15 @@ export class Group extends UIElement {
     this.foldWrapper.appendChild(this.content);
     const header = this.el.querySelector("header");
     header.addEventListener("click", () => {
-      this.folded = !this.folded;
-      this.onFold();
+      this.foldToggle();
     });
-    this.onFold();
+    this.folded = !this.folded;
+    this.foldToggle();
   }
-  onFold() {
+  foldToggle() {
     if (!this.foldable)
       return;
+    this.folded = !this.folded;
     const h = this.content.getBoundingClientRect().height;
     this.foldWrapper.style.height = `${h}px`;
     if (this.timer)
@@ -57,10 +58,15 @@ export class Group extends UIElement {
     this.emit("fold");
   }
   /**
-   * Create a button
+   * Creates a button with the specified title.
+   *
+   * @param {string} title - The title to display on the button.
+   * @default 'Button'
+   * @event click
+   * @returns {Button} The newly created button element.
    */
-  addButton(params) {
-    const button = new Button(params);
+  addButton(title = "Button") {
+    const button = new Button({ title });
     if (button) {
       button.init(this.depth + 1);
       this.content.appendChild(button.el);
@@ -68,8 +74,13 @@ export class Group extends UIElement {
     return button;
   }
   /**
-   * Create a group
-   */
+  * Creates a group.
+  *
+  * @param {title} title - Group tab title
+  * @param {folded} folded - Is the group folded or not
+  * @param {foldable} foldable - Is the group foldable or not
+  * @returns {Group} The newly created group element.
+  */
   addGroup(params) {
     const group = new Group(params);
     if (group) {
@@ -82,7 +93,11 @@ export class Group extends UIElement {
     return group;
   }
   /**
-   * Create spacer
+   * A function that does something with a widget option.
+   *
+   * @param {SpacerSize} option - The option to use.
+   * @param {boolean} line - If the spacer should be a line or not
+   * @default true
    */
   addSpacer(params = {}) {
     const spacer = new Spacer(this.depth + 1, params);
@@ -90,11 +105,22 @@ export class Group extends UIElement {
       this.content.appendChild(spacer.el);
   }
   /**
-   * Create an item
+   * A function that creates an Item.
+   *
+   * @param {title} title - Item title.
+   * @param {view} view - Force item view. If not specified, it will be automatically detected.
+   * @returns {Item} The newly created item element.
    */
   add(object, key, params) {
     return this.addItem(object, key, params);
   }
+  /**
+  * A function that creates an Item.
+  *
+  * @param {title} title - Item title.
+  * @param {view} view - Force item view. If not specified, it will be automatically detected.
+  * @returns {Item} The newly created item element.
+  */
   addItem(object, key, params) {
     const createItemParams = { object, key, params };
     const item = ItemFactory(createItemParams);

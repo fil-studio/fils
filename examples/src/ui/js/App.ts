@@ -161,7 +161,7 @@ export class App {
 				step: 0.001,
 				// overExpose: [0, 10],
 		}).on('change', (value) => {
-			console.log(this.obj.numberTestSlider, value);
+			// console.log(this.obj.numberTestSlider, value);
 		});
 
 
