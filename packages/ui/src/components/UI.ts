@@ -1,15 +1,8 @@
 // Import CSS
 import { el } from '@fils/utils';
-import { UIInjectCSS } from '../utils/css';
 import { CSS_UI } from '../partials/cssClasses';
-import { RegisterBaseComponents } from '../partials/RegisterBaseItems';
 import dom, { RowTypes } from '../utils/dom';
 import { Group, GroupParams } from './Group';
-
-RegisterBaseComponents();
-
-
-UIInjectCSS();
 
 interface UIParams extends GroupParams {
 	parentElement?: HTMLElement;

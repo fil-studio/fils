@@ -18,9 +18,7 @@ export class StringItem extends Item {
 		this.content.appendChild(this.input);
 	}
 
-	setValue(_value: any): void {
-		let value = _value;
-
+	setValue(value: string): void {
 		if (check.isNull(value) || check.isUndefined(value)) {
 			value = 'String';
 		}

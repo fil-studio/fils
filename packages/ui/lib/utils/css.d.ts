@@ -1,4 +1,4 @@
-declare const css: {
+export declare const css: {
     inject: (css: string) => void;
 };
-export default css;
+export declare const UIInjectCSS: () => void;
