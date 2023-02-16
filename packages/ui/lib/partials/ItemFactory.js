@@ -1,7 +1,5 @@
 import check from "../utils/check";
-export const AvailableItems = {
-  items: []
-};
+import AvailableItems from "./AvailableItems";
 const compareArrays = (a, b) => {
   if (a.length !== b.length)
     return false;
@@ -11,15 +9,6 @@ const compareArrays = (a, b) => {
     }
   }
   return true;
-};
-export const ItemRegister = (registerOptions) => {
-  const createItem = (createParams) => {
-    return new registerOptions.item(createParams);
-  };
-  AvailableItems.items.push({
-    view: registerOptions.view,
-    create: createItem
-  });
 };
 export const ItemFactory = (createParams) => {
   const params = createParams.params;

@@ -23,6 +23,7 @@ export * from "./partials/cssClasses";
 export * from "./partials/EventsManager";
 export * from "./partials/ItemFactory";
 export * from "./partials/RegisterBaseItems";
+export * from "./partials/AvailableItems";
 export * from "./utils/check";
 export * from "./utils/css";
 export * from "./utils/dom";

@@ -1,9 +1,10 @@
+import { ItemRegisterOptions } from './main';
 import { RegisterBaseComponents } from './partials/RegisterBaseItems';
 import { UIInjectCSS } from './utils/css';
 
-export const InitUI = () => {
-	RegisterBaseComponents();
-	UIInjectCSS();
+export const InitUI = (extraItems: Array<ItemRegisterOptions> = [], extraStyles:Array<string> = []) => {
+	RegisterBaseComponents(extraItems);
+	UIInjectCSS(extraStyles);
 }
 
 export * from './components/UI';
@@ -28,6 +29,7 @@ export * from './partials/cssClasses';
 export * from './partials/EventsManager';
 export * from './partials/ItemFactory';
 export * from './partials/RegisterBaseItems';
+export * from './partials/AvailableItems';
 
 export * from './utils/check';
 export * from './utils/css';

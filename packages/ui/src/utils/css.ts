@@ -14,7 +14,13 @@ export const css = {
 	}
 }
 
-export const UIInjectCSS = () => {
-	css.inject(styles);
+export const UIInjectCSS = (extraStyles:Array<string>) => {
+
+	let finalStyles = styles;
+	for(let i = 0; i < extraStyles.length; i++){
+		finalStyles += extraStyles[i];
+	}
+
+	css.inject(finalStyles);
 }
 
