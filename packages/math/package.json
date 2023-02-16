@@ -10,7 +10,7 @@
   "typings": "lib/main.d.ts",
   "scripts": {
     "prepare": "npm run build",
-    "build": "tsc --build tsconfig.math.json"
+    "build": "tsc --build tsconfig.json"
   },
   "files": [
     "lib",
