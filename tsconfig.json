@@ -1,0 +1,19 @@
+{
+	"compilerOptions": {
+		"target": "es6",
+		"module": "es6",
+		"outDir": "lib",
+		"strict": false,
+		"esModuleInterop": true,
+		"removeComments": true,
+		"declaration": true,
+		"moduleResolution": "node",
+		"baseUrl": "src",
+		"typeRoots": [
+			"./types/css.d.ts"
+		]
+	},
+	"include": [
+		"src/**/*"
+	]
+}

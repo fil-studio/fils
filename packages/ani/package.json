@@ -11,6 +11,7 @@
   "author": "fil studio <hello@fil.studio>",
   "license": "Apache-2.0",
   "private": false,
+  "tsconfig": "tsconfig.json",
   "scripts": {
     "prepare": "yarn build",
     "build": "tsc --build tsconfig.json"
@@ -22,22 +23,5 @@
   ],
   "devDependencies": {
     "typescript": "^4.5.2"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
-  },
-  "types": "./lib/main.d.ts",
-  "bugs": {
-    "url": "https://github.com/fil-studio/fils/issues"
-  },
-  "directories": {
-    "lib": "lib"
-  },
-  "keywords": [
-    "typescript",
-    "easing",
-    "animation"
-  ],
-  "dependencies": {}
+  }
 }

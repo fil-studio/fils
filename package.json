@@ -5,11 +5,5 @@
   "homepage": "https://github.com/fil-studio/fils/",
   "author": "fil studio <hello@fil.studio>",
   "license": "Apache-2.0",
-  "private": false,
-  "workspaces": [
-    "packages/*"
-  ],
-  "devDependencies": {
-    "lerna": "^6.5.1"
-  }
+  "private": false
 }
