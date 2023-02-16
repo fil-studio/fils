@@ -8,7 +8,6 @@
 	"author": "fil studio <hello@fil.studio>",
 	"license": "Apache-2.0",
 	"scripts": {
-		"prepare": "npm run build",
 		"build": "node build.js && tsc --emitDeclarationOnly",
 		"dev": "chokidar 'src/scss/**/*.scss' -c 'sass src/scss/main.scss:src/bundle/bundle.css && cleancss -o src/bundle/bundle.min.css src/bundle/bundle.css && echo \"scss compiled\"'"
 	},
