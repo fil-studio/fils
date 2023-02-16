@@ -4,10 +4,10 @@ const CleanCSS = require('clean-css');
 const { replace } = require('esbuild-plugin-replace');
 
 const { build } = require("esbuild");
-
 const glob = require("glob");
 const entryPoints = glob.sync("./src/**/*.ts");
 
+// css compile
 async function compileCss() {
 
 	const result = sass.compile('./src/scss/main.scss');
