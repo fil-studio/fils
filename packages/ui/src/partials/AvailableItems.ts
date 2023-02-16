@@ -10,7 +10,6 @@ const AvailableItems = {
 	items: [] as Array<AvailableItem>,
 }
 
-
 export interface ItemRegisterOptions {
 	view: string,
 	item: typeof Item,

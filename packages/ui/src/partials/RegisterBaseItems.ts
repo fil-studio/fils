@@ -7,17 +7,9 @@ import { ColorItem } from "../components/items/customItems/ColorItem";
 import { RangeItem } from "../components/items/customItems/RangeItem";
 import { SelectItem } from "../components/items/customItems/SelectItem";
 import { UploadItem } from "../components/items/customItems/UploadItem";
-import { ItemRegister, ItemRegisterOptions } from "./AvailableItems";
-import { Item } from "../main";
+import { ItemRegister } from "./AvailableItems";
 
-export const RegisterBaseComponents = (extraItems:Array<ItemRegisterOptions>) => {
-
-	for(const item of extraItems) {
-		ItemRegister({
-			view: item.view,
-			item: item.constructor as typeof Item,
-		})
-	}
+export const RegisterBaseComponents = () => {
 
 	ItemRegister({
 		view: 'boolean',

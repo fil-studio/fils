@@ -1,3 +1,4 @@
+import { CSS_UI } from "../main";
 import { RowTypes } from "../utils/dom";
 import { UIElement } from "./UIElement";
 
@@ -15,7 +16,8 @@ export class Button extends UIElement {
 
 	protected createDom(): void {
 		super.createDom();
-		this.button = this.el.querySelector('button') as HTMLButtonElement
+		this.button = this.el.querySelector('button') as HTMLButtonElement;
+		this.button.classList.add(CSS_UI.item)
 	}
 
 	protected addEventListeners(){

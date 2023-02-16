@@ -1,5 +1,6 @@
 // Import CSS
 import { el } from '@fils/utils';
+import { InitUI } from '../init';
 import { CSS_UI } from '../partials/cssClasses';
 import dom, { RowTypes } from '../utils/dom';
 import { Group, GroupParams } from './Group';
@@ -11,6 +12,8 @@ interface UIParams extends GroupParams {
 	width?: number;
 }
 
+// Injects styles and registers base components
+InitUI();
 export class UI extends Group {
 	wrapper: HTMLElement = el('div');
 

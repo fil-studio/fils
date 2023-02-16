@@ -2,8 +2,7 @@
 	position: relative;
 	float: left;
 
-	._ui-select-input {
-		@include item;
+	._ui-item._ui-select-input {
 
 		* {
 			pointer-events: none;

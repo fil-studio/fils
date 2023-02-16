@@ -1,1 +1,2 @@
-export declare const RegisterBaseComponents: () => void;
+import { ItemRegisterOptions } from "./AvailableItems";
+export declare const RegisterBaseComponents: (extraItems: Array<ItemRegisterOptions>) => void;

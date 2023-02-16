@@ -3,6 +3,7 @@ export const CSS_UI = {
 	wrapper: '_ui-wrapper',
 	parent: '_ui-wrapper-has-parent',
 	resizer: '_ui-wrapper-resizer',
+	item: '_ui-item',
 	utility: {
 		hidden: '_ui--hidden',
 		grab: '_ui--grab',

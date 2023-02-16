@@ -5,8 +5,7 @@
 		align-items: center;
 	}
 
-	input {
-		@include item;
+	._ui-item {
 		max-width: 70px;
 	}
 

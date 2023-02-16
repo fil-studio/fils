@@ -1,4 +1,5 @@
 import { el } from "@fils/utils";
+import { CSS_UI } from "../../../main";
 import check from "../../../utils/check";
 import { Item } from "../Item";
 
@@ -15,6 +16,7 @@ export class StringItem extends Item {
 		this.input = el('input') as HTMLInputElement;
 		this.input.placeholder = 'String';
 		this.input.type = 'text';
+		this.input.classList.add(CSS_UI.item);
 		this.content.appendChild(this.input);
 	}
 

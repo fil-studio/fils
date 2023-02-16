@@ -10,6 +10,10 @@ export const css = {
     document.head.appendChild(style);
   }
 };
-export const UIInjectCSS = () => {
-  css.inject(styles);
+export const UIInjectCSS = (extraStyles) => {
+  let finalStyles = styles;
+  for (let i = 0; i < extraStyles.length; i++) {
+    finalStyles += extraStyles[i];
+  }
+  css.inject(finalStyles);
 };

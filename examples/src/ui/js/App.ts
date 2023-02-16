@@ -1,5 +1,5 @@
 // import { UI } from '@fils/ui';
-import { InitUI, UI } from '../../../../packages/ui/src/main';
+import {  UI } from '../../../../packages/ui/src/main';
 import { uiBrushData } from '@fils/ui-icons';
 
 import { Texture, TextureLoader } from 'three';
@@ -14,8 +14,6 @@ export class App {
 	ui: UI;
 	obj: any;
 	constructor() {
-
-		InitUI();
 
 		this.obj = {
 			colorTest: '#0D5417',

@@ -145,6 +145,7 @@ export class NumberItem extends Item {
 		inputElement.input = el('input') as HTMLInputElement;;
 		inputElement.input.type = 'number';
 		inputElement.input.placeholder = inputElement.placeholder;
+		inputElement.input.classList.add(CSS_UI.item);
 		if(this.min) inputElement.input.min = this.min.toString();
 		if(this.max) inputElement.input.max = this.max.toString();
 		if(this.step) inputElement.input.step = this.step.toString();

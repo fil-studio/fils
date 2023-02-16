@@ -135,6 +135,7 @@ export class RangeItem extends Item {
 		this.input = el('input') as HTMLInputElement;
 		this.input.type = 'number';
 		this.input.placeholder = 'Value';
+		this.input.classList.add(CSS_UI.item);
 		if(this.min) this.input.setAttribute('min', this.min.toString());
 		if(this.max) this.input.setAttribute('max', this.max.toString());
 		if(this.step) this.input.setAttribute('step', this.step.toString());

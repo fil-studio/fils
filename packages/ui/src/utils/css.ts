@@ -1,6 +1,6 @@
 
-const styles = `__css__`;
-// import styles from '../bundle/bundle.css';
+// const styles = `__css__`;
+import styles from '../bundle/bundle.css';
 
 let injected = false;
 
@@ -11,16 +11,12 @@ export const css = {
 		const style = document.createElement('style');
 		style.innerHTML = css;
 		document.head.appendChild(style);
+		console.log('Fil UI CSS Injected');
 	}
 }
 
-export const UIInjectCSS = (extraStyles:Array<string>) => {
+export const UIInjectCSS = () => {
 
-	let finalStyles = styles;
-	for(let i = 0; i < extraStyles.length; i++){
-		finalStyles += extraStyles[i];
-	}
-
-	css.inject(finalStyles);
+	css.inject(styles);
 }
 

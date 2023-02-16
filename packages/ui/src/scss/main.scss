@@ -3,18 +3,6 @@
 // @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;700&display=swap');
 @import "./partials/google-font";
 
-@mixin item {
-	width: 100%;
-	min-height: 2rem;
-	padding: var(--padding);
-	text-align: left;
-	background-color: var(--section-bg-1);
-	border-radius: var(--radius-0);
-	display: flex;
-	align-items: center;
-	cursor: pointer;
-}
-
 @import "./partials/vars";
 @import "./partials/reset";
 @import "./partials/fonts";
@@ -41,6 +29,19 @@
 		transition-timing-function: var(--timing);
 		transition-property: box-shadow;
 	}
+
+	._ui-item {
+		width: 100%;
+		min-height: 2rem;
+		padding: var(--padding);
+		text-align: left;
+		background-color: var(--section-bg-1);
+		border-radius: var(--radius-0);
+		display: flex;
+		align-items: center;
+		cursor: pointer;
+	}
+
 }
 
 ._ui-wrapper {
