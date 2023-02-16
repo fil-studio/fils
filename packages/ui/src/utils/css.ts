@@ -1,19 +1,20 @@
 
-const css = {
+const styles = `__css__`;
+// import styles from '../bundle/bundle.css';
+
+let injected = false;
+
+export const css = {
 	inject: (css: string) => {
+		if(injected) return;
+		injected = true;
 		const style = document.createElement('style');
 		style.innerHTML = css;
 		document.head.appendChild(style);
-	},
-	// merge: (css: string, items: Array<AvailableItem>):string => {
-	// 	let style = css;
-	// 	for(const item of items){
-	// 		const itemCss = item.getCSS();
-	// 		if(itemCss) style += itemCss;
-	// 	}
-	// 	return style;
-	// }
+	}
 }
 
+export const UIInjectCSS = () => {
+	css.inject(styles);
+}
 
-export default css;

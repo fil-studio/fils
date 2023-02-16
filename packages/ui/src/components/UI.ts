@@ -1,27 +1,15 @@
 // Import CSS
 import { el } from '@fils/utils';
+import { UIInjectCSS } from '../utils/css';
 import { CSS_UI } from '../partials/cssClasses';
 import { RegisterBaseComponents } from '../partials/RegisterBaseItems';
-import css from '../utils/css';
 import dom, { RowTypes } from '../utils/dom';
 import { Group, GroupParams } from './Group';
 
 RegisterBaseComponents();
 
-const styles = `__css__`;
-// import styles from '../bundle/bundle.css';
-let injected = false;
-if(!injected){
-	injected = true;
-	css.inject(styles);
-}
 
-export const UIInjectCSS = () => {
-	if(!injected){
-		injected = true;
-		css.inject(styles);
-	}
-}
+UIInjectCSS();
 
 interface UIParams extends GroupParams {
 	parentElement?: HTMLElement;
