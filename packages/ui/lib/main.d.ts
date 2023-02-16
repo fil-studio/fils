@@ -1,3 +1,4 @@
+export declare const InitUI: () => void;
 export * from './components/UI';
 export * from './components/Button';
 export * from './components/Group';

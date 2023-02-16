@@ -3,6 +3,6 @@ export declare class StringItem extends Item {
     input: HTMLInputElement;
     protected addEventListeners(): void;
     protected createContent(): void;
-    setValue(_value: any): void;
+    setValue(value: string): void;
     refreshDom(): void;
 }

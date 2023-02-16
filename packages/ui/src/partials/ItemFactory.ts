@@ -1,19 +1,8 @@
-import { Item } from "../components/items/Item";
 import { ItemParameters } from "../components/items/ItemParameters";
 import check from "../utils/check";
+import AvailableItems, { AvailableItem } from "./AvailableItems";
 
 // Available items array
-export interface AvailableItem {
-	view: string,
-	create: (params: CreateItemParams) => Item,
-}
-export const AvailableItems = {
-	items: [] as Array<AvailableItem>,
-}
-export interface ItemRegisterOptions {
-	view: string,
-	item: typeof Item,
-}
 
 export interface CreateItemParams {
 	object: any,
@@ -32,18 +21,6 @@ const compareArrays = (a: any[], b: any[]) => {
 	}
 
 	return true;
-}
-
-export const ItemRegister = (registerOptions:ItemRegisterOptions) => {
-
-	const createItem = (createParams: CreateItemParams) => {
-		return new registerOptions.item(createParams) as Item;
-	}
-
-	AvailableItems.items.push({
-		view: registerOptions.view,
-		create: createItem,
-	});
 }
 
 export const ItemFactory = (createParams:CreateItemParams) => {
