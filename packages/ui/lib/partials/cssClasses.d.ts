@@ -3,6 +3,7 @@ export declare const CSS_UI: {
     wrapper: string;
     parent: string;
     resizer: string;
+    item: string;
     utility: {
         hidden: string;
         grab: string;

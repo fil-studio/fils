@@ -44,6 +44,7 @@ export class UploadItem extends Item {
     this.input = document.createElement("input");
     this.input.type = "file";
     this.input.style.display = "none";
+    this.input.classList.add(CSS_UI.item);
     this.content.appendChild(this.input);
   }
 }

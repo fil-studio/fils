@@ -6,13 +6,7 @@ import { RangeItem } from "../components/items/customItems/RangeItem";
 import { SelectItem } from "../components/items/customItems/SelectItem";
 import { UploadItem } from "../components/items/customItems/UploadItem";
 import { ItemRegister } from "./AvailableItems";
-export const RegisterBaseComponents = (extraItems) => {
-  for (const item of extraItems) {
-    ItemRegister({
-      view: item.view,
-      item: item.constructor
-    });
-  }
+export const RegisterBaseComponents = () => {
   ItemRegister({
     view: "boolean",
     item: BooleanItem

@@ -105,6 +105,7 @@ export class RangeItem extends Item {
     this.input = el("input");
     this.input.type = "number";
     this.input.placeholder = "Value";
+    this.input.classList.add(CSS_UI.item);
     if (this.min)
       this.input.setAttribute("min", this.min.toString());
     if (this.max)

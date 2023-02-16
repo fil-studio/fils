@@ -15,9 +15,11 @@ var __spreadValues = (a, b) => {
   return a;
 };
 import { el } from "@fils/utils";
+import { InitUI } from "../init";
 import { CSS_UI } from "../partials/cssClasses";
 import dom, { RowTypes } from "../utils/dom";
 import { Group } from "./Group";
+InitUI();
 export class UI extends Group {
   constructor({
     resizable = true,

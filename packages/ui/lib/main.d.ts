@@ -1,5 +1,3 @@
-import { ItemRegisterOptions } from './main';
-export declare const InitUI: (extraItems?: Array<ItemRegisterOptions>, extraStyles?: Array<string>) => void;
 export * from './components/UI';
 export * from './components/Button';
 export * from './components/Group';

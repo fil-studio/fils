@@ -111,6 +111,7 @@ export class NumberItem extends Item {
     ;
     inputElement.input.type = "number";
     inputElement.input.placeholder = inputElement.placeholder;
+    inputElement.input.classList.add(CSS_UI.item);
     if (this.min)
       inputElement.input.min = this.min.toString();
     if (this.max)

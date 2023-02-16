@@ -1,9 +1,3 @@
-import { RegisterBaseComponents } from "./partials/RegisterBaseItems";
-import { UIInjectCSS } from "./utils/css";
-export const InitUI = (extraItems = [], extraStyles = []) => {
-  RegisterBaseComponents(extraItems);
-  UIInjectCSS(extraStyles);
-};
 export * from "./components/UI";
 export * from "./components/Button";
 export * from "./components/Group";

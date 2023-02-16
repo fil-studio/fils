@@ -124,6 +124,7 @@ export class Group extends UIElement {
   addItem(object, key, params) {
     const createItemParams = { object, key, params };
     const item = ItemFactory(createItemParams);
+    console.log(item);
     if (item) {
       item.on("__childrenChange", () => {
         this.change(item);

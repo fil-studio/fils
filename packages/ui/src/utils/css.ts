@@ -1,6 +1,6 @@
 
-// const styles = `__css__`;
-import styles from '../bundle/bundle.css';
+const styles = `__css__`;
+// import styles from '../bundle/bundle.css';
 
 let injected = false;
 

@@ -1,5 +1,6 @@
 import { drawColorPickerBar, drawColorPickerSL, fixHex, hexToRgb, hsbToHex, rgbToHsb } from "@fils/color";
 import { el } from "@fils/utils";
+import { CSS_UI } from "../../../main";
 import check from "../../../utils/check";
 import { Panel } from "../../Panel";
 import { Item } from "../Item";
@@ -151,6 +152,7 @@ export class ColorItem extends Item {
     this.input = el("input");
     this.input.type = "text";
     this.input.classList.add(c.input);
+    this.input.classList.add(CSS_UI.item);
     this.content.appendChild(this.input);
   }
   setValue(value) {
