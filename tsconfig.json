@@ -1,19 +1,15 @@
 {
 	"compilerOptions": {
 		"target": "es6",
-		"module": "es6",
-		"outDir": "lib",
-		"strict": false,
-		"esModuleInterop": true,
-		"removeComments": true,
+		"module": "commonjs",
 		"declaration": true,
-		"moduleResolution": "node",
-		"baseUrl": "src",
-		"typeRoots": [
-			"./types/css.d.ts"
-		]
+		"strict": true,
+		"esModuleInterop": true,
+		"composite": true
 	},
-	"include": [
-		"src/**/*"
+	"references": [
+		{
+			"path": "./packages/utils"
+		}
 	]
 }

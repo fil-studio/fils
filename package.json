@@ -5,5 +5,17 @@
   "homepage": "https://github.com/fil-studio/fils/",
   "author": "fil studio <hello@fil.studio>",
   "license": "Apache-2.0",
-  "private": false
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "node build.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.17.8",
+    "glslify": "^7.1.1",
+    "sass": "^1.58.2",
+    "typescript": "^4.9.5"
+  }
 }

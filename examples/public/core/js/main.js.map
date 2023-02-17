@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../../../src/core/js/App.ts", "../../../src/core/js/main.js"],
-  "sourcesContent": ["export class App {\n\tconstructor() {\n\t\tconsole.log('Default APP');\n\t}\n}", "const { App } = require(\"./App\");\nconst _App = new App();\n"],
-  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA,MAAa;AAAb;AAAA;AAAO,MAAM,MAAN,MAAU;AAAA,QAChB,cAAc;AACb,kBAAQ,IAAI,aAAa;AAAA,QAC1B;AAAA,MACD;AAAA;AAAA;;;ACJA,MAAM,EAAE,KAAAA,KAAI,IAAI;AAChB,MAAM,OAAO,IAAIA,KAAI;",
-  "names": ["App"]
-}
