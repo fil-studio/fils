@@ -1,13 +1,21 @@
 {
 	"compilerOptions": {
 		"target": "es6",
-		"module": "commonjs",
-		"declaration": true,
-		"strict": true,
+		"module": "es6",
+		"strict": false,
 		"esModuleInterop": true,
+		"removeComments": true,
+		"declaration": true,
+		"moduleResolution": "node",
 		"composite": true
 	},
 	"references": [
+		{
+			"path": "./packages/ani"
+		},
+		{
+			"path": "./packages/color"
+		},
 		{
 			"path": "./packages/utils"
 		}

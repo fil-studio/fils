@@ -82,6 +82,13 @@ function runTypescript(directory) {
 	return new Promise((resolve, reject) => {
 		const tsc = spawn('tsc', ['--build', '../../tsconfig.json'], { cwd: directory });
 
+		tsc.stdout.on('data', (data) => {
+			console.log(data.toString());
+		});
+		tsc.stderr.on('data', (data) => {
+			console.error(data.toString());
+		});
+
 		tsc.on('close', (code) => {
 			if (code === 0) {
 				resolve();

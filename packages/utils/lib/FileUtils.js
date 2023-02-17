@@ -1,11 +1,4 @@
-"use strict";
-/*
- * File Utils
- *
- */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.openFileImportDialog = exports.addFileDropHandler = exports.downloadFile = void 0;
-const downloadFile = (cnt, filename) => {
+export const downloadFile = (cnt, filename) => {
     const link = document.createElement('a');
     link.style.display = 'none';
     document.body.appendChild(link);
@@ -16,8 +9,7 @@ const downloadFile = (cnt, filename) => {
     link.click();
     document.body.removeChild(link);
 };
-exports.downloadFile = downloadFile;
-const addFileDropHandler = (el, dropHandler, overHandler, leaveHandler) => {
+export const addFileDropHandler = (el, dropHandler, overHandler, leaveHandler) => {
     el.addEventListener("dragover", (ev) => {
         ev.preventDefault();
         if (overHandler !== undefined)
@@ -32,9 +24,7 @@ const addFileDropHandler = (el, dropHandler, overHandler, leaveHandler) => {
         ev.preventDefault();
         if (ev.dataTransfer != null && ev.dataTransfer.items) {
             const files = [];
-            // Use DataTransferItemList interface to access the file(s)
             for (var i = 0; i < ev.dataTransfer.items.length; i++) {
-                // If dropped items aren't files, reject them
                 if (ev.dataTransfer.items[i].kind === 'file') {
                     var file = ev.dataTransfer.items[i].getAsFile();
                     files.push(file);
@@ -43,25 +33,17 @@ const addFileDropHandler = (el, dropHandler, overHandler, leaveHandler) => {
             dropHandler(files);
         }
         else {
-            // Use DataTransfer interface to access the file(s)
             dropHandler(ev.dataTransfer != null && ev.dataTransfer.files);
         }
     });
 };
-exports.addFileDropHandler = addFileDropHandler;
-const openFileImportDialog = (accept = "", multiple = false) => {
-    // Create an input element
+export const openFileImportDialog = (accept = "", multiple = false) => {
     const input = document.createElement('input');
-    // Set the type of the input element to "file"
     input.type = 'file';
     input.accept = accept;
     input.multiple = multiple;
-    // Append the input element to the body
     document.body.appendChild(input);
-    // Trigger the click event on the input element
     input.click();
-    // Remove the input element from the body
     document.body.removeChild(input);
     return input;
 };
-exports.openFileImportDialog = openFileImportDialog;
