@@ -9,7 +9,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "prepare": "npm run build",
-    "build": "tsc --build tsconfig.phy.json"
+    "build": "tsc --build tsconfig.json"
   },
   "files": [
     "lib",

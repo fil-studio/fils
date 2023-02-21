@@ -10,7 +10,7 @@
 	"scripts": {
 		"prepare": "npm run build",
 		"create-icons": "node create-icons.js",
-		"build": "npm run create-icons && tsc --build tsconfig.ui-icons.json"
+		"build": "npm run create-icons && tsc --build tsconfig.json"
 	},
 	"files": [
 		"lib",
