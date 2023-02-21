@@ -1,0 +1,19 @@
+{
+	"name": "@fils/gen",
+	"version": "0.0.4",
+	"description": "Generative Package written in TypeScript",
+	"repository": "git@github.com:fil-studio/fils.git",
+	"homepage": "https://github.com/fil-studio/fils/tree/main/packages/gen",
+	"author": "fil studio <hello@fil.studio>",
+	"license": "Apache-2.0",
+	"private": false,
+	"main": "lib/main.js",
+	"types": "lib/main.d.ts",
+	"devDependencies": {
+		"typescript": "^4.9.5",
+		"three": "^0.149.0"
+	},
+	"dependencies": {
+		"@fils/math": "^0.0.3"
+	}
+}

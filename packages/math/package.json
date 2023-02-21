@@ -1,0 +1,17 @@
+{
+  "name": "@fils/math",
+  "version": "0.0.4",
+  "description": "Math Package in TypeScript. Part of jocabola/web packages",
+  "repository": "git@github.com:fil-studio/fils.git",
+  "homepage": "https://github.com/fil-studio/fils/tree/main/packages/math",
+  "author": "fil studio <hello@fil.studio>",
+  "license": "Apache-2.0",
+  "main": "lib/main.js",
+  "typings": "lib/main.d.ts",
+  "dependencies": {
+    "mersenne": "^0.0.4"
+  },
+  "devDependencies": {
+    "typescript": "^4.2.3"
+  }
+}
