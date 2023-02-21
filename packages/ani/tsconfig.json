@@ -4,9 +4,9 @@
 		"outDir": "lib",
 		"rootDir": "src",
 		"declarationDir": "lib",
-		"baseUrl": "src",
+		"baseUrl": "lib",
 	},
 	"include": [
-		"src/**/*",
+		"src/**/*.ts",
 	]
 }
