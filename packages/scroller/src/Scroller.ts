@@ -22,7 +22,7 @@ export enum D {
 
 const style = `
 	[fil-scroller-parent],
-	[fil-scroller-parent] body { 
+	[fil-scroller-parent] body {
 		overscroll-behavior: none;
 		height: 100vh;
 		width: 100%;
@@ -219,8 +219,8 @@ export class Scroller {
 		window.addEventListener('resize', () => {
 			this.onResize();
 		})
-		
-		let timeout; 
+
+		let timeout;
 		const disableScroll = () => {
 			if(timeout) clearTimeout(timeout);
 			document.documentElement.classList.add('scroller__scrolling')
@@ -251,14 +251,14 @@ export class Scroller {
 		if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
 		console.log('Fil Scroller - Loaded');
-		
+
 		this.loaded = true;
 
 	}
 
-	updateTarget(){		
-		this.position.target = this.html.scroller.scrollTop;          
-		if(this.paused) this.html.scroller.scrollTop = this.position.current;	
+	updateTarget(){
+		this.position.target = this.html.scroller.scrollTop;
+		if(this.paused) this.html.scroller.scrollTop = this.position.current;
 	}
 
 	updateCheckHeight(){
@@ -267,14 +267,14 @@ export class Scroller {
 		const vertical = this.direction === D.TOP || this.direction === D.BOTTOM;
 
 		for(let i = 0, len = this.sections.length; i < len; i++) {
-			if(vertical) this.distance += this.sections[i].rect.height;		
-			else this.distance += this.sections[i].rect.width;		
-		}		
+			if(vertical) this.distance += this.sections[i].rect.height;
+			else this.distance += this.sections[i].rect.width;
+		}
 
-		// If horizontal the difference between height and width must be taken care of. 
+		// If horizontal the difference between height and width must be taken care of.
 		if(!vertical) this.distance += this.w.h - this.w.w;
 
-		this.html.holder.style.height = `${this.distance}px`;    
+		this.html.holder.style.height = `${this.distance}px`;
 	}
 
 	updateScrollValues(){
@@ -286,20 +286,20 @@ export class Scroller {
 		} else {
 
 			this.position.current = MathUtils.lerp(
-				this.position.current, 
+				this.position.current,
 				this.position.target,
 				this.ease
 			);
 
 		}
 
-		const newDelta = (this.position.current - previous) * 0.01;	
+		const newDelta = (this.position.current - previous) * 0.01;
 		this.delta = MathUtils.clamp(MathUtils.lerp(this.delta, newDelta, 0.1), -1, 1)
 	}
 
 	updateSections(){
-		
-		const scroll = this.position.current;			
+
+		const scroll = this.position.current;
 		let w = 0;
 
 		for(let i = 0, len = this.sections.length; i < len; i++) {
@@ -310,7 +310,7 @@ export class Scroller {
 			w += section.rect.width;
 			section.update();
 		}
-		
+
 	}
 
 	update(){

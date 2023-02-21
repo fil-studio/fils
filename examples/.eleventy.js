@@ -109,19 +109,21 @@ module.exports = function (eleventyConfig) {
     ghostMode: false,
   })
 
-  // Folders to copy to build dir (See. 1.1)
+  // Folders to copy to public
   eleventyConfig.addPassthroughCopy({'src/assets' : 'assets'});
 
-  // Todo mirar si amb el path 0 ja funciona
+  // To-do: mirar si amb el path 0 ja funciona
   eleventyConfig.addWatchTarget('**');
-  eleventyConfig.addWatchTarget('../packages/**');
+
+  // To-do: FIX - path create a loop if any package in dev mode
+  // eleventyConfig.addWatchTarget('../packages/src/**.css');
+  // eleventyConfig.addWatchTarget('../packages/src/**.ts');
 
   // This allows Eleventy to watch for file changes during local development.
   eleventyConfig.setUseGitIgnore(false);
 
-
-
-  eleventyConfig.setWatchJavaScriptDependencies(false);
+  // To-do: FIX - think is no longer needed
+  // eleventyConfig.setWatchJavaScriptDependencies(false);
 
   return {
     dir: {

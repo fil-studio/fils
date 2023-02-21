@@ -12,7 +12,6 @@
 		"prepare": "yarn build",
 		"build": "tsc"
 	},
-	"type": "module",
 	"files": [
 		"lib",
 		"README.md"

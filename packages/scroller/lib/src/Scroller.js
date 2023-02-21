@@ -12,7 +12,7 @@ var D;
 })(D = exports.D || (exports.D = {}));
 const style = `
 	[fil-scroller-parent],
-	[fil-scroller-parent] body {
+	[fil-scroller-parent] body { 
 		overscroll-behavior: none;
 		height: 100vh;
 		width: 100%;
@@ -223,7 +223,7 @@ class Scroller {
             else
                 this.distance += this.sections[i].rect.width;
         }
-        // If horizontal the difference between height and width must be taken care of.
+        // If horizontal the difference between height and width must be taken care of. 
         if (!vertical)
             this.distance += this.w.h - this.w.w;
         this.html.holder.style.height = `${this.distance}px`;

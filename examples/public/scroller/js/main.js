@@ -33,9 +33,9 @@
   ));
   var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-  // node_modules/mersenne/lib/mersenne.js
+  // ../node_modules/mersenne/lib/mersenne.js
   var require_mersenne = __commonJS({
-    "node_modules/mersenne/lib/mersenne.js"(exports) {
+    "../node_modules/mersenne/lib/mersenne.js"(exports) {
       function MersenneTwister19937() {
         var N, M, MATRIX_A, UPPER_MASK, LOWER_MASK;
         N = 624;
@@ -168,19 +168,84 @@
     }
   });
 
-  // node_modules/@fils/math/lib/Random.js
-  var import_mersenne;
-  var init_Random = __esm({
-    "node_modules/@fils/math/lib/Random.js"() {
-      import_mersenne = __toESM(require_mersenne());
+  // ../packages/math/lib/Random.js
+  var require_Random = __commonJS({
+    "../packages/math/lib/Random.js"(exports) {
+      "use strict";
+      Object.defineProperty(exports, "__esModule", { value: true });
+      exports.Random = void 0;
+      var mersenne_1 = require_mersenne();
+      var Random = class {
+        /*
+         * Keep constructor for backwards compatibility
+         * DEPRECATED
+         */
+        constructor(seed = 0) {
+          mersenne_1.default.seed(seed);
+        }
+        /*
+         * Set generator's seed
+         */
+        static seed(seed) {
+          mersenne_1.default.seed(seed);
+        }
+        /*
+         * Returns number from 0 to 1
+         */
+        static random() {
+          let N = 1e3;
+          return mersenne_1.default.rand(N) / (N - 1);
+        }
+        /*
+         * returns random integer from min to max
+         */
+        static randi(min = 0, max = 1) {
+          return Math.round(Random.randf(min, max));
+        }
+        /*
+         * returns random float from min to max
+         */
+        static randf(min = 0, max = 1) {
+          return min + (max - min) * Random.random();
+        }
+        /*
+         * returns a random hex color (int)
+         * use randc().toString(16) to get hex string
+         */
+        static randc() {
+          return Random.random() * 16777215 << 0;
+        }
+        /**
+         * returns an array of shuffled indexes
+         */
+        static randarrind(arr) {
+          const n2 = arr.length;
+          const seq = Array.from(new Array(n2), (val, index) => index);
+          return Random.randarr(seq);
+        }
+        /**
+        * returns a shuffld array
+        */
+        static randarr(arr) {
+          const n2 = arr.length;
+          for (let i2 = n2 - 1; i2 > 0; i2--) {
+            const j = Random.randi(0, i2);
+            [arr[i2], arr[j]] = [arr[j], arr[i2]];
+          }
+          return arr;
+        }
+      };
+      exports.Random = Random;
     }
   });
 
-  // node_modules/@fils/math/lib/MathUtils.js
-  var MathUtils;
-  var init_MathUtils = __esm({
-    "node_modules/@fils/math/lib/MathUtils.js"() {
-      MathUtils = class {
+  // ../packages/math/lib/MathUtils.js
+  var require_MathUtils = __commonJS({
+    "../packages/math/lib/MathUtils.js"(exports) {
+      "use strict";
+      Object.defineProperty(exports, "__esModule", { value: true });
+      exports.MathUtils = void 0;
+      var MathUtils = class {
         static clamp(v, min, max) {
           return Math.min(max, Math.max(min, v));
         }
@@ -207,38 +272,136 @@
           return n2 % 1;
         }
       };
+      exports.MathUtils = MathUtils;
     }
   });
 
-  // node_modules/@fils/math/lib/Vector.js
-  var init_Vector = __esm({
-    "node_modules/@fils/math/lib/Vector.js"() {
-      init_MathUtils();
+  // ../packages/math/lib/Vector.js
+  var require_Vector = __commonJS({
+    "../packages/math/lib/Vector.js"(exports) {
+      "use strict";
+      Object.defineProperty(exports, "__esModule", { value: true });
+      exports.Vec = void 0;
+      var MathUtils_1 = require_MathUtils();
+      var Vec = class {
+        constructor(x = 0, y = 0, z = 0) {
+          this.x = x;
+          this.y = y;
+          this.z = z;
+        }
+        copy(v) {
+          this.x = v.x;
+          this.y = v.y;
+          this.z = v.z;
+          return this;
+        }
+        set(x, y, z = 0) {
+          this.x = x;
+          this.y = y;
+          this.z = z;
+          return this;
+        }
+        clone() {
+          return new Vec(this.x, this.y, this.z);
+        }
+        add(v) {
+          this.x += v.x;
+          this.y += v.y;
+          this.z += v.z;
+          return this;
+        }
+        sub(v) {
+          this.x -= v.x;
+          this.y -= v.y;
+          this.z -= v.z;
+          return this;
+        }
+        mul(v) {
+          this.x *= v.x;
+          this.y *= v.y;
+          this.z *= v.z;
+          return this;
+        }
+        div(v) {
+          this.x /= v.x;
+          this.y /= v.y;
+          this.z /= v.z;
+          return this;
+        }
+        scale(scl) {
+          this.x *= scl;
+          this.y *= scl;
+          this.z *= scl;
+          return this;
+        }
+        length() {
+          return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+        }
+        lerp(target, alpha) {
+          this.x = MathUtils_1.MathUtils.lerp(this.x, target.x, alpha);
+          this.y = MathUtils_1.MathUtils.lerp(this.y, target.y, alpha);
+          this.z = MathUtils_1.MathUtils.lerp(this.z, target.z, alpha);
+          return this;
+        }
+        equals(v) {
+          return this.x === v.x && this.y === v.y && this.z === v.z;
+        }
+        dot(v) {
+          return this.x * v.x + this.y * v.y + this.z * v.z;
+        }
+        distanceTo(v) {
+          return this.clone().sub(v).length();
+        }
+        normalize() {
+          const L = this.length();
+          if (L == 0)
+            return this;
+          this.x /= L;
+          this.y /= L;
+          this.z /= L;
+          return this;
+        }
+      };
+      exports.Vec = Vec;
     }
   });
 
-  // node_modules/@fils/math/lib/main.js
-  var init_main = __esm({
-    "node_modules/@fils/math/lib/main.js"() {
-      init_Random();
-      init_MathUtils();
-      init_Vector();
+  // ../packages/math/lib/main.js
+  var require_main = __commonJS({
+    "../packages/math/lib/main.js"(exports) {
+      "use strict";
+      Object.defineProperty(exports, "__esModule", { value: true });
+      exports.Vec = exports.MathUtils = exports.Random = void 0;
+      var Random_1 = require_Random();
+      Object.defineProperty(exports, "Random", { enumerable: true, get: function() {
+        return Random_1.Random;
+      } });
+      var MathUtils_1 = require_MathUtils();
+      Object.defineProperty(exports, "MathUtils", { enumerable: true, get: function() {
+        return MathUtils_1.MathUtils;
+      } });
+      var Vector_1 = require_Vector();
+      Object.defineProperty(exports, "Vec", { enumerable: true, get: function() {
+        return Vector_1.Vec;
+      } });
     }
   });
 
-  // node_modules/@fils/scroller/lib/Section.js
-  var Section;
-  var init_Section = __esm({
-    "node_modules/@fils/scroller/lib/Section.js"() {
-      init_main();
-      init_Scroller();
-      Section = class {
+  // ../packages/scroller/lib/Section.js
+  var require_Section = __commonJS({
+    "../packages/scroller/lib/Section.js"(exports) {
+      "use strict";
+      Object.defineProperty(exports, "__esModule", { value: true });
+      exports.Section = void 0;
+      var math_1 = require_main();
+      var Scroller_1 = require_Scroller();
+      var Section = class {
         constructor(id, dom, direction) {
           this.w = {
             w: 0,
             h: 0
           };
-          this.direction = D.LEFT;
+          this.direction = Scroller_1.D.LEFT;
           this.scroll = 0;
           this.delta = 0;
           this.visible = true;
@@ -257,12 +420,12 @@
         animationOut() {
         }
         get threshold() {
-          if (this.direction === D.TOP || this.direction === D.BOTTOM)
+          if (this.direction === Scroller_1.D.TOP || this.direction === Scroller_1.D.BOTTOM)
             return [
               this.rect.top - this.w.h,
               this.rect.top + this.rect.height
             ];
-          if (this.direction === D.LEFT || this.direction === D.RIGHT)
+          if (this.direction === Scroller_1.D.LEFT || this.direction === Scroller_1.D.RIGHT)
             return [
               this.widthOffset - this.w.w,
               this.widthOffset + this.rect.width
@@ -271,13 +434,13 @@
         get position() {
           if (!this.visible)
             return { x: 0, y: -this.w.h };
-          if (this.direction === D.TOP)
+          if (this.direction === Scroller_1.D.TOP)
             return { x: 0, y: -this.scroll };
-          if (this.direction === D.BOTTOM)
+          if (this.direction === Scroller_1.D.BOTTOM)
             return { x: 0, y: this.scroll + (this.w.h - this.rect.height) - this.rect.top * 2 };
-          if (this.direction === D.LEFT)
+          if (this.direction === Scroller_1.D.LEFT)
             return { x: this.widthOffset - this.scroll, y: -this.rect.top };
-          if (this.direction === D.RIGHT)
+          if (this.direction === Scroller_1.D.RIGHT)
             return { x: this.scroll + (this.w.w - this.rect.width) - this.widthOffset, y: -this.rect.top };
         }
         updateTransform() {
@@ -292,7 +455,7 @@
             this.visible = true;
             this.dom.classList.add("fil-scroller-visible");
             this.dom.style.setProperty("--fil-scroller-delta", `${this.delta}`);
-            this.progress = MathUtils.map(this.scroll, this.threshold[0], this.threshold[1], 0, 1);
+            this.progress = math_1.MathUtils.map(this.scroll, this.threshold[0], this.threshold[1], 0, 1);
             this.dom.style.setProperty("--fil-scroller-progress", `${this.progress}`);
             this.updateTransform();
             return;
@@ -307,24 +470,28 @@
           this.updateTransform();
         }
       };
+      exports.Section = Section;
     }
   });
 
-  // node_modules/@fils/scroller/lib/Scroller.js
-  var D, style, Scroller;
-  var init_Scroller = __esm({
-    "node_modules/@fils/scroller/lib/Scroller.js"() {
-      init_main();
-      init_Section();
+  // ../packages/scroller/lib/Scroller.js
+  var require_Scroller = __commonJS({
+    "../packages/scroller/lib/Scroller.js"(exports) {
+      "use strict";
+      Object.defineProperty(exports, "__esModule", { value: true });
+      exports.Scroller = exports.D = void 0;
+      var math_1 = require_main();
+      var Section_1 = require_Section();
+      var D;
       (function(D2) {
         D2[D2["TOP"] = 0] = "TOP";
         D2[D2["BOTTOM"] = 1] = "BOTTOM";
         D2[D2["LEFT"] = 2] = "LEFT";
         D2[D2["RIGHT"] = 3] = "RIGHT";
-      })(D || (D = {}));
-      style = `
+      })(D = exports.D || (exports.D = {}));
+      var style = `
 	[fil-scroller-parent],
-	[fil-scroller-parent] body { 
+	[fil-scroller-parent] body {
 		overscroll-behavior: none;
 		height: 100vh;
 		width: 100%;
@@ -386,7 +553,7 @@
 		position: relative;
 	}
 `;
-      Scroller = class {
+      var Scroller2 = class {
         constructor() {
           this.html = {
             scroller: null,
@@ -417,12 +584,14 @@
           }
           this.create();
         }
+        // Pause - resume
         pause() {
           this.paused = true;
         }
         resume() {
           this.paused = false;
         }
+        // Disable - enable
         disable() {
           if (this.disabled)
             return;
@@ -473,7 +642,7 @@
           for (let i2 = 0, len = sections.length; i2 < len; i2++) {
             const _section = sections[i2];
             const id = _section.getAttribute("fil-scroller-section") ? _section.getAttribute("fil-scroller-section") : `section-${i2}`;
-            const section = new Section(id, _section, this.direction);
+            const section = new Section_1.Section(id, _section, this.direction);
             this.sections.push(section);
           }
         }
@@ -542,10 +711,10 @@
           if (this.disabled) {
             this.position.current = this.position.target;
           } else {
-            this.position.current = MathUtils.lerp(this.position.current, this.position.target, this.ease);
+            this.position.current = math_1.MathUtils.lerp(this.position.current, this.position.target, this.ease);
           }
           const newDelta = (this.position.current - previous) * 0.01;
-          this.delta = MathUtils.clamp(MathUtils.lerp(this.delta, newDelta, 0.1), -1, 1);
+          this.delta = math_1.MathUtils.clamp(math_1.MathUtils.lerp(this.delta, newDelta, 0.1), -1, 1);
         }
         updateSections() {
           const scroll = this.position.current;
@@ -568,14 +737,37 @@
           this.updateSections();
         }
       };
+      exports.Scroller = Scroller2;
     }
   });
 
-  // node_modules/@fils/scroller/lib/main.js
-  var init_main2 = __esm({
-    "node_modules/@fils/scroller/lib/main.js"() {
-      init_Scroller();
-      init_Section();
+  // ../packages/scroller/lib/main.js
+  var require_main2 = __commonJS({
+    "../packages/scroller/lib/main.js"(exports) {
+      "use strict";
+      var __createBinding = exports && exports.__createBinding || (Object.create ? function(o2, m, k, k2) {
+        if (k2 === void 0)
+          k2 = k;
+        var desc = Object.getOwnPropertyDescriptor(m, k);
+        if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+          desc = { enumerable: true, get: function() {
+            return m[k];
+          } };
+        }
+        Object.defineProperty(o2, k2, desc);
+      } : function(o2, m, k, k2) {
+        if (k2 === void 0)
+          k2 = k;
+        o2[k2] = m[k];
+      });
+      var __exportStar = exports && exports.__exportStar || function(m, exports2) {
+        for (var p2 in m)
+          if (p2 !== "default" && !Object.prototype.hasOwnProperty.call(exports2, p2))
+            __createBinding(exports2, m, p2);
+      };
+      Object.defineProperty(exports, "__esModule", { value: true });
+      __exportStar(require_Scroller(), exports);
+      __exportStar(require_Section(), exports);
     }
   });
 
@@ -1125,15 +1317,15 @@
   __export(App_exports, {
     App: () => App
   });
-  var App;
+  var import_scroller, App;
   var init_App = __esm({
     "src/scroller/js/App.ts"() {
-      init_main2();
+      import_scroller = __toESM(require_main2());
       init_stats_module();
       init_lil_gui_module_min();
       App = class {
         constructor() {
-          this.scroller = new Scroller();
+          this.scroller = new import_scroller.Scroller();
           this.scroller.direction = 0;
           this.scroller.ease = 0.05;
           this.cssVariablesElements = document.querySelectorAll("[css-var]");
