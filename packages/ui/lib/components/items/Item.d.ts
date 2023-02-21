@@ -10,6 +10,9 @@ export declare class Item extends UIElement {
     constructor(params: CreateItemParams);
     init(depth?: number): void;
     setValue(value: any): void;
+    /**
+     * Dom
+     */
     protected createDom(): void;
     refreshDom(): void;
 }

@@ -4,6 +4,9 @@ export interface VFXEmissiveMaterialParameters extends MaterialParameters {
     emissiveIntensity?: number;
     emissiveMap?: Texture;
 }
+/**
+ * VFX Mesh Emissive Only Material
+ */
 export declare class VFXEmissiveMaterial extends Material {
     emissive: Color;
     emissiveIntensity: number;

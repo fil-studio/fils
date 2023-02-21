@@ -1,49 +1,79 @@
-import { VideoTexture } from 'three';
-import { TextureUtils } from '../utils/TextureUtils';
-import { Asset } from "./Asset";
-export class VideoTextureAsset extends Asset {
-    constructor(url, loop = false, videoRef = null, options = null) {
-        super(url);
-        this.loop = loop;
-        this.vRef = videoRef;
-        this.options = options;
+"use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.VideoTextureAsset = void 0;
+var three_1 = require("three");
+var TextureUtils_1 = require("../utils/TextureUtils");
+var Asset_1 = require("./Asset");
+var VideoTextureAsset = /** @class */ (function (_super) {
+    __extends(VideoTextureAsset, _super);
+    function VideoTextureAsset(url, loop, videoRef, options) {
+        if (loop === void 0) { loop = false; }
+        if (videoRef === void 0) { videoRef = null; }
+        if (options === void 0) { options = null; }
+        var _this = _super.call(this, url) || this;
+        _this.loop = loop;
+        _this.vRef = videoRef;
+        _this.options = options;
+        return _this;
     }
-    load(callback) {
-        let video = this.vRef ? this.vRef : document.createElement('video');
+    VideoTextureAsset.prototype.load = function (callback) {
+        var _this = this;
+        // console.log( "Loading", this.url );
+        var video = this.vRef ? this.vRef : document.createElement('video');
         video.loop = this.loop;
         video.crossOrigin = 'anonymous';
         video.autoplay = true;
         video.muted = true;
+        // video.style.display = 'none';
         video.setAttribute('playsinline', 'true');
         video.setAttribute('webkitPlaysInline', 'true');
+        // video.style.opacity = '0';
         if (!this.vRef)
             document.body.appendChild(video);
-        let finish = () => {
-            if (this.loaded)
+        var finish = function () {
+            if (_this.loaded)
                 return;
-            this.content = new VideoTexture(video);
-            if (this.options)
-                TextureUtils.applyTextureOptions(this.content, this.options);
+            // To-Do: implement custom video texture with update routine
+            _this.content = new three_1.VideoTexture(video);
+            if (_this.options)
+                TextureUtils_1.TextureUtils.applyTextureOptions(_this.content, _this.options);
             if (callback != null)
                 callback();
-            this._loaded = true;
+            _this._loaded = true;
         };
-        video.addEventListener('error', (event) => {
+        video.addEventListener('error', function (event) {
             console.warn('Error loading Video Asset');
             console.log(event);
-            this._failed = true;
+            _this._failed = true;
         });
         video.src = this.url;
-        let loaded = () => {
-            if (!this.loaded && video.readyState > 3) {
+        var loaded = function () {
+            if (!_this.loaded && video.readyState > 3) {
                 return finish();
             }
             requestAnimationFrame(loaded);
         };
         loaded();
-    }
-    destroy() {
+    };
+    VideoTextureAsset.prototype.destroy = function () {
         this.content.dispose();
-        super.destroy();
-    }
-}
+        _super.prototype.destroy.call(this);
+    };
+    return VideoTextureAsset;
+}(Asset_1.Asset));
+exports.VideoTextureAsset = VideoTextureAsset;

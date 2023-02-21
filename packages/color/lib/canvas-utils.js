@@ -1,49 +1,56 @@
-import { hsbToHex } from "./utils";
-export function drawColorWheel(canvas) {
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    const radius = Math.min(canvas.width, canvas.height) / 2;
-    const ctx = canvas.getContext('2d');
-    for (let i = 0; i < 360; i++) {
-        const rad = (i * Math.PI) / 180;
-        const x = centerX + radius * Math.cos(rad);
-        const y = centerY + radius * Math.sin(rad);
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.drawColorPickerSL = exports.drawColorPickerBar = exports.drawColorWheel = void 0;
+var utils_1 = require("./utils");
+function drawColorWheel(canvas) {
+    var centerX = canvas.width / 2;
+    var centerY = canvas.height / 2;
+    var radius = Math.min(canvas.width, canvas.height) / 2;
+    var ctx = canvas.getContext('2d');
+    for (var i = 0; i < 360; i++) {
+        var rad = (i * Math.PI) / 180;
+        var x = centerX + radius * Math.cos(rad);
+        var y = centerY + radius * Math.sin(rad);
         ctx.beginPath();
         ctx.arc(x, y, 5, 0, 2 * Math.PI);
-        ctx.fillStyle = `hsl(${i}, 100%, 50%)`;
+        ctx.fillStyle = "hsl(".concat(i, ", 100%, 50%)");
         ctx.fill();
     }
 }
-export function drawColorPickerBar(canvas, x, y, width, height) {
-    const _x = x !== undefined ? x : 0;
-    const _y = y !== undefined ? y : 0;
-    const w = width !== undefined ? width : canvas.width;
-    const h = height !== undefined ? height : canvas.height;
-    const ctx = canvas.getContext('2d');
-    for (let i = 0; i < w; i++) {
-        const dx = _x + i;
-        const angle = 360 * i / w;
-        ctx.fillStyle = `hsl(${angle}, 100%, 50%)`;
+exports.drawColorWheel = drawColorWheel;
+function drawColorPickerBar(canvas, x, y, width, height) {
+    var _x = x !== undefined ? x : 0;
+    var _y = y !== undefined ? y : 0;
+    var w = width !== undefined ? width : canvas.width;
+    var h = height !== undefined ? height : canvas.height;
+    var ctx = canvas.getContext('2d');
+    for (var i = 0; i < w; i++) {
+        // const rad = (i * Math.PI) / 180;
+        var dx = _x + i;
+        var angle = 360 * i / w;
+        ctx.fillStyle = "hsl(".concat(angle, ", 100%, 50%)");
         ctx.fillRect(dx, _y, 1, h);
     }
 }
-export function drawColorPickerSL(canvas, angle, x, y, width, height) {
-    const _x = x !== undefined ? x : 0;
-    const _y = y !== undefined ? y : 0;
-    const w = width !== undefined ? width : canvas.width;
-    const h = height !== undefined ? height : canvas.height;
-    const ctx = canvas.getContext('2d');
-    const sw = w / 100;
-    const sh = h / 100;
-    for (let i = 0; i <= 100; i++) {
-        for (let j = 0; j <= 100; j++) {
-            const hex = hsbToHex({
+exports.drawColorPickerBar = drawColorPickerBar;
+function drawColorPickerSL(canvas, angle, x, y, width, height) {
+    var _x = x !== undefined ? x : 0;
+    var _y = y !== undefined ? y : 0;
+    var w = width !== undefined ? width : canvas.width;
+    var h = height !== undefined ? height : canvas.height;
+    var ctx = canvas.getContext('2d');
+    var sw = w / 100;
+    var sh = h / 100;
+    for (var i = 0; i <= 100; i++) {
+        for (var j = 0; j <= 100; j++) {
+            var hex = (0, utils_1.hsbToHex)({
                 h: angle,
                 s: j,
                 b: i
             });
-            ctx.fillStyle = hex;
+            ctx.fillStyle = hex; //`hsl(${angle}, ${j}%, ${100-i}%)`;
             ctx.fillRect(_x + w * j / 100, _y + h - h * i / 100, sw, sh);
         }
     }
 }
+exports.drawColorPickerSL = drawColorPickerSL;

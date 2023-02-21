@@ -1,4 +1,10 @@
-export class Utils {
+"use strict";
+/**
+ * Some utils inspired by https://github.com/Dogstudio/highway/blob/master/src/helpers.js
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Utils = void 0;
+class Utils {
     constructor() {
         this.checkActiveLinks = (links) => {
             const pathname = this.addSlash(window.location.pathname);
@@ -62,3 +68,4 @@ export class Utils {
         return location;
     }
 }
+exports.Utils = Utils;

@@ -1,78 +1,18 @@
-import { MathUtils } from "@fils/math";
-import { Section } from "./Section";
-export var D;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Scroller = exports.D = void 0;
+var math_1 = require("@fils/math");
+var Section_1 = require("./Section");
+var D;
 (function (D) {
     D[D["TOP"] = 0] = "TOP";
     D[D["BOTTOM"] = 1] = "BOTTOM";
     D[D["LEFT"] = 2] = "LEFT";
     D[D["RIGHT"] = 3] = "RIGHT";
-})(D || (D = {}));
-const style = `
-	[fil-scroller-parent],
-	[fil-scroller-parent] body { 
-		overscroll-behavior: none;
-		height: 100vh;
-		width: 100%;
-		top: 0;
-		left: 0;
-		overflow: hidden;
-		position: fixed;
-		pointer-events: none;
-	}
-	[fil-scroller]{
-		position: relative;
-		width: 100%;
-		height: 100vh;
-		pointer-events: all;
-		overflow-y: scroll;
-		-webkit-overflow-scrolling: touch;
-	}
-	[fil-scroller-holder] {
-		pointer-events: none;
-	}
-	[fil-scroller-container]{
-		position: fixed;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		left: 0;
-		overflow: hidden;
-		pointer-events: none;
-	}
-	[fil-scroller-content] {
-		position: relative;
-		width: 100%;
-		height: auto;
-		will-change: transform;
-		pointer-events: none;
-	}
-	[fil-scroller-content] * {
-		pointer-events: none;
-	}
-	[fil-scroller-content] [fil-scroller-pointer] {
-		pointer-events: all;
-	}
-
-	.scroller__scrolling [fil-scroller-content] [fil-scroller-pointer] {
-		pointer-events: none;
-	}
-
-	[fil-scroller-section]{
-		opacity: 0;
-		visibility: hidden;
-		will-change: transform;
-	}
-	[fil-scroller-section].fil-scroller-visible {
-		opacity: 1;
-		visibility: visible;
-	}
-
-	[fil-scroller="disabled"] [fil-scroller-container] {
-		position: relative;
-	}
-`;
-export class Scroller {
-    constructor() {
+})(D = exports.D || (exports.D = {}));
+var style = "\n\t[fil-scroller-parent],\n\t[fil-scroller-parent] body { \n\t\toverscroll-behavior: none;\n\t\theight: 100vh;\n\t\twidth: 100%;\n\t\ttop: 0;\n\t\tleft: 0;\n\t\toverflow: hidden;\n\t\tposition: fixed;\n\t\tpointer-events: none;\n\t}\n\t[fil-scroller]{\n\t\tposition: relative;\n\t\twidth: 100%;\n\t\theight: 100vh;\n\t\tpointer-events: all;\n\t\toverflow-y: scroll;\n\t\t-webkit-overflow-scrolling: touch;\n\t}\n\t[fil-scroller-holder] {\n\t\tpointer-events: none;\n\t}\n\t[fil-scroller-container]{\n\t\tposition: fixed;\n\t\twidth: 100%;\n\t\theight: 100%;\n\t\ttop: 0;\n\t\tleft: 0;\n\t\toverflow: hidden;\n\t\tpointer-events: none;\n\t}\n\t[fil-scroller-content] {\n\t\tposition: relative;\n\t\twidth: 100%;\n\t\theight: auto;\n\t\twill-change: transform;\n\t\tpointer-events: none;\n\t}\n\t[fil-scroller-content] * {\n\t\tpointer-events: none;\n\t}\n\t[fil-scroller-content] [fil-scroller-pointer] {\n\t\tpointer-events: all;\n\t}\n\n\t.scroller__scrolling [fil-scroller-content] [fil-scroller-pointer] {\n\t\tpointer-events: none;\n\t}\n\n\t[fil-scroller-section]{\n\t\topacity: 0;\n\t\tvisibility: hidden;\n\t\twill-change: transform;\n\t}\n\t[fil-scroller-section].fil-scroller-visible {\n\t\topacity: 1;\n\t\tvisibility: visible;\n\t}\n\n\t[fil-scroller=\"disabled\"] [fil-scroller-container] {\n\t\tposition: relative;\n\t}\n";
+var Scroller = /** @class */ (function () {
+    function Scroller() {
         this.html = {
             scroller: null,
             holder: null,
@@ -102,98 +42,116 @@ export class Scroller {
         }
         this.create();
     }
-    pause() {
+    // Pause - resume
+    Scroller.prototype.pause = function () {
         this.paused = true;
-    }
-    resume() {
+    };
+    Scroller.prototype.resume = function () {
         this.paused = false;
-    }
-    disable() {
+    };
+    // Disable - enable
+    Scroller.prototype.disable = function () {
         if (this.disabled)
             return;
         this.disabled = true;
-        for (const section of this.sections)
+        for (var _i = 0, _a = this.sections; _i < _a.length; _i++) {
+            var section = _a[_i];
             section.disabled = this.disabled;
+        }
         this.html.scroller.setAttribute('fil-scroller', 'disabled');
-    }
-    enable() {
+    };
+    Scroller.prototype.enable = function () {
         if (!this.disabled)
             return;
         this.disabled = false;
-        for (const section of this.sections)
+        for (var _i = 0, _a = this.sections; _i < _a.length; _i++) {
+            var section = _a[_i];
             section.disabled = this.disabled;
+        }
         this.html.scroller.setAttribute('fil-scroller', '');
-    }
-    set direction(val) {
-        if (val > D.RIGHT)
-            val = 0;
-        this._direction = val;
-        for (const section of this.sections)
-            section.direction = this.direction;
-    }
-    get direction() {
-        return this._direction;
-    }
-    set ease(newEase) {
-        this._ease = newEase;
-    }
-    get ease() {
-        return this._ease;
-    }
-    addStyles() {
+    };
+    Object.defineProperty(Scroller.prototype, "direction", {
+        get: function () {
+            return this._direction;
+        },
+        set: function (val) {
+            if (val > D.RIGHT)
+                val = 0;
+            this._direction = val;
+            for (var _i = 0, _a = this.sections; _i < _a.length; _i++) {
+                var section = _a[_i];
+                section.direction = this.direction;
+            }
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(Scroller.prototype, "ease", {
+        get: function () {
+            return this._ease;
+        },
+        set: function (newEase) {
+            this._ease = newEase;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Scroller.prototype.addStyles = function () {
         document.documentElement.setAttribute('fil-scroller-parent', '');
-        const _styles = document.createElement('style');
+        var _styles = document.createElement('style');
         _styles.textContent = style;
         document.head.append(_styles);
-    }
-    addHTML() {
-        const dom = this.html.scroller;
+    };
+    Scroller.prototype.addHTML = function () {
+        var dom = this.html.scroller;
         this.html.holder = dom.querySelector('[fil-scroller-holder]');
         this.html.container = dom.querySelector('[fil-scroller-container]');
         this.html.content = dom.querySelector('[fil-scroller-content]');
         this.pointerElements = dom.querySelectorAll('[fil-scroller-pointer]');
-    }
-    addSections() {
-        const sections = this.html.content.querySelectorAll('[fil-scroller-section]');
-        for (let i = 0, len = sections.length; i < len; i++) {
-            const _section = sections[i];
-            const id = _section.getAttribute('fil-scroller-section') ? _section.getAttribute('fil-scroller-section') : `section-${i}`;
-            const section = new Section(id, _section, this.direction);
+    };
+    Scroller.prototype.addSections = function () {
+        var sections = this.html.content.querySelectorAll('[fil-scroller-section]');
+        for (var i = 0, len = sections.length; i < len; i++) {
+            var _section = sections[i];
+            var id = _section.getAttribute('fil-scroller-section') ? _section.getAttribute('fil-scroller-section') : "section-".concat(i);
+            var section = new Section_1.Section(id, _section, this.direction);
             this.sections.push(section);
         }
-    }
-    restore() {
+    };
+    Scroller.prototype.restore = function () {
         this.w.w = window.innerWidth;
         this.w.h = window.innerHeight;
-        for (const section of this.sections) {
+        for (var _i = 0, _a = this.sections; _i < _a.length; _i++) {
+            var section = _a[_i];
             section.w = this.w;
             section.restore();
         }
-    }
-    onResize() {
+    };
+    Scroller.prototype.onResize = function () {
         this.restore();
-    }
-    addEventListeners() {
-        window.addEventListener('resize', () => {
-            this.onResize();
+    };
+    Scroller.prototype.addEventListeners = function () {
+        var _this = this;
+        window.addEventListener('resize', function () {
+            _this.onResize();
         });
-        let timeout;
-        const disableScroll = () => {
+        var timeout;
+        var disableScroll = function () {
             if (timeout)
                 clearTimeout(timeout);
             document.documentElement.classList.add('scroller__scrolling');
-            timeout = setTimeout(() => {
+            timeout = setTimeout(function () {
                 document.documentElement.classList.remove('scroller__scrolling');
             }, 20);
         };
-        window.addEventListener('wheel', () => {
+        window.addEventListener('wheel', function () {
             disableScroll();
         });
-        window.addEventListener('touchmove', () => {
+        window.addEventListener('touchmove', function () {
             disableScroll();
         });
-    }
-    create() {
+    };
+    Scroller.prototype.create = function () {
         this.addStyles();
         this.addHTML();
         this.addSections();
@@ -203,54 +161,57 @@ export class Scroller {
             history.scrollRestoration = 'manual';
         console.log('Fil Scroller - Loaded');
         this.loaded = true;
-    }
-    updateTarget() {
+    };
+    Scroller.prototype.updateTarget = function () {
         this.position.target = this.html.scroller.scrollTop;
         if (this.paused)
             this.html.scroller.scrollTop = this.position.current;
-    }
-    updateCheckHeight() {
+    };
+    Scroller.prototype.updateCheckHeight = function () {
         this.distance = 0;
-        const vertical = this.direction === D.TOP || this.direction === D.BOTTOM;
-        for (let i = 0, len = this.sections.length; i < len; i++) {
+        var vertical = this.direction === D.TOP || this.direction === D.BOTTOM;
+        for (var i = 0, len = this.sections.length; i < len; i++) {
             if (vertical)
                 this.distance += this.sections[i].rect.height;
             else
                 this.distance += this.sections[i].rect.width;
         }
+        // If horizontal the difference between height and width must be taken care of. 
         if (!vertical)
             this.distance += this.w.h - this.w.w;
-        this.html.holder.style.height = `${this.distance}px`;
-    }
-    updateScrollValues() {
-        const previous = this.position.current;
+        this.html.holder.style.height = "".concat(this.distance, "px");
+    };
+    Scroller.prototype.updateScrollValues = function () {
+        var previous = this.position.current;
         if (this.disabled) {
             this.position.current = this.position.target;
         }
         else {
-            this.position.current = MathUtils.lerp(this.position.current, this.position.target, this.ease);
+            this.position.current = math_1.MathUtils.lerp(this.position.current, this.position.target, this.ease);
         }
-        const newDelta = (this.position.current - previous) * 0.01;
-        this.delta = MathUtils.clamp(MathUtils.lerp(this.delta, newDelta, 0.1), -1, 1);
-    }
-    updateSections() {
-        const scroll = this.position.current;
-        let w = 0;
-        for (let i = 0, len = this.sections.length; i < len; i++) {
-            const section = this.sections[i];
+        var newDelta = (this.position.current - previous) * 0.01;
+        this.delta = math_1.MathUtils.clamp(math_1.MathUtils.lerp(this.delta, newDelta, 0.1), -1, 1);
+    };
+    Scroller.prototype.updateSections = function () {
+        var scroll = this.position.current;
+        var w = 0;
+        for (var i = 0, len = this.sections.length; i < len; i++) {
+            var section = this.sections[i];
             section.scroll = scroll;
             section.delta = this.delta;
             section.widthOffset = w;
             w += section.rect.width;
             section.update();
         }
-    }
-    update() {
+    };
+    Scroller.prototype.update = function () {
         if (!this.loaded)
             return;
         this.updateTarget();
         this.updateCheckHeight();
         this.updateScrollValues();
         this.updateSections();
-    }
-}
+    };
+    return Scroller;
+}());
+exports.Scroller = Scroller;

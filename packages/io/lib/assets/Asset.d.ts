@@ -1,3 +1,6 @@
+/**
+ * Core Asset + Basic Asset Types
+ */
 export declare class Asset {
     url: string;
     protected _loaded: boolean;

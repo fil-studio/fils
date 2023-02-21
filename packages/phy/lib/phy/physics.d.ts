@@ -9,7 +9,7 @@ declare class Constraint {
     prepare(): void;
     apply(p: Particle): void;
 }
-declare type EmitterOptions = {
+type EmitterOptions = {
     rate?: number;
     interval?: number;
     max?: number;
@@ -26,8 +26,8 @@ declare class Emitter {
     create(): Particle;
     init(p: Particle): void;
 }
-declare type Iterations = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
-declare type PhysicsOptions = {
+type Iterations = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+type PhysicsOptions = {
     constraintIterations?: Iterations;
     springIterations?: Iterations;
 };

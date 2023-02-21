@@ -1,3 +1,8 @@
+/**
+ * Robert Penner's Easing Functions: http://robertpenner.com/easing/
+ * Implementation in TypeScript ported from GLSL implementation here:
+ * https://github.com/glslify/glsl-easings
+ */
 export declare function linear(t: number): number;
 export declare function backIn(t: number): number;
 export declare function backOut(t: number): number;

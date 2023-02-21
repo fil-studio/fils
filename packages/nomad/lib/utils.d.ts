@@ -1,3 +1,6 @@
+/**
+ * Some utils inspired by https://github.com/Dogstudio/highway/blob/master/src/helpers.js
+ */
 export interface Location {
     href: string;
     anchor: string;

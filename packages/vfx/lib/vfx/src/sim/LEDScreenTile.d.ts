@@ -8,6 +8,11 @@ export type UVCrop = {
 };
 export declare const BASE_MAT: any;
 export declare const BASE_GEO: any;
+/**
+ * Screen LED tile has a width x height in cm,
+ * rows and cols of pixels
+ * a pitch (sep between pixels)
+ */
 export declare class LEDScreenTile {
     container: Object3D;
     base: Mesh;

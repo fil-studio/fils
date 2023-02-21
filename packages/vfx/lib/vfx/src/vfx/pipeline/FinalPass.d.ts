@@ -1,3 +1,9 @@
+/**
+ * Final Shader Pass combines a few things together
+ * 1. Chromatic Aberration
+ * 2. Dithering and grain
+ * 3. Vignetting
+ */
 import { RenderPass } from "./RenderPass";
 import { RawShaderMaterial } from 'three';
 export type FinalPassSettings = {

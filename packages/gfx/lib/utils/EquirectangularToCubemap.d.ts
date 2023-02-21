@@ -1,3 +1,6 @@
+/**
+ * Ported from https://github.com/spite/THREE.EquirectangularToCubemap
+ */
 import { CubeCamera, CubeTexture, Mesh, MeshBasicMaterial, Scene, WebGLCubeRenderTarget, WebGLRenderer } from "three";
 export declare class EquirectangularToCubemap {
     renderer: WebGLRenderer;

@@ -8,6 +8,13 @@ export declare const Figures: {
     male: GLTFAsset;
     male2: GLTFAsset;
 };
+/**
+ * Simulator is a scene used for rendering simultions
+ * of installations done in Canvas/WebGL.
+ * It contains a reflective floor, shortcuts to
+ * staring figures and Screen Utils for simulating
+ * screen panels.
+ */
 export declare class Simulator {
     scene: Scene;
     protected blur: BlurPass;

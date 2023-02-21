@@ -1,30 +1,44 @@
-export class ResponseParams {
-    constructor() {
+"use strict";
+/*
+ * io Class
+ * Following Singleton TS pattern
+ * https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-0.html#private-and-protected-constructors
+ *
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.io = exports.ResponseParams = void 0;
+var ResponseParams = /** @class */ (function () {
+    function ResponseParams() {
         this.responseType = "text";
     }
-}
-export class io {
-    constructor() { }
-    static load(url, callback, errorCallback, params) {
-        let r = new XMLHttpRequest();
+    return ResponseParams;
+}());
+exports.ResponseParams = ResponseParams;
+var io = /** @class */ (function () {
+    function io() {
+    }
+    io.load = function (url, callback, errorCallback, params) {
+        var r = new XMLHttpRequest();
         r.open("GET", url, true);
         if (params != undefined)
             r.responseType = params.responseType;
-        r.onload = () => {
+        r.onload = function () {
             if (r.status >= 400 && errorCallback != undefined)
                 errorCallback(r);
             if (r.status == 200 && callback != undefined)
                 callback(r.response);
         };
         r.send();
-    }
-    static fetchVimeo(url, callback) {
-        const req = new XMLHttpRequest();
+    };
+    io.fetchVimeo = function (url, callback) {
+        var req = new XMLHttpRequest();
         req.responseType = "json";
-        req.onload = () => {
+        req.onload = function () {
             callback(req.responseURL);
         };
         req.open("GET", url);
         req.send();
-    }
-}
+    };
+    return io;
+}());
+exports.io = io;

@@ -1,8 +1,12 @@
-export class RenderPass {
-    constructor() {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.RenderPass = void 0;
+var RenderPass = /** @class */ (function () {
+    function RenderPass() {
         this.enabled = true;
     }
-    render(renderer, composer, target = null) {
+    RenderPass.prototype.render = function (renderer, composer, target) {
+        if (target === void 0) { target = null; }
         if (!this.enabled)
             return;
         renderer.setRenderTarget(target);
@@ -12,7 +16,9 @@ export class RenderPass {
         if (this.shader.uniforms.tDepth)
             this.shader.uniforms.tDepth.value = composer.depthTexture;
         renderer.render(composer.scene, composer.camera);
-    }
-    setSize(width, height) {
-    }
-}
+    };
+    RenderPass.prototype.setSize = function (width, height) {
+    };
+    return RenderPass;
+}());
+exports.RenderPass = RenderPass;

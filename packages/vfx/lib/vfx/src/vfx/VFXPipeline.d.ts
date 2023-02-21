@@ -10,6 +10,12 @@ export type VFXPipelineSettings = {
 };
 export type SupportedRenderer = WebGLRenderer | VFXRenderer;
 export type RendererType = "WebGLRenderer" | "VFXRenderer";
+/**
+ * This class replaces the deprecated RenderComposer
+ * It is meant to be used with either a WebGLRenderer
+ * or a VFXRebderer and create a post-processing stack
+ * on top of it.
+ */
 export declare class VFXPipeline {
     protected sceneRT: WebGLRenderTarget;
     protected front: WebGLRenderTarget;

@@ -6,6 +6,9 @@ export type RetroPassSettings = {
     gridSize?: number;
     dithering?: DitherType;
 };
+/**
+ * Retro Pass created for fil's Hellow World
+ */
 export declare class RetroPass extends RenderPass {
     shader: RawShaderMaterial;
     constructor(params?: RetroPassSettings);

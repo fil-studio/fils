@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,14 +8,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { el } from '@fils/utils';
-import { Page } from "./Page";
-import { Utils } from "./utils";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Nomad = void 0;
+const utils_1 = require("@fils/utils");
+const Page_1 = require("./Page");
+const utils_2 = require("./utils");
 const linkRule = 'a:not([target]):not([href^=\\#]):not([fil-nomad-ignore])';
-export class Nomad {
+class Nomad {
     constructor(createPage = (template, dom) => { return null; }) {
         this.createPage = createPage;
-        this.utils = new Utils();
+        // Init Utils
+        this.utils = new utils_2.Utils();
+        // State handlers
         this.isPopstate = false;
         this.inProgress = false;
         this.routes = [];
@@ -25,17 +30,20 @@ export class Nomad {
             return;
         }
         this.links = [];
+        // Init current page
         this.addLinksListener();
         window.addEventListener('popstate', (e) => {
             this.onPopState();
         });
+        // Create initial route
         const newPage = this.wrapper.querySelector('[template]');
         const template = newPage.getAttribute('template');
         let newPageClass = this.createPage(template, newPage);
         if (!newPageClass)
-            newPageClass = new Page(newPage);
+            newPageClass = new Page_1.Page(newPage);
         this.createRoute(template, newPageClass);
     }
+    // Routes handler
     createRoute(template, page, href = window.location.href) {
         const location = this.utils.getLocation(href);
         const exists = this.routes.find(x => x.id === location.pathname);
@@ -49,7 +57,9 @@ export class Nomad {
             this.routes.push(this.route);
         }
     }
+    // Events
     addLinksListener() {
+        // Prevents double events on links
         const allPageLinks = document.querySelectorAll(linkRule);
         const newLinks = [];
         for (const link of allPageLinks) {
@@ -75,6 +85,7 @@ export class Nomad {
         this.isPopstate = true;
         this.lifeCycle(window.location.href);
     }
+    // Lifecycle
     lifeCycle(href) {
         if (this.inProgress) {
             this.route.page.kill();
@@ -100,14 +111,17 @@ export class Nomad {
     }
     addContent(href, html) {
         return __awaiter(this, void 0, void 0, function* () {
+            // Dispose old page
             this.route.page.dispose();
             this.route.page.isActive = false;
-            const content = el('div');
+            // Create html
+            const content = (0, utils_1.el)('div');
             content.innerHTML = html;
+            // Create new Page & Route
             const newPage = content.querySelector('[template]');
             const template = newPage.getAttribute('template');
             let newPageClass = this.createPage(template, newPage);
-            newPageClass = newPageClass ? newPageClass : new Page(newPage);
+            newPageClass = newPageClass ? newPageClass : new Page_1.Page(newPage);
             this.createRoute(template, newPageClass, href);
             this.route.page.dom = newPage;
             this.route.page.isActive = true;
@@ -117,14 +131,17 @@ export class Nomad {
                 });
                 this.route.page.loaded();
             }
+            // Update page title
             const title = content.querySelector('title').textContent;
             document.documentElement.querySelector('title').textContent = title;
             if (!this.isPopstate)
                 window.history.pushState(this.route.location, title, this.route.location.href);
             this.addLinksListener();
+            // HTML Swap
             const oldPage = this.wrapper.querySelector('[template]');
             oldPage === null || oldPage === void 0 ? void 0 : oldPage.remove();
             this.wrapper.appendChild(newPage);
+            // Wait transition IN
             const promise = new Promise((resolve, reject) => {
                 this.route.page.transitionIn(resolve);
             });
@@ -142,6 +159,7 @@ export class Nomad {
             if (response.status >= 200 && response.status < 300) {
                 return response.text();
             }
+            // Force reload if response fails
             window.location.href = href;
             return;
         });
@@ -151,3 +169,4 @@ export class Nomad {
         this.isPopstate = false;
     }
 }
+exports.Nomad = Nomad;
