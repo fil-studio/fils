@@ -1,11 +1,11 @@
+const { readdirSync } = require('fs');
 
-const packagesDir = './packages';
-
-const { readdir } = require('fs').promises;
+const packagesDir = 'packages';
 
 async function getPackageNames() {
-	const packageNames = await readdir(packagesDir);
-	return packageNames.filter(name => !name.startsWith('.'));
+	let packageNames = await readdirSync(`./${packagesDir}`).filter(name => name !== '.DS_Store');
+
+	return packageNames;
 }
 
 async function getPackagesDirs() {

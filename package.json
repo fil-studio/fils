@@ -10,8 +10,8 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "node build.js",
-    "clean": "node clean.js"
+    "build": "node ./scripts/prebuild.js && node ./scripts/build.js",
+    "clean": "node ./scripts/clean.js"
   },
   "devDependencies": {
     "esbuild": "^0.17.8",

@@ -1,7 +1,7 @@
 const fs = require("fs");
 const esbuild = require("esbuild");
 const { spawn } = require('child_process');
-const { getPackagesDirs } = require("./utils/packages");
+const { getPackagesDirs } = require("../utils/packages");
 
 
 function runTypescript(directory) {
@@ -108,6 +108,6 @@ const buildPackage = async (packageDir) => {
 
 		console.log(`Building package "${packageJsonPath}"...`);
 
-		await buildPackage(packageDir);
+		await buildPackage(`../${packageDir}`);
 	}
 })();
