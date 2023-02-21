@@ -1,7 +1,7 @@
 const fs = require("fs");
 const esbuild = require("esbuild");
 const { spawn } = require('child_process');
-const { packageDirs } = require("./utils/packages");
+const { getPackagesDirs } = require("./utils/packages");
 
 
 function runTypescript(directory) {
@@ -85,6 +85,8 @@ async function runEsbuild(packageDir) {
 
 const buildPackage = async (packageDir) => {
 
+	const packageJson = require(`${packageDir}/package.json`);
+
 	// Compile tsc
 	await runTypescript(packageDir);
 
@@ -97,9 +99,11 @@ const buildPackage = async (packageDir) => {
 // Build all packages
 (async () => {
 
-	console.log(`Building ${packageDirs.length} packages...`);
+	const packagesDirs = await getPackagesDirs();
 
-	for (const packageDir of packageDirs) {
+	console.log(`Building ${packagesDirs.length} packages...`);
+
+	for (const packageDir of packagesDirs) {
 		const packageJsonPath = `${packageDir}/package.json`;
 
 		console.log(`Building package "${packageJsonPath}"...`);
