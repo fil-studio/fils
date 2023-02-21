@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UIInjectCSS = exports.css = void 0;
-// const styles = `__css__`;
-const bundle_css_1 = require("../../../bundle/bundle.css");
+const styles = `__css__`;
+// import styles from '../../../src/bundle/bundle.css';
 let injected = false;
 exports.css = {
     inject: (css) => {
@@ -16,6 +16,6 @@ exports.css = {
     }
 };
 const UIInjectCSS = () => {
-    exports.css.inject(bundle_css_1.default);
+    exports.css.inject(styles);
 };
 exports.UIInjectCSS = UIInjectCSS;
