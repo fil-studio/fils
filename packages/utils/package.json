@@ -2,19 +2,17 @@
 	"name": "@fils/utils",
 	"version": "0.0.7",
 	"description": "Web Utils Package written in TypeScript",
-	"main": "lib/main.js",
 	"repository": "git@github.com:fil-studio/fils.git",
 	"homepage": "https://github.com/fil-studio/fils/tree/main/packages/utils",
 	"author": "fil studio <hello@fil.studio>",
 	"license": "Apache-2.0",
+	"module": "lib/main.js",
 	"scripts": {
 		"prepare": "npm run build",
 		"build": "tsc"
 	},
 	"files": [
-		"lib",
-		"README.md",
-		"package.json"
+		"lib"
 	],
 	"devDependencies": {
 		"typescript": "^4.8.4"

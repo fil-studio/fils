@@ -1,11 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.NumberItem = void 0;
-const utils_1 = require("@fils/utils");
-const check_1 = require("../../../utils/check");
-const ui_icons_1 = require("@fils/ui-icons");
-const cssClasses_1 = require("../../../partials/cssClasses");
-const Item_1 = require("../Item");
+import { el } from "@fils/utils";
+import check from "../../../utils/check";
+import { uiDownarrowHlt } from '@fils/ui-icons';
+import { CSS_UI } from "../../../partials/cssClasses";
+import { Item } from "../Item";
 const c = {
     type: 'number',
     input: '_ui-number-input',
@@ -13,7 +10,7 @@ const c = {
     btnIncrease: '_ui-number-btn-increase',
     btnDecrease: '_ui-number-btn-decrease',
 };
-class NumberItem extends Item_1.Item {
+export class NumberItem extends Item {
     constructor() {
         super(...arguments);
         this.inputElements = [];
@@ -63,7 +60,7 @@ class NumberItem extends Item_1.Item {
     setValue(_value) {
         // Only first setValue will have a value
         if (_value)
-            this.originalDataType = check_1.default.getType(_value);
+            this.originalDataType = check.getType(_value);
         // Update this value to the current value
         let inputsValue = [];
         for (const inputElement of this.inputElements)
@@ -99,16 +96,16 @@ class NumberItem extends Item_1.Item {
     createInputs(value) {
         this.inputElements = [];
         // If value is a number, create one input
-        if (check_1.default.isNumber(value))
+        if (check.isNumber(value))
             this.inputElements.push(this.createInput(value));
         // If value is an array, create one input for each item
-        else if (check_1.default.isArray(value)) {
+        else if (check.isArray(value)) {
             for (const item of value) {
                 this.inputElements.push(this.createInput(item));
             }
         }
         // If value is an object, create one input for each key
-        else if (check_1.default.isObject(value)) {
+        else if (check.isObject(value)) {
             for (const key in value) {
                 const item = this.createInput(value[key]);
                 item.placeholder = key;
@@ -118,13 +115,13 @@ class NumberItem extends Item_1.Item {
     }
     createInputContent(inputElement) {
         // Create wrapper
-        inputElement.wrapper = (0, utils_1.el)('div', c.input);
+        inputElement.wrapper = el('div', c.input);
         // Create input
-        inputElement.input = (0, utils_1.el)('input');
+        inputElement.input = el('input');
         ;
         inputElement.input.type = 'number';
         inputElement.input.placeholder = inputElement.placeholder;
-        inputElement.input.classList.add(cssClasses_1.CSS_UI.item);
+        inputElement.input.classList.add(CSS_UI.item);
         if (this.min)
             inputElement.input.min = this.min.toString();
         if (this.max)
@@ -134,17 +131,17 @@ class NumberItem extends Item_1.Item {
         // Append input to wrapper
         inputElement.wrapper.appendChild(inputElement.input);
         // Create buttons
-        const btns = (0, utils_1.el)('div', c.buttons);
-        inputElement.buttonIncrease = (0, utils_1.el)('button', c.btnIncrease);
-        inputElement.buttonIncrease.innerHTML = ui_icons_1.uiDownarrowHlt;
-        inputElement.buttonDecrease = (0, utils_1.el)('button', c.btnDecrease);
-        inputElement.buttonDecrease.innerHTML = ui_icons_1.uiDownarrowHlt;
+        const btns = el('div', c.buttons);
+        inputElement.buttonIncrease = el('button', c.btnIncrease);
+        inputElement.buttonIncrease.innerHTML = uiDownarrowHlt;
+        inputElement.buttonDecrease = el('button', c.btnDecrease);
+        inputElement.buttonDecrease.innerHTML = uiDownarrowHlt;
         btns.appendChild(inputElement.buttonIncrease);
         btns.appendChild(inputElement.buttonDecrease);
         inputElement.wrapper.appendChild(btns);
         if (this.inputElements.length > 2) {
-            inputElement.buttonIncrease.classList.add(`.${cssClasses_1.CSS_UI.utility.hidden}`);
-            inputElement.buttonDecrease.classList.add(`.${cssClasses_1.CSS_UI.utility.hidden}`);
+            inputElement.buttonIncrease.classList.add(`.${CSS_UI.utility.hidden}`);
+            inputElement.buttonDecrease.classList.add(`.${CSS_UI.utility.hidden}`);
         }
         this.content.appendChild(inputElement.wrapper);
     }
@@ -158,4 +155,3 @@ class NumberItem extends Item_1.Item {
         }
     }
 }
-exports.NumberItem = NumberItem;

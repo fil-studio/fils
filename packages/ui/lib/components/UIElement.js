@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.UIElement = void 0;
-const EventsManager_1 = require("../partials/EventsManager");
-const dom_1 = require("../utils/dom");
-class UIElement extends EventsManager_1.EventsManager {
+import { EventsManager } from "../partials/EventsManager";
+import dom from "../utils/dom";
+export class UIElement extends EventsManager {
     constructor(type, title) {
         super();
         this.type = type;
@@ -24,7 +21,7 @@ class UIElement extends EventsManager_1.EventsManager {
     afterCreate() { }
     // Create ROW
     createDom() {
-        this.el = dom_1.default.createRow({
+        this.el = dom.createRow({
             type: this.type,
             depth: this.depth,
             title: this.title,
@@ -37,4 +34,3 @@ class UIElement extends EventsManager_1.EventsManager {
         this.el.remove();
     }
 }
-exports.UIElement = UIElement;

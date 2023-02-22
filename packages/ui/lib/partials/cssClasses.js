@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.CSS_UI = void 0;
-exports.CSS_UI = {
+export const CSS_UI = {
     baseClass: '_ui',
     wrapper: '_ui-wrapper',
     parent: '_ui-wrapper-has-parent',

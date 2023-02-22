@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.EventsManager = void 0;
-class EventsManager {
+export class EventsManager {
     constructor() {
         this.subscribers = {};
     }
@@ -17,4 +14,3 @@ class EventsManager {
         }
     }
 }
-exports.EventsManager = EventsManager;

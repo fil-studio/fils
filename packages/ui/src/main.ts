@@ -23,7 +23,7 @@ export * from './partials/RegisterBaseItems';
 export * from './partials/AvailableItems';
 
 export * from './utils/check';
-export * from './utils/css';
+// export * from './utils/css';
 export * from './utils/dom';
 
 

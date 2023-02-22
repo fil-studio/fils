@@ -1,12 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ColorItem = exports.ColorPanel = void 0;
-const color_1 = require("@fils/color");
-const utils_1 = require("@fils/utils");
-const main_1 = require("../../../main");
-const check_1 = require("../../../utils/check");
-const Panel_1 = require("../../Panel");
-const Item_1 = require("../Item");
+import { drawColorPickerBar, drawColorPickerSL, fixHex, hexToRgb, hsbToHex, rgbToHsb } from '@fils/color';
+import { el } from "@fils/utils";
+import { CSS_UI } from '../../../main';
+import check from "../../../utils/check";
+import { Panel } from "../../Panel";
+import { Item } from "../Item";
 const c = {
     type: 'color',
     input: '_ui-color-input',
@@ -17,27 +14,27 @@ const c = {
     target: '_ui-color-target',
     dragger: '_ui-color-dragger',
 };
-class ColorPanel extends Panel_1.Panel {
+export class ColorPanel extends Panel {
     constructor() {
         super(...arguments);
-        this.view = (0, utils_1.el)('div');
-        this.info = (0, utils_1.el)('div');
-        this.canvas1 = (0, utils_1.el)('canvas');
-        this.canvas2 = (0, utils_1.el)('canvas');
+        this.view = el('div');
+        this.info = el('div');
+        this.canvas1 = el('canvas');
+        this.canvas2 = el('canvas');
         this.width = 0;
         this.color = { h: 0, s: 0, b: 0 };
-        this.target = (0, utils_1.el)('div');
-        this.dragger = (0, utils_1.el)('div');
+        this.target = el('div');
+        this.dragger = el('div');
         this.dragging1 = false;
         this.dragging2 = false;
     }
     createPanelContent() {
-        this.view = (0, utils_1.el)('div', c.view, this.el);
-        this.info = (0, utils_1.el)('div', c.info, this.el);
-        this.target = (0, utils_1.el)('div', c.target, this.view);
-        this.dragger = (0, utils_1.el)('div', c.dragger, this.info);
-        this.canvas1 = (0, utils_1.el)('canvas', c.canvas, this.view);
-        this.canvas2 = (0, utils_1.el)('canvas', c.canvas, this.info);
+        this.view = el('div', c.view, this.el);
+        this.info = el('div', c.info, this.el);
+        this.target = el('div', c.target, this.view);
+        this.dragger = el('div', c.dragger, this.info);
+        this.canvas1 = el('canvas', c.canvas, this.view);
+        this.canvas2 = el('canvas', c.canvas, this.info);
         this.canvas1.width = this.canvas1.height = 200;
         this.canvas2.width = 200;
         this.canvas2.height = 20;
@@ -87,7 +84,7 @@ class ColorPanel extends Panel_1.Panel {
         });
     }
     reverseUpdate() {
-        this.color = (0, color_1.rgbToHsb)((0, color_1.hexToRgb)(this.parent.value));
+        this.color = rgbToHsb(hexToRgb(this.parent.value));
         this.width = this.view.getBoundingClientRect().width;
         let x = 0;
         let y = 0;
@@ -99,15 +96,15 @@ class ColorPanel extends Panel_1.Panel {
         // Canvas 2
         x = this.color.h * this.width / 360;
         this.dragger.style.left = `${x}px`;
-        (0, color_1.drawColorPickerSL)(this.canvas1, this.color.h);
-        (0, color_1.drawColorPickerBar)(this.canvas2);
+        drawColorPickerSL(this.canvas1, this.color.h);
+        drawColorPickerBar(this.canvas2);
     }
     update() {
         this.width = this.view.getBoundingClientRect().width;
-        (0, color_1.drawColorPickerSL)(this.canvas1, this.color.h);
-        (0, color_1.drawColorPickerBar)(this.canvas2);
+        drawColorPickerSL(this.canvas1, this.color.h);
+        drawColorPickerBar(this.canvas2);
         // Todo aqui update de l'Item parent
-        this.parent.setValue((0, color_1.hsbToHex)(this.color));
+        this.parent.setValue(hsbToHex(this.color));
     }
     updateCanvas1(x, y) {
         const r = this.canvas1.getBoundingClientRect();
@@ -127,12 +124,11 @@ class ColorPanel extends Panel_1.Panel {
         this.update();
     }
 }
-exports.ColorPanel = ColorPanel;
-class ColorItem extends Item_1.Item {
+export class ColorItem extends Item {
     constructor() {
         super(...arguments);
-        this.input = (0, utils_1.el)('input');
-        this.colorBox = (0, utils_1.el)('div');
+        this.input = el('input');
+        this.colorBox = el('div');
         this.panel = null;
     }
     afterCreate() {
@@ -154,20 +150,20 @@ class ColorItem extends Item_1.Item {
         });
     }
     createContent() {
-        this.colorBox = (0, utils_1.el)('div');
+        this.colorBox = el('div');
         this.colorBox.classList.add(c.box);
         this.content.appendChild(this.colorBox);
-        this.input = (0, utils_1.el)('input');
+        this.input = el('input');
         this.input.type = 'text';
         this.input.classList.add(c.input);
-        this.input.classList.add(main_1.CSS_UI.item);
+        this.input.classList.add(CSS_UI.item);
         this.content.appendChild(this.input);
     }
     setValue(value) {
-        if (check_1.default.isNull(value) || check_1.default.isUndefined(value) || value === '') {
+        if (check.isNull(value) || check.isUndefined(value) || value === '') {
             value = '#FFFFFF';
         }
-        value = (0, color_1.fixHex)(value);
+        value = fixHex(value);
         if (this.panel.created) {
             this.panel.reverseUpdate();
         }
@@ -179,4 +175,3 @@ class ColorItem extends Item_1.Item {
         super.refreshDom();
     }
 }
-exports.ColorItem = ColorItem;

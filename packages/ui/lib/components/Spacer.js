@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Spacer = exports.SpacerSize = void 0;
-const cssClasses_1 = require("../partials/cssClasses");
-const dom_1 = require("../utils/dom");
-const UIElement_1 = require("./UIElement");
+import { CSS_UI } from "../partials/cssClasses";
+import { RowTypes } from "../utils/dom";
+import { UIElement } from "./UIElement";
 /**
  * Spacer size options.
  *
@@ -13,20 +10,19 @@ const UIElement_1 = require("./UIElement");
  * @property {string} large - Large.
  * @default medium
  */
-var SpacerSize;
+export var SpacerSize;
 (function (SpacerSize) {
     SpacerSize["small"] = "Small";
     SpacerSize["medium"] = "Medium";
     SpacerSize["large"] = "Large";
-})(SpacerSize = exports.SpacerSize || (exports.SpacerSize = {}));
-class Spacer extends UIElement_1.UIElement {
+})(SpacerSize || (SpacerSize = {}));
+export class Spacer extends UIElement {
     constructor(depth, { size = SpacerSize.medium, line = true, }) {
-        super(dom_1.RowTypes.spacer);
-        this.type = dom_1.RowTypes.spacer;
+        super(RowTypes.spacer);
+        this.type = RowTypes.spacer;
         this.init(depth);
         if (line)
-            this.el.classList.add(cssClasses_1.CSS_UI.spacer.hasLine);
-        this.el.classList.add(cssClasses_1.CSS_UI.spacer.size[size.toLowerCase()]);
+            this.el.classList.add(CSS_UI.spacer.hasLine);
+        this.el.classList.add(CSS_UI.spacer.size[size.toLowerCase()]);
     }
 }
-exports.Spacer = Spacer;

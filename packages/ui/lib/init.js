@@ -1,13 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.InitUI = void 0;
-const RegisterBaseItems_1 = require("./partials/RegisterBaseItems");
-const css_1 = require("./utils/css");
+import { RegisterBaseComponents } from './partials/RegisterBaseItems';
+// import { UIInjectCSS } from './utils/css';
+import './bundle.min.css';
 let initialized = false;
-const InitUI = () => {
+export const InitUI = () => {
     if (initialized)
         return;
-    (0, RegisterBaseItems_1.RegisterBaseComponents)();
-    (0, css_1.UIInjectCSS)();
+    RegisterBaseComponents();
+    // UIInjectCSS();
 };
-exports.InitUI = InitUI;

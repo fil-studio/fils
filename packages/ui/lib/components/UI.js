@@ -1,18 +1,15 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.UI = void 0;
 // Import CSS
-const utils_1 = require("@fils/utils");
-const init_1 = require("../init");
-const cssClasses_1 = require("../partials/cssClasses");
-const dom_1 = require("../utils/dom");
-const Group_1 = require("./Group");
+import { el } from '@fils/utils';
+import { InitUI } from '../init';
+import { CSS_UI } from '../partials/cssClasses';
+import dom, { RowTypes } from '../utils/dom';
+import { Group } from './Group';
 // Injects styles and registers base components
-(0, init_1.InitUI)();
-class UI extends Group_1.Group {
+InitUI();
+export class UI extends Group {
     constructor({ resizable = true, parentElement, icon, width } = {}) {
         super(Object.assign({}, arguments[0]));
-        this.wrapper = (0, utils_1.el)('div');
+        this.wrapper = el('div');
         this.resizable = parentElement ? false : resizable;
         this.init(0);
         this.addIcon(icon);
@@ -23,7 +20,7 @@ class UI extends Group_1.Group {
     }
     appendTo(parentElement) {
         if (parentElement) {
-            this.wrapper.classList.add(cssClasses_1.CSS_UI.parent);
+            this.wrapper.classList.add(CSS_UI.parent);
             parentElement.appendChild(this.wrapper);
         }
         else {
@@ -33,12 +30,12 @@ class UI extends Group_1.Group {
     addIcon(icon) {
         if (!icon)
             return;
-        dom_1.default.addIcon(this.el.querySelector('header'), icon);
+        dom.addIcon(this.el.querySelector('header'), icon);
     }
     createDom() {
         super.createDom();
-        this.wrapper = dom_1.default.createRow({
-            type: dom_1.RowTypes.ui,
+        this.wrapper = dom.createRow({
+            type: RowTypes.ui,
             depth: this.depth,
         });
         this.wrapper.appendChild(this.el);
@@ -48,7 +45,7 @@ class UI extends Group_1.Group {
         if (!this.resizable)
             return;
         // Create resizer element
-        const resizer = (0, utils_1.el)('div', cssClasses_1.CSS_UI.resizer);
+        const resizer = el('div', CSS_UI.resizer);
         this.wrapper.appendChild(resizer);
         const resize = (w, x) => {
             if (x < 0 && w + x < 300)
@@ -81,4 +78,3 @@ class UI extends Group_1.Group {
         });
     }
 }
-exports.UI = UI;

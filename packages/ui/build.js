@@ -29,6 +29,12 @@ compileCss().then((css) => {
 		bundle: false,
 		sourcemap: false,
 		tsconfig: "tsconfig.json",
+		onEnd: (result) => {
+			const cssFile = 'bundle.min.css';
+			if (fs.existsSync(cssFile)) {
+				fs.copyFileSync(cssFile, `lib/${cssFile}`);
+			}
+		},
 		// plugins: [
 		// 	replace({
 		// 		'__css__': css

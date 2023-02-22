@@ -1,11 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.RangeItem = void 0;
-const math_1 = require("@fils/math");
-const utils_1 = require("@fils/utils");
-const cssClasses_1 = require("../../../partials/cssClasses");
-const check_1 = require("../../../utils/check");
-const Item_1 = require("../Item");
+import { MathUtils } from "@fils/math";
+import { el } from "@fils/utils";
+import { CSS_UI } from "../../../partials/cssClasses";
+import check from "../../../utils/check";
+import { Item } from "../Item";
 const c = {
     type: 'range',
     input: '_ui-range-input',
@@ -15,7 +12,7 @@ const c = {
     overExposeMax: '_ui-range-overexpose-max',
     thumb: '_ui-range-thumb',
 };
-class RangeItem extends Item_1.Item {
+export class RangeItem extends Item {
     constructor() {
         super(...arguments);
         this.max = 0;
@@ -50,18 +47,18 @@ class RangeItem extends Item_1.Item {
             if (t != this.thumb)
                 return;
             dragging = true;
-            this.thumb.classList.add(cssClasses_1.CSS_UI.utility.grab);
+            this.thumb.classList.add(CSS_UI.utility.grab);
             x = newX;
             const { width } = this.range.getBoundingClientRect();
-            originalValue = math_1.MathUtils.map(this.mappedValue, 0, 1, 0, width);
+            originalValue = MathUtils.map(this.mappedValue, 0, 1, 0, width);
         };
         const mouseMove = (newX) => {
             if (!dragging)
                 return;
             const movementDistance = originalValue + (newX - x);
             const { width } = this.range.getBoundingClientRect();
-            const newValueMapped = math_1.MathUtils.clamp(math_1.MathUtils.map(movementDistance, 0, width, 0, 1), 0, 1);
-            const newValue = math_1.MathUtils.map(newValueMapped, 0, 1, this.min, this.max);
+            const newValueMapped = MathUtils.clamp(MathUtils.map(movementDistance, 0, width, 0, 1), 0, 1);
+            const newValue = MathUtils.map(newValueMapped, 0, 1, this.min, this.max);
             this.setValue(newValue);
         };
         const mouseClick = (e) => {
@@ -70,8 +67,8 @@ class RangeItem extends Item_1.Item {
                 return;
             const { left, width } = this.range.getBoundingClientRect();
             const newPosition = e.clientX - left;
-            const newValueMapped = math_1.MathUtils.clamp(math_1.MathUtils.map(newPosition, 0, width, 0, 1), 0, 1);
-            const newValue = math_1.MathUtils.map(newValueMapped, 0, 1, this.min, this.max);
+            const newValueMapped = MathUtils.clamp(MathUtils.map(newPosition, 0, width, 0, 1), 0, 1);
+            const newValue = MathUtils.map(newValueMapped, 0, 1, this.min, this.max);
             this.setValue(newValue);
         };
         const reset = () => {
@@ -79,7 +76,7 @@ class RangeItem extends Item_1.Item {
                 return;
             dragging = false;
             x = 0;
-            this.thumb.classList.remove(cssClasses_1.CSS_UI.utility.grab);
+            this.thumb.classList.remove(CSS_UI.utility.grab);
         };
         this.range.addEventListener('click', (e) => {
             mouseClick(e);
@@ -92,7 +89,7 @@ class RangeItem extends Item_1.Item {
         window.addEventListener('touchend', () => reset());
     }
     get mappedValue() {
-        return math_1.MathUtils.clamp(math_1.MathUtils.map(this.value, this.min, this.max, 0, 1), 0, 1);
+        return MathUtils.clamp(MathUtils.map(this.value, this.min, this.max, 0, 1), 0, 1);
     }
     createContent() {
         this.max = this.params.max ? this.params.max : this.max;
@@ -106,10 +103,10 @@ class RangeItem extends Item_1.Item {
 				<div class="${c.thumb}"></div>
 			</div>
 		`;
-        this.input = (0, utils_1.el)('input');
+        this.input = el('input');
         this.input.type = 'number';
         this.input.placeholder = 'Value';
-        this.input.classList.add(cssClasses_1.CSS_UI.item);
+        this.input.classList.add(CSS_UI.item);
         if (this.min)
             this.input.setAttribute('min', this.min.toString());
         if (this.max)
@@ -124,7 +121,7 @@ class RangeItem extends Item_1.Item {
     setUpOverExpose() {
         const overExpose = this.params.overExpose || [0, 0];
         let limits = [0, 0];
-        if (!check_1.default.isArray(overExpose))
+        if (!check.isArray(overExpose))
             limits = [overExpose, overExpose];
         else
             limits = overExpose;
@@ -132,8 +129,8 @@ class RangeItem extends Item_1.Item {
         this.max = this.params.max ? this.params.max + limits[1] : limits[1];
         const overExposeEls = this.content.querySelectorAll(`.${c.overExpose}`);
         const distance = Math.abs(this.min - this.max);
-        const left = math_1.MathUtils.map(limits[0], 0, distance, 0, 1);
-        const right = math_1.MathUtils.map(limits[1], 0, distance, 0, 1);
+        const left = MathUtils.map(limits[0], 0, distance, 0, 1);
+        const right = MathUtils.map(limits[1], 0, distance, 0, 1);
         overExposeEls[0].style.setProperty('--size', `${left}`);
         overExposeEls[1].style.setProperty('--size', `${right}`);
     }
@@ -153,4 +150,3 @@ class RangeItem extends Item_1.Item {
         super.refreshDom();
     }
 }
-exports.RangeItem = RangeItem;
