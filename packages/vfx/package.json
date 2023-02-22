@@ -11,17 +11,20 @@
 	"private": false,
 	"scripts": {
 		"prepare": "yarn build",
-		"build": "tsc",
-		"postbuild": "node postbuild.js"
+		"build": "tsc && node postbuild.js"
 	},
 	"files": [
-		"lib",
-		"README.md"
+		"lib"
 	],
+	"devDependencies": {
+		"typescript": "^4.8.4"
+	},
 	"peerDependencies": {
 		"three": "^0.149.0"
 	},
-	"devDependencies": {
-		"typescript": "^4.8.4"
+	"dependencies": {
+		"@fils/gfx": "^0.0.8",
+		"@fils/io": "^0.0.4",
+		"@fils/math": "^0.0.8"
 	}
 }

@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,17 +7,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Nomad = void 0;
-const utils_1 = require("@fils/utils");
-const Page_1 = require("./Page");
-const utils_2 = require("./utils");
+import { el } from '@fils/utils';
+import { Page } from "./Page";
+import { Utils } from "./utils";
 const linkRule = 'a:not([target]):not([href^=\\#]):not([fil-nomad-ignore])';
-class Nomad {
+export class Nomad {
     constructor(createPage = (template, dom) => { return null; }) {
         this.createPage = createPage;
         // Init Utils
-        this.utils = new utils_2.Utils();
+        this.utils = new Utils();
         // State handlers
         this.isPopstate = false;
         this.inProgress = false;
@@ -40,7 +37,7 @@ class Nomad {
         const template = newPage.getAttribute('template');
         let newPageClass = this.createPage(template, newPage);
         if (!newPageClass)
-            newPageClass = new Page_1.Page(newPage);
+            newPageClass = new Page(newPage);
         this.createRoute(template, newPageClass);
     }
     // Routes handler
@@ -115,13 +112,13 @@ class Nomad {
             this.route.page.dispose();
             this.route.page.isActive = false;
             // Create html
-            const content = (0, utils_1.el)('div');
+            const content = el('div');
             content.innerHTML = html;
             // Create new Page & Route
             const newPage = content.querySelector('[template]');
             const template = newPage.getAttribute('template');
             let newPageClass = this.createPage(template, newPage);
-            newPageClass = newPageClass ? newPageClass : new Page_1.Page(newPage);
+            newPageClass = newPageClass ? newPageClass : new Page(newPage);
             this.createRoute(template, newPageClass, href);
             this.route.page.dom = newPage;
             this.route.page.isActive = true;
@@ -169,4 +166,3 @@ class Nomad {
         this.isPopstate = false;
     }
 }
-exports.Nomad = Nomad;

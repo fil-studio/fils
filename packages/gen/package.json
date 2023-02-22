@@ -14,9 +14,7 @@
 		"build": "tsc"
 	},
 	"files": [
-		"lib",
-		"examples",
-		"README.md"
+		"lib"
 	],
 	"devDependencies": {
 		"typescript": "^4.8.4"

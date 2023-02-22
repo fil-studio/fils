@@ -8,18 +8,16 @@
   "author": "fil studio <hello@fil.studio>",
   "license": "Apache-2.0",
   "scripts": {
-    "prepare": "npm run build",
+    "prepare": "yarn build",
     "build": "tsc"
   },
   "files": [
-    "lib",
-    "examples",
-    "README.md"
+    "lib"
   ],
   "devDependencies": {
     "typescript": "^4.5.4"
   },
   "dependencies": {
-    "@fils/math": "^0.0.4"
+    "@fils/math": "^0.0.8"
   }
 }

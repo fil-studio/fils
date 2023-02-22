@@ -9,12 +9,11 @@
   "main": "lib/main.js",
   "typings": "lib/main.d.ts",
   "scripts": {
-    "prepare": "npm run build",
+    "prepare": "yarn build",
     "build": "tsc"
   },
   "files": [
-    "lib",
-    "README.md"
+    "lib"
   ],
   "dependencies": {
     "mersenne": "^0.0.4"

@@ -13,14 +13,12 @@
 		"build": "tsc"
 	},
 	"files": [
-		"lib",
-		"README.md"
+		"lib"
 	],
 	"devDependencies": {
 		"typescript": "^4.5.2"
 	},
-	"publishConfig": {
-		"access": "public",
-		"registry": "https://registry.npmjs.org/"
+	"dependencies": {
+		"@fils/math": "^0.0.8"
 	}
 }

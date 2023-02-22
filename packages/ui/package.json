@@ -8,18 +8,21 @@
 	"author": "fil studio <hello@fil.studio>",
 	"license": "Apache-2.0",
 	"scripts": {
-		"build": "tsc && node build.js",
-		"dev": "chokidar 'src/scss/**/*.scss' -c 'sass src/scss/main.scss:src/bundle/bundle.css && cleancss -o src/bundle/bundle.min.css src/bundle/bundle.css && echo \"scss compiled\"'"
+		"prepare": "yarn build",
+		"build": "tsc && node build.js"
 	},
 	"files": [
 		"lib"
 	],
 	"devDependencies": {
-		"chokidar-cli": "^3.0.0",
 		"clean-css": "^5.3.2",
-		"clean-css-cli": "^5.6.2",
 		"sass": "^1.57.1",
 		"typescript": "^4.9.5"
 	},
-	"dependencies": {}
+	"dependencies": {
+		"@fils/color": "^0.0.9",
+		"@fils/math": "^0.0.8",
+		"@fils/ui-icons": "^0.0.12",
+		"@fils/utils": "^0.0.8"
+	}
 }

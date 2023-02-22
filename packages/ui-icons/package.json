@@ -8,14 +8,12 @@
 	"license": "Apactudio/fils.git",
 	"homepage": "https://github.com/fil-studio/fils/tree/main/packages/ui-he-2.0",
 	"scripts": {
-		"prepare": "npm run build",
+		"prepare": "yarn build",
 		"create-icons": "node create-icons.js",
 		"build": "npm run create-icons && tsc"
 	},
 	"files": [
-		"lib",
-		"README.md",
-		"package.json"
+		"lib"
 	],
 	"devDependencies": {
 		"typescript": "^4.8.4"

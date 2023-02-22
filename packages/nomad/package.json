@@ -12,19 +12,13 @@
 		"prepare": "yarn build",
 		"build": "tsc --build tsconfig.json"
 	},
-	"type": "module",
 	"files": [
-		"lib",
-		"README.md"
+		"lib"
 	],
 	"devDependencies": {
 		"typescript": "^4.5.2"
 	},
-	"publishConfig": {
-		"access": "public",
-		"registry": "https://registry.npmjs.org/"
-	},
 	"dependencies": {
-		"@fils/utils": "^0.0.6"
+		"@fils/utils": "^0.0.8"
 	}
 }

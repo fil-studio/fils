@@ -8,7 +8,6 @@ export const css = {
         const style = document.createElement('style');
         style.innerHTML = css;
         document.head.appendChild(style);
-        console.log('Fil UI CSS Injected');
     }
 };
 export const UIInjectCSS = () => {
