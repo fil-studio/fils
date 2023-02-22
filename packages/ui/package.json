@@ -9,13 +9,12 @@
 	"license": "Apache-2.0",
 	"scripts": {
 		"prepare": "npm run build",
-		"build": "node build.js && tsc",
-		"dev": "chokidar 'src/scss/**/*.scss' -c 'sass src/scss/main.scss:src/bundle/bundle.css && cleancss -o src/bundle/bundle.min.css src/bundle/bundle.css && echo \"scss compiled\"'"
+		"build": "node build.js && tsc && cp src/bundle/bundle.css lib/",
+		"dev": "chokidar 'src/scss/**/*.scss' -c 'sass src/scss/main.scss:src/bundle/bundle.css && cleancss -o src/bundle/bundle.min.css src/bundle/bundle.css && cp src/bundle/bundle.css lib/ && echo \"scss compiled\"'"
 	},
 	"files": [
 		"lib",
-		"README.md",
-		"package.json"
+		"src/bundle/bundle.css"
 	],
 	"devDependencies": {
 		"chokidar-cli": "^3.0.0",
@@ -24,6 +23,7 @@
 		"esbuild": "^0.17.8",
 		"esbuild-plugin-d.ts": "^1.1.0",
 		"esbuild-plugin-replace": "^1.3.0",
+		"fs-extra": "^11.1.0",
 		"glob": "^8.1.0",
 		"sass": "^1.57.1",
 		"typescript": "^4.9.5"

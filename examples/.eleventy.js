@@ -89,11 +89,11 @@ if(!isProduction) {
 
   }
 
-  chokidar.watch('../packages').on('change', (eventType, file) => {
-    console.log(`Package Updated [${eventType}]`);
-    buildAllCSS();
-    buildAllJS();
-  });
+  // chokidar.watch('../packages').on('change', (eventType, file) => {
+  //   console.log(`Package Updated [${eventType}]`);
+  //   buildAllCSS();
+  //   buildAllJS();
+  // });
 
 }
 

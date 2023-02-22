@@ -15,6 +15,8 @@ async function compileCss() {
 
 	const minified = new CleanCSS().minify(css).styles;
 
+	// to-do: en compilar el bundle s'hauria de copiar a lib també
+
 	return minified;
 }
 
@@ -27,10 +29,10 @@ compileCss().then((css) => {
 		bundle: false,
 		sourcemap: false,
 		tsconfig: "tsconfig.json",
-		plugins: [
-			replace({
-				'__css__': css
-			}),
-		]
+		// plugins: [
+		// 	replace({
+		// 		'__css__': css
+		// 	}),
+		// ]
 	})
 })
