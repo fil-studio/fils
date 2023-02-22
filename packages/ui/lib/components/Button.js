@@ -1,18 +1,15 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Button = void 0;
-const main_1 = require("../main");
-const dom_1 = require("../utils/dom");
-const UIElement_1 = require("./UIElement");
-class Button extends UIElement_1.UIElement {
+import { CSS_UI } from "../main";
+import { RowTypes } from "../utils/dom";
+import { UIElement } from "./UIElement";
+export class Button extends UIElement {
     constructor({ title } = {}) {
         const _title = title || 'Button';
-        super(dom_1.RowTypes.button, _title);
+        super(RowTypes.button, _title);
     }
     createDom() {
         super.createDom();
         this.button = this.el.querySelector('button');
-        this.button.classList.add(main_1.CSS_UI.item);
+        this.button.classList.add(CSS_UI.item);
     }
     addEventListeners() {
         this.button.addEventListener('click', () => {
@@ -20,4 +17,3 @@ class Button extends UIElement_1.UIElement {
         });
     }
 }
-exports.Button = Button;

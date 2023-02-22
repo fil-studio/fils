@@ -1,7 +1,6 @@
 
-const styles = `__css__`;
-// import styles from '../../../src/bundle/bundle.css';
 
+const styles = `__css__`;
 
 let injected = false;
 
@@ -17,6 +16,5 @@ export const css = {
 }
 
 export const UIInjectCSS = () => {
-
 	css.inject(styles);
 }

@@ -1,12 +1,10 @@
 
+const fs = require('fs');
+const path = require('path');
 const sass = require('sass');
 const CleanCSS = require('clean-css');
-const { replace } = require('esbuild-plugin-replace');
 
-const { build } = require("esbuild");
-
-const glob = require("glob");
-const entryPoints = glob.sync("./src/**/*.ts");
+const searchString = '__css__';
 
 async function compileCss() {
 
@@ -15,24 +13,35 @@ async function compileCss() {
 
 	const minified = new CleanCSS().minify(css).styles;
 
-	// to-do: en compilar el bundle s'hauria de copiar a lib també
-
 	return minified;
 }
 
-compileCss().then((css) => {
+function replaceStringInFile(filePath, css) {
+	const fileContents = fs.readFileSync(filePath, 'utf8');
+	const newFileContents = fileContents.replace(searchString, css);
+	fs.writeFileSync(filePath, newFileContents);
+}
 
-	build({
-		entryPoints,
-		outdir: "lib",
-		minify: false,
-		bundle: false,
-		sourcemap: false,
-		tsconfig: "tsconfig.json",
-		// plugins: [
-		// 	replace({
-		// 		'__css__': css
-		// 	}),
-		// ]
-	})
+function processFile(filePath, css) {
+	if (filePath.endsWith('.js') || filePath.endsWith('.d.ts')) {
+		replaceStringInFile(filePath, css);
+	}
+}
+
+function processDirectory(directoryPath, css) {
+	const files = fs.readdirSync(directoryPath);
+	for (const file of files) {
+		const filePath = path.join(directoryPath, file);
+		const stat = fs.statSync(filePath);
+		if (stat.isDirectory()) {
+			processDirectory(filePath, css);
+		} else {
+			processFile(filePath, css);
+		}
+	}
+}
+
+
+compileCss().then((css) => {
+	processDirectory('./lib', css);
 })

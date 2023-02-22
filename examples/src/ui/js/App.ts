@@ -1,4 +1,6 @@
 import { UI } from '@fils/ui';
+
+
 // import { UI } from '../../../../packages/ui/src/main';
 import { uiBrushData } from '@fils/ui-icons';
 
@@ -205,6 +207,6 @@ export class App {
 			console.log('Button Test g2');
 		});
 
-		console.log('UI', this.ui);
+		// console.log('UI', this.ui);
 	}
 }

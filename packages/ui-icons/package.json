@@ -1,8 +1,8 @@
 {
 	"name": "@fils/ui-icons",
-	"version": "0.0.11",
+	"version": "0.0.12",
 	"description": "UI Icons Package written in TypeScript",
-	"module": "lib/main.js",
+	"main": "lib/main.js",
 	"repository": "git@github.com:fil-sicons",
 	"author": "fil studio <hello@fil.studio>",
 	"license": "Apactudio/fils.git",

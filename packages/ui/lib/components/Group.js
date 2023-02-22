@@ -1,16 +1,13 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Group = void 0;
-const utils_1 = require("@fils/utils");
-const cssClasses_1 = require("../partials/cssClasses");
-const ItemFactory_1 = require("../partials/ItemFactory");
-const dom_1 = require("../utils/dom");
-const Button_1 = require("./Button");
-const Spacer_1 = require("./Spacer");
-const UIElement_1 = require("./UIElement");
-class Group extends UIElement_1.UIElement {
+import { el } from "@fils/utils";
+import { CSS_UI } from "../partials/cssClasses";
+import { ItemFactory } from "../partials/ItemFactory";
+import { RowTypes } from "../utils/dom";
+import { Button } from "./Button";
+import { Spacer } from "./Spacer";
+import { UIElement } from "./UIElement";
+export class Group extends UIElement {
     constructor({ title, folded = false, foldable = true, }) {
-        super(dom_1.RowTypes.group, title);
+        super(RowTypes.group, title);
         this.children = [];
         this.height = 0;
         // Is it folded or not? If it's not foldable, it's not folded
@@ -19,13 +16,13 @@ class Group extends UIElement_1.UIElement {
     }
     createDom() {
         super.createDom();
-        this.content = this.el.querySelector(`.${cssClasses_1.CSS_UI.section.content}`);
+        this.content = this.el.querySelector(`.${CSS_UI.section.content}`);
     }
     addEventListeners() {
         if (!this.foldable)
             return;
-        this.el.classList.add(cssClasses_1.CSS_UI.section.foldable);
-        this.foldWrapper = (0, utils_1.el)('div', cssClasses_1.CSS_UI.section.foldableElement);
+        this.el.classList.add(CSS_UI.section.foldable);
+        this.foldWrapper = el('div', CSS_UI.section.foldableElement);
         this.el.appendChild(this.foldWrapper);
         this.foldWrapper.appendChild(this.content);
         const header = this.el.querySelector('header');
@@ -46,9 +43,9 @@ class Group extends UIElement_1.UIElement {
         // Just go with it, without the timeout, it doesn't work
         setTimeout(() => {
             if (this.folded)
-                this.el.classList.add(cssClasses_1.CSS_UI.section.folded);
+                this.el.classList.add(CSS_UI.section.folded);
             else
-                this.el.classList.remove(cssClasses_1.CSS_UI.section.folded);
+                this.el.classList.remove(CSS_UI.section.folded);
         }, 5);
         if (!this.folded) {
             const d = parseFloat(getComputedStyle(this.foldWrapper).transitionDuration) * 1000;
@@ -67,7 +64,7 @@ class Group extends UIElement_1.UIElement {
      * @returns {Button} The newly created button element.
      */
     addButton(title = 'Button') {
-        const button = new Button_1.Button({ title });
+        const button = new Button({ title });
         if (button) {
             button.init(this.depth + 1);
             this.content.appendChild(button.el);
@@ -101,7 +98,7 @@ class Group extends UIElement_1.UIElement {
      * @default true
      */
     addSpacer(params = {}) {
-        const spacer = new Spacer_1.Spacer(this.depth + 1, params);
+        const spacer = new Spacer(this.depth + 1, params);
         if (spacer && spacer.el)
             this.content.appendChild(spacer.el);
     }
@@ -124,7 +121,7 @@ class Group extends UIElement_1.UIElement {
     */
     addItem(object, key, params) {
         const createItemParams = { object, key, params };
-        const item = (0, ItemFactory_1.ItemFactory)(createItemParams);
+        const item = ItemFactory(createItemParams);
         console.log(item);
         if (item) {
             item.on('__childrenChange', () => {
@@ -140,4 +137,3 @@ class Group extends UIElement_1.UIElement {
         this.emit('change', target);
     }
 }
-exports.Group = Group;

@@ -1,37 +1,33 @@
-"use strict";
 /*
  * File Utils
  *
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.openFileImportDialog = exports.addFileDropHandler = exports.downloadFile = void 0;
-var downloadFile = function (cnt, filename) {
-    var link = document.createElement('a');
+export const downloadFile = (cnt, filename) => {
+    const link = document.createElement('a');
     link.style.display = 'none';
     document.body.appendChild(link);
-    var binary = typeof cnt != "string";
-    var blob = binary ? new Blob([cnt]) : new Blob([cnt], { type: 'text/plain' });
+    const binary = typeof cnt != "string";
+    const blob = binary ? new Blob([cnt]) : new Blob([cnt], { type: 'text/plain' });
     link.href = URL.createObjectURL(blob);
     link.download = filename;
     link.click();
     document.body.removeChild(link);
 };
-exports.downloadFile = downloadFile;
-var addFileDropHandler = function (el, dropHandler, overHandler, leaveHandler) {
-    el.addEventListener("dragover", function (ev) {
+export const addFileDropHandler = (el, dropHandler, overHandler, leaveHandler) => {
+    el.addEventListener("dragover", (ev) => {
         ev.preventDefault();
         if (overHandler !== undefined)
             overHandler(ev);
     });
-    el.addEventListener("dragleave", function (ev) {
+    el.addEventListener("dragleave", (ev) => {
         ev.preventDefault();
         if (leaveHandler !== undefined)
             leaveHandler(ev);
     });
-    el.addEventListener("drop", function (ev) {
+    el.addEventListener("drop", (ev) => {
         ev.preventDefault();
         if (ev.dataTransfer != null && ev.dataTransfer.items) {
-            var files = [];
+            const files = [];
             // Use DataTransferItemList interface to access the file(s)
             for (var i = 0; i < ev.dataTransfer.items.length; i++) {
                 // If dropped items aren't files, reject them
@@ -48,12 +44,9 @@ var addFileDropHandler = function (el, dropHandler, overHandler, leaveHandler) {
         }
     });
 };
-exports.addFileDropHandler = addFileDropHandler;
-var openFileImportDialog = function (accept, multiple) {
-    if (accept === void 0) { accept = ""; }
-    if (multiple === void 0) { multiple = false; }
+export const openFileImportDialog = (accept = "", multiple = false) => {
     // Create an input element
-    var input = document.createElement('input');
+    const input = document.createElement('input');
     // Set the type of the input element to "file"
     input.type = 'file';
     input.accept = accept;
@@ -66,4 +59,3 @@ var openFileImportDialog = function (accept, multiple) {
     document.body.removeChild(input);
     return input;
 };
-exports.openFileImportDialog = openFileImportDialog;

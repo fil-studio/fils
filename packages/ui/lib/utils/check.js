@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const check = {
     isUndefined: function (obj) {
         return obj === undefined;
@@ -47,4 +45,4 @@ const check = {
             return 'function';
     }
 };
-exports.default = check;
+export default check;
