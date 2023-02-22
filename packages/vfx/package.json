@@ -11,12 +11,10 @@
 	"private": false,
 	"scripts": {
 		"prepare": "yarn build",
-		"build": "tsc",
-		"postbuild": "node postbuild.js"
+		"build": "tsc && node postbuild.js"
 	},
 	"files": [
-		"lib",
-		"README.md"
+		"lib"
 	],
 	"devDependencies": {
 		"typescript": "^4.8.4"

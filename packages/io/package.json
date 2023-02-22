@@ -12,14 +12,13 @@
 		"build": "tsc"
 	},
 	"files": [
-		"lib",
-		"examples",
-		"README.md"
+		"lib"
 	],
-	"dependencies": {
-		"three": "^0.149.0"
-	},
+	"dependencies": {},
 	"devDependencies": {
 		"typescript": "^4.8.4"
+	},
+	"peerDependencies": {
+		"three": "^0.149.0"
 	}
 }

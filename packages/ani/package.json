@@ -16,23 +16,10 @@
     "build": "tsc"
   },
   "files": [
-    "lib",
-    "examples",
-    "README.md"
+    "lib"
   ],
   "devDependencies": {
     "typescript": "^4.5.2"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
-  },
-  "types": "./lib/main.d.ts",
-  "bugs": {
-    "url": "https://github.com/fil-studio/fils/issues"
-  },
-  "directories": {
-    "lib": "lib"
   },
   "keywords": [
     "typescript",

@@ -8,7 +8,7 @@
 	"license": "Apache-2.0",
 	"main": "lib/main.js",
 	"scripts": {
-		"prepare": "npm run build",
+		"prepare": "yarn build",
 		"build": "tsc"
 	},
 	"files": [
