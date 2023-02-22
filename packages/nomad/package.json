@@ -2,7 +2,7 @@
 	"name": "@fils/nomad",
 	"version": "0.0.6",
 	"description": "Routing - Transitions Manager Package written in TypeScript",
-	"module": "lib/main.js",
+	"main": "lib/main.js",
 	"repository": "git@github.com:fil-studio/fils.git",
 	"homepage": "https://github.com/fil-studio/fils/tree/main/packages/nomad",
 	"author": "fil studio <hello@fil.studio>",

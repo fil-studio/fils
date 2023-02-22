@@ -1,5 +1,4 @@
 import { UI } from '@fils/ui';
-import '@fils/ui/bundle.min.css';
 
 
 // import { UI } from '../../../../packages/ui/src/main';

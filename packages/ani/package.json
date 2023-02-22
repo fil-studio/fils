@@ -2,7 +2,7 @@
   "name": "@fils/ani",
   "version": "0.0.5",
   "description": "Animation Package written in TypeScript",
-  "module": "lib/main.js",
+  "main": "lib/main.js",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/fil-studio/fils.git"

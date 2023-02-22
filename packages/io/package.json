@@ -2,7 +2,7 @@
 	"name": "@fils/io",
 	"version": "0.0.4",
 	"description": "Web Assets Package written in TypeScript",
-	"module": "lib/main.js",
+	"main": "lib/main.js",
 	"repository": "git@github.com:fil-studio/fils.git",
 	"homepage": "https://github.com/fil-studio/fils/tree/main/packages/io",
 	"author": "fil studio <hello@fil.studio>",
