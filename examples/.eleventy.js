@@ -1,12 +1,14 @@
 const sass = require('sass');
 const CleanCSS = require('clean-css');
 const fs = require('fs');
+const path = require('path');
 const process = require('process');
 const esbuild = require('esbuild');
 const alias = require('esbuild-plugin-alias');
 const chokidar = require('chokidar');
 
 const syntaxHighlight = require("@11ty/eleventy-plugin-syntaxhighlight");
+const { exec } = require('child_process');
 
 const isProduction = process.env.ELEVENTY_ENV === 'production';
 
@@ -89,11 +91,13 @@ if(!isProduction) {
 
   }
 
-  // chokidar.watch('../packages').on('change', (eventType, file) => {
-  //   console.log(`Package Updated [${eventType}]`);
-  //   buildAllCSS();
-  //   buildAllJS();
-  // });
+  console.log('Watching packages');
+  chokidar.watch(`../packages/*/src/**/*`).on('change', (path) => {
+    const packageDir = path.split('/src/')[0];
+
+    exec(`cd ${packageDir} && yarn build`);
+    console.log(`Updated package ${packageDir}`);
+  });
 
 }
 
