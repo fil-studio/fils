@@ -24,10 +24,11 @@ svgFiles.forEach(file => {
 });
 
 // write the object to a JSON file
-const exportString = `
-	const icons = ${JSON.stringify(svgContent)};
-	export const { ${namesList.join(', ')} } = icons;
+let exportString = ``;
+for(const name of namesList) {
+	exportString += `export const ${name} = \`${svgContent[name]}\`;
 `;
+}
 fs.writeFileSync(tsPath, exportString);
 
 console.log(`ICONS REGENERATED`);
