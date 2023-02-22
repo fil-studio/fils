@@ -21,5 +21,10 @@
 	},
 	"peerDependencies": {
 		"three": "^0.149.0"
+	},
+	"dependencies": {
+		"@fils/gfx": "^0.0.8",
+		"@fils/io": "^0.0.4",
+		"@fils/math": "^0.0.8"
 	}
 }

@@ -20,6 +20,6 @@
 		"typescript": "^4.8.4"
 	},
 	"dependencies": {
-		"@fils/math": "^0.0.3"
+		"@fils/math": "^0.0.8"
 	}
 }

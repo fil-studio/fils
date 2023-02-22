@@ -2,44 +2,6 @@
 # yarn lockfile v1
 
 
-<<<<<<< HEAD
-=======
-"@fils/gfx@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@fils/gfx/-/gfx-0.0.6.tgz#95b8295e78099787cc831d1d06e42eb916f50cca"
-  integrity sha512-/ErVwiqATgpbcSx1KToWBCIPEKrreZEPGLC9JNm80Ql1E6Qn3eLwe9eq/hmbrL/9p4bG0G0Y7lSeXSHhXIcAjw==
-  dependencies:
-    "@fils/io" "^0.0.3"
-    "@fils/math" "^0.0.3"
-    three "^0.149.0"
-
-"@fils/io@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@fils/io/-/io-0.0.3.tgz#d2c0c7948170533df2234e977bf735d40dc65aa1"
-  integrity sha512-09JxQjdXmN+qxNOErtvp5+NUOAx+ESrJO52M3JgUHAKsdBOvYPn2H2xTUyvZqjixrJc+bz7cvCY7yVdi6kOjlA==
-  dependencies:
-    three "^0.149.0"
-
->>>>>>> 6175d0f (VFX dependencies)
-"@fils/math@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@fils/math/-/math-0.0.3.tgz#4fc07c105754ed1fa9e301ead46d3831fbb34862"
-  integrity sha512-hKvrpruVkMGoMYHcoZFNalc3s4q+i7ZtiftESu5HgVoY2Es5/yA4IyChKn/2I8jwoTIwF6kJyu256WaQ81bTuA==
-  dependencies:
-    mersenne "^0.0.4"
-
-"@fils/math@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@fils/math/-/math-0.0.4.tgz#96251cadab220f75f80304867ccf020c3eea93ee"
-  integrity sha512-Ghs/ZeE6vwChCAOEGCGgPc9i6v2ygcAOF4AL8OCOkqfwo5tzE6oouhaK+P//jGAiP2ia6zgeE1rAezMjhXfpdw==
-  dependencies:
-    mersenne "^0.0.4"
-
-"@fils/utils@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@fils/utils/-/utils-0.0.6.tgz#d5f8389c1e82d671ca11b01b904cd0f21b13fabc"
-  integrity sha512-kSwU6tS98IwGLtRBj8yZpFw7ANculllSJyoreDVvtLpHwaL2wwWCZ2nRHUMcbXnvfvq47TII1t0ISNggaNcz8w==
-
 anymatch@~3.1.2:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/anymatch/-/anymatch-3.1.3.tgz#790c58b19ba1720a84205b57c618d5ad8524973e"

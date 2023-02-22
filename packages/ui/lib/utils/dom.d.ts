@@ -11,8 +11,8 @@ interface DomOptions {
     title?: string;
 }
 declare const dom: {
-    createButton: (title: string, icon?: string) => HTMLElement;
-    createRow: ({ type, depth, title, }?: DomOptions) => HTMLElement;
+    createButton: (title: string, icon?: string) => any;
+    createRow: ({ type, depth, title, }?: DomOptions) => any;
     addIcon: (header: HTMLElement, icon?: string) => void;
 };
 export default dom;
