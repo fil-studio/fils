@@ -131,6 +131,13 @@
   dependencies:
     mersenne "^0.0.4"
 
+"@fils/math@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@fils/math/-/math-0.0.4.tgz#96251cadab220f75f80304867ccf020c3eea93ee"
+  integrity sha512-Ghs/ZeE6vwChCAOEGCGgPc9i6v2ygcAOF4AL8OCOkqfwo5tzE6oouhaK+P//jGAiP2ia6zgeE1rAezMjhXfpdw==
+  dependencies:
+    mersenne "^0.0.4"
+
 "@fils/utils@^0.0.6":
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/@fils/utils/-/utils-0.0.6.tgz#d5f8389c1e82d671ca11b01b904cd0f21b13fabc"

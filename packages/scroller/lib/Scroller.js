@@ -1,15 +1,12 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Scroller = exports.D = void 0;
-const math_1 = require("@fils/math");
-const Section_1 = require("./Section");
-var D;
+import { MathUtils } from "@fils/math";
+import { Section } from "./Section";
+export var D;
 (function (D) {
     D[D["TOP"] = 0] = "TOP";
     D[D["BOTTOM"] = 1] = "BOTTOM";
     D[D["LEFT"] = 2] = "LEFT";
     D[D["RIGHT"] = 3] = "RIGHT";
-})(D = exports.D || (exports.D = {}));
+})(D || (D = {}));
 const style = `
 	[fil-scroller-parent],
 	[fil-scroller-parent] body {
@@ -74,7 +71,7 @@ const style = `
 		position: relative;
 	}
 `;
-class Scroller {
+export class Scroller {
     constructor() {
         this.html = {
             scroller: null,
@@ -163,7 +160,7 @@ class Scroller {
         for (let i = 0, len = sections.length; i < len; i++) {
             const _section = sections[i];
             const id = _section.getAttribute('fil-scroller-section') ? _section.getAttribute('fil-scroller-section') : `section-${i}`;
-            const section = new Section_1.Section(id, _section, this.direction);
+            const section = new Section(id, _section, this.direction);
             this.sections.push(section);
         }
     }
@@ -234,10 +231,10 @@ class Scroller {
             this.position.current = this.position.target;
         }
         else {
-            this.position.current = math_1.MathUtils.lerp(this.position.current, this.position.target, this.ease);
+            this.position.current = MathUtils.lerp(this.position.current, this.position.target, this.ease);
         }
         const newDelta = (this.position.current - previous) * 0.01;
-        this.delta = math_1.MathUtils.clamp(math_1.MathUtils.lerp(this.delta, newDelta, 0.1), -1, 1);
+        this.delta = MathUtils.clamp(MathUtils.lerp(this.delta, newDelta, 0.1), -1, 1);
     }
     updateSections() {
         const scroll = this.position.current;
@@ -260,4 +257,3 @@ class Scroller {
         this.updateSections();
     }
 }
-exports.Scroller = Scroller;

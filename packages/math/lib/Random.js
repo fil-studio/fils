@@ -1,31 +1,28 @@
-"use strict";
 /*
  * Better Random number generator thanks to mersenne
  * https://www.npmjs.com/package/mersenne
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Random = void 0;
-const mersenne_1 = require("mersenne");
-class Random {
+import mersenne from 'mersenne';
+export class Random {
     /*
      * Keep constructor for backwards compatibility
      * DEPRECATED
      */
     constructor(seed = 0) {
-        mersenne_1.default.seed(seed);
+        mersenne.seed(seed);
     }
     /*
      * Set generator's seed
      */
     static seed(seed) {
-        mersenne_1.default.seed(seed);
+        mersenne.seed(seed);
     }
     /*
      * Returns number from 0 to 1
      */
     static random() {
         let N = 1000;
-        return mersenne_1.default.rand(N) / (N - 1);
+        return mersenne.rand(N) / (N - 1);
     }
     /*
      * returns random integer from min to max
@@ -66,4 +63,3 @@ class Random {
         return arr;
     }
 }
-exports.Random = Random;

@@ -1,10 +1,7 @@
-"use strict";
 /*
  * Math Utils
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.MathUtils = void 0;
-class MathUtils {
+export class MathUtils {
     static clamp(v, min, max) {
         return Math.min(max, Math.max(min, v));
     }
@@ -31,4 +28,3 @@ class MathUtils {
         return n % 1;
     }
 }
-exports.MathUtils = MathUtils;

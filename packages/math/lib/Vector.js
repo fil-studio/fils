@@ -1,12 +1,9 @@
-"use strict";
 /*
  * Abstract Vec2 & Vec3 Classes for phy package
  * To remove THREE core dependency
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Vec = void 0;
-const MathUtils_1 = require("./MathUtils");
-class Vec {
+import { MathUtils } from './MathUtils';
+export class Vec {
     constructor(x = 0, y = 0, z = 0) {
         this.x = x;
         this.y = y;
@@ -61,9 +58,9 @@ class Vec {
         return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
     }
     lerp(target, alpha) {
-        this.x = MathUtils_1.MathUtils.lerp(this.x, target.x, alpha);
-        this.y = MathUtils_1.MathUtils.lerp(this.y, target.y, alpha);
-        this.z = MathUtils_1.MathUtils.lerp(this.z, target.z, alpha);
+        this.x = MathUtils.lerp(this.x, target.x, alpha);
+        this.y = MathUtils.lerp(this.y, target.y, alpha);
+        this.z = MathUtils.lerp(this.z, target.z, alpha);
         return this;
     }
     equals(v) {
@@ -85,4 +82,3 @@ class Vec {
         return this;
     }
 }
-exports.Vec = Vec;

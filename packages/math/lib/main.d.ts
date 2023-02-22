@@ -1,4 +1,3 @@
-import { Random } from './Random';
-import { MathUtils } from './MathUtils';
-import { Vec } from './Vector';
-export { Random, MathUtils, Vec };
+export * from './Random';
+export * from './MathUtils';
+export * from './Vector';
