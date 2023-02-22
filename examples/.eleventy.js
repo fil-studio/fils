@@ -94,7 +94,7 @@ if(!isProduction) {
   console.log('Watching packages');
   chokidar.watch(`../packages/*/src/**/*`).on('change', (path) => {
     const packageDir = path.split('/src/')[0];
-
+    console.log(packageDir);
     exec(`cd ${packageDir} && yarn build`);
     console.log(`Updated package ${packageDir}`);
   });
