@@ -2,6 +2,25 @@
 # yarn lockfile v1
 
 
+<<<<<<< HEAD
+=======
+"@fils/gfx@^0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@fils/gfx/-/gfx-0.0.6.tgz#95b8295e78099787cc831d1d06e42eb916f50cca"
+  integrity sha512-/ErVwiqATgpbcSx1KToWBCIPEKrreZEPGLC9JNm80Ql1E6Qn3eLwe9eq/hmbrL/9p4bG0G0Y7lSeXSHhXIcAjw==
+  dependencies:
+    "@fils/io" "^0.0.3"
+    "@fils/math" "^0.0.3"
+    three "^0.149.0"
+
+"@fils/io@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@fils/io/-/io-0.0.3.tgz#d2c0c7948170533df2234e977bf735d40dc65aa1"
+  integrity sha512-09JxQjdXmN+qxNOErtvp5+NUOAx+ESrJO52M3JgUHAKsdBOvYPn2H2xTUyvZqjixrJc+bz7cvCY7yVdi6kOjlA==
+  dependencies:
+    three "^0.149.0"
+
+>>>>>>> 6175d0f (VFX dependencies)
 "@fils/math@^0.0.3":
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/@fils/math/-/math-0.0.3.tgz#4fc07c105754ed1fa9e301ead46d3831fbb34862"

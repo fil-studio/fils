@@ -18,10 +18,10 @@
 		"lib",
 		"README.md"
 	],
-	"peerDependencies": {
-		"three": "^0.149.0"
-	},
 	"devDependencies": {
 		"typescript": "^4.8.4"
+	},
+	"peerDependencies": {
+		"three": "^0.149.0"
 	}
 }
