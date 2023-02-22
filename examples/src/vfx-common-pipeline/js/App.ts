@@ -6,17 +6,18 @@ import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 import { RTUtils, WebGLSketch } from '@fils/gfx';
-import vert from '../../../../packages/vfx/src/glsl/fbo.vert';
-import frag from '../../../../packages/vfx/src/glsl/vfx/draw-depth.frag';
+import vert from '../../../../packages/vfx/lib/glsl/fbo.vert';
+import frag from '../../../../packages/vfx/lib/glsl/vfx/draw-depth.frag';
 
-import { CommonPipelineSettings, CommonVFXPipeline, VFXRenderer, vfxShaders } from '../../../../packages/vfx/src/main';
+import { CommonPipelineSettings, CommonVFXPipeline, VFXRenderer } from '@fils/vfx';
 import { Mesh } from 'three';
-import { initMaterial } from '@fils/vfx';
+import { initMaterial, vfxShaders } from '@fils/vfx';
 
 const debugSettings = {
 	showTextures: false
 }
 
+frag
 const SHOW_DEPTH = new RawShaderMaterial({
 	vertexShader: vert,
 	fragmentShader: frag,
@@ -34,10 +35,10 @@ const raycaster = new Raycaster();
 const tmp = new Vector3();
 
 /**
- * CommonVFXPipeline wraps a common post-processing stack 
+ * CommonVFXPipeline wraps a common post-processing stack
  * without needing to include common passes manually
- * 
- * VFXRenderer works best with black clear color and 0 clear alpha 
+ *
+ * VFXRenderer works best with black clear color and 0 clear alpha
  * if we want to render color + glow passes in one MRT.
  * We recommend using a Scene background and leave renderer with
  * clear color 0x000000, 0 and set the background to
@@ -61,7 +62,6 @@ export class App extends WebGLSketch {
 		});
 		document.body.appendChild(this.domElement);
 		this.domElement.className = 'view';
-
 		ShaderChunk['dithering'] = vfxShaders.dithering;
 
 		console.log('VFX Common Pipeline');
@@ -173,7 +173,7 @@ export class App extends WebGLSketch {
 			useDepth: true,
 			samples: 1
 		}, settings);
-		
+
 		const stats = Stats();
 		document.body.appendChild(stats.domElement);
 
@@ -193,7 +193,7 @@ export class App extends WebGLSketch {
 		const gui = new GUI();
 
 		const r = {
-			type: 1 
+			type: 1
 		}
 
 		gui.add(r, "type", {
@@ -263,7 +263,7 @@ export class App extends WebGLSketch {
 				const p = i[0].point;
 				const depth = tmp.copy(p).distanceTo(this.camera.position);
 				console.log(depth);
-				
+
 				dof.shader.uniforms.focalDistance.value = depth;
 			}
 		}); */

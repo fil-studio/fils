@@ -91,12 +91,21 @@ if(!isProduction) {
 
   }
 
-  console.log('Watching packages');
-  chokidar.watch(`../packages/*/src/**/*`).on('change', (path) => {
-    const packageDir = path.split('/src/')[0];
-    console.log(packageDir);
-    exec(`cd ${packageDir} && yarn build`);
-    console.log(`Updated package ${packageDir}`);
+  const packagesDir = path.join(__dirname, '../packages');
+
+  let timer = null;
+  chokidar.watch(`${packagesDir}/*/src/**/*`).on('change', (path) => {
+    if(timer) clearTimeout(timer);
+    timer = setTimeout(() => {
+      console.log(`Updated package ${path}`);
+      const packageDir = path.split('/src/')[0];
+      exec('yarn build', { cwd: packageDir }, (error, stdout, stderr) => {
+        console.log(`Rebuilded package ${packageDir}`);
+        timer = null;
+        buildAllCSS();
+        buildAllJS();
+      });
+    }, 150);
   });
 
 }
@@ -118,10 +127,6 @@ module.exports = function (eleventyConfig) {
 
   // To-do: mirar si amb el path 0 ja funciona
   eleventyConfig.addWatchTarget('**');
-
-  // To-do: FIX - path create a loop if any package in dev mode
-  // eleventyConfig.addWatchTarget('../packages/src/**.css');
-  // eleventyConfig.addWatchTarget('../packages/src/**.ts');
 
   // This allows Eleventy to watch for file changes during local development.
   eleventyConfig.setUseGitIgnore(false);
