@@ -1,7 +1,8 @@
 {
 	"name": "@fils/gen",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"description": "Generative Package written in TypeScript",
+	"module": "lib/main.js",
 	"main": "lib/main.js",
 	"repository": "git@github.com:fil-studio/fils.git",
 	"homepage": "https://github.com/fil-studio/fils/tree/main/packages/gen",
@@ -18,10 +19,12 @@
 		"README.md"
 	],
 	"devDependencies": {
-		"three": "^0.149.0",
 		"typescript": "^4.8.4"
 	},
 	"dependencies": {
 		"@fils/math": "^0.0.3"
+	},
+	"peerDependencies": {
+		"three": "^0.149.0"
 	}
 }

@@ -12,7 +12,8 @@ import lut from '../../glsl/lib/lut.glsl';
 
 import { RenderPass } from "./RenderPass";
 import { RawShaderMaterial, ShaderChunk} from 'three';
-import { vfxShaders } from '../../main';
+import rgb from '../../glsl/lib/rgbSplit.glsl';
+import dithering from '../../glsl/lib/dither.glsl';
 
 const SHADER = new RawShaderMaterial({
     vertexShader: vert,
@@ -62,8 +63,8 @@ export class FinalPass extends RenderPass {
     constructor(params?:FinalPassSettings) {
         super();
         ShaderChunk.lut = lut;
-        ShaderChunk['rgbSplit'] = vfxShaders.rgbSplit;
-        ShaderChunk['dithering'] = vfxShaders.dithering;
+        ShaderChunk['rgbSplit'] = rgb;
+        ShaderChunk['dithering'] = dithering;
         
         if(params) {
             if(params.caAmount !== undefined) {

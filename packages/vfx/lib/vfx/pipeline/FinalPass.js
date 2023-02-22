@@ -9,7 +9,8 @@ import frag from '../../glsl/vfx/final.frag';
 import lut from '../../glsl/lib/lut.glsl';
 import { RenderPass } from "./RenderPass";
 import { RawShaderMaterial, ShaderChunk } from 'three';
-import { vfxShaders } from '../../main';
+import rgb from '../../glsl/lib/rgbSplit.glsl';
+import dithering from '../../glsl/lib/dither.glsl';
 const SHADER = new RawShaderMaterial({
     vertexShader: vert,
     fragmentShader: frag,
@@ -46,8 +47,8 @@ export class FinalPass extends RenderPass {
         super();
         this.shader = SHADER;
         ShaderChunk.lut = lut;
-        ShaderChunk['rgbSplit'] = vfxShaders.rgbSplit;
-        ShaderChunk['dithering'] = vfxShaders.dithering;
+        ShaderChunk['rgbSplit'] = rgb;
+        ShaderChunk['dithering'] = dithering;
         if (params) {
             if (params.caAmount !== undefined) {
                 SHADER.uniforms.chromatic_aberration.value = params.caAmount;

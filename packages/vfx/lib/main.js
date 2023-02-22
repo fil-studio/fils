@@ -10,12 +10,13 @@ export * from './vfx/CommonVFXPipeline';
 export * from './vfx/VFXPipeline';
 export * from './vfx/materials/MaterialUtils';
 export * from './vfx/materials/VFXBasicMaterials';
-import rgb from './glsl/lib/rgbSplit.glsl';
+/* import rgb from './glsl/lib/rgbSplit.glsl';
 import dither from './glsl/lib/dither.glsl';
 import depth from './glsl/lib/depth.glsl';
 import lut from './glsl/lib/lut.glsl';
 import luma from './glsl/lib/luma.glsl';
 import dither2 from './glsl/lib/dither2.glsl';
+
 const vfxShaders = {
     rgbSplit: rgb,
     dithering: dither,
@@ -23,5 +24,8 @@ const vfxShaders = {
     lut: lut,
     luma: luma,
     dither2: dither2
-};
-export { vfxShaders };
+}
+
+export {
+    vfxShaders
+} */ 
