@@ -168,18 +168,18 @@
     }
   });
 
-  // ../packages/scroller/node_modules/@fils/math/lib/Random.js
+  // ../packages/math/lib/Random.js
   var import_mersenne;
   var init_Random = __esm({
-    "../packages/scroller/node_modules/@fils/math/lib/Random.js"() {
+    "../packages/math/lib/Random.js"() {
       import_mersenne = __toESM(require_mersenne());
     }
   });
 
-  // ../packages/scroller/node_modules/@fils/math/lib/MathUtils.js
+  // ../packages/math/lib/MathUtils.js
   var MathUtils;
   var init_MathUtils = __esm({
-    "../packages/scroller/node_modules/@fils/math/lib/MathUtils.js"() {
+    "../packages/math/lib/MathUtils.js"() {
       MathUtils = class {
         static clamp(v, min, max) {
           return Math.min(max, Math.max(min, v));
@@ -210,16 +210,16 @@
     }
   });
 
-  // ../packages/scroller/node_modules/@fils/math/lib/Vector.js
+  // ../packages/math/lib/Vector.js
   var init_Vector = __esm({
-    "../packages/scroller/node_modules/@fils/math/lib/Vector.js"() {
+    "../packages/math/lib/Vector.js"() {
       init_MathUtils();
     }
   });
 
-  // ../packages/scroller/node_modules/@fils/math/lib/main.js
+  // ../packages/math/lib/main.js
   var init_main = __esm({
-    "../packages/scroller/node_modules/@fils/math/lib/main.js"() {
+    "../packages/math/lib/main.js"() {
       init_Random();
       init_MathUtils();
       init_Vector();
