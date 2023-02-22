@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getHDRI = void 0;
-var three_1 = require("three");
+import { EquirectangularReflectionMapping, LinearFilter, PMREMGenerator } from "three";
 /**
  * Gets HDRI env from a spherical map
  * @param env source spherical map
@@ -9,13 +6,12 @@ var three_1 = require("three");
  * @param opts ToneMappingOptions to apply to renderer
  * @returns EnvMap HDRI Texture
  */
-function getHDRI(env, renderer, opts) {
-    if (opts === void 0) { opts = {}; }
-    env.mapping = three_1.EquirectangularReflectionMapping;
-    env.magFilter = three_1.LinearFilter;
+export function getHDRI(env, renderer, opts = {}) {
+    env.mapping = EquirectangularReflectionMapping;
+    env.magFilter = LinearFilter;
     env.needsUpdate = true;
-    var pmrem = new three_1.PMREMGenerator(renderer);
-    var envMap = pmrem.fromEquirectangular(env).texture;
+    const pmrem = new PMREMGenerator(renderer);
+    const envMap = pmrem.fromEquirectangular(env).texture;
     pmrem.dispose();
     if (opts.toneMapping != undefined)
         renderer.toneMapping = opts.toneMapping;
@@ -25,4 +21,3 @@ function getHDRI(env, renderer, opts) {
         renderer.outputEncoding = opts.outputEncoding;
     return envMap;
 }
-exports.getHDRI = getHDRI;

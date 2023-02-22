@@ -1,12 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.VFXPipeline = void 0;
-var three_1 = require("three");
-var fbo_frag_1 = require("../glsl/fbo.frag");
-var fbo_vert_1 = require("../glsl/fbo.vert");
-var TO_SCREEN = new three_1.RawShaderMaterial({
-    vertexShader: fbo_vert_1.default,
-    fragmentShader: fbo_frag_1.default,
+import { DepthFormat, DepthTexture, FloatType, Mesh, OrthographicCamera, PlaneGeometry, RawShaderMaterial, Scene, WebGLRenderTarget } from "three";
+import frag from '../glsl/fbo.frag';
+import vert from '../glsl/fbo.vert';
+const TO_SCREEN = new RawShaderMaterial({
+    vertexShader: vert,
+    fragmentShader: frag,
     uniforms: {
         tInput: {
             value: null
@@ -19,27 +16,26 @@ var TO_SCREEN = new three_1.RawShaderMaterial({
  * or a VFXRebderer and create a post-processing stack
  * on top of it.
  */
-var VFXPipeline = /** @class */ (function () {
-    function VFXPipeline(rnd, params) {
-        if (params === void 0) { params = {
-            width: window.innerWidth,
-            height: window.innerHeight
-        }; }
+export class VFXPipeline {
+    constructor(rnd, params = {
+        width: window.innerWidth,
+        height: window.innerHeight
+    }) {
         this.stack = [];
         this.firstPass = false;
         this.renderer = rnd;
-        var w = params.width;
-        var h = params.height;
+        const w = params.width;
+        const h = params.height;
         this.width = w;
         this.height = h;
         this.blockScreen = params.neverToScreen === true;
-        this.front = new three_1.WebGLRenderTarget(w, h);
+        this.front = new WebGLRenderTarget(w, h);
         if (rnd['isWebGLRenderer']) {
             // this.front.samples = params.samples || 4;
             this.type = "WebGLRenderer";
         }
         else {
-            var r = rnd;
+            const r = rnd;
             r.setSize(w, h);
             this.type = "VFXRenderer";
         }
@@ -47,112 +43,89 @@ var VFXPipeline = /** @class */ (function () {
         this.sceneRT = this.front.clone();
         this.sceneRT.samples = params.samples || 4;
         if (params.useDepth) {
-            this.sceneRT.depthTexture = new three_1.DepthTexture(w, h, three_1.FloatType);
-            this.sceneRT.depthTexture.format = three_1.DepthFormat;
+            this.sceneRT.depthTexture = new DepthTexture(w, h, FloatType);
+            this.sceneRT.depthTexture.format = DepthFormat;
         }
-        this.scene = new three_1.Scene();
-        var cw = w / 2;
-        var ch = h / 2;
-        this.camera = new three_1.OrthographicCamera(-cw, cw, ch, -ch, 0, 100);
+        this.scene = new Scene();
+        const cw = w / 2;
+        const ch = h / 2;
+        this.camera = new OrthographicCamera(-cw, cw, ch, -ch, 0, 100);
         this.camera.position.z = 1;
         this.scene.add(this.camera);
-        this.quad = new three_1.Mesh(new three_1.PlaneGeometry(1, 1), null);
+        this.quad = new Mesh(new PlaneGeometry(1, 1), null);
         this.quad.scale.set(w, h, 1);
         this.scene.add(this.quad);
     }
-    Object.defineProperty(VFXPipeline.prototype, "rendererType", {
-        get: function () {
-            return this.type;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    VFXPipeline.prototype.addPass = function (pass) {
+    get rendererType() {
+        return this.type;
+    }
+    addPass(pass) {
         this.stack.push(pass);
         pass.setSize(this.width, this.height);
-    };
-    VFXPipeline.prototype.removePass = function (pass) {
+    }
+    removePass(pass) {
         this.stack.splice(this.stack.indexOf(pass), 1);
-    };
-    VFXPipeline.prototype.setRenderer = function (rnd) {
+    }
+    setRenderer(rnd) {
         this.renderer = rnd;
         this.type = rnd['isWebGLRenderer'] ? "WebGLRenderer" : "VFXRenderer";
-    };
-    VFXPipeline.prototype.setSize = function (width, height) {
+    }
+    setSize(width, height) {
         this.width = width;
         this.height = height;
         this.front.setSize(width, height);
         this.quad.scale.set(width, height, 1);
-        var w = width / 2;
-        var h = height / 2;
+        const w = width / 2;
+        const h = height / 2;
         this.camera.left = -w;
         this.camera.right = w;
         this.camera.top = h;
         this.camera.bottom = -h;
         this.camera.updateProjectionMatrix();
-        for (var _i = 0, _a = this.stack; _i < _a.length; _i++) {
-            var pass = _a[_i];
+        for (const pass of this.stack)
             pass.setSize(width, height);
-        }
-    };
-    VFXPipeline.prototype.swapBuffers = function () {
-        var tmp = this.front;
+    }
+    swapBuffers() {
+        const tmp = this.front;
         this.front = this.back;
         this.back = tmp;
-    };
-    Object.defineProperty(VFXPipeline.prototype, "read", {
-        get: function () {
-            if (this.firstPass && this.type === "WebGLRenderer") {
-                return this.sceneRT;
-            }
-            return this.front;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(VFXPipeline.prototype, "write", {
-        get: function () {
-            return this.back;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(VFXPipeline.prototype, "texture", {
-        get: function () {
-            return this.front.texture;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(VFXPipeline.prototype, "depthTexture", {
-        get: function () {
-            if (this.type === "WebGLRenderer") {
-                return this.sceneRT.depthTexture;
-            }
-            var rnd = this.renderer;
-            return rnd.depthTexture;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    VFXPipeline.prototype.getRenderer = function () {
+    }
+    get read() {
+        if (this.firstPass && this.type === "WebGLRenderer") {
+            return this.sceneRT;
+        }
+        return this.front;
+    }
+    get write() {
+        return this.back;
+    }
+    get texture() {
+        return this.front.texture;
+    }
+    get depthTexture() {
+        if (this.type === "WebGLRenderer") {
+            return this.sceneRT.depthTexture;
+        }
+        const rnd = this.renderer;
+        return rnd.depthTexture;
+    }
+    getRenderer() {
         if (this.type === "WebGLRenderer") {
             return this.renderer;
         }
-        var rnd = this.renderer;
+        const rnd = this.renderer;
         return rnd.rnd;
-    };
-    VFXPipeline.prototype.renderPass = function (pass, toScreen) {
-        if (toScreen === void 0) { toScreen = false; }
-        var renderer = this.getRenderer();
+    }
+    renderPass(pass, toScreen = false) {
+        const renderer = this.getRenderer();
         pass.render(renderer, this, toScreen && !this.blockScreen ? null : this.write);
         this.swapBuffers();
-    };
-    VFXPipeline.prototype.render = function (scene, camera) {
-        var stack = this.stack.filter(function (obj) { return obj.enabled; });
+    }
+    render(scene, camera) {
+        const stack = this.stack.filter(obj => obj.enabled);
         if (!stack.length && !this.blockScreen) {
             if (this.type === "WebGLRenderer") {
-                var rnd = this.renderer;
+                const rnd = this.renderer;
                 rnd.setRenderTarget(null);
                 rnd.render(scene, camera);
             }
@@ -162,14 +135,14 @@ var VFXPipeline = /** @class */ (function () {
         else {
             this.firstPass = true;
             if (this.type === "WebGLRenderer") {
-                var rnd = this.renderer;
+                const rnd = this.renderer;
                 rnd.setRenderTarget(this.sceneRT);
                 rnd.render(scene, camera);
             }
             else
                 this.renderer.render(scene, camera, this.write);
             this.swapBuffers();
-            for (var k = 0; k < stack.length; k++) {
+            for (let k = 0; k < stack.length; k++) {
                 if (stack[k].shader.uniforms['cameraNear']) {
                     stack[k].shader.uniforms['cameraNear'].value = camera.near;
                 }
@@ -180,7 +153,5 @@ var VFXPipeline = /** @class */ (function () {
                 this.firstPass = false;
             }
         }
-    };
-    return VFXPipeline;
-}());
-exports.VFXPipeline = VFXPipeline;
+    }
+}
