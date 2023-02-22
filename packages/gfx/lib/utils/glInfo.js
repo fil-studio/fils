@@ -1,17 +1,14 @@
-"use strict";
 /*
  * glInfo Class
  * Thanks to: https://alteredqualia.com/tmp/webgl-maxparams-test/
  *
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.glInfo = void 0;
-var glInfo = /** @class */ (function () {
-    function glInfo(gl) {
+export class glInfo {
+    constructor(gl) {
         this.gl = gl;
-        var glRenderInfo = gl.getExtension('webgl');
-        var glExtensionTextureFloat = gl.getExtension('OES_texture_float');
-        var glExtensionTextureHalfFloat = gl.getExtension('OES_texture_half_float');
+        const glRenderInfo = gl.getExtension('webgl');
+        const glExtensionTextureFloat = gl.getExtension('OES_texture_float');
+        const glExtensionTextureHalfFloat = gl.getExtension('OES_texture_half_float');
         this.dds = gl.getExtension('WEBGL_compressed_texture_s3tc') ||
             gl.getExtension('MOZ_WEBGL_compressed_texture_s3tc') ||
             gl.getExtension('WEBKIT_WEBGL_compressed_texture_s3tc');
@@ -31,29 +28,29 @@ var glInfo = /** @class */ (function () {
         if (this.fullFloatRenderTarget == null)
             this.fullFloatRenderTarget = false;
     }
-    glInfo.prototype.checkRenderTargetSupport = function (format, type) {
+    checkRenderTargetSupport(format, type) {
         // create temporary frame buffer and texture
-        var framebuffer = this.gl.createFramebuffer();
-        var texture = this.gl.createTexture();
+        let framebuffer = this.gl.createFramebuffer();
+        let texture = this.gl.createTexture();
         this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
         this.gl.texImage2D(this.gl.TEXTURE_2D, 0, format, 2, 2, 0, format, type, null);
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, framebuffer);
         this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, texture, 0);
         // check frame buffer status
-        var status = this.gl.checkFramebufferStatus(this.gl.FRAMEBUFFER);
+        let status = this.gl.checkFramebufferStatus(this.gl.FRAMEBUFFER);
         // clean up
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
         this.gl.bindTexture(this.gl.TEXTURE_2D, null);
         return status === this.gl.FRAMEBUFFER_COMPLETE;
-    };
+    }
     /*
      * A complete biased detection of 'crap' GPU
      * Sometimes I have fallbacks or certain things turned off
      * this.vendor.indexOf("Intel") > -1 can be an indicator too
      */
-    glInfo.prototype.crapGPU = function () {
+    crapGPU() {
         return this.maxViewportSize < 8192;
-    };
+    }
     /*
      * Non modern Apple GPUs are considered
      * the "PowerVR" ones used before Apple Silicon
@@ -61,13 +58,11 @@ var glInfo = /** @class */ (function () {
      * stopped doing so a few iOS generations ago
      * https://twitter.com/jocabola/status/1127873842070917121
      */
-    glInfo.prototype.isModernAppleGPU = function () {
-        var vendor = this.renderer.toLocaleLowerCase();
-        var re = new RegExp('(apple\ a)([0-9]+)(\ gpu)');
-        var re2 = new RegExp('(apple\ a)([0-9]+)(x\ gpu)');
-        var re3 = new RegExp('(apple\ gpu)');
+    isModernAppleGPU() {
+        let vendor = this.renderer.toLocaleLowerCase();
+        let re = new RegExp('(apple\ a)([0-9]+)(\ gpu)');
+        let re2 = new RegExp('(apple\ a)([0-9]+)(x\ gpu)');
+        let re3 = new RegExp('(apple\ gpu)');
         return re.test(vendor) || re2.test(vendor) || re3.test(vendor);
-    };
-    return glInfo;
-}());
-exports.glInfo = glInfo;
+    }
+}

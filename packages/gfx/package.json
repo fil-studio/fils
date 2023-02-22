@@ -1,7 +1,8 @@
 {
 	"name": "@fils/gfx",
-	"version": "0.0.6",
+	"version": "0.0.8",
 	"description": "Web GFX Package written in TypeScript",
+	"module": "lib/main.js",
 	"main": "lib/main.js",
 	"repository": "git@github.com:fil-studio/fils.git",
 	"homepage": "https://github.com/fil-studio/fils/tree/main/packages/gfx",
@@ -15,12 +16,9 @@
 	},
 	"files": [
 		"lib",
-		"examples",
 		"README.md"
 	],
-	"dependencies": {
-		"@fils/io": "^0.0.3",
-		"@fils/math": "^0.0.3",
+	"peerDependencies": {
 		"three": "^0.149.0"
 	},
 	"devDependencies": {
