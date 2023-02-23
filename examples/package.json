@@ -35,9 +35,9 @@
 	"dependencies": {
 		"@fils/ani": "^0.0.5",
 		"@fils/color": "^0.0.9",
-		"@fils/gen": "^0.0.7",
-		"@fils/gfx": "^0.0.8",
-		"@fils/io": "^0.0.4",
+		"@fils/gen": "^0.0.8",
+		"@fils/gfx": "^0.0.9",
+		"@fils/io": "^0.0.5",
 		"@fils/math": "^0.0.8",
 		"@fils/nomad": "^0.0.6",
 		"@fils/phy": "^0.0.4",
@@ -45,7 +45,7 @@
 		"@fils/ui": "^0.0.36",
 		"@fils/ui-icons": "^0.0.12",
 		"@fils/utils": "^0.0.8",
-		"@fils/vfx": "^0.0.9",
+		"@fils/vfx": "^0.0.10",
 		"gsap": "^3.11.3",
 		"three": "^0.150.0"
 	}
