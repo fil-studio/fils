@@ -33,9 +33,9 @@
   ));
   var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-  // node_modules/mersenne/lib/mersenne.js
+  // ../node_modules/mersenne/lib/mersenne.js
   var require_mersenne = __commonJS({
-    "node_modules/mersenne/lib/mersenne.js"(exports) {
+    "../node_modules/mersenne/lib/mersenne.js"(exports) {
       function MersenneTwister19937() {
         var N, M, MATRIX_A, UPPER_MASK, LOWER_MASK;
         N = 624;
@@ -168,18 +168,18 @@
     }
   });
 
-  // node_modules/@fils/scroller/node_modules/@fils/math/lib/Random.js
+  // ../packages/math/lib/Random.js
   var import_mersenne;
   var init_Random = __esm({
-    "node_modules/@fils/scroller/node_modules/@fils/math/lib/Random.js"() {
+    "../packages/math/lib/Random.js"() {
       import_mersenne = __toESM(require_mersenne());
     }
   });
 
-  // node_modules/@fils/scroller/node_modules/@fils/math/lib/MathUtils.js
+  // ../packages/math/lib/MathUtils.js
   var MathUtils;
   var init_MathUtils = __esm({
-    "node_modules/@fils/scroller/node_modules/@fils/math/lib/MathUtils.js"() {
+    "../packages/math/lib/MathUtils.js"() {
       MathUtils = class {
         static clamp(v, min, max) {
           return Math.min(max, Math.max(min, v));
@@ -210,26 +210,26 @@
     }
   });
 
-  // node_modules/@fils/scroller/node_modules/@fils/math/lib/Vector.js
+  // ../packages/math/lib/Vector.js
   var init_Vector = __esm({
-    "node_modules/@fils/scroller/node_modules/@fils/math/lib/Vector.js"() {
+    "../packages/math/lib/Vector.js"() {
       init_MathUtils();
     }
   });
 
-  // node_modules/@fils/scroller/node_modules/@fils/math/lib/main.js
+  // ../packages/math/lib/main.js
   var init_main = __esm({
-    "node_modules/@fils/scroller/node_modules/@fils/math/lib/main.js"() {
+    "../packages/math/lib/main.js"() {
       init_Random();
       init_MathUtils();
       init_Vector();
     }
   });
 
-  // node_modules/@fils/scroller/lib/Section.js
+  // ../packages/scroller/lib/Section.js
   var Section;
   var init_Section = __esm({
-    "node_modules/@fils/scroller/lib/Section.js"() {
+    "../packages/scroller/lib/Section.js"() {
       init_main();
       init_Scroller();
       Section = class {
@@ -310,10 +310,10 @@
     }
   });
 
-  // node_modules/@fils/scroller/lib/Scroller.js
+  // ../packages/scroller/lib/Scroller.js
   var D, style, Scroller;
   var init_Scroller = __esm({
-    "node_modules/@fils/scroller/lib/Scroller.js"() {
+    "../packages/scroller/lib/Scroller.js"() {
       init_main();
       init_Section();
       (function(D2) {
@@ -573,9 +573,9 @@
     }
   });
 
-  // node_modules/@fils/scroller/lib/main.js
+  // ../packages/scroller/lib/main.js
   var init_main2 = __esm({
-    "node_modules/@fils/scroller/lib/main.js"() {
+    "../packages/scroller/lib/main.js"() {
       init_Scroller();
       init_Section();
     }

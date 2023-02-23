@@ -166,7 +166,6 @@ export class SelectItem extends Item {
 	protected createContent(): void {
 
 		this.input = el('div', c.input, this.content) as HTMLElement;
-		console.log('hola')
 		this.input.classList.add(CSS_UI.item);
 		this.input.innerHTML = uiDownarrowHlt;
 		this.label = el('p', c.label, this.input);

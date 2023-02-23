@@ -7,6 +7,8 @@ const esbuild = require('esbuild');
 const alias = require('esbuild-plugin-alias');
 const chokidar = require('chokidar');
 
+const copyDir = require('./utils/copyDir');
+
 const syntaxHighlight = require("@11ty/eleventy-plugin-syntaxhighlight");
 const { exec } = require('child_process');
 
@@ -93,19 +95,27 @@ if(!isProduction) {
 
   const packagesDir = path.join(__dirname, '../packages');
 
-  let timer = null;
   chokidar.watch(`${packagesDir}/*/src/**/*`).on('change', (path) => {
-    if(timer) clearTimeout(timer);
-    timer = setTimeout(() => {
+
       console.log(`Updated package ${path}`);
       const packageDir = path.split('/src/')[0];
-      exec('yarn build', { cwd: packageDir }, (error, stdout, stderr) => {
+      exec('yarn build', { cwd: packageDir }, () => {
         console.log(`Rebuilded package ${packageDir}`);
-        timer = null;
-        buildAllCSS();
-        buildAllJS();
+
+        const packageName = packageDir.split('/').pop();
+
+        console.log(`Copying package ${packageName} to node_modules`);
+        copyDir(`../node_modules/@fils/${packageName}`, `./node_modules/@fils/${packageName}`, (err) => {
+          if (err) {
+            console.error(`Error copying directory: ${err}`);
+          } else {
+            console.log('Directory copied successfully!');
+            buildAllCSS();
+            buildAllJS();
+          }
+        });
       });
-    }, 150);
+
   });
 
 }

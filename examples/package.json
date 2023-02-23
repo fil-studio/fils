@@ -1,5 +1,5 @@
 {
-	"name": "fils",
+	"name": "fils-examples",
 	"version": "0.0.1",
 	"description": "Examples of fils",
 	"main": "index.js",
@@ -48,10 +48,5 @@
 		"@fils/vfx": "file:../packages/vfx",
 		"gsap": "^3.11.3",
 		"three": "^0.150.0"
-	},
-	"workspaces": {
-    "nohoist": [
-      "@fils/*"
-    ]
-  }
+	}
 }

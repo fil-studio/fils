@@ -14094,48 +14094,48 @@
     }
   });
 
-  // node_modules/@fils/vfx/lib/glsl/vfx/comp.vert
+  // ../packages/vfx/lib/glsl/vfx/comp.vert
   var comp_default;
   var init_comp = __esm({
-    "node_modules/@fils/vfx/lib/glsl/vfx/comp.vert"() {
+    "../packages/vfx/lib/glsl/vfx/comp.vert"() {
       comp_default = "#version 300 es\n\nprecision highp float;\n\nin vec3 position;\nin vec2 uv;\n\nuniform mat4 projectionMatrix;\nuniform mat4 modelViewMatrix;\n\nout vec2 vUv;\n\nvoid main () {\n	vec3 pos = position;\n	vUv = uv;\n	vec4 mvPos = modelViewMatrix * vec4(pos, 1.0);\n	gl_Position = projectionMatrix * mvPos;\n}";
     }
   });
 
-  // node_modules/@fils/vfx/lib/glsl/vfx/comp.frag
+  // ../packages/vfx/lib/glsl/vfx/comp.frag
   var comp_default2;
   var init_comp2 = __esm({
-    "node_modules/@fils/vfx/lib/glsl/vfx/comp.frag"() {
+    "../packages/vfx/lib/glsl/vfx/comp.frag"() {
       comp_default2 = "#version 300 es\n\nprecision highp float;\n\nin vec2 vUv;\nuniform sampler2D tBackground;\nuniform sampler2D tScene;\nuniform sampler2D tGlow;\nuniform float exposure;\nuniform float gamma;\n\nuniform bool renderBackground;\nuniform bool renderGlow;\nuniform bool renderScene;\n\nlayout (location = 0) out vec4 pcColor;\n\nvoid main () {\n    vec4 bg = renderBackground ? texture(tBackground, vUv) : vec4(0.);\n    vec4 scene;\n    if(renderScene) {\n        scene = texture(tScene, vUv);\n    }\n    vec4 glow = vec4(0.0);\n    if(renderGlow) {\n        glow = texture(tGlow, vUv);\n        // glow.rgb -= vec3(.2);\n    }\n    \n    float glowA = glow.a;\n\n    float bA = smoothstep(.9, 1., scene.a);\n\n    scene = mix(bg, scene, bA);\n\n    scene.rgb += glow.rgb;\n\n    // scene = mix(bg, scene, scene.a + glowA);\n    \n    // tone mapping\n    vec3 result = scene.rgb * pow(2.0, exposure);\n    // also gamma correct while we're at it       \n    result = pow(result, vec3(1.0 / gamma));\n\n    pcColor = vec4(result, scene.a + glowA);\n    // gl_FragColor = vec4(scene.rgb, scene.a + glow.a);\n    // gl_FragColor = glow;\n    // gl_FragColor = scene;\n}";
     }
   });
 
-  // node_modules/@fils/vfx/node_modules/@fils/gfx/lib/utils/glInfo.js
+  // ../packages/vfx/node_modules/@fils/gfx/lib/utils/glInfo.js
   var init_glInfo = __esm({
-    "node_modules/@fils/vfx/node_modules/@fils/gfx/lib/utils/glInfo.js"() {
+    "../packages/vfx/node_modules/@fils/gfx/lib/utils/glInfo.js"() {
     }
   });
 
-  // node_modules/@fils/vfx/node_modules/@fils/gfx/lib/glsl/fbo.frag
+  // ../packages/vfx/node_modules/@fils/gfx/lib/glsl/fbo.frag
   var fbo_default;
   var init_fbo = __esm({
-    "node_modules/@fils/vfx/node_modules/@fils/gfx/lib/glsl/fbo.frag"() {
+    "../packages/vfx/node_modules/@fils/gfx/lib/glsl/fbo.frag"() {
       fbo_default = "#version 100\nprecision lowp float;\n\nuniform sampler2D tInput;\nuniform float opacity;\n\nvarying vec2 vUv;\n\nvoid main() {\n	gl_FragColor = texture2D(tInput, vUv) * opacity;\n}";
     }
   });
 
-  // node_modules/@fils/vfx/node_modules/@fils/gfx/lib/glsl/fbo.vert
+  // ../packages/vfx/node_modules/@fils/gfx/lib/glsl/fbo.vert
   var fbo_default2;
   var init_fbo2 = __esm({
-    "node_modules/@fils/vfx/node_modules/@fils/gfx/lib/glsl/fbo.vert"() {
+    "../packages/vfx/node_modules/@fils/gfx/lib/glsl/fbo.vert"() {
       fbo_default2 = "#version 100\n\nprecision lowp float;\n\nattribute vec3 position;\nattribute vec2 uv;\n\nuniform mat4 projectionMatrix;\nuniform mat4 modelViewMatrix;\nuniform mat4 viewMatrix;\nuniform mat4 modelMatrix;\n\nuniform float time;\n\nvarying vec2 vUv;\n\nvoid main () {\n	vec3 pos = position;\n	vUv = uv;\n	vec4 mvPos = modelViewMatrix * vec4(pos, 1.0);\n	gl_Position = projectionMatrix * mvPos;\n}";
     }
   });
 
-  // node_modules/@fils/vfx/node_modules/@fils/gfx/lib/utils/RTHelper.js
+  // ../packages/vfx/node_modules/@fils/gfx/lib/utils/RTHelper.js
   var import_three2, TMP, MAT, RTHelper;
   var init_RTHelper = __esm({
-    "node_modules/@fils/vfx/node_modules/@fils/gfx/lib/utils/RTHelper.js"() {
+    "../packages/vfx/node_modules/@fils/gfx/lib/utils/RTHelper.js"() {
       import_three2 = __toESM(require_three_min());
       init_fbo();
       init_fbo2();
@@ -14221,10 +14221,10 @@
     }
   });
 
-  // node_modules/@fils/vfx/node_modules/@fils/gfx/lib/utils/RTUtils.js
+  // ../packages/vfx/node_modules/@fils/gfx/lib/utils/RTUtils.js
   var import_three3, RTUtils;
   var init_RTUtils = __esm({
-    "node_modules/@fils/vfx/node_modules/@fils/gfx/lib/utils/RTUtils.js"() {
+    "../packages/vfx/node_modules/@fils/gfx/lib/utils/RTUtils.js"() {
       import_three3 = __toESM(require_three_min());
       init_RTHelper();
       RTUtils = class {
@@ -14263,51 +14263,51 @@
     }
   });
 
-  // node_modules/@fils/vfx/node_modules/@fils/gfx/lib/prototype/Sketch.js
+  // ../packages/vfx/node_modules/@fils/gfx/lib/prototype/Sketch.js
   var init_Sketch = __esm({
-    "node_modules/@fils/vfx/node_modules/@fils/gfx/lib/prototype/Sketch.js"() {
+    "../packages/vfx/node_modules/@fils/gfx/lib/prototype/Sketch.js"() {
     }
   });
 
-  // node_modules/@fils/vfx/node_modules/@fils/gfx/lib/prototype/WebGLSketch.js
+  // ../packages/vfx/node_modules/@fils/gfx/lib/prototype/WebGLSketch.js
   var import_three4;
   var init_WebGLSketch = __esm({
-    "node_modules/@fils/vfx/node_modules/@fils/gfx/lib/prototype/WebGLSketch.js"() {
+    "../packages/vfx/node_modules/@fils/gfx/lib/prototype/WebGLSketch.js"() {
       import_three4 = __toESM(require_three_min());
       init_Sketch();
     }
   });
 
-  // node_modules/@fils/vfx/node_modules/@fils/gfx/lib/utils/SceneUtils.js
+  // ../packages/vfx/node_modules/@fils/gfx/lib/utils/SceneUtils.js
   var import_three5;
   var init_SceneUtils = __esm({
-    "node_modules/@fils/vfx/node_modules/@fils/gfx/lib/utils/SceneUtils.js"() {
+    "../packages/vfx/node_modules/@fils/gfx/lib/utils/SceneUtils.js"() {
       import_three5 = __toESM(require_three_min());
     }
   });
 
-  // node_modules/@fils/vfx/node_modules/@fils/gfx/lib/utils/GfxUtils.js
+  // ../packages/vfx/node_modules/@fils/gfx/lib/utils/GfxUtils.js
   var import_three6, RAD2DEG, DEG2RAD;
   var init_GfxUtils = __esm({
-    "node_modules/@fils/vfx/node_modules/@fils/gfx/lib/utils/GfxUtils.js"() {
+    "../packages/vfx/node_modules/@fils/gfx/lib/utils/GfxUtils.js"() {
       import_three6 = __toESM(require_three_min());
       RAD2DEG = 180 / Math.PI;
       DEG2RAD = Math.PI / 180;
     }
   });
 
-  // node_modules/@fils/vfx/node_modules/@fils/gfx/lib/utils/EquirectangularToCubemap.js
+  // ../packages/vfx/node_modules/@fils/gfx/lib/utils/EquirectangularToCubemap.js
   var import_three7, GEO;
   var init_EquirectangularToCubemap = __esm({
-    "node_modules/@fils/vfx/node_modules/@fils/gfx/lib/utils/EquirectangularToCubemap.js"() {
+    "../packages/vfx/node_modules/@fils/gfx/lib/utils/EquirectangularToCubemap.js"() {
       import_three7 = __toESM(require_three_min());
       GEO = new import_three7.SphereGeometry(100, 64, 64);
     }
   });
 
-  // node_modules/@fils/vfx/node_modules/@fils/gfx/lib/main.js
+  // ../packages/vfx/node_modules/@fils/gfx/lib/main.js
   var init_main = __esm({
-    "node_modules/@fils/vfx/node_modules/@fils/gfx/lib/main.js"() {
+    "../packages/vfx/node_modules/@fils/gfx/lib/main.js"() {
       init_glInfo();
       init_RTHelper();
       init_RTUtils();
@@ -14319,10 +14319,10 @@
     }
   });
 
-  // node_modules/@fils/vfx/lib/vfx/VFXRenderer.js
+  // ../packages/vfx/lib/vfx/VFXRenderer.js
   var import_three8, COMP, GLOW_DEFAULTS, VFXRenderer;
   var init_VFXRenderer = __esm({
-    "node_modules/@fils/vfx/lib/vfx/VFXRenderer.js"() {
+    "../packages/vfx/lib/vfx/VFXRenderer.js"() {
       import_three8 = __toESM(require_three_min());
       init_main2();
       init_comp();
@@ -14441,10 +14441,10 @@
     }
   });
 
-  // node_modules/@fils/vfx/lib/vfx/pipeline/RenderPass.js
+  // ../packages/vfx/lib/vfx/pipeline/RenderPass.js
   var RenderPass;
   var init_RenderPass = __esm({
-    "node_modules/@fils/vfx/lib/vfx/pipeline/RenderPass.js"() {
+    "../packages/vfx/lib/vfx/pipeline/RenderPass.js"() {
       RenderPass = class {
         constructor() {
           this.enabled = true;
@@ -14466,26 +14466,26 @@
     }
   });
 
-  // node_modules/@fils/vfx/lib/glsl/fbo.vert
+  // ../packages/vfx/lib/glsl/fbo.vert
   var fbo_default3;
   var init_fbo3 = __esm({
-    "node_modules/@fils/vfx/lib/glsl/fbo.vert"() {
+    "../packages/vfx/lib/glsl/fbo.vert"() {
       fbo_default3 = "#version 100\n\nprecision lowp float;\n\nattribute vec3 position;\nattribute vec2 uv;\n\nuniform mat4 projectionMatrix;\nuniform mat4 modelViewMatrix;\nuniform mat4 viewMatrix;\nuniform mat4 modelMatrix;\n\nuniform float time;\n\nvarying vec2 vUv;\n\nvoid main () {\n	vec3 pos = position;\n	vUv = uv;\n	vec4 mvPos = modelViewMatrix * vec4(pos, 1.0);\n	gl_Position = projectionMatrix * mvPos;\n}";
     }
   });
 
-  // node_modules/@fils/vfx/lib/glsl/vfx/blur.frag
+  // ../packages/vfx/lib/glsl/vfx/blur.frag
   var blur_default;
   var init_blur = __esm({
-    "node_modules/@fils/vfx/lib/glsl/vfx/blur.frag"() {
+    "../packages/vfx/lib/glsl/vfx/blur.frag"() {
       blur_default = "#version 100\nprecision highp float;\n\n/*\n * Algorithms By Matt DesLauriers: https://github.com/Jam3/glsl-fast-gaussian-blur\n */\n\nvec4 blur5(sampler2D image, vec2 uv, vec2 resolution, vec2 direction) {\n	vec4 color = vec4(0.0);\n	vec2 off1 = vec2(1.3333333333333333) * direction;\n	color += texture2D(image, uv) * 0.29411764705882354;\n	color += texture2D(image, uv + (off1 / resolution)) * 0.35294117647058826;\n	color += texture2D(image, uv - (off1 / resolution)) * 0.35294117647058826;\n	return color; \n}\n\nvec4 blur9(sampler2D image, vec2 uv, vec2 resolution, vec2 direction) {\n	vec4 color = vec4(0.0);\n	vec2 off1 = vec2(1.3846153846) * direction;\n	vec2 off2 = vec2(3.2307692308) * direction;\n	color += texture2D(image, uv) * 0.2270270270;\n	color += texture2D(image, uv + (off1 / resolution)) * 0.3162162162;\n	color += texture2D(image, uv - (off1 / resolution)) * 0.3162162162;\n	color += texture2D(image, uv + (off2 / resolution)) * 0.0702702703;\n	color += texture2D(image, uv - (off2 / resolution)) * 0.0702702703;\n	return color;\n}\n\nvec4 blur13(sampler2D image, vec2 uv, vec2 resolution, vec2 direction) {\n	vec4 color = vec4(0.0);\n	vec2 off1 = vec2(1.411764705882353) * direction;\n	vec2 off2 = vec2(3.2941176470588234) * direction;\n	vec2 off3 = vec2(5.176470588235294) * direction;\n	color += texture2D(image, uv) * 0.1964825501511404;\n	color += texture2D(image, uv + (off1 / resolution)) * 0.2969069646728344;\n	color += texture2D(image, uv - (off1 / resolution)) * 0.2969069646728344;\n	color += texture2D(image, uv + (off2 / resolution)) * 0.09447039785044732;\n	color += texture2D(image, uv - (off2 / resolution)) * 0.09447039785044732;\n	color += texture2D(image, uv + (off3 / resolution)) * 0.010381362401148057;\n	color += texture2D(image, uv - (off3 / resolution)) * 0.010381362401148057;\n	return color;\n}\n\nuniform vec2 resolution;\nuniform vec2 direction;\nuniform sampler2D tMap;\nuniform float scale;\nuniform int mode;\nuniform bool isGlow;\n\nvarying vec2 vUv;\n\nconst float threshold = .1;\n\nvec4 blur() {\n	if(mode == 0) return blur5(tMap, vUv, resolution*scale, direction);\n	else if(mode == 1) return blur9(tMap, vUv, resolution*scale, direction);\n	else return blur13(tMap, vUv, resolution*scale, direction);\n}\n\nvoid main () {\n	vec4 b = blur();\n\n	/* if(isGlow) {\n		if(length(b.rgb) < threshold) discard;\n	} */\n\n	gl_FragColor = b;\n}";
     }
   });
 
-  // node_modules/@fils/vfx/lib/vfx/pipeline/BlurPass.js
+  // ../packages/vfx/lib/vfx/pipeline/BlurPass.js
   var import_three9, BlurDefaults, BlurPass;
   var init_BlurPass = __esm({
-    "node_modules/@fils/vfx/lib/vfx/pipeline/BlurPass.js"() {
+    "../packages/vfx/lib/vfx/pipeline/BlurPass.js"() {
       import_three9 = __toESM(require_three_min());
       init_RenderPass();
       init_fbo3();
@@ -14603,42 +14603,42 @@
     }
   });
 
-  // node_modules/@fils/vfx/lib/glsl/vfx/final.frag
+  // ../packages/vfx/lib/glsl/vfx/final.frag
   var final_default;
   var init_final = __esm({
-    "node_modules/@fils/vfx/lib/glsl/vfx/final.frag"() {
+    "../packages/vfx/lib/glsl/vfx/final.frag"() {
       final_default = "precision highp float;\n\nvarying vec2 vUv;\nuniform sampler2D tInput;\n\nuniform float chromatic_aberration;\nuniform bool enableCA;\n\nuniform float dither;\nuniform bool enableDithering;\n\nuniform bool enableVignette;\nuniform float vIntensity;\n\n#include <dithering>\n\nuniform sampler2D lookupTable;\nuniform bool enableLut;\n// #define LUT_NO_CLAMP\n#define LUT_FLIP_Y\n\n#include <lut>\n\nfloat vignette(vec2 texCoords, float strength) {\n    vec2 uv = texCoords;\n\n    uv *=  1.0 - uv.yx;   //vec2(1.0)- uv.yx; -> 1.-u.yx; Thanks FabriceNeyret !\n\n    float vig = uv.x*uv.y * 15.0; // multiply with sth for intensity\n\n    vig = pow(vig, strength);\n\n    return vig;\n}\n\nvec4 ca (sampler2D tex, vec2 texCoord, float ca_amount) {\n    vec2 red_offset = vec2(ca_amount, 0.0);\n    vec2 green_offset = vec2(0.0, 0.0);\n    vec2 blue_offset = vec2(-ca_amount, 0.0);\n\n    vec4 red_color = texture2D(tex, texCoord + red_offset);\n    vec4 green_color = texture2D(tex, texCoord + green_offset);\n    vec4 blue_color = texture2D(tex, texCoord + blue_offset);\n\n    return vec4(red_color.r, green_color.g, blue_color.b, 1.0);\n}\n\nvoid main () {\n    vec4 color;\n    if(enableCA) {\n         color = ca(tInput, vUv, chromatic_aberration);\n    } else {\n        color = texture2D(tInput, vUv);\n    }\n    if(enableLut) {\n        color = lut(color, lookupTable);\n    }\n    if(enableDithering) {\n        color += dithering(vUv, dither);\n    }\n\n    if(enableVignette) {\n        color.rgb *= vignette(vUv, vIntensity);\n    }\n    gl_FragColor = color;\n}";
     }
   });
 
-  // node_modules/@fils/vfx/lib/glsl/lib/lut.glsl
+  // ../packages/vfx/lib/glsl/lib/lut.glsl
   var lut_default;
   var init_lut = __esm({
-    "node_modules/@fils/vfx/lib/glsl/lib/lut.glsl"() {
+    "../packages/vfx/lib/glsl/lib/lut.glsl"() {
       lut_default = "/*\n* Implementation from https://github.com/mattdesl/glsl-lut\n*/\n\nvec4 lut(in vec4 textureColor, sampler2D lookupTable) {\n    #ifndef LUT_NO_CLAMP\n        textureColor = clamp(textureColor, 0.0, 1.0);\n    #endif\n\n    mediump float blueColor = textureColor.b * 63.0;\n\n    mediump vec2 quad1;\n    quad1.y = floor(floor(blueColor) / 8.0);\n    quad1.x = floor(blueColor) - (quad1.y * 8.0);\n\n    mediump vec2 quad2;\n    quad2.y = floor(ceil(blueColor) / 8.0);\n    quad2.x = ceil(blueColor) - (quad2.y * 8.0);\n\n    highp vec2 texPos1;\n    texPos1.x = (quad1.x * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * textureColor.r);\n    texPos1.y = (quad1.y * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * textureColor.g);\n\n    #ifdef LUT_FLIP_Y\n        texPos1.y = 1.0-texPos1.y;\n    #endif\n\n    highp vec2 texPos2;\n    texPos2.x = (quad2.x * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * textureColor.r);\n    texPos2.y = (quad2.y * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * textureColor.g);\n\n    #ifdef LUT_FLIP_Y\n        texPos2.y = 1.0-texPos2.y;\n    #endif\n\n    lowp vec4 newColor1 = texture2D(lookupTable, texPos1);\n    lowp vec4 newColor2 = texture2D(lookupTable, texPos2);\n\n    lowp vec4 newColor = mix(newColor1, newColor2, fract(blueColor));\n\n    // had to swap r and g to get closer colors to original rendering\n    return vec4(newColor.g, newColor.r, newColor.b, 1.0);\n}";
     }
   });
 
-  // node_modules/@fils/vfx/lib/glsl/lib/rgbSplit.glsl
+  // ../packages/vfx/lib/glsl/lib/rgbSplit.glsl
   var rgbSplit_default;
   var init_rgbSplit = __esm({
-    "node_modules/@fils/vfx/lib/glsl/lib/rgbSplit.glsl"() {
+    "../packages/vfx/lib/glsl/lib/rgbSplit.glsl"() {
       rgbSplit_default = "vec4 rgbSplit(sampler2D tex, vec2 uv, float strength, vec2 delta, vec2 maxV, bool radial) {\n    vec2 dir = radial ? uv - vec2( .5 ) : vec2(1.);\n    float d = strength * length( dir );\n    normalize( dir );\n    vec2 value = d * dir * delta;\n\n    value.x = clamp(value.x, -maxV.x, maxV.x);\n    value.y = clamp(value.y, -maxV.y, maxV.y);\n    \n    vec4 c1 = texture2D( tex, uv - value );\n    vec4 c2 = texture2D( tex, uv );\n    vec4 c3 = texture2D( tex, uv + value );\n\n    return vec4( c1.r, c2.g, c3.b, c1.a + c2.a + c3.a );\n}";
     }
   });
 
-  // node_modules/@fils/vfx/lib/glsl/lib/dither.glsl
+  // ../packages/vfx/lib/glsl/lib/dither.glsl
   var dither_default;
   var init_dither = __esm({
-    "node_modules/@fils/vfx/lib/glsl/lib/dither.glsl"() {
+    "../packages/vfx/lib/glsl/lib/dither.glsl"() {
       dither_default = "float d_rand(vec2 co){\n	return fract(sin(dot(co.xy, vec2(12.9898,78.233))) * 43758.5453123);\n}\n\nfloat dithering(vec2 st,float intensity){\n	return mix(-intensity / 255.,intensity / 255.,d_rand(st));\n}";
     }
   });
 
-  // node_modules/@fils/vfx/lib/vfx/pipeline/FinalPass.js
+  // ../packages/vfx/lib/vfx/pipeline/FinalPass.js
   var import_three10, SHADER;
   var init_FinalPass = __esm({
-    "node_modules/@fils/vfx/lib/vfx/pipeline/FinalPass.js"() {
+    "../packages/vfx/lib/vfx/pipeline/FinalPass.js"() {
       init_fbo3();
       init_final();
       init_RenderPass();
@@ -14677,26 +14677,26 @@
     }
   });
 
-  // node_modules/@fils/vfx/lib/glsl/vfx/dof.frag
+  // ../packages/vfx/lib/glsl/vfx/dof.frag
   var dof_default;
   var init_dof = __esm({
-    "node_modules/@fils/vfx/lib/glsl/vfx/dof.frag"() {
+    "../packages/vfx/lib/glsl/vfx/dof.frag"() {
       dof_default = "#version 100\nprecision highp float;\n\n#include <depth>\n\nuniform sampler2D tDepth;\nuniform sampler2D tInput;\nuniform sampler2D tBlur;\nuniform bool debug;\nvarying vec2 vUv;\n\nuniform float aperture;\nuniform float focalDistance;\n\nvoid main () {\n	float depth = readDepth (tDepth, vUv);\n	vec3 noBlur = texture2D(tInput, vUv).rgb;\n	vec3 blur = texture2D(tBlur, vUv).rgb;\n\n	float distanceToCamera = mix(cameraNear, cameraFar, depth);\n	\n	float CoC = distance(distanceToCamera, focalDistance);\n	float st = smoothstep(0.0, aperture, CoC);\n\n	vec3 color = mix(noBlur, blur, st);\n	\n	if(debug) {\n		gl_FragColor = vec4(vec3(1.0-st), 1.0);\n	}\n	else {\n		gl_FragColor = vec4(color, 1.0);\n	}\n}";
     }
   });
 
-  // node_modules/@fils/vfx/lib/glsl/lib/depth.glsl
+  // ../packages/vfx/lib/glsl/lib/depth.glsl
   var depth_default;
   var init_depth = __esm({
-    "node_modules/@fils/vfx/lib/glsl/lib/depth.glsl"() {
+    "../packages/vfx/lib/glsl/lib/depth.glsl"() {
       depth_default = "uniform float cameraNear;\nuniform float cameraFar;\n\n#include <packing>\n\nfloat readDepth (sampler2D depthSampler, vec2 coord) {\n	float fragCoordZ = texture2D(depthSampler, coord).x;\n	float viewZ = perspectiveDepthToViewZ( fragCoordZ, cameraNear, cameraFar );\n	return viewZToOrthographicDepth( viewZ, cameraNear, cameraFar );\n}\n\nfloat readZ (sampler2D depthSampler, vec2 coord) {\n	float fragCoordZ = texture2D(depthSampler, coord).x;\n	float viewZ = perspectiveDepthToViewZ( fragCoordZ, cameraNear, cameraFar );\n\n	return viewZ;\n}";
     }
   });
 
-  // node_modules/@fils/vfx/lib/vfx/pipeline/DoFPass.js
+  // ../packages/vfx/lib/vfx/pipeline/DoFPass.js
   var import_three11, SHADER2;
   var init_DoFPass = __esm({
-    "node_modules/@fils/vfx/lib/vfx/pipeline/DoFPass.js"() {
+    "../packages/vfx/lib/vfx/pipeline/DoFPass.js"() {
       import_three11 = __toESM(require_three_min());
       init_BlurPass();
       init_RenderPass();
@@ -14719,52 +14719,52 @@
     }
   });
 
-  // node_modules/@fils/vfx/lib/vfx/pipeline/FXAAPass.js
+  // ../packages/vfx/lib/vfx/pipeline/FXAAPass.js
   var import_three12;
   var init_FXAAPass = __esm({
-    "node_modules/@fils/vfx/lib/vfx/pipeline/FXAAPass.js"() {
+    "../packages/vfx/lib/vfx/pipeline/FXAAPass.js"() {
       init_RenderPass();
       import_three12 = __toESM(require_three_min());
     }
   });
 
-  // node_modules/@fils/vfx/lib/vfx/pipeline/LutPass.js
+  // ../packages/vfx/lib/vfx/pipeline/LutPass.js
   var import_three13;
   var init_LutPass = __esm({
-    "node_modules/@fils/vfx/lib/vfx/pipeline/LutPass.js"() {
+    "../packages/vfx/lib/vfx/pipeline/LutPass.js"() {
       init_RenderPass();
       import_three13 = __toESM(require_three_min());
     }
   });
 
-  // node_modules/@fils/vfx/lib/glsl/vfx/retro.frag
+  // ../packages/vfx/lib/glsl/vfx/retro.frag
   var retro_default;
   var init_retro = __esm({
-    "node_modules/@fils/vfx/lib/glsl/vfx/retro.frag"() {
+    "../packages/vfx/lib/glsl/vfx/retro.frag"() {
       retro_default = "#version 100\nprecision highp float;\nvarying vec2 vUv;\n\nuniform sampler2D tInput;\nuniform vec2 resolution;\nuniform float gridSize;\n\nuniform bool pixelate;\nuniform int dithering;\n\n#include <dither2>\n\nvoid main () {\n    vec2 uvStep = vec2(gridSize / resolution.x, gridSize / resolution.y); \n\n    // pixelate\n    vec2 uv = floor(vUv / uvStep) * uvStep + uvStep * 0.5;\n    if(!pixelate) {\n        uv = vUv;\n    }\n    vec4 pixelated = texture2D(tInput, uv);\n\n    if (dithering == 1) {\n        pixelated = dither2x2(gl_FragCoord.xy, pixelated);\n    } else if (dithering == 2) {\n        pixelated = dither4x4(gl_FragCoord.xy, pixelated);\n    } else if (dithering == 3) {\n        pixelated = dither8x8(gl_FragCoord.xy, pixelated);\n    }\n\n    gl_FragColor = pixelated;\n\n}";
     }
   });
 
-  // node_modules/@fils/vfx/lib/glsl/lib/luma.glsl
+  // ../packages/vfx/lib/glsl/lib/luma.glsl
   var luma_default;
   var init_luma = __esm({
-    "node_modules/@fils/vfx/lib/glsl/lib/luma.glsl"() {
+    "../packages/vfx/lib/glsl/lib/luma.glsl"() {
       luma_default = "float luma(vec3 color) {\n  return dot(color, vec3(0.299, 0.587, 0.114));\n}\n\nfloat luma(vec4 color) {\n  return dot(color.rgb, vec3(0.299, 0.587, 0.114));\n}";
     }
   });
 
-  // node_modules/@fils/vfx/lib/glsl/lib/dither2.glsl
+  // ../packages/vfx/lib/glsl/lib/dither2.glsl
   var dither2_default;
   var init_dither2 = __esm({
-    "node_modules/@fils/vfx/lib/glsl/lib/dither2.glsl"() {
+    "../packages/vfx/lib/glsl/lib/dither2.glsl"() {
       dither2_default = "/*\n* Implementation from: https://github.com/hughsk/glsl-dither \n*/\n\n#include <luma>\n\nfloat dither8x8(vec2 position, float brightness) {\n  int x = int(mod(position.x, 8.0));\n  int y = int(mod(position.y, 8.0));\n  int index = x + y * 8;\n  float limit = 0.0;\n\n  if (x < 8) {\n    if (index == 0) limit = 0.015625;\n    if (index == 1) limit = 0.515625;\n    if (index == 2) limit = 0.140625;\n    if (index == 3) limit = 0.640625;\n    if (index == 4) limit = 0.046875;\n    if (index == 5) limit = 0.546875;\n    if (index == 6) limit = 0.171875;\n    if (index == 7) limit = 0.671875;\n    if (index == 8) limit = 0.765625;\n    if (index == 9) limit = 0.265625;\n    if (index == 10) limit = 0.890625;\n    if (index == 11) limit = 0.390625;\n    if (index == 12) limit = 0.796875;\n    if (index == 13) limit = 0.296875;\n    if (index == 14) limit = 0.921875;\n    if (index == 15) limit = 0.421875;\n    if (index == 16) limit = 0.203125;\n    if (index == 17) limit = 0.703125;\n    if (index == 18) limit = 0.078125;\n    if (index == 19) limit = 0.578125;\n    if (index == 20) limit = 0.234375;\n    if (index == 21) limit = 0.734375;\n    if (index == 22) limit = 0.109375;\n    if (index == 23) limit = 0.609375;\n    if (index == 24) limit = 0.953125;\n    if (index == 25) limit = 0.453125;\n    if (index == 26) limit = 0.828125;\n    if (index == 27) limit = 0.328125;\n    if (index == 28) limit = 0.984375;\n    if (index == 29) limit = 0.484375;\n    if (index == 30) limit = 0.859375;\n    if (index == 31) limit = 0.359375;\n    if (index == 32) limit = 0.0625;\n    if (index == 33) limit = 0.5625;\n    if (index == 34) limit = 0.1875;\n    if (index == 35) limit = 0.6875;\n    if (index == 36) limit = 0.03125;\n    if (index == 37) limit = 0.53125;\n    if (index == 38) limit = 0.15625;\n    if (index == 39) limit = 0.65625;\n    if (index == 40) limit = 0.8125;\n    if (index == 41) limit = 0.3125;\n    if (index == 42) limit = 0.9375;\n    if (index == 43) limit = 0.4375;\n    if (index == 44) limit = 0.78125;\n    if (index == 45) limit = 0.28125;\n    if (index == 46) limit = 0.90625;\n    if (index == 47) limit = 0.40625;\n    if (index == 48) limit = 0.25;\n    if (index == 49) limit = 0.75;\n    if (index == 50) limit = 0.125;\n    if (index == 51) limit = 0.625;\n    if (index == 52) limit = 0.21875;\n    if (index == 53) limit = 0.71875;\n    if (index == 54) limit = 0.09375;\n    if (index == 55) limit = 0.59375;\n    if (index == 56) limit = 1.0;\n    if (index == 57) limit = 0.5;\n    if (index == 58) limit = 0.875;\n    if (index == 59) limit = 0.375;\n    if (index == 60) limit = 0.96875;\n    if (index == 61) limit = 0.46875;\n    if (index == 62) limit = 0.84375;\n    if (index == 63) limit = 0.34375;\n  }\n\n  return brightness < limit ? 0.0 : 1.0;\n}\n\nvec3 dither8x8(vec2 position, vec3 color) {\n  return color * dither8x8(position, luma(color));\n}\n\nvec4 dither8x8(vec2 position, vec4 color) {\n  return vec4(color.rgb * dither8x8(position, luma(color)), 1.0);\n}\n\nfloat dither4x4(vec2 position, float brightness) {\n  int x = int(mod(position.x, 4.0));\n  int y = int(mod(position.y, 4.0));\n  int index = x + y * 4;\n  float limit = 0.0;\n\n  if (x < 8) {\n    if (index == 0) limit = 0.0625;\n    if (index == 1) limit = 0.5625;\n    if (index == 2) limit = 0.1875;\n    if (index == 3) limit = 0.6875;\n    if (index == 4) limit = 0.8125;\n    if (index == 5) limit = 0.3125;\n    if (index == 6) limit = 0.9375;\n    if (index == 7) limit = 0.4375;\n    if (index == 8) limit = 0.25;\n    if (index == 9) limit = 0.75;\n    if (index == 10) limit = 0.125;\n    if (index == 11) limit = 0.625;\n    if (index == 12) limit = 1.0;\n    if (index == 13) limit = 0.5;\n    if (index == 14) limit = 0.875;\n    if (index == 15) limit = 0.375;\n  }\n\n  return brightness < limit ? 0.0 : 1.0;\n}\n\nvec3 dither4x4(vec2 position, vec3 color) {\n  return color * dither4x4(position, luma(color));\n}\n\nvec4 dither4x4(vec2 position, vec4 color) {\n  return vec4(color.rgb * dither4x4(position, luma(color)), 1.0);\n}\n\nfloat dither2x2(vec2 position, float brightness) {\n  int x = int(mod(position.x, 2.0));\n  int y = int(mod(position.y, 2.0));\n  int index = x + y * 2;\n  float limit = 0.0;\n\n  if (x < 8) {\n    if (index == 0) limit = 0.25;\n    if (index == 1) limit = 0.75;\n    if (index == 2) limit = 1.00;\n    if (index == 3) limit = 0.50;\n  }\n\n  return brightness < limit ? 0.0 : 1.0;\n}\n\nvec3 dither2x2(vec2 position, vec3 color) {\n  return color * dither2x2(position, luma(color));\n}\n\nvec4 dither2x2(vec2 position, vec4 color) {\n  return vec4(color.rgb * dither2x2(position, luma(color)), 1.0);\n}";
     }
   });
 
-  // node_modules/@fils/vfx/lib/vfx/pipeline/RetroPass.js
+  // ../packages/vfx/lib/vfx/pipeline/RetroPass.js
   var import_three14, VFX;
   var init_RetroPass = __esm({
-    "node_modules/@fils/vfx/lib/vfx/pipeline/RetroPass.js"() {
+    "../packages/vfx/lib/vfx/pipeline/RetroPass.js"() {
       init_RenderPass();
       init_fbo3();
       init_retro();
@@ -14785,18 +14785,18 @@
     }
   });
 
-  // node_modules/@fils/vfx/lib/glsl/fbo.frag
+  // ../packages/vfx/lib/glsl/fbo.frag
   var fbo_default4;
   var init_fbo4 = __esm({
-    "node_modules/@fils/vfx/lib/glsl/fbo.frag"() {
+    "../packages/vfx/lib/glsl/fbo.frag"() {
       fbo_default4 = "#version 100\nprecision lowp float;\n\nuniform sampler2D tInput;\nuniform float opacity;\n\nvarying vec2 vUv;\n\nvoid main() {\n	gl_FragColor = texture2D(tInput, vUv) * opacity;\n}";
     }
   });
 
-  // node_modules/@fils/vfx/lib/vfx/VFXPipeline.js
+  // ../packages/vfx/lib/vfx/VFXPipeline.js
   var import_three15, TO_SCREEN;
   var init_VFXPipeline = __esm({
-    "node_modules/@fils/vfx/lib/vfx/VFXPipeline.js"() {
+    "../packages/vfx/lib/vfx/VFXPipeline.js"() {
       import_three15 = __toESM(require_three_min());
       init_fbo4();
       init_fbo3();
@@ -14812,31 +14812,31 @@
     }
   });
 
-  // node_modules/@fils/vfx/lib/vfx/CommonVFXPipeline.js
+  // ../packages/vfx/lib/vfx/CommonVFXPipeline.js
   var init_CommonVFXPipeline = __esm({
-    "node_modules/@fils/vfx/lib/vfx/CommonVFXPipeline.js"() {
+    "../packages/vfx/lib/vfx/CommonVFXPipeline.js"() {
       init_main2();
       init_VFXPipeline();
     }
   });
 
-  // node_modules/@fils/vfx/lib/glsl/vfx/material/output.frag
+  // ../packages/vfx/lib/glsl/vfx/material/output.frag
   var output_default;
   var init_output = __esm({
-    "node_modules/@fils/vfx/lib/glsl/vfx/material/output.frag"() {
+    "../packages/vfx/lib/glsl/vfx/material/output.frag"() {
       output_default = "#include <output_fragment>\n\noGlow = vec4(totalEmissiveRadiance, 1.0);";
     }
   });
 
-  // node_modules/@fils/vfx/lib/glsl/vfx/material/pars.frag
+  // ../packages/vfx/lib/glsl/vfx/material/pars.frag
   var pars_default;
   var init_pars = __esm({
-    "node_modules/@fils/vfx/lib/glsl/vfx/material/pars.frag"() {
+    "../packages/vfx/lib/glsl/vfx/material/pars.frag"() {
       pars_default = "#include <clipping_planes_pars_fragment>\n\nlayout (location = 1) out vec4 oGlow;";
     }
   });
 
-  // node_modules/@fils/vfx/lib/vfx/materials/MaterialUtils.js
+  // ../packages/vfx/lib/vfx/materials/MaterialUtils.js
   function injectVFXBasics(shader, emissive = false) {
     if (!emissive) {
       let fs = shader.fragmentShader;
@@ -14859,16 +14859,16 @@
     return mat;
   }
   var init_MaterialUtils = __esm({
-    "node_modules/@fils/vfx/lib/vfx/materials/MaterialUtils.js"() {
+    "../packages/vfx/lib/vfx/materials/MaterialUtils.js"() {
       init_output();
       init_pars();
     }
   });
 
-  // node_modules/@fils/vfx/lib/vfx/materials/VFXBasicMaterials.js
+  // ../packages/vfx/lib/vfx/materials/VFXBasicMaterials.js
   var import_three16, vfxBasic, vfxPhong, vfxStandard, vfxPhysical;
   var init_VFXBasicMaterials = __esm({
-    "node_modules/@fils/vfx/lib/vfx/materials/VFXBasicMaterials.js"() {
+    "../packages/vfx/lib/vfx/materials/VFXBasicMaterials.js"() {
       import_three16 = __toESM(require_three_min());
       init_MaterialUtils();
       vfxBasic = {
@@ -14898,10 +14898,10 @@
     }
   });
 
-  // node_modules/@fils/vfx/lib/main.js
+  // ../packages/vfx/lib/main.js
   var vfxShaders;
   var init_main2 = __esm({
-    "node_modules/@fils/vfx/lib/main.js"() {
+    "../packages/vfx/lib/main.js"() {
       init_VFXRenderer();
       init_RenderPass();
       init_BlurPass();
@@ -14931,32 +14931,32 @@
     }
   });
 
-  // node_modules/@fils/gfx/lib/utils/glInfo.js
+  // ../packages/gfx/lib/utils/glInfo.js
   var init_glInfo2 = __esm({
-    "node_modules/@fils/gfx/lib/utils/glInfo.js"() {
+    "../packages/gfx/lib/utils/glInfo.js"() {
     }
   });
 
-  // node_modules/@fils/gfx/lib/glsl/fbo.frag
+  // ../packages/gfx/lib/glsl/fbo.frag
   var fbo_default5;
   var init_fbo5 = __esm({
-    "node_modules/@fils/gfx/lib/glsl/fbo.frag"() {
+    "../packages/gfx/lib/glsl/fbo.frag"() {
       fbo_default5 = "#version 100\nprecision lowp float;\n\nuniform sampler2D tInput;\nuniform float opacity;\n\nvarying vec2 vUv;\n\nvoid main() {\n	gl_FragColor = texture2D(tInput, vUv) * opacity;\n}";
     }
   });
 
-  // node_modules/@fils/gfx/lib/glsl/fbo.vert
+  // ../packages/gfx/lib/glsl/fbo.vert
   var fbo_default6;
   var init_fbo6 = __esm({
-    "node_modules/@fils/gfx/lib/glsl/fbo.vert"() {
+    "../packages/gfx/lib/glsl/fbo.vert"() {
       fbo_default6 = "#version 100\n\nprecision lowp float;\n\nattribute vec3 position;\nattribute vec2 uv;\n\nuniform mat4 projectionMatrix;\nuniform mat4 modelViewMatrix;\nuniform mat4 viewMatrix;\nuniform mat4 modelMatrix;\n\nuniform float time;\n\nvarying vec2 vUv;\n\nvoid main () {\n	vec3 pos = position;\n	vUv = uv;\n	vec4 mvPos = modelViewMatrix * vec4(pos, 1.0);\n	gl_Position = projectionMatrix * mvPos;\n}";
     }
   });
 
-  // node_modules/@fils/gfx/lib/utils/RTHelper.js
+  // ../packages/gfx/lib/utils/RTHelper.js
   var import_three17, TMP2, MAT2, RTHelper2;
   var init_RTHelper2 = __esm({
-    "node_modules/@fils/gfx/lib/utils/RTHelper.js"() {
+    "../packages/gfx/lib/utils/RTHelper.js"() {
       import_three17 = __toESM(require_three_min());
       init_fbo5();
       init_fbo6();
@@ -15042,10 +15042,10 @@
     }
   });
 
-  // node_modules/@fils/gfx/lib/utils/RTUtils.js
+  // ../packages/gfx/lib/utils/RTUtils.js
   var import_three18, RTUtils2;
   var init_RTUtils2 = __esm({
-    "node_modules/@fils/gfx/lib/utils/RTUtils.js"() {
+    "../packages/gfx/lib/utils/RTUtils.js"() {
       import_three18 = __toESM(require_three_min());
       init_RTHelper2();
       RTUtils2 = class {
@@ -15084,10 +15084,10 @@
     }
   });
 
-  // node_modules/@fils/gfx/lib/prototype/Sketch.js
+  // ../packages/gfx/lib/prototype/Sketch.js
   var Sketch2;
   var init_Sketch2 = __esm({
-    "node_modules/@fils/gfx/lib/prototype/Sketch.js"() {
+    "../packages/gfx/lib/prototype/Sketch.js"() {
       Sketch2 = class {
         constructor() {
           this._paused = false;
@@ -15148,10 +15148,10 @@
     }
   });
 
-  // node_modules/@fils/gfx/lib/prototype/WebGLSketch.js
+  // ../packages/gfx/lib/prototype/WebGLSketch.js
   var import_three19, WebGLSketch;
   var init_WebGLSketch2 = __esm({
-    "node_modules/@fils/gfx/lib/prototype/WebGLSketch.js"() {
+    "../packages/gfx/lib/prototype/WebGLSketch.js"() {
       import_three19 = __toESM(require_three_min());
       init_Sketch2();
       WebGLSketch = class extends Sketch2 {
@@ -15237,36 +15237,36 @@
     }
   });
 
-  // node_modules/@fils/gfx/lib/utils/SceneUtils.js
+  // ../packages/gfx/lib/utils/SceneUtils.js
   var import_three20;
   var init_SceneUtils2 = __esm({
-    "node_modules/@fils/gfx/lib/utils/SceneUtils.js"() {
+    "../packages/gfx/lib/utils/SceneUtils.js"() {
       import_three20 = __toESM(require_three_min());
     }
   });
 
-  // node_modules/@fils/gfx/lib/utils/GfxUtils.js
+  // ../packages/gfx/lib/utils/GfxUtils.js
   var import_three21, RAD2DEG2, DEG2RAD2;
   var init_GfxUtils2 = __esm({
-    "node_modules/@fils/gfx/lib/utils/GfxUtils.js"() {
+    "../packages/gfx/lib/utils/GfxUtils.js"() {
       import_three21 = __toESM(require_three_min());
       RAD2DEG2 = 180 / Math.PI;
       DEG2RAD2 = Math.PI / 180;
     }
   });
 
-  // node_modules/@fils/gfx/lib/utils/EquirectangularToCubemap.js
+  // ../packages/gfx/lib/utils/EquirectangularToCubemap.js
   var import_three22, GEO2;
   var init_EquirectangularToCubemap2 = __esm({
-    "node_modules/@fils/gfx/lib/utils/EquirectangularToCubemap.js"() {
+    "../packages/gfx/lib/utils/EquirectangularToCubemap.js"() {
       import_three22 = __toESM(require_three_min());
       GEO2 = new import_three22.SphereGeometry(100, 64, 64);
     }
   });
 
-  // node_modules/@fils/gfx/lib/main.js
+  // ../packages/gfx/lib/main.js
   var init_main3 = __esm({
-    "node_modules/@fils/gfx/lib/main.js"() {
+    "../packages/gfx/lib/main.js"() {
       init_glInfo2();
       init_RTHelper2();
       init_RTUtils2();
