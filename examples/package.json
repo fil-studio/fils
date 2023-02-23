@@ -41,6 +41,8 @@
 		"@fils/math": "^0.0.4",
 		"@fils/nomad": "^0.0.6",
 		"@fils/phy": "^0.0.4",
+		"@fils/scroller": "^0.0.4",
+		"@fils/ui": "^0.0.36",
 		"@fils/ui-icons": "^0.0.7",
 		"@fils/utils": "^0.0.7",
 		"@fils/vfx": "^0.0.5",
