@@ -48,5 +48,10 @@
 		"@fils/vfx": "^0.0.10",
 		"gsap": "^3.11.3",
 		"three": "^0.150.0"
-	}
+	},
+	"workspaces": {
+    "nohoist": [
+      "@fils/*"
+    ]
+  }
 }
