@@ -7,6 +7,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 import { RTUtils, WebGLSketch } from '@fils/gfx';
 
+// Todo arreglar aquests imports per build
 import vert from '../../../../packages/vfx/lib/glsl/fbo.vert';
 import frag from '../../../../packages/vfx/lib/glsl/vfx/draw-depth.frag';
 
