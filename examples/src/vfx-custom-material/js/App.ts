@@ -8,7 +8,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { getHDRI, WebGLSketch } from '@fils/gfx';
 
 import { MathUtils } from '@fils/math';
-import { VFXRenderer } from '../../../../packages/vfx/src/main';
+import { VFXRenderer } from '@fils/vfx';
 import { CustomMaterial } from './CustomMaterial';
 
 const tLoader = new TextureLoader();
@@ -76,7 +76,7 @@ export class App extends WebGLSketch {
 			this.scene.add(scene);
 		});
 
-		
+
 		this.sMatRef = sMat;
 
 		window.addEventListener('resize', (event) => {
@@ -102,7 +102,7 @@ export class App extends WebGLSketch {
 		);
 
 		this.rnd = rnd;
-		
+
 		const stats = Stats();
 		document.body.appendChild(stats.domElement);
 
@@ -124,7 +124,7 @@ export class App extends WebGLSketch {
 		const gui = new GUI();
 		gui.add(settings, "debug");
 		gui.add(sMat, "flatCalc").name("Calculate on VS");
-		
+
 		this.start(customRaf);
 
 		let cTime = 0;

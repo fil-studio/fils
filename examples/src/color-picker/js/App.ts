@@ -1,6 +1,3 @@
-// import { drawColorPickerBar, drawColorPickerSL } from '../../../../packages/color/src/canvas-utils';
-// import { HSBColor, hsbToHex, hsbToRgb, hsbToString, rgbToString } from '../../../../packages/color/src/utils';
-
 import { drawColorPickerBar, drawColorPickerSL, HSBColor, hsbToHex, hsbToRgb, hsbToString, rgbToString } from '@fils/color';
 
 export class App {

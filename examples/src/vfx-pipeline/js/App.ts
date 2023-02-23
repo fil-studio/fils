@@ -4,10 +4,8 @@ import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 
 import { RTUtils, WebGLSketch } from '@fils/gfx';
-// import { DoFPass, FinalPass, FXAAPass, initMaterial, LutPass, RetroPass, VFXPipeline, VFXRenderer } from '@fils/vfx';
-import { FinalPass, initMaterial, LutPass, RetroPass, VFXPipeline, VFXRenderer } from '../../../../packages/vfx/src/main';
+import { FinalPass, initMaterial, LutPass, RetroPass, VFXPipeline, VFXRenderer } from '@fils/vfx';
 
-// import { FinalPass } from '../../../../packages/vfx/src/main';
 
 const BOX_GEO = new BoxGeometry(1, 1, 1);
 const BALL_GEO = new SphereGeometry(1);
@@ -25,7 +23,7 @@ const passMap = {
 }
 
 /**
- * VFXRenderer works best with black clear color and 0 clear alpha 
+ * VFXRenderer works best with black clear color and 0 clear alpha
  * if we want to render color + glow passes in one MRT.
  * We recommend using a Scene background and leave renderer with
  * clear color 0x000000, 0 and set the background to
@@ -203,7 +201,7 @@ export class App extends WebGLSketch {
 		const gui = new GUI();
 
 		const r = {
-			type: 0 
+			type: 0
 		}
 
 		gui.add(r, "type", {

@@ -6,17 +6,17 @@ import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { getHDRI, WebGLSketch } from '@fils/gfx';
 
 import { el } from '@fils/utils';
-import { VFXBasicMaterial, VFXEmissiveMaterial, VFXRenderer, VFXStandardMaterial } from '../../../../packages/vfx/src/main';
+import { VFXBasicMaterial, VFXEmissiveMaterial, VFXRenderer, VFXStandardMaterial } from '@fils/vfx';
 import { MathUtils } from '@fils/math';
 
 const tLoader = new TextureLoader();
 
 /**
- * VFX Materials 
+ * VFX Materials
  * replace initMaterial with a ThreeJS Material API.
  * It also includes a pure emissive material (unlit emissive)
  * for cheaper emissive only render.
- * 
+ *
  * VFX Materials are a good approach if you need to extend
  * them with more custom functionalities. See example
  * "vfx-custom-material"
@@ -78,7 +78,7 @@ export class App extends WebGLSketch {
 		can1.width = can1.height = 256;
 
 		const checker = 64;
-	
+
 		for(let i=0; i<checker; i++) {
 			for(let j=0; j<checker; j++) {
 				const x = j*checker;
@@ -156,7 +156,7 @@ export class App extends WebGLSketch {
 		);
 
 		this.rnd = rnd;
-		
+
 		const stats = Stats();
 		document.body.appendChild(stats.domElement);
 
@@ -176,7 +176,7 @@ export class App extends WebGLSketch {
 
 		// GUI
 		const gui = new GUI();
-		
+
 		const f0 = gui.addFolder("Render Options");
 		f0.add(rnd, "showBackground").name("Render Background");
 		f0.add(rnd, "showScene").name("Render Scene");

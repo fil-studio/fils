@@ -1,5 +1,5 @@
 import { MeshStandardMaterialParameters, Shader, WebGLRenderer } from "three";
-import { VFXStandardMaterial } from "../../../../packages/vfx/src/main";
+import { VFXStandardMaterial } from "@fils/vfx";
 
 const vert_params = `
 #include <clipping_planes_pars_vertex>

@@ -1,9 +1,4 @@
-// import { WebGLSketch, initMaterial, VFXRenderer, vfxShaders } from '@fils/vfx'
-// import { WebGLSketch, initMaterial, VFXRenderer, vfxShaders } from '../../../../packages/vfx/lib/main'
 import { BoxGeometry, CylinderGeometry, DirectionalLight, Mesh, MeshPhongMaterial, ShaderChunk, SphereGeometry, TorusKnotGeometry } from 'three';
-/* import { initMaterial } from '../../../../packages/vfx/src/vfx/MaterialUtils';
-import { VFXRenderer } from '../../../../packages/vfx/src/vfx/VFXRenderer';
-import { WebGLSketch } from '../../../../packages/gfx'; */
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';

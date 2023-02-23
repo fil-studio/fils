@@ -1,7 +1,5 @@
 import { UI } from '@fils/ui';
 
-
-// import { UI } from '../../../../packages/ui/src/main';
 import { uiBrushData } from '@fils/ui-icons';
 
 import { Texture, TextureLoader } from 'three';
