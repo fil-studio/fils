@@ -6,11 +6,11 @@
 	"homepage": "https://github.com/fil-studio/fils/tree/main/packages/utils",
 	"author": "fil studio <hello@fil.studio>",
 	"license": "Apache-2.0",
-	"main": "lib/main.js",
 	"scripts": {
 		"prepare": "yarn build",
 		"build": "tsc"
 	},
+	"main": "lib/main.js",
 	"files": [
 		"lib"
 	],

@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@fils/gfx@0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@fils/gfx/-/gfx-0.0.9.tgz#b053d9f653db07a6ee27c1b6b97e070648015603"
+  integrity sha512-m74S62fnYdsHjYn3/iq9kMTNVuoUuCZJwpenz/Ty+2NGLUAJuzByB48C0iBACzG190U0URHTTKhEIUEKl00NEQ==
+
 "@fils/io@^0.0.4":
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/@fils/io/-/io-0.0.4.tgz#497cdfb0695f6ff288b7116b9c8123896f6f1652"
@@ -140,15 +145,15 @@ source-map@~0.6.0:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.6.1.tgz#74722af32e9614e9c287a8d0bbde48b5e2f1a263"
   integrity sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==
 
-three@*:
-  version "0.150.0"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.150.0.tgz#38a324c3976e07799671d06d99f01b02a2fe65c6"
-  integrity sha512-12oqqBZom9fb5HtX3rD8qPVnamojuiN5Os7r0x8s3HQ+WHRwnEyzl2XU3aEKocsDkG++rkE9+HWzx77O59NXtw==
-
 three@^0.149.0:
   version "0.149.0"
   resolved "https://registry.yarnpkg.com/three/-/three-0.149.0.tgz#a9cf78b17d02f063ffe6dfca1e300eff2eab2927"
   integrity sha512-tohpUxPDht0qExRLDTM8sjRLc5d9STURNrdnK3w9A+V4pxaTBfKWWT/IqtiLfg23Vfc3Z+ImNfvRw1/0CtxrkQ==
+
+three@^0.150.0:
+  version "0.150.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.150.0.tgz#38a324c3976e07799671d06d99f01b02a2fe65c6"
+  integrity sha512-12oqqBZom9fb5HtX3rD8qPVnamojuiN5Os7r0x8s3HQ+WHRwnEyzl2XU3aEKocsDkG++rkE9+HWzx77O59NXtw==
 
 to-regex-range@^5.0.1:
   version "5.0.1"

@@ -10,6 +10,6 @@
     "packages/*"
   ],
   "dependencies": {
-    "three": "*"
+    "three": "^0.150.0"
   }
 }
