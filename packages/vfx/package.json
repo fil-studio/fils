@@ -20,12 +20,11 @@
 		"typescript": "^4.8.4"
 	},
 	"peerDependencies": {
-		"three": "^0.149.0"
+		"three": "*"
 	},
 	"dependencies": {
 		"@fils/gfx": "^0.0.8",
 		"@fils/io": "^0.0.4",
-		"@fils/math": "^0.0.8",
-		"three": "^0.150.0"
+		"@fils/math": "^0.0.8"
 	}
 }

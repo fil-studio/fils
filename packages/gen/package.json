@@ -23,6 +23,6 @@
 		"@fils/math": "^0.0.8"
 	},
 	"peerDependencies": {
-		"three": "^0.149.0"
+		"three": "*"
 	}
 }
