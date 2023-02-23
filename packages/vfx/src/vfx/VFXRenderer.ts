@@ -22,7 +22,7 @@ import { BlurPass, BlurSettings } from "../main";
 
 import vert from '../glsl/vfx/comp.vert';
 import frag from '../glsl/vfx/comp.frag';
-import { RTUtils } from '@fils/gfx';
+import { RTUtils } from "@fils/gfx";
 
 const COMP = new RawShaderMaterial({
     vertexShader: vert,
@@ -81,7 +81,7 @@ export class VFXRenderer {
             type: UnsignedByteType,
             samples: settings && settings.samples ? settings.samples : 4
         });
-        
+
 
         this.sceneRT.texture[ 0 ].name = 'diffuse';
         this.sceneRT.texture[ 1 ].name = 'glow';

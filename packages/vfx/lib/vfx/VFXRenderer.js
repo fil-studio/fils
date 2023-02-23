@@ -17,7 +17,7 @@ import { BlurPass } from "../main";
 */
 import vert from '../glsl/vfx/comp.vert';
 import frag from '../glsl/vfx/comp.frag';
-import { RTUtils } from '@fils/gfx';
+import { RTUtils } from "@fils/gfx";
 const COMP = new RawShaderMaterial({
     vertexShader: vert,
     fragmentShader: frag,
