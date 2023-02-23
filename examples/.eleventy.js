@@ -93,29 +93,8 @@ if(!isProduction) {
 
   }
 
-  const packagesDir = path.join(__dirname, '../packages');
   chokidar.watch(`../packages/*/src/**/*`).on('change', (path) => {
-
     buildAllJS();
-
-      // console.log(`Updated package ${path}`);
-      // const packageDir = path.split('/src/')[0];
-      // exec('yarn build', { cwd: packageDir }, () => {
-      //   console.log(`Rebuilded package ${packageDir}`);
-
-      //   const packageName = packageDir.split('/').pop();
-
-      //   console.log(`Copying package ${packageName} to node_modules`);
-      //   copyDir(`../node_modules/@fils/${packageName}`, `./node_modules/@fils/${packageName}`, (err) => {
-      //     if (err) {
-      //       console.error(`Error copying directory: ${err}`);
-      //     } else {
-      //       console.log('Directory copied successfully!');
-      //       buildAllCSS();
-      //       buildAllJS();
-      //     }
-      //   });
-    // });
   });
 }
 

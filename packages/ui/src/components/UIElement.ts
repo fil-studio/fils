@@ -35,7 +35,6 @@ export class UIElement extends EventsManager {
 	protected beforeCreate(): void {}
 	protected afterCreate(): void {}
 
-
 	// Create ROW
 	protected createDom(): void {
 		this.el = dom.createRow({
