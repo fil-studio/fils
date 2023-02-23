@@ -18,7 +18,7 @@
 		"@11ty/eleventy-server-browsersync": "^1.0.2",
 		"@sanity/asset-utils": "^1.3.0",
 		"@sanity/block-content-to-html": "^2.0.0",
-		"@sanity/client": "^4.0.1",
+		"@sanity/client": "^5.2.2",
 		"autoprefixer": "^10.4.13",
 		"chokidar": "^3.5.3",
 		"clean-css": "^5.3.1",
@@ -35,18 +35,18 @@
 	"dependencies": {
 		"@fils/ani": "^0.0.5",
 		"@fils/color": "^0.0.9",
-		"@fils/gen": "^0.0.4",
-		"@fils/gfx": "^0.0.6",
+		"@fils/gen": "^0.0.7",
+		"@fils/gfx": "^0.0.8",
 		"@fils/io": "^0.0.4",
-		"@fils/math": "^0.0.4",
+		"@fils/math": "^0.0.8",
 		"@fils/nomad": "^0.0.6",
 		"@fils/phy": "^0.0.4",
 		"@fils/scroller": "^0.0.4",
 		"@fils/ui": "^0.0.36",
-		"@fils/ui-icons": "^0.0.7",
-		"@fils/utils": "^0.0.7",
-		"@fils/vfx": "^0.0.5",
+		"@fils/ui-icons": "^0.0.12",
+		"@fils/utils": "^0.0.8",
+		"@fils/vfx": "^0.0.8",
 		"gsap": "^3.11.3",
-		"three": "^0.149.0"
+		"three": "^0.150.0"
 	}
 }
