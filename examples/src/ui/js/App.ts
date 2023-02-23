@@ -1,4 +1,5 @@
-import { UI } from '@fils/ui';
+// import { UI } from '@fils/ui';
+import { UI } from '../../../../packages/ui/src/main.js';
 
 import { uiBrushData } from '@fils/ui-icons';
 

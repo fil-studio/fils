@@ -12,6 +12,7 @@ export class Panel {
 	constructor(parent: Item, appendTo?: HTMLElement) {
 
 		this.parent = parent;
+
 		this.appendTo = appendTo ? appendTo : parent.content;
 
 		this.addEventListeners();
@@ -48,7 +49,8 @@ export class Panel {
 		const bg1 = parentDomStyle.getPropertyValue('--section-bg-1');
 
 		this.el = el('div', CSS_UI.panel.baseClass);
-		this.el.classList.add(`${CSS_UI.panel.baseClass}-${this.parent!.params.view}`)
+
+		// this.el.classList.add(`${CSS_UI.panel.baseClass}-${this.parent!.params.view}`)
 
 		this.el.style.setProperty('--section-bg-0', bg0);
 		this.el.style.setProperty('--section-bg-1', bg1);

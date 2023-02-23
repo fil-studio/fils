@@ -1,5 +1,5 @@
 {
-	"name": "fils-examples",
+	"name": "fils",
 	"version": "0.0.1",
 	"description": "Examples of fils",
 	"main": "index.js",
@@ -33,19 +33,6 @@
 		"sass": "^1.56.1"
 	},
 	"dependencies": {
-		"@fils/ani": "file:../packages/ani",
-		"@fils/color": "file:../packages/color",
-		"@fils/gen": "file:../packages/gen",
-		"@fils/gfx": "file:../packages/gfx",
-		"@fils/io": "file:../packages/io",
-		"@fils/math": "file:../packages/math",
-		"@fils/nomad": "file:../packages/nomad",
-		"@fils/phy": "file:../packages/phy",
-		"@fils/scroller": "file:../packages/scroller",
-		"@fils/ui": "file:../packages/ui",
-		"@fils/ui-icons": "file:../packages/ui-icons",
-		"@fils/utils": "file:../packages/utils",
-		"@fils/vfx": "file:../packages/vfx",
 		"gsap": "^3.11.3",
 		"three": "^0.150.0"
 	}

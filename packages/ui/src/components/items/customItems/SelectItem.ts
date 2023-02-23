@@ -137,7 +137,6 @@ export class SelectItem extends Item {
 
 	afterCreate(): void {
 		this.panel = new SelectPanel(this);
-
 	}
 
 	protected addEventListeners(): void {
