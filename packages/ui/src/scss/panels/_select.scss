@@ -22,6 +22,10 @@
 		text-align: left;
 		border-radius: var(--radius-0);
 
+		&._ui--active {
+			border: 1px solid var(--accent-color);
+		}
+
 		&:hover {
 			background-color: var(--accent-color);
 

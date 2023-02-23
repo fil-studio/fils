@@ -4,11 +4,11 @@ export declare class Panel {
     appendTo: HTMLElement;
     parent: Item | null;
     created: boolean;
-    constructor(parent: Item, appendTo?: HTMLElement);
+    constructor();
     addEventListeners(): void;
     positionPanel(): void;
     createPanelContent(): void;
-    create(): void;
+    create(parent: Item, appendTo?: HTMLElement): void;
     destroy(): void;
     onResize(): void;
     onChange(): void;

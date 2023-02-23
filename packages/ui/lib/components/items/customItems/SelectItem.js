@@ -39,7 +39,7 @@ export class SelectPanel extends Panel {
         });
     }
     createPanelContent() {
-        this.createSearch();
+        // this.createSearch();
         const parentContent = this.parent.params.options;
         this.options = Object.keys(parentContent).map((key) => {
             // Create option
@@ -51,7 +51,7 @@ export class SelectPanel extends Panel {
             const value = parentContent[key];
             // Hide selected option
             if (this.parent.value === value)
-                div.classList.add(CSS_UI.utility.hidden);
+                div.classList.add(CSS_UI.utility.active);
             // Add event listener
             div.addEventListener('click', () => {
                 this.parent.setValue(value);
@@ -70,7 +70,7 @@ export class SelectPanel extends Panel {
         p.innerHTML = 'No options found';
         this.optionNone.appendChild(p);
         this.el.appendChild(this.optionNone);
-        this.optionNone.classList.add(CSS_UI.utility.hidden);
+        this.optionNone.classList.add(CSS_UI.utility.active);
         setTimeout(() => this.searchInput.focus(), 10);
     }
     searchOptions() {
@@ -107,13 +107,13 @@ export class SelectItem extends Item {
         this.activeOption = el('div');
     }
     afterCreate() {
-        this.panel = new SelectPanel(this);
+        this.panel = new SelectPanel();
     }
     addEventListeners() {
         super.addEventListeners();
         this.input.addEventListener('click', () => {
             if (!this.panel.created) {
-                this.panel.create();
+                this.panel.create(this);
                 this.open();
             }
             else {
@@ -135,7 +135,16 @@ export class SelectItem extends Item {
         this.label = el('p', c.label, this.input);
     }
     setValue(value) {
-        this.label.innerHTML = check.isNull(value) || check.isUndefined(value) ? 'Select...' : value;
+        function findKeyByValue(obj, value) {
+            for (let key in obj) {
+                if (obj[key] === value) {
+                    return key;
+                }
+            }
+            return null;
+        }
+        const label = findKeyByValue(this.params.options, value);
+        this.label.innerHTML = check.isNull(value) || check.isUndefined(value) ? 'Select...' : label;
         super.setValue(value);
     }
 }

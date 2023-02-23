@@ -48,7 +48,7 @@ export class SelectPanel extends Panel {
 
 	createPanelContent(): void {
 
-		this.createSearch();
+		// this.createSearch();
 
 		const parentContent = this.parent!.params.options;
 
@@ -64,7 +64,7 @@ export class SelectPanel extends Panel {
 			const value = (parentContent as Record<string, unknown>)[key];
 
 			// Hide selected option
-			if (this.parent!.value === value ) div.classList.add(CSS_UI.utility.hidden);
+			if (this.parent!.value === value ) div.classList.add(CSS_UI.utility.active);
 
 			// Add event listener
 			div.addEventListener('click', () => {
@@ -86,7 +86,7 @@ export class SelectPanel extends Panel {
 		p.innerHTML = 'No options found';
 		this.optionNone.appendChild(p);
 		this.el.appendChild(this.optionNone);
-		this.optionNone.classList.add(CSS_UI.utility.hidden);
+		this.optionNone.classList.add(CSS_UI.utility.active);
 
 		setTimeout(() => this.searchInput.focus(), 10);
 
@@ -109,6 +109,7 @@ export class SelectPanel extends Panel {
 	}
 
 	createSearch(): void {
+
 
 		this.search = el('div', c.search, this.el);
 		this.searchInput = el('input', c.searchInput ) as HTMLInputElement;
@@ -174,7 +175,19 @@ export class SelectItem extends Item {
 	}
 
 	setValue(value: any): void {
-		this.label.innerHTML = check.isNull(value) || check.isUndefined(value) ? 'Select...' : value;
+
+		function findKeyByValue(obj, value) {
+			for (let key in obj) {
+				if (obj[key] === value) {
+					return key;
+				}
+			}
+			return null;
+		}
+
+		const label = findKeyByValue(this.params.options, value);
+
+		this.label.innerHTML = check.isNull(value) || check.isUndefined(value) ? 'Select...' : label;
 		super.setValue(value);
 	}
 }
