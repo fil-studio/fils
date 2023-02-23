@@ -105,8 +105,8 @@ export class Group extends UIElement {
 	 * @event click
 	 * @returns {Button} The newly created button element.
 	 */
-	addButton(title:string = 'Button'): Button{
-		const button = new Button(title as string);
+	addButton(title:string = 'Button', clickCallback:Function = () => {}): Button{
+		const button = new Button(title as string, clickCallback as Function);
 
 		if (button) {
 			button.init(this.depth + 1);
