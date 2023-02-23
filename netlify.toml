@@ -1,3 +1,4 @@
 [build]
-  command = "cd examples && npm install --ignore-workspace-root-check && npm run build"
-  publish = "examples/public"
+	base = "examples/"
+	publish = "public/"
+  command = "npm install --ignore-workspace-root-check && npm run build"
