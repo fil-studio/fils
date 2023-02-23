@@ -1,0 +1,3 @@
+[build]
+  command = "cd examples && npm install --no-optional && npm run build"
+  publish = "examples/public"
