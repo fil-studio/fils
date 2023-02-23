@@ -94,7 +94,7 @@ if(!isProduction) {
   }
 
   const packagesDir = path.join(__dirname, '../packages');
-  chokidar.watch(`${packagesDir}/*/lib/main.js`).on('change', (path) => {
+  chokidar.watch(`../packages/*/src/**/*`).on('change', (path) => {
 
     buildAllJS();
 
@@ -136,7 +136,7 @@ module.exports = function (eleventyConfig) {
 
   // To-do: mirar si amb el path 0 ja funciona
   eleventyConfig.addWatchTarget('**');
-  // eleventyConfig.addWatchTarget(`../packages/*/src/**/*`);
+  eleventyConfig.addWatchTarget(`../packages/*/src/**/*`);
   // eleventyConfig.addWatchTarget(`../packages/*/lib/main.js`);
 
   // This allows Eleventy to watch for file changes during local development.
