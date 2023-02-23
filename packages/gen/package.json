@@ -1,6 +1,6 @@
 {
 	"name": "@fils/gen",
-	"version": "0.0.12",
+	"version": "0.0.13",
 	"description": "Generative Package written in TypeScript",
 	"module": "lib/main.js",
 	"main": "lib/main.js",
