@@ -4,7 +4,7 @@ import { CSS_UI } from "../partials/cssClasses";
 import { EventsManager } from "../partials/EventsManager";
 import { CreateItemParams, ItemFactory } from "../partials/ItemFactory";
 import { RowTypes } from "../utils/dom";
-import { Button, ButtonOptions } from "./Button";
+import { Button } from "./Button";
 import { Item } from "./items/Item";
 import { ItemParameters } from "./items/ItemParameters";
 import { Spacer, SpacerParams, SpacerSize } from "./Spacer";
@@ -106,7 +106,7 @@ export class Group extends UIElement {
 	 * @returns {Button} The newly created button element.
 	 */
 	addButton(title:string = 'Button'): Button{
-		const button = new Button({title} as ButtonOptions);
+		const button = new Button(title as string);
 
 		if (button) {
 			button.init(this.depth + 1);

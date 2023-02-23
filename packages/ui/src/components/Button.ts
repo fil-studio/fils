@@ -2,14 +2,12 @@ import { CSS_UI } from "../main";
 import { RowTypes } from "../utils/dom";
 import { UIElement } from "./UIElement";
 
-export interface ButtonOptions {
-	title?: string;
-}
+
 
 export class Button extends UIElement {
 	button!: HTMLButtonElement;
 
-	constructor({ title }: ButtonOptions = {}) {
+	constructor(title:string = 'Button') {
 		const _title = title || 'Button'
 		super(RowTypes.button, _title);
 	}
