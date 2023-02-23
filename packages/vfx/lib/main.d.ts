@@ -10,3 +10,12 @@ export * from './vfx/CommonVFXPipeline';
 export * from './vfx/VFXPipeline';
 export * from './vfx/materials/MaterialUtils';
 export * from './vfx/materials/VFXBasicMaterials';
+declare const vfxShaders: {
+    rgbSplit: string;
+    dithering: string;
+    depth: string;
+    lut: string;
+    luma: string;
+    dither2: string;
+};
+export { vfxShaders };

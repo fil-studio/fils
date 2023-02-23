@@ -11,7 +11,7 @@ export * from './vfx/VFXPipeline';
 export * from './vfx/materials/MaterialUtils';
 export * from './vfx/materials/VFXBasicMaterials';
 
-/* import rgb from './glsl/lib/rgbSplit.glsl';
+import rgb from './glsl/lib/rgbSplit.glsl';
 import dither from './glsl/lib/dither.glsl';
 import depth from './glsl/lib/depth.glsl';
 import lut from './glsl/lib/lut.glsl';
@@ -29,4 +29,4 @@ const vfxShaders = {
 
 export {
 	vfxShaders
-} */
+}

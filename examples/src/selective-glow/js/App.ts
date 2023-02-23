@@ -24,6 +24,7 @@ export class App extends WebGLSketch {
 			alpha: false,
 			antialias: true
 		});
+
 		this.renderer.setClearColor(0x000000, 1);
 		document.body.appendChild(this.domElement);
 		this.domElement.className = 'view';
