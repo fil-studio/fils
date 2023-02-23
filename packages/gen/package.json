@@ -1,6 +1,6 @@
 {
 	"name": "@fils/gen",
-	"version": "0.0.8",
+	"version": "0.0.9",
 	"description": "Generative Package written in TypeScript",
 	"module": "lib/main.js",
 	"main": "lib/main.js",
@@ -23,6 +23,6 @@
 		"@fils/math": "^0.0.8"
 	},
 	"peerDependencies": {
-		"three": "*"
+		"three": "^0.150.0"
 	}
 }
