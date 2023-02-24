@@ -145,7 +145,7 @@ export class Group extends UIElement {
 	/**
 	* @typedef {Object} SpacerOptions
 	* @property {boolean} [line=true] - If true, the spacer will have a line. Default is true.
-	* @property {('large'|'medium'|'small')} [size='medium'] - The size of the spacer. Default is 'medium'.
+	* @property {'large'|'medium'|'small'} [size='medium'] - The size of the spacer. Default is 'medium'.
 	*/
 
 	/**
@@ -153,7 +153,7 @@ export class Group extends UIElement {
 	 *
 	 * @param {SpacerOptions} [options] - The options for the spacer.
 	 * @property {boolean} [line=true] - If true, the spacer will have a line. Default is true.
-	 * @property {('large'|'medium'|'small')} [size='medium'] - The size of the spacer. Default is 'medium'.
+	 * @property {'large'|'medium'|'small'} [size='medium'] - The size of the spacer. Default is 'medium'.
 	 * @returns {void}
 	 * @example
 	 *

@@ -71,7 +71,6 @@ export class App {
 			title: 'Group Test',
 		});
 
-
 		const b = this.ui.addButton('Hello', () => {
 			console.log('Hello');
 

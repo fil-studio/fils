@@ -42,11 +42,24 @@ export declare class Group extends UIElement {
     */
     addGroup(params: GroupParams): Group;
     /**
-     * Adds a spacer element to the parent.
+    * @typedef {Object} SpacerOptions
+    * @property {boolean} [line=true] - If true, the spacer will have a line. Default is true.
+    * @property {('large'|'medium'|'small')} [size='medium'] - The size of the spacer. Default is 'medium'.
+    */
+    /**
+     * Adds a spacer element to the page.
      *
-     * @param {Object} [options] - The options for the spacer.
-     * @param {boolean} [options.line=true] - If true, the spacer will have a line. Default is true.
-     * @param {'large'|'medium'|'small'} [options.size='medium'] - The size of the spacer. Default is 'medium'.
+     * @param {SpacerOptions} [options] - The options for the spacer.
+     * @property {boolean} [line=true] - If true, the spacer will have a line. Default is true.
+     * @property {('large'|'medium'|'small')} [size='medium'] - The size of the spacer. Default is 'medium'.
+     * @returns {void}
+     * @example
+     *
+     * // Adds a spacer with default options
+     * addSpacer();
+     *
+     * // Adds a spacer with a line and a size of 'large'
+     * addSpacer({ line: true, size: 'large' });
      */
     addSpacer(params?: SpacerParams): void;
     /**

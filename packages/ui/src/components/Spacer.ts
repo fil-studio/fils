@@ -3,14 +3,8 @@ import { RowTypes } from "../utils/dom";
 import { UIElement } from "./UIElement";
 
 
-export enum SpacerSize {
-	small = 'small',
-	medium = 'medium',
-	large = 'large'
-}
-
 export interface SpacerParams {
-	size?: SpacerSize;
+	size?: string;
 	line?: boolean;
 }
 
@@ -18,7 +12,7 @@ export class Spacer extends UIElement  {
 	type: RowTypes = RowTypes.spacer;
 
 	constructor(depth:number, {
-		size = SpacerSize.medium,
+		size = 'medium',
 		line = true,
 	}: SpacerParams) {
 		super(RowTypes.spacer);
