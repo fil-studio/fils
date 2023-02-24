@@ -1,6 +1,6 @@
 
 
-const styles = `__css__`;
+import { CSS } from './../styles';
 
 let injected = false;
 
@@ -15,5 +15,5 @@ export const css = {
 }
 
 export const UIInjectCSS = () => {
-	css.inject(styles);
+	css.inject(CSS);
 }

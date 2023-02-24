@@ -132,7 +132,7 @@ export class ColorItem extends Item {
         this.panel = null;
     }
     afterCreate() {
-        this.panel = new ColorPanel(this, this.el);
+        this.panel = new ColorPanel();
     }
     addEventListeners() {
         this.input.addEventListener('change', () => {
@@ -140,7 +140,7 @@ export class ColorItem extends Item {
         });
         this.colorBox.addEventListener('click', () => {
             if (!this.panel.created)
-                this.panel.create();
+                this.panel.create(this, this.el);
             else
                 this.panel.destroy();
         });

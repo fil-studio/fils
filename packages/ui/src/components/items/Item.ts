@@ -51,4 +51,8 @@ export class Item extends UIElement {
 		this.emit('change');
 	}
 
+	refresh(): void {
+		this.setValue(this.object[this.key]);
+	}
+
 }

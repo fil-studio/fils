@@ -93,31 +93,9 @@ if(!isProduction) {
 
   }
 
-  const packagesDir = path.join(__dirname, '../packages');
-
-  chokidar.watch(`${packagesDir}/*/src/**/*`).on('change', (path) => {
-
-      console.log(`Updated package ${path}`);
-      const packageDir = path.split('/src/')[0];
-      exec('yarn build', { cwd: packageDir }, () => {
-        console.log(`Rebuilded package ${packageDir}`);
-
-        const packageName = packageDir.split('/').pop();
-
-        console.log(`Copying package ${packageName} to node_modules`);
-        copyDir(`../node_modules/@fils/${packageName}`, `./node_modules/@fils/${packageName}`, (err) => {
-          if (err) {
-            console.error(`Error copying directory: ${err}`);
-          } else {
-            console.log('Directory copied successfully!');
-            buildAllCSS();
-            buildAllJS();
-          }
-        });
-      });
-
+  chokidar.watch(`../packages/*/src/**/*`).on('change', (path) => {
+    buildAllJS();
   });
-
 }
 
 buildAllCSS();
@@ -137,6 +115,8 @@ module.exports = function (eleventyConfig) {
 
   // To-do: mirar si amb el path 0 ja funciona
   eleventyConfig.addWatchTarget('**');
+  eleventyConfig.addWatchTarget(`../packages/*/src/**/*`);
+  // eleventyConfig.addWatchTarget(`../packages/*/lib/main.js`);
 
   // This allows Eleventy to watch for file changes during local development.
   eleventyConfig.setUseGitIgnore(false);

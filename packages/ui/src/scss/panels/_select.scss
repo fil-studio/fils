@@ -1,0 +1,37 @@
+._ui-panel-select {
+	height: auto;
+	max-height: 300px;
+	overflow-y: scroll;
+
+	._ui-panel-select-button,
+	._ui-panel-select-search,
+	._ui-panel-select-option,
+	._ui-panel-select-option-none {
+		padding: 0.6rem;
+		background-color: var(--section-bg-1);
+		cursor: pointer;
+	}
+
+	._ui-panel-select-search {
+		position: sticky;
+		top: 0;
+		border-bottom: 2px solid var(--section-bg-0);
+	}
+
+	._ui-panel-select-option {
+		text-align: left;
+		border-radius: var(--radius-0);
+
+		&._ui--active {
+			border: 1px solid var(--accent-color);
+		}
+
+		&:hover {
+			background-color: var(--accent-color);
+
+			p {
+				color: var(--white);
+			}
+		}
+	}
+}

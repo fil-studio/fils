@@ -4,7 +4,7 @@ import { CSS_UI } from "../partials/cssClasses";
 import { EventsManager } from "../partials/EventsManager";
 import { CreateItemParams, ItemFactory } from "../partials/ItemFactory";
 import { RowTypes } from "../utils/dom";
-import { Button, ButtonOptions } from "./Button";
+import { Button } from "./Button";
 import { Item } from "./items/Item";
 import { ItemParameters } from "./items/ItemParameters";
 import { Spacer, SpacerParams, SpacerSize } from "./Spacer";
@@ -18,7 +18,7 @@ export interface GroupParams {
 	foldable?: boolean;
 }
 export class Group extends UIElement {
-	protected children: Array<Group | Item | Button | Spacer> = [];
+	protected children: Array<Group | Item > = [];
 
 	folded: boolean;
 	foldable: boolean;
@@ -105,8 +105,8 @@ export class Group extends UIElement {
 	 * @event click
 	 * @returns {Button} The newly created button element.
 	 */
-	addButton(title:string = 'Button'): Button{
-		const button = new Button({title} as ButtonOptions);
+	addButton(title:string = 'Button', clickCallback:Function = () => {}): Button{
+		const button = new Button(title as string, clickCallback as Function);
 
 		if (button) {
 			button.init(this.depth + 1);
@@ -135,6 +135,8 @@ export class Group extends UIElement {
 
 			group.init(this.depth + 1);
 			this.content.appendChild(group.el);
+
+			this.children.push(group);
 		}
 
 		return group;
@@ -182,7 +184,10 @@ export class Group extends UIElement {
 
 			item.init(this.depth + 1)
 			this.content.appendChild(item.el);
+
+			this.children.push(item);
 		}
+
 
 		return item as Item;
 	}
@@ -190,6 +195,12 @@ export class Group extends UIElement {
  	change(target:EventsManager){
 		this.emit('__childrenChange', target)
 		this.emit('change', target);
+	}
+
+	refresh(): void {
+		for(let child of this.children){
+			child.refresh();
+		}
 	}
 
 }

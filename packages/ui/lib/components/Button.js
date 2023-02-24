@@ -2,9 +2,9 @@ import { CSS_UI } from "../main";
 import { RowTypes } from "../utils/dom";
 import { UIElement } from "./UIElement";
 export class Button extends UIElement {
-    constructor({ title } = {}) {
-        const _title = title || 'Button';
-        super(RowTypes.button, _title);
+    constructor(title = 'Button', clickCallback) {
+        super(RowTypes.button, title);
+        this.clickCallback = clickCallback;
     }
     createDom() {
         super.createDom();
@@ -13,6 +13,7 @@ export class Button extends UIElement {
     }
     addEventListeners() {
         this.button.addEventListener('click', () => {
+            this.clickCallback();
             this.emit('click');
         });
     }

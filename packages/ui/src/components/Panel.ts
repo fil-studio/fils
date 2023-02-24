@@ -9,10 +9,7 @@ export class Panel {
 	parent: Item | null = null;
 	created: boolean = false;
 
-	constructor(parent: Item, appendTo?: HTMLElement) {
-
-		this.parent = parent;
-		this.appendTo = appendTo ? appendTo : parent.content;
+	constructor() {
 
 		this.addEventListeners();
 	}
@@ -37,10 +34,13 @@ export class Panel {
 		// Override this
 	}
 
-	create(): void {
+	create(parent: Item, appendTo?: HTMLElement): void {
 
 		if (this.created) return;
 		this.created = true;
+
+		this.parent = parent;
+		this.appendTo = appendTo ? appendTo : parent.content;
 
 		// This needs to be provided by the parent each time as the dom changes
 		const parentDomStyle = getComputedStyle(this.appendTo.closest('section') as HTMLElement);
@@ -48,6 +48,7 @@ export class Panel {
 		const bg1 = parentDomStyle.getPropertyValue('--section-bg-1');
 
 		this.el = el('div', CSS_UI.panel.baseClass);
+
 		this.el.classList.add(`${CSS_UI.panel.baseClass}-${this.parent!.params.view}`)
 
 		this.el.style.setProperty('--section-bg-0', bg0);

@@ -1,11 +1,9 @@
 import { el } from "@fils/utils";
 import { CSS_UI } from "../partials/cssClasses";
 export class Panel {
-    constructor(parent, appendTo) {
+    constructor() {
         this.parent = null;
         this.created = false;
-        this.parent = parent;
-        this.appendTo = appendTo ? appendTo : parent.content;
         this.addEventListeners();
     }
     addEventListeners() {
@@ -22,10 +20,12 @@ export class Panel {
     createPanelContent() {
         // Override this
     }
-    create() {
+    create(parent, appendTo) {
         if (this.created)
             return;
         this.created = true;
+        this.parent = parent;
+        this.appendTo = appendTo ? appendTo : parent.content;
         // This needs to be provided by the parent each time as the dom changes
         const parentDomStyle = getComputedStyle(this.appendTo.closest('section'));
         const bg0 = parentDomStyle.getPropertyValue('--section-bg-0');

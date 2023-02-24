@@ -31,7 +31,7 @@ export declare class Group extends UIElement {
      * @event click
      * @returns {Button} The newly created button element.
      */
-    addButton(title?: string): Button;
+    addButton(title?: string, clickCallback?: Function): Button;
     /**
     * Creates a group.
     *

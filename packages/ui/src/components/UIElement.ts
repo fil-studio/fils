@@ -35,7 +35,6 @@ export class UIElement extends EventsManager {
 	protected beforeCreate(): void {}
 	protected afterCreate(): void {}
 
-
 	// Create ROW
 	protected createDom(): void {
 		this.el = dom.createRow({
@@ -54,4 +53,10 @@ export class UIElement extends EventsManager {
 	destroy(){
 		this.el.remove();
 	}
+
+	/**
+	* A method to refresh the item and all its children values.
+	* Use this method when you change the value of an item outside of the UI to keep it in sync.
+	*/
+	refresh(){}
 }

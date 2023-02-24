@@ -1,10 +1,8 @@
 import { UIElement } from "./UIElement";
-export interface ButtonOptions {
-    title?: string;
-}
 export declare class Button extends UIElement {
     button: HTMLButtonElement;
-    constructor({ title }?: ButtonOptions);
+    clickCallback: Function;
+    constructor(title: string, clickCallback: Function);
     protected createDom(): void;
     protected addEventListeners(): void;
 }
