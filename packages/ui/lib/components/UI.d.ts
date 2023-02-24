@@ -1,5 +1,5 @@
 import { Group, GroupParams } from './Group';
-interface UIParams extends GroupParams {
+export interface UIParams extends GroupParams {
     parentElement?: HTMLElement;
     resizable?: boolean;
     icon?: string;
@@ -26,4 +26,3 @@ export declare class UI extends Group {
     */
     on(event: string, callback: Function): void;
 }
-export {};
