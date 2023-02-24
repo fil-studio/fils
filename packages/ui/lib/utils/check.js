@@ -43,6 +43,19 @@ const check = {
             return 'boolean';
         if (check.isFunction(obj))
             return 'function';
+    },
+    equal: function (a, b) {
+        if (check.isObject(a) && check.isObject(b)) {
+            if (Object.keys(a).length !== Object.keys(b).length)
+                return false;
+            for (const key in a) {
+                if (!check.equal(a[key], b[key]))
+                    return false;
+            }
+            return true;
+        }
+        if (a === b)
+            return true;
     }
 };
 export default check;

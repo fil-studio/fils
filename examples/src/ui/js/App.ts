@@ -71,9 +71,6 @@ export class App {
 			title: 'Group Test',
 		});
 
-		this.ui.on('change', (target) => {
-		});
-
 		this.ui.addButton('Hello', () => {
 			console.log('Hello');
 
@@ -81,13 +78,15 @@ export class App {
 
 			this.obj.booleanTest = !this.obj.booleanTest;
 
+			this.obj.testArray = "test text";
+
 			setTimeout(() => {
 				console.log('Refresh');
-
 				this.ui.refresh();
 			}, 1000);
 
 		});
+
 
 		// const group = this.ui;
 
@@ -199,17 +198,17 @@ export class App {
 			folded: true
 		});
 
-		g4.add(this.obj, 'booleanTest', {
-			title: 'Boolean Test',
-		});
+		// g4.add(this.obj, 'booleanTest', {
+		// 	title: 'Boolean Test',
+		// });
 
-		g4.addItem(this.obj, 'stringTest', {
-			title: 'String Test',
-		});
+		// g4.addItem(this.obj, 'stringTest', {
+		// 	title: 'String Test',
+		// });
 
-		g4.add(this.obj, 'numberTest', {
-			title: 'Number Test',
-		});
+		// g4.add(this.obj, 'numberTest', {
+		// 	title: 'Number Test',
+		// });
 
 		g4.addButton('Button Test g4').on('click', () => {
 			console.log('Button Test g4');

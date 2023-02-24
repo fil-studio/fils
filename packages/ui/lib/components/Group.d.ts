@@ -3,7 +3,7 @@ import { EventsManager } from "../partials/EventsManager";
 import { Button } from "./Button";
 import { Item } from "./items/Item";
 import { ItemParameters } from "./items/ItemParameters";
-import { Spacer, SpacerParams } from "./Spacer";
+import { SpacerParams } from "./Spacer";
 import { UIElement } from "./UIElement";
 export interface GroupParams {
     parent?: Group | UI;
@@ -12,7 +12,7 @@ export interface GroupParams {
     foldable?: boolean;
 }
 export declare class Group extends UIElement {
-    protected children: Array<Group | Item | Button | Spacer>;
+    protected children: Array<Group | Item>;
     folded: boolean;
     foldable: boolean;
     protected height: number;
@@ -66,4 +66,5 @@ export declare class Group extends UIElement {
     */
     addItem(object: Object, key: string, params?: ItemParameters): Item;
     change(target: EventsManager): void;
+    refresh(): void;
 }

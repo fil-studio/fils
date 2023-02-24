@@ -129,10 +129,6 @@ export class Group extends UIElement {
 
 		if (group) {
 
-			group.on('__childrenChange', (target:any) => {
-				this.change(target as EventsManager);
-			})
-
 			group.init(this.depth + 1);
 			this.content.appendChild(group.el);
 
@@ -178,9 +174,6 @@ export class Group extends UIElement {
 		const item = ItemFactory(createItemParams);
 
 		if (item){
-			item.on('__childrenChange', () => {
-				this.change(item as EventsManager);
-			})
 
 			item.init(this.depth + 1)
 			this.content.appendChild(item.el);
@@ -193,7 +186,6 @@ export class Group extends UIElement {
 	}
 
  	change(target:EventsManager){
-		this.emit('__childrenChange', target)
 		this.emit('change', target);
 	}
 

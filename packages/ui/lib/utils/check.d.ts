@@ -9,5 +9,6 @@ declare const check: {
     isBoolean: (obj: any) => boolean;
     isFunction: (obj: any) => boolean;
     getType: (obj: any) => "object" | "function" | "string" | "number" | "undefined" | "null" | "array" | "boolean";
+    equal: (a: any, b: any) => boolean;
 };
 export default check;

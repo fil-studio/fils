@@ -15,4 +15,11 @@ export declare class Item extends UIElement {
      */
     protected createDom(): void;
     refreshDom(): void;
+    refresh(): void;
+    /**
+     *
+     * @param event
+     * @param callback
+     */
+    on(event: string, callback: Function): void;
 }

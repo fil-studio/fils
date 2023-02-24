@@ -1,6 +1,7 @@
 
 import { CSS_UI } from '../../partials/cssClasses';
 import { CreateItemParams } from '../../partials/ItemFactory';
+import check from '../../utils/check';
 import { RowTypes } from '../../utils/dom';
 import { UIElement } from '../UIElement';
 import { ItemParameters } from './ItemParameters';
@@ -30,9 +31,11 @@ export class Item extends UIElement {
 	}
 
 	setValue(value: any) {
+		let isChanged = !check.equal(this.value, value);
+		isChanged = this.value === undefined ? false : isChanged;
 		this.value = value;
 		this.object[this.key] = this.value;
-		this.refreshDom();
+		if(isChanged) this.refreshDom();
 	}
 
 	/**
@@ -47,7 +50,6 @@ export class Item extends UIElement {
 	}
 
 	refreshDom() {
-		this.emit('__childrenChange');
 		this.emit('change');
 	}
 

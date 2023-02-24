@@ -81,7 +81,6 @@ export class NumberItem extends Item {
 		// Update this value to the current value
 		let inputsValue = [];
 		for(const inputElement of this.inputElements) inputsValue.push(inputElement.value);
-		this.value = inputsValue;
 
 		// Translate from array to the original data type
 		let valueForOutput = null;
@@ -95,8 +94,7 @@ export class NumberItem extends Item {
 			}
 		}
 
-		this.object[this.key] = valueForOutput;
-		this.refreshDom();
+		super.setValue(valueForOutput);
 	}
 
 	protected createInput(value: number) {

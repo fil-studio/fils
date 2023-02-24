@@ -1,4 +1,5 @@
 import { CSS_UI } from '../../partials/cssClasses';
+import check from '../../utils/check';
 import { RowTypes } from '../../utils/dom';
 import { UIElement } from '../UIElement';
 export class Item extends UIElement {
@@ -15,9 +16,12 @@ export class Item extends UIElement {
         this.setValue(this.object[this.key]);
     }
     setValue(value) {
+        let isChanged = !check.equal(this.value, value);
+        isChanged = this.value === undefined ? false : isChanged;
         this.value = value;
         this.object[this.key] = this.value;
-        this.refreshDom();
+        if (isChanged)
+            this.refreshDom();
     }
     /**
      * Dom
@@ -28,7 +32,17 @@ export class Item extends UIElement {
         this.el.classList.add(`${CSS_UI.baseClass}-${this.params.view}`);
     }
     refreshDom() {
-        this.emit('__childrenChange');
         this.emit('change');
+    }
+    refresh() {
+        this.setValue(this.object[this.key]);
+    }
+    /**
+     *
+     * @param event
+     * @param callback
+     */
+    on(event, callback) {
+        super.on(event, callback);
     }
 }
