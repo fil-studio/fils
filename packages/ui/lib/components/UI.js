@@ -1,10 +1,9 @@
 // Import CSS
 import { el } from '@fils/utils';
-import { InitUI } from '../init';
+import { InitUI } from '../main';
 import { CSS_UI } from '../partials/cssClasses';
 import dom, { RowTypes } from '../utils/dom';
 import { Group } from './Group';
-// Injects styles and registers base components
 InitUI();
 export class UI extends Group {
     constructor({ resizable = true, parentElement, icon, width } = {}) {

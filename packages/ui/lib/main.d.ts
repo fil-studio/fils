@@ -1,3 +1,4 @@
+export * from './init';
 export * from './components/UI';
 export * from './components/Button';
 export * from './components/Group';
