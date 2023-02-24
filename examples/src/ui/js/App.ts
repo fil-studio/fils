@@ -74,7 +74,20 @@ export class App {
 		this.ui.on('change', (target) => {
 		});
 
-		this.ui.addButton('Hello');
+		this.ui.addButton('Hello', () => {
+			console.log('Hello');
+
+			this.obj.stringTest = 'Hello Refresh';
+
+			this.obj.booleanTest = !this.obj.booleanTest;
+
+			setTimeout(() => {
+				console.log('Refresh');
+
+				this.ui.refresh();
+			}, 1000);
+
+		});
 
 		// const group = this.ui;
 

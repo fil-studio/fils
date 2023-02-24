@@ -18,7 +18,7 @@ export interface GroupParams {
 	foldable?: boolean;
 }
 export class Group extends UIElement {
-	protected children: Array<Group | Item | Button | Spacer> = [];
+	protected children: Array<Group | Item > = [];
 
 	folded: boolean;
 	foldable: boolean;
@@ -135,6 +135,8 @@ export class Group extends UIElement {
 
 			group.init(this.depth + 1);
 			this.content.appendChild(group.el);
+
+			this.children.push(group);
 		}
 
 		return group;
@@ -182,7 +184,10 @@ export class Group extends UIElement {
 
 			item.init(this.depth + 1)
 			this.content.appendChild(item.el);
+
+			this.children.push(item);
 		}
+
 
 		return item as Item;
 	}
@@ -190,6 +195,12 @@ export class Group extends UIElement {
  	change(target:EventsManager){
 		this.emit('__childrenChange', target)
 		this.emit('change', target);
+	}
+
+	refresh(): void {
+		for(let child of this.children){
+			child.refresh();
+		}
 	}
 
 }
