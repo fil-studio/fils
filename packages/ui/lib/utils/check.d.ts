@@ -1,4 +1,4 @@
-declare const check: {
+export declare const check: {
     isUndefined: (obj: any) => boolean;
     isNull: (obj: any) => boolean;
     isNaN: (obj: any) => boolean;

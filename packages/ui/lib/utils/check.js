@@ -1,4 +1,4 @@
-const check = {
+export const check = {
     isUndefined: function (obj) {
         return obj === undefined;
     },
