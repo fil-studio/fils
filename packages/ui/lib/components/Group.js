@@ -82,6 +82,9 @@ export class Group extends UIElement {
     addGroup(params) {
         const group = new Group(params);
         if (group) {
+            group.on('__childrenChange', (target) => {
+                this.change(target);
+            });
             group.init(this.depth + 1);
             this.content.appendChild(group.el);
             this.children.push(group);
@@ -121,6 +124,9 @@ export class Group extends UIElement {
         const createItemParams = { object, key, params };
         const item = ItemFactory(createItemParams);
         if (item) {
+            item.on('__childrenChange', () => {
+                this.change(item);
+            });
             item.init(this.depth + 1);
             this.content.appendChild(item.el);
             this.children.push(item);
@@ -128,6 +134,7 @@ export class Group extends UIElement {
         return item;
     }
     change(target) {
+        this.emit('__childrenChange', target);
         this.emit('change', target);
     }
     refresh() {

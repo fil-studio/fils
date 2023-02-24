@@ -71,7 +71,8 @@ export class App {
 			title: 'Group Test',
 		});
 
-		this.ui.addButton('Hello', () => {
+
+		const b = this.ui.addButton('Hello', () => {
 			console.log('Hello');
 
 			this.obj.stringTest = 'Hello Refresh';
@@ -86,7 +87,6 @@ export class App {
 			}, 1000);
 
 		});
-
 
 		// const group = this.ui;
 

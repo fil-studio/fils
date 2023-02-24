@@ -17,11 +17,13 @@ export class Item extends UIElement {
     }
     setValue(value) {
         let isChanged = !check.equal(this.value, value);
-        isChanged = this.value === undefined ? false : isChanged;
         this.value = value;
         this.object[this.key] = this.value;
-        if (isChanged)
-            this.refreshDom();
+        if (isChanged && this.value !== undefined) {
+            this.emit('__childrenChange');
+            this.emit('change');
+        }
+        this.refreshDom();
     }
     /**
      * Dom
@@ -31,18 +33,8 @@ export class Item extends UIElement {
         this.content = this.el.querySelector('div');
         this.el.classList.add(`${CSS_UI.baseClass}-${this.params.view}`);
     }
-    refreshDom() {
-        this.emit('change');
-    }
+    refreshDom() { }
     refresh() {
         this.setValue(this.object[this.key]);
-    }
-    /**
-     *
-     * @param event
-     * @param callback
-     */
-    on(event, callback) {
-        super.on(event, callback);
     }
 }

@@ -32,10 +32,15 @@ export class Item extends UIElement {
 
 	setValue(value: any) {
 		let isChanged = !check.equal(this.value, value);
-		isChanged = this.value === undefined ? false : isChanged;
 		this.value = value;
 		this.object[this.key] = this.value;
-		if(isChanged) this.refreshDom();
+
+		if(isChanged && this.value !== undefined) {
+			this.emit('__childrenChange');
+			this.emit('change');
+		}
+
+		this.refreshDom();
 	}
 
 	/**
@@ -49,9 +54,7 @@ export class Item extends UIElement {
 		this.el.classList.add(`${CSS_UI.baseClass}-${this.params.view}`);
 	}
 
-	refreshDom() {
-		this.emit('change');
-	}
+	refreshDom() {}
 
 	refresh(): void {
 		this.setValue(this.object[this.key]);
