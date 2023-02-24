@@ -70,7 +70,8 @@ export class SelectPanel extends Panel {
         p.innerHTML = 'No options found';
         this.optionNone.appendChild(p);
         this.el.appendChild(this.optionNone);
-        this.optionNone.classList.add(CSS_UI.utility.active);
+        if (this.options.length > 0)
+            this.optionNone.classList.add(CSS_UI.utility.hidden);
         setTimeout(() => this.searchInput.focus(), 10);
     }
     searchOptions() {
