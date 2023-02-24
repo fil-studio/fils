@@ -2,19 +2,11 @@ import { CSS_UI } from "../partials/cssClasses";
 import { RowTypes } from "../utils/dom";
 import { UIElement } from "./UIElement";
 
-/**
- * Spacer size options.
- *
- * @typedef {SpacerSize} WidgetOption
- * @property {string} small - Small.
- * @property {string} medium - Medium.
- * @property {string} large - Large.
- * @default medium
- */
+
 export enum SpacerSize {
-	small = 'Small',
-	medium = 'Medium',
-	large = 'Large'
+	small = 'small',
+	medium = 'medium',
+	large = 'large'
 }
 
 export interface SpacerParams {
