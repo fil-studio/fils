@@ -5,7 +5,7 @@ import { CSS_UI } from '../partials/cssClasses';
 import dom, { RowTypes } from '../utils/dom';
 import { Group, GroupParams } from './Group';
 
-interface UIParams extends GroupParams {
+export interface UIParams extends GroupParams {
 	parentElement?: HTMLElement;
 	resizable?: boolean;
 	icon?: string;
