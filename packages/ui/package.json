@@ -1,8 +1,9 @@
 {
 	"name": "@fils/ui",
-	"version": "0.0.40",
+	"version": "0.0.41",
 	"description": "Fil Studio UI library written in TypeScript",
 	"main": "lib/main.js",
+	"module": "lib/main.js",
 	"repository": "git@github.com:fil-studio/fils.git",
 	"homepage": "https://github.com/fil-studio/fils/tree/main/packages/ui",
 	"author": "fil studio <hello@fil.studio>",
