@@ -7,7 +7,7 @@ import { RowTypes } from "../utils/dom";
 import { Button } from "./Button";
 import { Item } from "./items/Item";
 import { ItemParameters } from "./items/ItemParameters";
-import { Spacer, SpacerParams, SpacerSize } from "./Spacer";
+import { Spacer, SpacerParams } from "./Spacer";
 import { UIElement } from "./UIElement";
 
 export interface GroupParams {
