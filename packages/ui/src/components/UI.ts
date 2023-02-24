@@ -2,6 +2,7 @@
 import { el } from '@fils/utils';
 import { InitUI } from '../init';
 import { CSS_UI } from '../partials/cssClasses';
+import check from '../utils/check';
 import dom, { RowTypes } from '../utils/dom';
 import { Group, GroupParams } from './Group';
 

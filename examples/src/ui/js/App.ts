@@ -60,6 +60,7 @@ export class App {
 		this.ui = new UI({
 			title: 'UI',
 			icon: uiBrushData,
+			foldable: false
 			// parentElement: document.querySelector('.parent-example') as HTMLElement,
 		});
 

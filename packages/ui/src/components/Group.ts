@@ -49,14 +49,11 @@ export class Group extends UIElement {
 	}
 
 	protected addEventListeners(){
+		if (!this.foldable) return;
 
-		if(!this.foldable) return;
-
-		this.el.classList.add(CSS_UI.section.foldable);
-
-		this.foldWrapper = el('div', CSS_UI.section.foldableElement);
-		this.el.appendChild(this.foldWrapper);
+		this.foldWrapper = el('div', CSS_UI.section.foldableElement, this.el);
 		this.foldWrapper.appendChild(this.content);
+		this.el.classList.add(CSS_UI.section.foldable);
 
 		const header = this.el.querySelector('header') as HTMLElement;
 

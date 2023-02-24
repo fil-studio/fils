@@ -1,6 +1,7 @@
 import { el } from "@fils/utils";
 import { uiTriaDown } from '@fils/ui-icons';
 import { CSS_UI } from "../partials/cssClasses";
+import check from "./check";
 
 
 export enum RowTypes {
@@ -128,7 +129,15 @@ const dom = {
 	addIcon: (header:HTMLElement, icon?:string) => {
 		const iconClass = CSS_UI.section.header.icon;
 		const iconWrapper = header.querySelector(`.${iconClass}`) ? header.querySelector(`.${iconClass}`) as HTMLElement : el('div', iconClass) as HTMLElement;
-		iconWrapper.innerHTML = icon ? icon : uiTriaDown;
+
+		if(check.isUndefined(icon)){
+			iconWrapper.classList.add(CSS_UI.section.header.chevron);
+			icon = uiTriaDown;
+		} else {
+			// Handles UI with icon but foldable false
+			iconWrapper.classList.remove(CSS_UI.section.header.chevron);
+		}
+		iconWrapper.innerHTML = icon;
 		header.prepend(iconWrapper);
 	},
 }
