@@ -1,18 +1,9 @@
 import { RowTypes } from "../utils/dom";
 import { UIElement } from "./UIElement";
-/**
- * Spacer size options.
- *
- * @typedef {SpacerSize} WidgetOption
- * @property {string} small - Small.
- * @property {string} medium - Medium.
- * @property {string} large - Large.
- * @default medium
- */
 export declare enum SpacerSize {
-    small = "Small",
-    medium = "Medium",
-    large = "Large"
+    small = "small",
+    medium = "medium",
+    large = "large"
 }
 export interface SpacerParams {
     size?: SpacerSize;

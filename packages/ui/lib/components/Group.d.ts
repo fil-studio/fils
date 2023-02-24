@@ -33,7 +33,7 @@ export declare class Group extends UIElement {
      */
     addButton(title?: string, clickCallback?: Function): Button;
     /**
-    * Creates a group.
+    * Creates a new group, adds it to the parent and returns it.
     *
     * @param {title} title - Group tab title
     * @param {folded} folded - Is the group folded or not
@@ -42,15 +42,15 @@ export declare class Group extends UIElement {
     */
     addGroup(params: GroupParams): Group;
     /**
-     * A function that does something with a widget option.
+     * Adds a spacer element to the parent.
      *
-     * @param {SpacerSize} option - The option to use.
-     * @param {boolean} line - If the spacer should be a line or not
-     * @default true
+     * @param {Object} [options] - The options for the spacer.
+     * @param {boolean} [options.line=true] - If true, the spacer will have a line. Default is true.
+     * @param {'large'|'medium'|'small'} [options.size='medium'] - The size of the spacer. Default is 'medium'.
      */
     addSpacer(params?: SpacerParams): void;
     /**
-     * A function that creates an Item.
+     * Adds an item element to the parent and returns it.
      *
      * @param {title} title - Item title.
      * @param {view} view - Force item view. If not specified, it will be automatically detected.
@@ -58,7 +58,7 @@ export declare class Group extends UIElement {
      */
     add(object: Object, key: string, params?: ItemParameters): Item;
     /**
-    * A function that creates an Item.
+    * Adds an item element to the parent and returns it.
     *
     * @param {title} title - Item title.
     * @param {view} view - Force item view. If not specified, it will be automatically detected.

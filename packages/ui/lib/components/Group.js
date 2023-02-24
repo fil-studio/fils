@@ -72,7 +72,7 @@ export class Group extends UIElement {
         return button;
     }
     /**
-    * Creates a group.
+    * Creates a new group, adds it to the parent and returns it.
     *
     * @param {title} title - Group tab title
     * @param {folded} folded - Is the group folded or not
@@ -92,11 +92,11 @@ export class Group extends UIElement {
         return group;
     }
     /**
-     * A function that does something with a widget option.
+     * Adds a spacer element to the parent.
      *
-     * @param {SpacerSize} option - The option to use.
-     * @param {boolean} line - If the spacer should be a line or not
-     * @default true
+     * @param {Object} [options] - The options for the spacer.
+     * @param {boolean} [options.line=true] - If true, the spacer will have a line. Default is true.
+     * @param {'large'|'medium'|'small'} [options.size='medium'] - The size of the spacer. Default is 'medium'.
      */
     addSpacer(params = {}) {
         const spacer = new Spacer(this.depth + 1, params);
@@ -104,7 +104,7 @@ export class Group extends UIElement {
             this.content.appendChild(spacer.el);
     }
     /**
-     * A function that creates an Item.
+     * Adds an item element to the parent and returns it.
      *
      * @param {title} title - Item title.
      * @param {view} view - Force item view. If not specified, it will be automatically detected.
@@ -114,7 +114,7 @@ export class Group extends UIElement {
         return this.addItem(object, key, params);
     }
     /**
-    * A function that creates an Item.
+    * Adds an item element to the parent and returns it.
     *
     * @param {title} title - Item title.
     * @param {view} view - Force item view. If not specified, it will be automatically detected.
