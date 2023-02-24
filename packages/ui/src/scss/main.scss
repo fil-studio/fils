@@ -12,12 +12,11 @@
 @import "./partials/reset";
 @import "./partials/fonts";
 
-$uiIndex: 998;
-$panelsIndex: 999;
+
 
 ._ui-wrapper,
 ._ui-panel {
-	z-index: $uiIndex;
+	z-index: var(--ui-index);
 
 	* {
 		&::selection {

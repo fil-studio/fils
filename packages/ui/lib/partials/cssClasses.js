@@ -27,6 +27,7 @@ export const CSS_UI = {
             baseClass: '_ui-section-header',
             hasIcon: '_ui-section-header-has-icon',
             icon: '_ui-section-header-icon',
+            chevron: '_ui-section-header-chevron',
         },
         content: '_ui-section-content',
         foldable: '_ui-section-foldable',

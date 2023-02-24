@@ -27,6 +27,7 @@ export declare const CSS_UI: {
             baseClass: string;
             hasIcon: string;
             icon: string;
+            chevron: string;
         };
         content: string;
         foldable: string;

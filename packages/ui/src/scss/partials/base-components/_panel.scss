@@ -1,5 +1,5 @@
 ._ui-panel {
-	z-index: $panelsIndex;
+	z-index: var(--ui-panels-index);
 	position: fixed;
 	height: auto;
 	background-color: var(--section-bg-1);

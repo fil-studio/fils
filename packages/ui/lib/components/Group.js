@@ -21,10 +21,9 @@ export class Group extends UIElement {
     addEventListeners() {
         if (!this.foldable)
             return;
-        this.el.classList.add(CSS_UI.section.foldable);
-        this.foldWrapper = el('div', CSS_UI.section.foldableElement);
-        this.el.appendChild(this.foldWrapper);
+        this.foldWrapper = el('div', CSS_UI.section.foldableElement, this.el);
         this.foldWrapper.appendChild(this.content);
+        this.el.classList.add(CSS_UI.section.foldable);
         const header = this.el.querySelector('header');
         header.addEventListener('click', () => {
             this.foldToggle();
