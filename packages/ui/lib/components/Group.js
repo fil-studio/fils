@@ -67,6 +67,9 @@ export class Group extends UIElement {
         if (button) {
             button.init(this.depth + 1);
             this.content.appendChild(button.el);
+            button.on('__childrenChange', () => {
+                this.change(button);
+            });
         }
         return button;
     }

@@ -22,6 +22,7 @@ export class Button extends UIElement {
 	protected addEventListeners(){
 		this.button.addEventListener('click', () => {
 			this.clickCallback();
+			this.emit('__childrenChange');
 			this.emit('click');
 		});
 	}

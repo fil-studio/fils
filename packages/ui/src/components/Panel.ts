@@ -1,16 +1,16 @@
 import { el } from "@fils/utils";
 import { CSS_UI } from "../partials/cssClasses";
+import { Button } from "./Button";
 import { Item } from "./items/Item";
 
 export class Panel {
 	el!: HTMLElement;
 	appendTo!: HTMLElement;
 
-	parent: Item | null = null;
+	parent: Item | Button;
 	created: boolean = false;
 
 	constructor() {
-
 		this.addEventListeners();
 	}
 
@@ -26,7 +26,7 @@ export class Panel {
 		const r = this.appendTo.getBoundingClientRect();
 
 		this.el.style.top = `${r.top + r.height}px`;
-		this.el.style.width = `${r.width}px`;
+		this.el.style.minWidth = `${r.width}px`;
 		this.el.style.left = `${r.left}px`;
 	}
 
@@ -34,13 +34,13 @@ export class Panel {
 		// Override this
 	}
 
-	create(parent: Item, appendTo?: HTMLElement): void {
+	create(parent: Item | Button, appendTo?: HTMLElement): void {
 
 		if (this.created) return;
 		this.created = true;
 
 		this.parent = parent;
-		this.appendTo = appendTo ? appendTo : parent.content;
+		this.appendTo = appendTo ? appendTo : this.parent.el;
 
 		// This needs to be provided by the parent each time as the dom changes
 		const parentDomStyle = getComputedStyle(this.appendTo.closest('section') as HTMLElement);
@@ -48,8 +48,6 @@ export class Panel {
 		const bg1 = parentDomStyle.getPropertyValue('--section-bg-1');
 
 		this.el = el('div', CSS_UI.panel.baseClass);
-
-		this.el.classList.add(`${CSS_UI.panel.baseClass}-${this.parent!.params.view}`)
 
 		this.el.style.setProperty('--section-bg-0', bg0);
 		this.el.style.setProperty('--section-bg-1', bg1);

@@ -2,7 +2,6 @@ import { el } from "@fils/utils";
 import { CSS_UI } from "../partials/cssClasses";
 export class Panel {
     constructor() {
-        this.parent = null;
         this.created = false;
         this.addEventListeners();
     }
@@ -14,7 +13,7 @@ export class Panel {
             return;
         const r = this.appendTo.getBoundingClientRect();
         this.el.style.top = `${r.top + r.height}px`;
-        this.el.style.width = `${r.width}px`;
+        this.el.style.minWidth = `${r.width}px`;
         this.el.style.left = `${r.left}px`;
     }
     createPanelContent() {
@@ -25,13 +24,12 @@ export class Panel {
             return;
         this.created = true;
         this.parent = parent;
-        this.appendTo = appendTo ? appendTo : parent.content;
+        this.appendTo = appendTo ? appendTo : this.parent.el;
         // This needs to be provided by the parent each time as the dom changes
         const parentDomStyle = getComputedStyle(this.appendTo.closest('section'));
         const bg0 = parentDomStyle.getPropertyValue('--section-bg-0');
         const bg1 = parentDomStyle.getPropertyValue('--section-bg-1');
         this.el = el('div', CSS_UI.panel.baseClass);
-        this.el.classList.add(`${CSS_UI.panel.baseClass}-${this.parent.params.view}`);
         this.el.style.setProperty('--section-bg-0', bg0);
         this.el.style.setProperty('--section-bg-1', bg1);
         this.positionPanel();

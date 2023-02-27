@@ -2,6 +2,7 @@ import { HSBColor } from '@fils/color';
 import { Panel } from "../../Panel";
 import { Item } from "../Item";
 export declare class ColorPanel extends Panel {
+    parent: Item;
     view: HTMLElement;
     info: HTMLElement;
     canvas1: HTMLCanvasElement;

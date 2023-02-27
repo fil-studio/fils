@@ -140,7 +140,6 @@ export class SelectItem extends Item {
 		this.panel = new SelectPanel();
 	}
 
-
 	protected addEventListeners(): void {
 		super.addEventListeners();
 
@@ -148,6 +147,8 @@ export class SelectItem extends Item {
 
 			if(!this.panel!.created) {
 				this.panel!.create(this);
+				this.panel.el.classList.add(`${CSS_UI.panel.baseClass}-${this.params.view}`)
+
 				this.open();
 			} else {
 				this.panel!.destroy();
@@ -165,7 +166,6 @@ export class SelectItem extends Item {
 	}
 
 	protected createContent(): void {
-
 
 		this.input = el('div', c.input, this.content) as HTMLElement;
 		this.input.classList.add(CSS_UI.item);

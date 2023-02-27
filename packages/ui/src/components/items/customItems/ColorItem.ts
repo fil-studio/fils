@@ -20,6 +20,9 @@ const c = {
 
 
 export class ColorPanel extends Panel {
+
+	parent: Item;
+
 	view: HTMLElement = el('div');
 	info: HTMLElement = el('div');
 
