@@ -47,7 +47,9 @@ export class NumberItem extends Item {
 		for (const inputElement of this.inputElements) {
 
 			inputElement.input.addEventListener('change', () => {
-				inputElement.value = inputElement.input.valueAsNumber;
+				let val = inputElement.input.valueAsNumber;
+				val = check.isNaN(val) ? 0 : val;
+				inputElement.value = val;
 				this.setValue();
 			});
 

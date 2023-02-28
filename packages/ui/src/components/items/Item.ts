@@ -1,7 +1,6 @@
 
 import { CSS_UI } from '../../partials/cssClasses';
 import { CreateItemParams } from '../../partials/ItemFactory';
-import check from '../../utils/check';
 import { RowTypes } from '../../utils/dom';
 import { UIElement } from '../UIElement';
 import { ItemParameters } from './ItemParameters';

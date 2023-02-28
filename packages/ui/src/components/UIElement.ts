@@ -27,6 +27,15 @@ export class UIElement extends EventsManager {
 		this.addEventListeners();
 
 		this.afterCreate();
+
+		this.preventPropagation();
+	}
+
+	protected preventPropagation(){
+		// Prevents the propagation of the keydown event to the window
+		this.el.addEventListener('keydown', (e) => {
+			e.stopPropagation();
+		});
 	}
 
 	/**

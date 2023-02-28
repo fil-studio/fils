@@ -7,6 +7,7 @@ export declare class UIElement extends EventsManager {
     title: string;
     constructor(type: RowTypes, title?: string);
     init(depth?: number): void;
+    protected preventPropagation(): void;
     /**
     * Lifecycle
     */
