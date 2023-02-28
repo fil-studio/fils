@@ -132,4 +132,8 @@ export class UI extends Group {
 		super.change(target);
 	}
 
+	destroy(): void {
+		super.destroy();
+		this.wrapper.remove();
+	}
 }
