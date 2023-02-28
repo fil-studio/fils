@@ -40,6 +40,8 @@ export class ColorPanel extends Panel {
 
 	createPanelContent(): void {
 
+		this.el.classList.add(`${CSS_UI.panel.baseClass}-${this.parent.params.view}`)
+
 		this.view = el('div', c.view, this.el);
 		this.info = el('div', c.info, this.el);
 
@@ -176,7 +178,7 @@ export class ColorItem extends Item {
 		});
 
 		this.colorBox.addEventListener('click', () => {
-			if (!this.panel!.created) this.panel!.create(this, this.el);
+			if (!this.panel!.created) this.panel!.create(this, this.content);
 			else this.panel!.destroy();
 		});
 
