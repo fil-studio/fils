@@ -60,7 +60,7 @@ export class Item extends UIElement {
 	refresh(): void {
 		this.emit('refresh');
 		this._refreshing = true;
-		this.setValue(this.object[this.key], true);
+		this.setValue(this.object[this.key]);
 		this._refreshing = false;
 	}
 
