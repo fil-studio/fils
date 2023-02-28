@@ -81,6 +81,8 @@ export class App {
 
 			this.obj.testArray = "test text";
 
+			this.obj.numberTest.x = 10;
+
 			setTimeout(() => {
 				console.log('Refresh');
 				this.ui.refresh();
@@ -167,12 +169,12 @@ export class App {
 			title: 'Number Test',
 		})
 		o.on('change', (value) => {
-			console.log('change');
-
 			console.log(this.obj.numberTest);
 		});
 		o.on('refresh', (value) => {
 			console.log('refresh');
+			console.log(this.obj.numberTest);
+
 		});
 
 
