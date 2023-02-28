@@ -1,6 +1,6 @@
 {
 	"name": "@fils/ui",
-	"version": "0.0.62",
+	"version": "0.0.63",
 	"description": "Fil Studio UI library written in TypeScript",
 	"main": "lib/main.js",
 	"module": "lib/main.js",

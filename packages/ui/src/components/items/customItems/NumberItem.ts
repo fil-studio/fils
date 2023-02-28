@@ -73,7 +73,7 @@ export class NumberItem extends Item {
 
 	}
 
-	setValue(_value?: string | Array<number> | Object ): void {
+	setValue(_value?: string | Array<number> | Object): void {
 
 		// Only first setValue will have a value
 		if(_value) this.originalDataType = check.getType(_value) as string;

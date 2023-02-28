@@ -154,6 +154,7 @@ export class Group extends UIElement {
         this.emit('change', target);
     }
     refresh() {
+        this.emit('refresh');
         for (let child of this.children) {
             child.refresh();
         }

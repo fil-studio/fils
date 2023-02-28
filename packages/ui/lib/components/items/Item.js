@@ -1,5 +1,4 @@
 import { CSS_UI } from '../../partials/cssClasses';
-import check from '../../utils/check';
 import { RowTypes } from '../../utils/dom';
 import { UIElement } from '../UIElement';
 export class Item extends UIElement {
@@ -7,6 +6,7 @@ export class Item extends UIElement {
         var _a;
         const title = ((_a = params.params) === null || _a === void 0 ? void 0 : _a.title) || params.key.charAt(0).toUpperCase() + params.key.slice(1);
         super(RowTypes.item, title);
+        this._refreshing = false;
         this.params = params.params;
         this.object = params.object;
         this.key = params.key;
@@ -16,10 +16,9 @@ export class Item extends UIElement {
         this.setValue(this.object[this.key]);
     }
     setValue(value) {
-        let isChanged = !check.equal(this.value, value);
         this.value = value;
         this.object[this.key] = this.value;
-        if (isChanged && this.value !== undefined) {
+        if (this.value !== undefined && !this._refreshing) {
             this.emit('__childrenChange');
             this.emit('change');
         }
@@ -35,6 +34,9 @@ export class Item extends UIElement {
     }
     refreshDom() { }
     refresh() {
-        this.setValue(this.object[this.key]);
+        this.emit('refresh');
+        this._refreshing = true;
+        this.setValue(this.object[this.key], true);
+        this._refreshing = false;
     }
 }

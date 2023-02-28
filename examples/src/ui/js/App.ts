@@ -163,9 +163,19 @@ export class App {
 
 		group.addSpacer();
 
-		group.add(this.obj, 'numberTest', {
+		const o = group.add(this.obj, 'numberTest', {
 			title: 'Number Test',
+		})
+		o.on('change', (value) => {
+			console.log('change');
+
+			console.log(this.obj.numberTest);
 		});
+		o.on('refresh', (value) => {
+			console.log('refresh');
+		});
+
+
 
 
 		group.addSpacer();

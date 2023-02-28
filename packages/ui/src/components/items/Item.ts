@@ -15,6 +15,8 @@ export class Item extends UIElement {
 
 	params!: ItemParameters;
 
+	protected _refreshing:boolean = false;
+
 	constructor(params: CreateItemParams) {
 		const title = params.params?.title || params.key.charAt(0).toUpperCase() + params.key.slice(1);
 		super(RowTypes.item, title);
@@ -31,11 +33,10 @@ export class Item extends UIElement {
 	}
 
 	setValue(value: any) {
-		let isChanged = !check.equal(this.value, value);
 		this.value = value;
 		this.object[this.key] = this.value;
 
-		if(isChanged && this.value !== undefined) {
+		if(this.value !== undefined && !this._refreshing) {
 			this.emit('__childrenChange');
 			this.emit('change');
 		}
@@ -58,7 +59,9 @@ export class Item extends UIElement {
 
 	refresh(): void {
 		this.emit('refresh');
-		this.setValue(this.object[this.key]);
+		this._refreshing = true;
+		this.setValue(this.object[this.key], true);
+		this._refreshing = false;
 	}
 
 }
