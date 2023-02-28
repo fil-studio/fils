@@ -1,6 +1,6 @@
 // Import CSS
 import { el } from '@fils/utils';
-import { InitUI } from '../main';
+import { EventsManager, InitUI } from '../main';
 import { CSS_UI } from '../partials/cssClasses';
 import dom, { RowTypes } from '../utils/dom';
 import { Group, GroupParams } from './Group';
@@ -126,6 +126,10 @@ export class UI extends Group {
 	*/
 	on(event: string, callback: Function): void {
 		super.on(event, callback);
+	}
+
+	change(target: EventsManager): void {
+		super.change(target);
 	}
 
 }

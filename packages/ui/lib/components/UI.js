@@ -90,4 +90,7 @@ export class UI extends Group {
     on(event, callback) {
         super.on(event, callback);
     }
+    change(target) {
+        super.change(target);
+    }
 }

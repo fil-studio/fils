@@ -24,7 +24,7 @@ export class App {
 			// numberTest: [1,2],
 			// numberTest: [1, 2, 3, 4],
 			numberTest: {
-				x: 1,
+				x: 0.00002020201012003023,
 				y: 2,
 				z: 3,
 				w: 5

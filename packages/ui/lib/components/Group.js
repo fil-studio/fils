@@ -70,6 +70,7 @@ export class Group extends UIElement {
             button.on('__childrenChange', () => {
                 this.change(button);
             });
+            this.children.push(button);
         }
         return button;
     }

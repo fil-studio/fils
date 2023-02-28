@@ -1,3 +1,4 @@
+import { EventsManager } from '../main';
 import { Group, GroupParams } from './Group';
 export interface UIParams extends GroupParams {
     parentElement?: HTMLElement;
@@ -25,4 +26,5 @@ export declare class UI extends Group {
     * @returns {void}
     */
     on(event: string, callback: Function): void;
+    change(target: EventsManager): void;
 }

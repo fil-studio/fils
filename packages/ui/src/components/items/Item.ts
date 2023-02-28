@@ -57,6 +57,7 @@ export class Item extends UIElement {
 	refreshDom() {}
 
 	refresh(): void {
+		this.emit('refresh');
 		this.setValue(this.object[this.key]);
 	}
 

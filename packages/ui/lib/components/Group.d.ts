@@ -12,7 +12,7 @@ export interface GroupParams {
     foldable?: boolean;
 }
 export declare class Group extends UIElement {
-    protected children: Array<Group | Item>;
+    protected children: Array<Group | Item | Button>;
     folded: boolean;
     foldable: boolean;
     protected height: number;

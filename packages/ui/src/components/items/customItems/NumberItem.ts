@@ -46,7 +46,7 @@ export class NumberItem extends Item {
 
 		for (const inputElement of this.inputElements) {
 
-			inputElement.input.valueAsNumber = inputElement.value;
+			inputElement.input.valueAsNumber = this.limitNumber(inputElement.value);
 
 			inputElement.input.addEventListener('change', () => {
 				inputElement.value = inputElement.input.valueAsNumber;
@@ -80,7 +80,7 @@ export class NumberItem extends Item {
 
 		// Update this value to the current value
 		let inputsValue = [];
-		for(const inputElement of this.inputElements) inputsValue.push(inputElement.value);
+		for(const inputElement of this.inputElements) inputsValue.push(this.limitNumber(inputElement.value));
 
 		// Translate from array to the original data type
 		let valueForOutput = null;
@@ -90,7 +90,7 @@ export class NumberItem extends Item {
 			valueForOutput = {} as Object;
 			let i = 0;
 			for (const key in this.object[this.key]) {
-				valueForOutput[key] = inputsValue[i] as number;
+				valueForOutput[key] = inputsValue[i];
 			}
 		}
 
