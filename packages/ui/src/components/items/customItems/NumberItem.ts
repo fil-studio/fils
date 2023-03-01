@@ -95,7 +95,6 @@ export class NumberItem extends Item {
 
 	protected createInputs(value: number | number[] | Object): void {
 
-
 		this.inputElements = [];
 
 		// If value is a number, create one input
@@ -119,6 +118,8 @@ export class NumberItem extends Item {
 				item.placeholder = key;
 				this.inputElements.push(item);
 			}
+
+
 		}
 
 	}
@@ -193,6 +194,7 @@ export class NumberItem extends Item {
 			case 'object':
 				const values = [];
 				for (const key in this.object[this.key]) {
+					if(!isNumber(this.object[this.key][key])) continue;
 					values.push(this.object[this.key][key]);
 				}
 				return values;
@@ -210,9 +212,10 @@ export class NumberItem extends Item {
 		else if (this.originalDataType === 'array') valueForOutput = inputsValue;
 		else if (this.originalDataType === 'object') {
 			valueForOutput = {} as Object;
+
 			let i = 0;
 			for (const key in this.object[this.key]) {
-
+				if(!isNumber(this.object[this.key][key])) continue;
 				valueForOutput[key] = inputsValue[i];
 				i++;
 			}

@@ -1,7 +1,7 @@
 // import { UI } from '@fils/ui';
 import { UI } from '../../../../packages/ui/src/main.js';
 
-import { Vector3 } from 'three';
+import { Vector3, Euler } from 'three';
 import { uiBrushData } from '@fils/ui-icons';
 
 import { Texture, TextureLoader } from 'three';
@@ -12,7 +12,7 @@ import { Texture, TextureLoader } from 'three';
  * S'ha de poder exportar els valors actuals dels components a un JSON
  */
 
-const VectorTest = new Vector3();
+const VectorTest = new Euler();
 export class App {
 	ui: UI;
 	obj: any;
@@ -59,6 +59,7 @@ export class App {
 			console.log('Position Change', this.obj.position);
 		});
 
+		return;
 
 		const b = this.ui.addButton('Hello', () => {
 			console.log('Hello');
