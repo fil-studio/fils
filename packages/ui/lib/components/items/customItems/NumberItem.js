@@ -1,5 +1,4 @@
-import { el } from "@fils/utils";
-import check from "../../../utils/check";
+import { el, getType, isArray, isNaN, isNumber, isObject } from "@fils/utils";
 import { uiDownarrowHlt } from '@fils/ui-icons';
 import { CSS_UI } from "../../../partials/cssClasses";
 import { Item } from "../Item";
@@ -38,7 +37,7 @@ export class NumberItem extends Item {
         for (const inputElement of this.inputElements) {
             inputElement.input.addEventListener('change', () => {
                 let val = inputElement.input.valueAsNumber;
-                val = check.isNaN(val) ? 0 : val;
+                val = isNaN(val) ? 0 : val;
                 inputElement.value = val;
                 this.setValue();
             });
@@ -55,7 +54,7 @@ export class NumberItem extends Item {
     setValue(_value) {
         // If value is not set, update this value to the current value
         if (_value) {
-            this.originalDataType = check.getType(_value);
+            this.originalDataType = getType(_value);
             super.setValue(_value);
             return;
         }
@@ -73,16 +72,16 @@ export class NumberItem extends Item {
     createInputs(value) {
         this.inputElements = [];
         // If value is a number, create one input
-        if (check.isNumber(value))
+        if (isNumber(value))
             this.inputElements.push(this.createInput(value));
         // If value is an array, create one input for each item
-        else if (check.isArray(value)) {
+        else if (isArray(value)) {
             for (const item of value) {
                 this.inputElements.push(this.createInput(item));
             }
         }
         // If value is an object, create one input for each key
-        else if (check.isObject(value)) {
+        else if (isObject(value)) {
             for (const key in value) {
                 const item = this.createInput(value[key]);
                 item.placeholder = key;

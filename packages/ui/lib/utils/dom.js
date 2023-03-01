@@ -1,7 +1,6 @@
-import { el } from "@fils/utils";
 import { uiTriaDown } from '@fils/ui-icons';
+import { el, isUndefined } from "@fils/utils";
 import { CSS_UI } from "../partials/cssClasses";
-import check from "./check";
 export var RowTypes;
 (function (RowTypes) {
     RowTypes[RowTypes["ui"] = 0] = "ui";
@@ -100,7 +99,7 @@ const dom = {
     addIcon: (header, icon) => {
         const iconClass = CSS_UI.section.header.icon;
         const iconWrapper = header.querySelector(`.${iconClass}`) ? header.querySelector(`.${iconClass}`) : el('div', iconClass);
-        if (check.isUndefined(icon)) {
+        if (isUndefined(icon)) {
             iconWrapper.classList.add(CSS_UI.section.header.chevron);
             icon = uiTriaDown;
         }

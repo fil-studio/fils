@@ -1,6 +1,5 @@
-import { el } from "@fils/utils";
+import { el, isNull, isUndefined } from "@fils/utils";
 import { CSS_UI } from "../../../main";
-import check from "../../../utils/check";
 import { Item } from "../Item";
 export class StringItem extends Item {
     constructor() {
@@ -20,7 +19,7 @@ export class StringItem extends Item {
         this.content.appendChild(this.input);
     }
     setValue(value) {
-        if (check.isNull(value) || check.isUndefined(value)) {
+        if (isNull(value) || isUndefined(value)) {
             value = 'String';
         }
         super.setValue(value);

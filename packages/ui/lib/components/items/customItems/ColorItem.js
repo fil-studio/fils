@@ -1,7 +1,6 @@
 import { drawColorPickerBar, drawColorPickerSL, fixHex, hexToRgb, hsbToHex, rgbToHsb } from '@fils/color';
-import { el } from "@fils/utils";
+import { el, isNull, isUndefined } from "@fils/utils";
 import { CSS_UI } from '../../../main';
-import check from "../../../utils/check";
 import { Panel } from "../../Panel";
 import { Item } from "../Item";
 const c = {
@@ -161,7 +160,7 @@ export class ColorItem extends Item {
         this.content.appendChild(this.input);
     }
     setValue(value) {
-        if (check.isNull(value) || check.isUndefined(value) || value === '') {
+        if (isNull(value) || isUndefined(value) || value === '') {
             value = '#FFFFFF';
         }
         value = fixHex(value);
