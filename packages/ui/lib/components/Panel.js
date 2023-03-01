@@ -13,7 +13,7 @@ export class Panel {
             return;
         const r = this.appendTo.getBoundingClientRect();
         this.el.style.top = `${r.top + r.height}px`;
-        this.el.style.minWidth = `${r.width}px`;
+        this.el.style.width = `${r.width}px`;
         this.el.style.left = `${r.left}px`;
     }
     createPanelContent() {

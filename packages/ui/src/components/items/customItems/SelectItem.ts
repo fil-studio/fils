@@ -146,7 +146,7 @@ export class SelectItem extends Item {
 		this.input.addEventListener('click', () => {
 
 			if(!this.panel!.created) {
-				this.panel!.create(this);
+				this.panel!.create(this, this.content);
 				this.panel.el.classList.add(`${CSS_UI.panel.baseClass}-${this.params.view}`)
 
 				this.open();
