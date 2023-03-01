@@ -83,6 +83,8 @@ export class NumberItem extends Item {
         // If value is an object, create one input for each key
         else if (isObject(value)) {
             for (const key in value) {
+                if (!isNumber(value[key]))
+                    continue;
                 const item = this.createInput(value[key]);
                 item.placeholder = key;
                 this.inputElements.push(item);

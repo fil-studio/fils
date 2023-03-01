@@ -68,12 +68,14 @@ export class NumberItem extends Item {
 
 	setValue(_value?: string | Array<number> | Object): void {
 
+
 		// If value is not set, update this value to the current value
 		if(_value) {
 			this.originalDataType = getType(_value) as string;
 			super.setValue(_value);
 			return;
 		}
+
 
 		// Update this value to the current value
 		const valueForOutput = this.convertArrayToOriginal();
@@ -93,6 +95,7 @@ export class NumberItem extends Item {
 
 	protected createInputs(value: number | number[] | Object): void {
 
+
 		this.inputElements = [];
 
 		// If value is a number, create one input
@@ -107,7 +110,11 @@ export class NumberItem extends Item {
 
 		// If value is an object, create one input for each key
 		else if (isObject(value)) {
+
 			for (const key in value as Object) {
+
+				if(!isNumber(value[key])) continue;
+
 				const item = this.createInput(value[key]);
 				item.placeholder = key;
 				this.inputElements.push(item);
@@ -205,6 +212,7 @@ export class NumberItem extends Item {
 			valueForOutput = {} as Object;
 			let i = 0;
 			for (const key in this.object[this.key]) {
+
 				valueForOutput[key] = inputsValue[i];
 				i++;
 			}

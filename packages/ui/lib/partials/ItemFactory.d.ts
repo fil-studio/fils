@@ -4,4 +4,4 @@ export interface CreateItemParams {
     key: string;
     params?: ItemParameters;
 }
-export declare const ItemFactory: (createParams: CreateItemParams) => import("../main").Item;
+export declare const ItemFactory: ({ object, key, params }: CreateItemParams) => import("../main").Item;

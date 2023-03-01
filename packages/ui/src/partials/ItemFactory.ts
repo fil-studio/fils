@@ -1,4 +1,4 @@
-import { isBoolean, isNumber, isObject, isString } from "@fils/utils";
+import { isBoolean, isNumber, isObject, isString, isUndefined } from "@fils/utils";
 import { ItemParameters } from "../components/items/ItemParameters";
 import AvailableItems, { AvailableItem } from "./AvailableItems";
 
@@ -23,24 +23,23 @@ const compareArrays = (a: any[], b: any[]) => {
 	return true;
 }
 
-export const ItemFactory = (createParams:CreateItemParams) => {
+export const ItemFactory = ({object, key, params = {}}:CreateItemParams) => {
 
-	const params = createParams.params;
-
-	if(!createParams.object) throw new Error('ItemFactory - object is required');
-	if(!createParams.key) throw new Error('ItemFactory - key is required');
+	if(!object) throw new Error('ItemFactory - object is required');
+	if(!key) throw new Error('ItemFactory - key is required');
 
 	// Force item type
-	if(params && params.view){
+	if (params && params.view){
 		const item = AvailableItems.items.find(item => item.view === params.view);
 		if(!item) throw new Error('ItemFactory - unknown view');
-		return item.create(createParams);
+		return item.create({ object, key, params });
 	}
 
-	const item = getItemByValue(createParams.object[createParams.key], createParams.params);
+	const item = getItemByValue(object[key], params);
+
 	if(item) {
-		createParams.params!.view = item.view;
-		return item.create(createParams);
+		params.view = item.view;
+		return item.create({object, key, params});
 	}
 
 }

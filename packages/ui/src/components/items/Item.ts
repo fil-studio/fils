@@ -1,4 +1,5 @@
 
+import { isObject, isUndefined } from '@fils/utils';
 import { CSS_UI } from '../../partials/cssClasses';
 import { CreateItemParams } from '../../partials/ItemFactory';
 import { RowTypes } from '../../utils/dom';
@@ -33,7 +34,14 @@ export class Item extends UIElement {
 
 	setValue(value: any) {
 		this.value = value;
-		this.object[this.key] = this.value;
+
+		if (isObject(this.object[this.key])) {
+			for(const key in this.object[this.key]) {
+				// If the key is not defined in the new value, we keep the old one
+				if(isUndefined(this.value[key])) continue;
+				else this.object[this.key][key] = this.value[key];
+			}
+		} else this.object[this.key] = this.value;
 
 		if(this.value !== undefined && !this._refreshing) {
 			this.emit('__childrenChange');

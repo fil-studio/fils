@@ -10,23 +10,22 @@ const compareArrays = (a, b) => {
     }
     return true;
 };
-export const ItemFactory = (createParams) => {
-    const params = createParams.params;
-    if (!createParams.object)
+export const ItemFactory = ({ object, key, params = {} }) => {
+    if (!object)
         throw new Error('ItemFactory - object is required');
-    if (!createParams.key)
+    if (!key)
         throw new Error('ItemFactory - key is required');
     // Force item type
     if (params && params.view) {
         const item = AvailableItems.items.find(item => item.view === params.view);
         if (!item)
             throw new Error('ItemFactory - unknown view');
-        return item.create(createParams);
+        return item.create({ object, key, params });
     }
-    const item = getItemByValue(createParams.object[createParams.key], createParams.params);
+    const item = getItemByValue(object[key], params);
     if (item) {
-        createParams.params.view = item.view;
-        return item.create(createParams);
+        params.view = item.view;
+        return item.create({ object, key, params });
     }
 };
 const getItemByValue = (value, params) => {

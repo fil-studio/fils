@@ -1,6 +1,7 @@
 // import { UI } from '@fils/ui';
 import { UI } from '../../../../packages/ui/src/main.js';
 
+import { Vector3 } from 'three';
 import { uiBrushData } from '@fils/ui-icons';
 
 import { Texture, TextureLoader } from 'three';
@@ -11,6 +12,7 @@ import { Texture, TextureLoader } from 'three';
  * S'ha de poder exportar els valors actuals dels components a un JSON
  */
 
+const VectorTest = new Vector3();
 export class App {
 	ui: UI;
 	obj: any;
@@ -29,6 +31,7 @@ export class App {
 				z: 3,
 				w: 5
 			},
+			position: VectorTest,
 			uploadTest: null,
 			numberTestSlider: 0,
 			numberTestFloat: 0.5,
@@ -40,23 +43,6 @@ export class App {
 		}
 
 
-		const loader = new TextureLoader();
-
-		let loaded = 0;
-		for(let i = 0; i <= 10; i++) {
-			loader.load('../assets/texture-test.png', (texture:Texture) => {
-				texture.name = `Texture ${i}`;
-
-				this.obj.textures.push(texture);
-				loaded++;
-				if(loaded === 10) this.createUI();
-			});
-		}
-
-	}
-
-	createUI() {
-
 		this.ui = new UI({
 			title: 'UI',
 			icon: uiBrushData,
@@ -64,13 +50,15 @@ export class App {
 			// parentElement: document.querySelector('.parent-example') as HTMLElement,
 		});
 
-		window.addEventListener('keydown', (e) => {
-			if(e.key === 'Escape') this.ui.foldToggle();
-		});
 
 		const group = this.ui.addGroup({
 			title: 'Group Test',
 		});
+
+		group.add(this.obj, 'position').on('change', () => {
+			console.log('Position Change', this.obj.position);
+		});
+
 
 		const b = this.ui.addButton('Hello', () => {
 			console.log('Hello');
@@ -82,6 +70,9 @@ export class App {
 			this.obj.testArray = "test text";
 
 			this.obj.numberTest.x = 10;
+
+			this.obj.position.x = 10;
+			this.obj.position.y -= 5;
 
 			setTimeout(() => {
 				console.log('Refresh');
@@ -168,15 +159,6 @@ export class App {
 		const o = group.add(this.obj, 'numberTest', {
 			title: 'Number Test',
 		})
-		o.on('change', (value) => {
-			console.log(this.obj.numberTest);
-		});
-		o.on('refresh', (value) => {
-			console.log('refresh');
-			console.log(this.obj.numberTest);
-
-		});
-
 
 
 
