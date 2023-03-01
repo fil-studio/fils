@@ -1,6 +1,5 @@
 export declare function isUndefined(obj: any): boolean;
 export declare function isNull(obj: any): boolean;
-export declare function isNaN(obj: any): any;
 export declare function isArray(obj: any): boolean;
 export declare function isObject(obj: any): boolean;
 export declare function isNumber(obj: any): boolean;

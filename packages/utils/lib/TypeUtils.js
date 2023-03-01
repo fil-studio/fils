@@ -4,9 +4,6 @@ export function isUndefined(obj) {
 export function isNull(obj) {
     return obj === null;
 }
-export function isNaN(obj) {
-    return isNaN(obj);
-}
 export function isArray(obj) {
     return obj.constructor === Array;
 }

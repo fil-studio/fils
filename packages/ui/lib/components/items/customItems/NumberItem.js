@@ -1,4 +1,4 @@
-import { el, getType, isArray, isNaN, isNumber, isObject } from "@fils/utils";
+import { el, getType, isArray, isNumber, isObject } from "@fils/utils";
 import { uiDownarrowHlt } from '@fils/ui-icons';
 import { CSS_UI } from "../../../partials/cssClasses";
 import { Item } from "../Item";
@@ -150,6 +150,8 @@ export class NumberItem extends Item {
             case 'object':
                 const values = [];
                 for (const key in this.object[this.key]) {
+                    if (!isNumber(this.object[this.key][key]))
+                        continue;
                     values.push(this.object[this.key][key]);
                 }
                 return values;
@@ -169,6 +171,8 @@ export class NumberItem extends Item {
             valueForOutput = {};
             let i = 0;
             for (const key in this.object[this.key]) {
+                if (!isNumber(this.object[this.key][key]))
+                    continue;
                 valueForOutput[key] = inputsValue[i];
                 i++;
             }

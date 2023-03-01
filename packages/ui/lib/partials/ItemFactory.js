@@ -1,10 +1,8 @@
 import { isBoolean, isNumber, isObject, isString } from "@fils/utils";
 import AvailableItems from "./AvailableItems";
 const compareArrays = (a, b) => {
-    if (a.length !== b.length)
-        return false;
-    for (const item of a) {
-        if (b.indexOf(item) === -1) {
+    for (const item of b) {
+        if (a.indexOf(item) === -1) {
             return false;
         }
     }
@@ -29,6 +27,7 @@ export const ItemFactory = ({ object, key, params = {} }) => {
     }
 };
 const getItemByValue = (value, params) => {
+    console.log('entra', value, params);
     if (isObject(value)) {
         let keys = Object.keys(value);
         keys = keys.map(key => key.toLowerCase());
@@ -39,8 +38,9 @@ const getItemByValue = (value, params) => {
             return AvailableItems.items.find(item => item.view === 'color');
         const n1 = ['x', 'y'];
         const n2 = ['x', 'y', 'z'];
-        const n3 = ['x', 'y', 'z', 'w'];
-        if (compareArrays(keys, n1) || compareArrays(keys, n2) || compareArrays(keys, n3))
+        const n3 = ['_x', '_y', '_z'];
+        const n4 = ['x', 'y', 'z', 'w'];
+        if (compareArrays(keys, n1) || compareArrays(keys, n2) || compareArrays(keys, n3) || compareArrays(keys, n4))
             return AvailableItems.items.find(item => item.view === 'number');
     }
     // If min max or step use range

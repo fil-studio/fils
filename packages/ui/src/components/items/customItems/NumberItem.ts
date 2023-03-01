@@ -1,4 +1,4 @@
-import { el, getType, isArray, isNaN, isNumber, isObject } from "@fils/utils";
+import { el, getType, isArray, isNumber, isObject } from "@fils/utils";
 import { NumberItemParameters } from "../ItemParameters";
 import { uiDownarrowHlt } from '@fils/ui-icons';
 import { CSS_UI } from "../../../partials/cssClasses";

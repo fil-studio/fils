@@ -6,10 +6,6 @@ export function isNull(obj: any) {
 	return obj === null;
 }
 
-export function isNaN(obj: any) {
-	return isNaN(obj);
-}
-
 export function isArray (obj: any) {
 	return obj.constructor === Array;
 }
