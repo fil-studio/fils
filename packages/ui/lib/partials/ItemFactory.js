@@ -27,7 +27,6 @@ export const ItemFactory = ({ object, key, params = {} }) => {
     }
 };
 const getItemByValue = (value, params) => {
-    console.log('entra', value, params);
     if (isObject(value)) {
         let keys = Object.keys(value);
         keys = keys.map(key => key.toLowerCase());

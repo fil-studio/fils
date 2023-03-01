@@ -43,7 +43,6 @@ export const ItemFactory = ({object, key, params = {}}:CreateItemParams) => {
 }
 
 const getItemByValue = (value:any, params:any): AvailableItem | undefined => {
-console.log('entra', value, params);
 
 	if(isObject(value)) {
 
