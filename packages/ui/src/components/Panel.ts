@@ -87,7 +87,6 @@ export class Panel {
 		window.addEventListener('keydown', (e: KeyboardEvent) => {
 			if (!this.created) return;
 			if (e.key === 'Escape') {
-				e.stopPropagation();
 				this.parent.close();
 			}
 		});

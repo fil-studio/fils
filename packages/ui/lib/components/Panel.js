@@ -52,7 +52,6 @@ export class Panel {
             if (!this.created)
                 return;
             if (e.key === 'Escape') {
-                e.stopPropagation();
                 this.parent.close();
             }
         });
