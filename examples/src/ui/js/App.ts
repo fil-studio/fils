@@ -48,6 +48,9 @@ export class App {
 			icon: uiBrushData,
 			foldable: false
 			// parentElement: document.querySelector('.parent-example') as HTMLElement,
+		})
+		this.ui.on('change', () => {
+			console.log('Change');
 		});
 
 
@@ -211,11 +214,8 @@ export class App {
 			console.log('Button Test g2');
 		});
 
-		window.addEventListener('keydown', (e) => {
-			if(e.key === 'Escape') {
-				this.ui.destroy();
-			}
-		})
+
+
 		// console.log('UI', this.ui);
 	}
 }

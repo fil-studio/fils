@@ -16,7 +16,9 @@ export class Item extends UIElement {
     }
     init(depth = 0) {
         super.init(depth);
+        this._refreshing = true;
         this.setValue(this.object[this.key]);
+        this._refreshing = false;
     }
     setValue(value) {
         this.value = value;

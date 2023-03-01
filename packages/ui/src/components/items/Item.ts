@@ -32,7 +32,9 @@ export class Item extends UIElement {
 
 	init(depth:number = 0): void {
 		super.init(depth)
+		this._refreshing = true;
 		this.setValue(this.object[this.key]);
+		this._refreshing = false;
 	}
 
 	setValue(value: any) {
