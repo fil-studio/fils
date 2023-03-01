@@ -7,6 +7,7 @@ export declare class Item extends UIElement {
     protected key: keyof Object;
     value: any;
     params: ItemParameters;
+    view: string;
     protected _refreshing: boolean;
     constructor(params: CreateItemParams);
     init(depth?: number): void;

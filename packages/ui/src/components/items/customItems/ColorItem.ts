@@ -23,6 +23,8 @@ export class ColorPanel extends Panel {
 	view: HTMLElement = el('div');
 	info: HTMLElement = el('div');
 
+	parent: ItemPanel;
+
 	canvas1: HTMLCanvasElement = el('canvas') as HTMLCanvasElement;
 	canvas2: HTMLCanvasElement = el('canvas') as HTMLCanvasElement;
 
@@ -127,7 +129,7 @@ export class ColorPanel extends Panel {
 		drawColorPickerBar(this.canvas2);
 
 		// Todo aqui update de l'Item parent
-		this.parent!.setValue(hsbToHex(this.color));
+		this.parent.setValue(hsbToHex(this.color));
 	}
 
 	updateCanvas1(x:number, y:number): void {

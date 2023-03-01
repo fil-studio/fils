@@ -1,8 +1,7 @@
 import { drawColorPickerBar, drawColorPickerSL, fixHex, hexToRgb, hsbToHex, rgbToHsb } from '@fils/color';
 import { el, isNull, isUndefined } from "@fils/utils";
 import { CSS_UI } from '../../../main';
-import { Panel } from "../../Panel";
-import { Item } from "../Item";
+import { ItemPanel, Panel } from "../../Panel";
 const c = {
     type: 'color',
     input: '_ui-color-input',
@@ -28,7 +27,7 @@ export class ColorPanel extends Panel {
         this.dragging2 = false;
     }
     createPanelContent() {
-        this.el.classList.add(`${CSS_UI.panel.baseClass}-${this.parent.params.view}`);
+        this.el.classList.add(`${CSS_UI.panel.baseClass}-${this.parent.view}`);
         this.view = el('div', c.view, this.el);
         this.info = el('div', c.info, this.el);
         this.target = el('div', c.target, this.view);
@@ -124,15 +123,20 @@ export class ColorPanel extends Panel {
         this.update();
     }
 }
-export class ColorItem extends Item {
+export class ColorItem extends ItemPanel {
     constructor() {
         super(...arguments);
         this.input = el('input');
         this.colorBox = el('div');
-        this.panel = null;
     }
     afterCreate() {
         this.panel = new ColorPanel();
+    }
+    open() {
+        this.panel.create(this, this.content);
+    }
+    close() {
+        this.panel.destroy();
     }
     addEventListeners() {
         this.input.addEventListener('change', () => {
@@ -140,9 +144,9 @@ export class ColorItem extends Item {
         });
         this.colorBox.addEventListener('click', () => {
             if (!this.panel.created)
-                this.panel.create(this, this.content);
+                this.open();
             else
-                this.panel.destroy();
+                this.close();
         });
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Enter')
@@ -173,5 +177,9 @@ export class ColorItem extends Item {
         this.colorBox.style.setProperty('--active-color', this.value);
         this.input.value = this.value;
         super.refreshDom();
+    }
+    destroy() {
+        super.destroy();
+        this.panel.destroy();
     }
 }

@@ -1,4 +1,4 @@
-import { isBoolean, isNumber, isObject, isString } from "@fils/utils";
+import { isBoolean, isNumber, isObject, isString, isUndefined } from "@fils/utils";
 import AvailableItems from "./AvailableItems";
 const compareArrays = (a, b) => {
     for (const item of b) {
@@ -27,6 +27,9 @@ export const ItemFactory = ({ object, key, params = {} }) => {
     }
 };
 const getItemByValue = (value, params) => {
+    // If options use select
+    if (!isUndefined(params.options))
+        return AvailableItems.items.find(item => item.view === 'select');
     if (isObject(value)) {
         let keys = Object.keys(value);
         keys = keys.map(key => key.toLowerCase());

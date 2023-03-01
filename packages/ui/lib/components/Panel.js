@@ -1,5 +1,15 @@
 import { el } from "@fils/utils";
 import { CSS_UI } from "../partials/cssClasses";
+import { Button } from "./Button";
+import { Item } from "./items/Item";
+export class ItemPanel extends Item {
+    close() { }
+    open() { }
+}
+export class ButtonPanel extends Button {
+    close() { }
+    open() { }
+}
 export class Panel {
     constructor() {
         this.created = false;
@@ -38,6 +48,14 @@ export class Panel {
         this.el.classList.add(CSS_UI.utility.loaded);
         // This little trick allows transitions to work
         setTimeout(() => this.el.classList.add(CSS_UI.utility.active), 10);
+        window.addEventListener('keydown', (e) => {
+            if (!this.created)
+                return;
+            if (e.key === 'Escape') {
+                e.stopPropagation();
+                this.parent.close();
+            }
+        });
     }
     destroy() {
         if (!this.created)

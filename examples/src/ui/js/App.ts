@@ -122,7 +122,6 @@ export class App {
 
 		group.add(this.obj, 'testArray', {
 			title: 'Select Array',
-			view: 'select',
 			options: dataArrayExample,
 		});
 

@@ -3,18 +3,22 @@ import { CSS_UI } from "../partials/cssClasses";
 import { Button } from "./Button";
 import { Item } from "./items/Item";
 
-export interface ItemWithPanel {
+export interface ItemWithPanel extends Item {
 	panel: Panel;
 	close(): void;
 	open(): void;
 }
-
+export interface ButtonWithPanel extends Button {
+	panel: Panel;
+	close(): void;
+	open(): void;
+}
 export class ItemPanel extends Item implements ItemWithPanel {
 	panel: Panel;
 	close() {}
 	open() {}
 }
-export class ButtonPanel extends Button implements ItemWithPanel {
+export class ButtonPanel extends Button implements ButtonWithPanel {
 	panel: Panel;
 	close() {}
 	open() {}

@@ -4,11 +4,13 @@ import { RowTypes } from '../../utils/dom';
 import { UIElement } from '../UIElement';
 export class Item extends UIElement {
     constructor(params) {
-        var _a;
+        var _a, _b;
         const title = ((_a = params.params) === null || _a === void 0 ? void 0 : _a.title) || params.key.charAt(0).toUpperCase() + params.key.slice(1);
         super(RowTypes.item, title);
+        this.view = '';
         this._refreshing = false;
         this.params = params.params;
+        this.view = ((_b = this.params) === null || _b === void 0 ? void 0 : _b.view) || '';
         this.object = params.object;
         this.key = params.key;
     }
@@ -41,7 +43,7 @@ export class Item extends UIElement {
     createDom() {
         super.createDom();
         this.content = this.el.querySelector('div');
-        this.el.classList.add(`${CSS_UI.baseClass}-${this.params.view}`);
+        this.el.classList.add(`${CSS_UI.baseClass}-${this.view}`);
     }
     refreshDom() { }
     refresh() {

@@ -1,8 +1,7 @@
 import { uiDownarrowHlt } from '@fils/ui-icons';
 import { el, isNull, isUndefined } from '@fils/utils';
 import { CSS_UI } from '../../../partials/cssClasses';
-import { Panel } from '../../Panel';
-import { Item } from '../Item';
+import { ItemPanel, Panel } from '../../Panel';
 const c = {
     type: 'select',
     input: '_ui-select-input',
@@ -98,7 +97,7 @@ export class SelectPanel extends Panel {
         });
     }
 }
-export class SelectItem extends Item {
+export class SelectItem extends ItemPanel {
     constructor() {
         super(...arguments);
         this.options = {};
@@ -113,21 +112,21 @@ export class SelectItem extends Item {
         super.addEventListeners();
         this.input.addEventListener('click', () => {
             if (!this.panel.created) {
-                this.panel.create(this, this.content);
-                this.panel.el.classList.add(`${CSS_UI.panel.baseClass}-${this.params.view}`);
                 this.open();
             }
             else {
-                this.panel.destroy();
                 this.close();
             }
         });
     }
     open() {
+        this.panel.create(this, this.content);
+        this.panel.el.classList.add(`${CSS_UI.panel.baseClass}-${this.view}`);
         this.el.classList.add(c.open);
     }
     close() {
         this.el.classList.remove(c.open);
+        this.panel.destroy();
     }
     createContent() {
         this.input = el('div', c.input, this.content);
@@ -147,5 +146,9 @@ export class SelectItem extends Item {
         const label = findKeyByValue(this.params.options, value);
         this.label.innerHTML = isNull(value) || isUndefined(value) ? 'Select...' : label;
         super.setValue(value);
+    }
+    destroy() {
+        super.destroy();
+        this.close();
     }
 }

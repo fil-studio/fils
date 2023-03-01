@@ -44,6 +44,10 @@ export const ItemFactory = ({object, key, params = {}}:CreateItemParams) => {
 
 const getItemByValue = (value:any, params:any): AvailableItem | undefined => {
 
+	// If options use select
+	if (!isUndefined(params.options)) return AvailableItems.items.find(item => item.view === 'select');
+
+
 	if(isObject(value)) {
 
 		let keys = Object.keys(value);

@@ -4,6 +4,7 @@ import { UIElement } from "./UIElement";
 export class Button extends UIElement {
     constructor(title = 'Button', clickCallback) {
         super(RowTypes.button, title);
+        this.view = 'button';
         this.clickCallback = clickCallback;
     }
     createDom() {

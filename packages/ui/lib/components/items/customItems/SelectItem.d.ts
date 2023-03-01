@@ -1,5 +1,4 @@
-import { Panel } from '../../Panel';
-import { Item } from '../Item';
+import { ItemPanel, Panel } from '../../Panel';
 import { SelectItemParameters } from '../ItemParameters';
 export declare class SelectPanel extends Panel {
     parent: SelectItem | null;
@@ -16,9 +15,9 @@ export declare class SelectPanel extends Panel {
     searchOptions(): void;
     createSearch(): void;
 }
-export declare class SelectItem extends Item {
+export declare class SelectItem extends ItemPanel {
     params: SelectItemParameters;
-    panel?: SelectPanel;
+    panel: SelectPanel;
     options: Object;
     input: HTMLElement;
     label: HTMLElement;
@@ -29,4 +28,5 @@ export declare class SelectItem extends Item {
     close(): void;
     protected createContent(): void;
     setValue(value: any): void;
+    destroy(): void;
 }
