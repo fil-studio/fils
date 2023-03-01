@@ -8,6 +8,8 @@ export class Button extends UIElement {
 	button!: HTMLButtonElement;
 	clickCallback: Function;
 
+	view:string = 'button';
+
 	constructor(title:string = 'Button', clickCallback: Function) {
 		super(RowTypes.button, title);
 		this.clickCallback = clickCallback;

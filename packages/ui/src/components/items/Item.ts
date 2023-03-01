@@ -5,6 +5,7 @@ import { CreateItemParams } from '../../partials/ItemFactory';
 import { RowTypes } from '../../utils/dom';
 import { UIElement } from '../UIElement';
 import { ItemParameters } from './ItemParameters';
+
 export class Item extends UIElement {
 
 	content!:HTMLElement;
@@ -14,6 +15,7 @@ export class Item extends UIElement {
 	value!: any;
 
 	params!: ItemParameters;
+	view:string = '';
 
 	protected _refreshing:boolean = false;
 
@@ -22,6 +24,7 @@ export class Item extends UIElement {
 		super(RowTypes.item, title);
 
 		this.params = params.params as ItemParameters;
+		this.view = this.params?.view || '';
 
 		this.object = params.object;
 		this.key = params.key as keyof Object;
@@ -59,7 +62,7 @@ export class Item extends UIElement {
 
 		this.content = this.el.querySelector('div') as HTMLElement;
 
-		this.el.classList.add(`${CSS_UI.baseClass}-${this.params.view}`);
+		this.el.classList.add(`${CSS_UI.baseClass}-${this.view}`);
 	}
 
 	refreshDom() {}

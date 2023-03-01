@@ -59,7 +59,6 @@ export class App {
 			console.log('Position Change', this.obj.position);
 		});
 
-		return;
 
 		const b = this.ui.addButton('Hello', () => {
 			console.log('Hello');

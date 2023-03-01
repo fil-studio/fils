@@ -3,11 +3,28 @@ import { CSS_UI } from "../partials/cssClasses";
 import { Button } from "./Button";
 import { Item } from "./items/Item";
 
+export interface ItemWithPanel {
+	panel: Panel;
+	close(): void;
+	open(): void;
+}
+
+export class ItemPanel extends Item implements ItemWithPanel {
+	panel: Panel;
+	close() {}
+	open() {}
+}
+export class ButtonPanel extends Button implements ItemWithPanel {
+	panel: Panel;
+	close() {}
+	open() {}
+}
+
 export class Panel {
 	el!: HTMLElement;
 	appendTo!: HTMLElement;
 
-	parent: Item | Button;
+	parent: ItemPanel | ButtonPanel;
 	created: boolean = false;
 
 	constructor() {
@@ -34,7 +51,7 @@ export class Panel {
 		// Override this
 	}
 
-	create(parent: Item | Button, appendTo?: HTMLElement): void {
+	create(parent: ItemPanel | ButtonPanel, appendTo?: HTMLElement): void {
 
 		if (this.created) return;
 		this.created = true;
@@ -62,6 +79,14 @@ export class Panel {
 
 		// This little trick allows transitions to work
 		setTimeout(() => this.el.classList.add(CSS_UI.utility.active), 10);
+
+		window.addEventListener('keydown', (e: KeyboardEvent) => {
+			if (!this.created) return;
+			if (e.key === 'Escape') {
+				e.stopPropagation();
+				this.parent.close();
+			}
+		});
 	}
 
 	destroy(): void {

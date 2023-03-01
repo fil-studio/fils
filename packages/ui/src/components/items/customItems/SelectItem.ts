@@ -1,7 +1,7 @@
 import { uiDownarrowHlt } from '@fils/ui-icons';
 import { el, isNull, isUndefined } from '@fils/utils';
 import { CSS_UI } from '../../../partials/cssClasses';
-import { Panel } from '../../Panel';
+import { ItemPanel, Panel } from '../../Panel';
 import { Item } from '../Item';
 import { SelectItemParameters } from '../ItemParameters';
 
@@ -109,7 +109,6 @@ export class SelectPanel extends Panel {
 
 	createSearch(): void {
 
-
 		this.search = el('div', c.search, this.el);
 		this.searchInput = el('input', c.searchInput ) as HTMLInputElement;
 		this.searchInput.placeholder = 'Search';
@@ -124,10 +123,10 @@ export class SelectPanel extends Panel {
 
 	}
 }
-export class SelectItem extends Item {
+export class SelectItem extends ItemPanel {
 	params!: SelectItemParameters;
 
-	panel?: SelectPanel;
+	panel: SelectPanel;
 	options: Object = {};
 
 	input: HTMLElement = el('div');
@@ -143,25 +142,23 @@ export class SelectItem extends Item {
 		super.addEventListeners();
 
 		this.input.addEventListener('click', () => {
-
 			if(!this.panel!.created) {
-				this.panel!.create(this, this.content);
-				this.panel.el.classList.add(`${CSS_UI.panel.baseClass}-${this.params.view}`)
-
 				this.open();
 			} else {
-				this.panel!.destroy();
 				this.close();
 			}
 		});
 	}
 
 	open() {
+		this.panel!.create(this, this.content);
+		this.panel.el.classList.add(`${CSS_UI.panel.baseClass}-${this.view}`)
 		this.el.classList.add(c.open);
 	}
 
 	close() {
 		this.el.classList.remove(c.open);
+		this.panel!.destroy();
 	}
 
 	protected createContent(): void {
@@ -188,5 +185,10 @@ export class SelectItem extends Item {
 
 		this.label.innerHTML = isNull(value) || isUndefined(value) ? 'Select...' : label;
 		super.setValue(value);
+	}
+
+	destroy(): void {
+		super.destroy();
+		this.close();
 	}
 }
