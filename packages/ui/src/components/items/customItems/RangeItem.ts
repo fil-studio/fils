@@ -1,7 +1,6 @@
 import { MathUtils } from "@fils/math";
-import { el } from "@fils/utils";
+import { el, isArray } from "@fils/utils";
 import { CSS_UI } from "../../../partials/cssClasses";
-import check from "../../../utils/check";
 import { Item } from "../Item";
 import { RangeItemParameters } from "../ItemParameters";
 
@@ -152,7 +151,7 @@ export class RangeItem extends Item {
 		const overExpose = this.params.overExpose || [0, 0];
 		let limits = [0, 0] as [number, number];
 
-		if (!check.isArray(overExpose)) limits = [overExpose as number, overExpose as number];
+		if (!isArray(overExpose)) limits = [overExpose as number, overExpose as number];
 		else limits = overExpose as [number, number];
 
 		this.min = this.params.min ? this.params.min - limits[0] : limits[0];

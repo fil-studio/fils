@@ -1,5 +1,5 @@
+import { isBoolean, isNumber, isObject, isString } from "@fils/utils";
 import { ItemParameters } from "../components/items/ItemParameters";
-import check from "../utils/check";
 import AvailableItems, { AvailableItem } from "./AvailableItems";
 
 // Available items array
@@ -47,7 +47,7 @@ export const ItemFactory = (createParams:CreateItemParams) => {
 
 const getItemByValue = (value:any, params:any): AvailableItem | undefined => {
 
-	if(check.isObject(value)) {
+	if(isObject(value)) {
 
 		let keys = Object.keys(value);
 		keys = keys.map(key => key.toLowerCase());
@@ -64,20 +64,20 @@ const getItemByValue = (value:any, params:any): AvailableItem | undefined => {
 	}
 
 	// If min max or step use range
-	if (check.isNumber(value)) {
+	if (isNumber(value)) {
 		if(params){
 			if(params.min || params.max || params.step) return AvailableItems.items.find(item => item.view === 'range');
 		}
 		return AvailableItems.items.find(item => item.view === 'number');
 	}
 
-	if (check.isString(value)) {
+	if (isString(value)) {
 		if(value.substring(0,1) === '#') return AvailableItems.items.find(item => item.view === 'color');
 		if(value.substring(0,2) === '0x') return AvailableItems.items.find(item => item.view === 'color');
 		return AvailableItems.items.find(item => item.view === 'string');
 	}
 
-	if(check.isBoolean(value)) return AvailableItems.items.find(item => item.view === 'boolean');
+	if(isBoolean(value)) return AvailableItems.items.find(item => item.view === 'boolean');
 
 	return undefined;
 

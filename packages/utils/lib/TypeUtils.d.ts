@@ -1,0 +1,11 @@
+export declare function isUndefined(obj: any): boolean;
+export declare function isNull(obj: any): boolean;
+export declare function isNaN(obj: any): any;
+export declare function isArray(obj: any): boolean;
+export declare function isObject(obj: any): boolean;
+export declare function isNumber(obj: any): boolean;
+export declare function isString(obj: any): boolean;
+export declare function isBoolean(obj: any): boolean;
+export declare function isFunction(obj: any): boolean;
+export declare function getType(obj: any): "object" | "function" | "string" | "number" | "undefined" | "null" | "array" | "boolean";
+export declare function equal(a: any, b: any): boolean;

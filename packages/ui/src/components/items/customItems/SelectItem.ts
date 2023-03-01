@@ -1,7 +1,6 @@
-import { el } from '@fils/utils';
 import { uiDownarrowHlt } from '@fils/ui-icons';
+import { el, isNull, isUndefined } from '@fils/utils';
 import { CSS_UI } from '../../../partials/cssClasses';
-import check from '../../../utils/check';
 import { Panel } from '../../Panel';
 import { Item } from '../Item';
 import { SelectItemParameters } from '../ItemParameters';
@@ -187,7 +186,7 @@ export class SelectItem extends Item {
 
 		const label = findKeyByValue(this.params.options, value);
 
-		this.label.innerHTML = check.isNull(value) || check.isUndefined(value) ? 'Select...' : label;
+		this.label.innerHTML = isNull(value) || isUndefined(value) ? 'Select...' : label;
 		super.setValue(value);
 	}
 }

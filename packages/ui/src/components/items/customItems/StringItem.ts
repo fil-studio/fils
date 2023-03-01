@@ -1,6 +1,5 @@
-import { el } from "@fils/utils";
+import { el, isNull, isUndefined } from "@fils/utils";
 import { CSS_UI } from "../../../main";
-import check from "../../../utils/check";
 import { Item } from "../Item";
 
 export class StringItem extends Item {
@@ -21,7 +20,7 @@ export class StringItem extends Item {
 	}
 
 	setValue(value: string): void {
-		if (check.isNull(value) || check.isUndefined(value)) {
+		if (isNull(value) || isUndefined(value)) {
 			value = 'String';
 		}
 		super.setValue(value);
