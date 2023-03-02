@@ -53,9 +53,11 @@ export class Panel {
 
 	positionPanel(): void {
 
+		this.uiWrapper.appendChild(this.el);
+		const panelRect = this.el.getBoundingClientRect();
 		const uiRect = this.uiWrapper.getBoundingClientRect();
 
-		// Panel is dropped down
+		// Panel is droppdown
 		if(!isNull(this.dropdownFrom)){
 
 			const dropdownFromRect = this.dropdownFrom.getBoundingClientRect();
@@ -72,19 +74,19 @@ export class Panel {
 
 		// Lateral Panels
 		const parentRect = this.parent.el.getBoundingClientRect();
+		const top = Math.max(parentRect.top - uiRect.top - panelRect.height * .5, 0);
+
+		this.el.style.top = `${top}px`;
 
 		// Panel is on the left
 	  if(uiRect.left > window.innerWidth * .5) {
-			this.el.style.top = `${parentRect.top - uiRect.top}px`;
-			this.el.style.left = `-${this.spacing}px`;
-			this.el.style.transform = `translate3d(-100%, -50%, 0)`;
+			this.el.style.left = `-${uiRect.width + this.spacing}px`;
 
 		// Panel is on the right
 		}	else {
-			this.el.style.top = `${parentRect.top - uiRect.top}px`;
-			this.el.style.right = `-${this.spacing}px`;
-			this.el.style.transform = `translate3d(100%, -50%, 0)`;
+			this.el.style.right = `-${uiRect.width + this.spacing}px`;
 		}
+
 
 	}
 
@@ -110,7 +112,6 @@ export class Panel {
 		this.el.style.setProperty('--section-bg-0', bg0);
 		this.el.style.setProperty('--section-bg-1', bg1);
 
-		this.uiWrapper.appendChild(this.el);
 
 		this.el.classList.add(CSS_UI.utility.loaded);
 

@@ -122,7 +122,8 @@ export class SelectItem extends ItemPanel {
         });
     }
     open() {
-        this.panel.create(this, this.content);
+        // this.panel.create(this, this.content);
+        this.panel.create(this);
         this.panel.el.classList.add(`${CSS_UI.panel.baseClass}-${this.view}`);
         this.el.classList.add(c.open);
     }

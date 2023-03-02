@@ -22,13 +22,16 @@ export declare class ButtonPanel extends Button implements ButtonWithPanel {
 }
 export declare class Panel {
     el: HTMLElement;
-    appendTo: HTMLElement;
+    dropdownFrom: HTMLElement;
     parent: ItemPanel | ButtonPanel;
     created: boolean;
+    uiWrapper: HTMLElement;
+    spacing: number;
+    constructor();
     addEventListeners(): void;
     createPanelContent(): void;
     positionPanel(): void;
-    create(parent: ItemPanel | ButtonPanel, appendTo?: HTMLElement): void;
+    create(parent: ItemPanel | ButtonPanel, dropdownFrom?: HTMLElement): void;
     destroy(): void;
     onChange(): void;
 }
