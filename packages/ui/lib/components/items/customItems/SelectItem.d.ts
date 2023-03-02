@@ -11,6 +11,7 @@ export declare class SelectPanel extends Panel {
         dom: HTMLElement;
     }>;
     addEventListeners(): void;
+    sortOptions(): void;
     createPanelContent(): void;
     searchOptions(): void;
     createSearch(): void;

@@ -1,4 +1,4 @@
-import { el } from "@fils/utils";
+import { el, isNull } from "@fils/utils";
 import { CSS_UI } from "../partials/cssClasses";
 import { Button } from "./Button";
 import { Item } from "./items/Item";
@@ -23,67 +23,22 @@ export class ButtonPanel extends Button implements ButtonWithPanel {
 	close() {}
 	open() {}
 }
-
 export class Panel {
 	el!: HTMLElement;
-	appendTo!: HTMLElement;
+	dropdownFrom!: HTMLElement;
 
 	parent: ItemPanel | ButtonPanel;
 	created: boolean = false;
 
+	uiWrapper:HTMLElement;
+	spacing:number = 0;
+
 	constructor() {
-		this.addEventListeners();
+		this.uiWrapper = document.querySelector(`.${CSS_UI.wrapper}`) as HTMLElement;
+		this.spacing = 3;
 	}
 
 	addEventListeners(): void {
-
-		window.addEventListener('resize', () => this.onResize());
-
-	}
-
-	positionPanel(): void {
-		if (!this.created) return;
-
-		const r = this.appendTo.getBoundingClientRect();
-
-		this.el.style.top = `${r.top + r.height}px`;
-		this.el.style.width = `${r.width}px`;
-		this.el.style.left = `${r.left}px`;
-	}
-
-	createPanelContent(){
-		// Override this
-	}
-
-	create(parent: ItemPanel | ButtonPanel, appendTo?: HTMLElement): void {
-
-		if (this.created) return;
-		this.created = true;
-
-		this.parent = parent;
-		this.appendTo = appendTo ? appendTo : this.parent.el;
-
-		// This needs to be provided by the parent each time as the dom changes
-		const parentDomStyle = getComputedStyle(this.appendTo.closest('section') as HTMLElement);
-		const bg0 = parentDomStyle.getPropertyValue('--section-bg-0');
-		const bg1 = parentDomStyle.getPropertyValue('--section-bg-1');
-
-		this.el = el('div', CSS_UI.panel.baseClass);
-
-		this.el.style.setProperty('--section-bg-0', bg0);
-		this.el.style.setProperty('--section-bg-1', bg1);
-
-		this.positionPanel();
-
-		this.createPanelContent();
-
-		document.body.appendChild(this.el);
-
-		this.el.classList.add(CSS_UI.utility.loaded);
-
-		// This little trick allows transitions to work
-		setTimeout(() => this.el.classList.add(CSS_UI.utility.active), 10);
-
 		window.addEventListener('keydown', (e: KeyboardEvent) => {
 			if (!this.created) return;
 			if (e.key === 'Escape') {
@@ -92,14 +47,83 @@ export class Panel {
 		});
 	}
 
+	createPanelContent(){
+		// Override this
+	}
+
+	positionPanel(): void {
+
+		const uiRect = this.uiWrapper.getBoundingClientRect();
+
+		// Panel is dropped down
+		if(!isNull(this.dropdownFrom)){
+
+			const dropdownFromRect = this.dropdownFrom.getBoundingClientRect();
+
+			const top = (dropdownFromRect.top + dropdownFromRect.height) - uiRect.top;
+			const left = dropdownFromRect.left - uiRect.left;
+
+			this.el.style.top = `${top + this.spacing}px`;
+			this.el.style.left = `${left}px`;
+			this.el.style.width = `${dropdownFromRect.width}px`;
+
+			return;
+		}
+
+		// Lateral Panels
+		const parentRect = this.parent.el.getBoundingClientRect();
+
+		// Panel is on the left
+	  if(uiRect.left > window.innerWidth * .5) {
+			this.el.style.top = `${parentRect.top - uiRect.top}px`;
+			this.el.style.left = `-${this.spacing}px`;
+			this.el.style.transform = `translate3d(-100%, -50%, 0)`;
+
+		// Panel is on the right
+		}	else {
+			this.el.style.top = `${parentRect.top - uiRect.top}px`;
+			this.el.style.right = `-${this.spacing}px`;
+			this.el.style.transform = `translate3d(100%, -50%, 0)`;
+		}
+
+	}
+
+	create(parent: ItemPanel | ButtonPanel, dropdownFrom?: HTMLElement): void {
+
+		if (this.created) return;
+		this.created = true;
+
+		this.parent = parent;
+
+		this.el = el('div', CSS_UI.panel.baseClass);
+
+		this.createPanelContent();
+
+		// Append to for dropdowns, else append to wrapper and positioning is required
+		this.dropdownFrom = dropdownFrom ? dropdownFrom : null;
+		this.positionPanel();
+
+		// This needs to be provided by the parent each time as the dom changes
+		const parentDomStyle = getComputedStyle(this.parent.el.closest('section') as HTMLElement);
+		const bg0 = parentDomStyle.getPropertyValue('--section-bg-0');
+		const bg1 = parentDomStyle.getPropertyValue('--section-bg-1');
+		this.el.style.setProperty('--section-bg-0', bg0);
+		this.el.style.setProperty('--section-bg-1', bg1);
+
+		this.uiWrapper.appendChild(this.el);
+
+		this.el.classList.add(CSS_UI.utility.loaded);
+
+		// This little trick allows transitions to work
+		setTimeout(() => this.el.classList.add(CSS_UI.utility.active), 10);
+
+		this.addEventListeners();
+	}
+
 	destroy(): void {
 		if (!this.created) return;
 		this.el.remove();
 		this.created = false;
-	}
-
-	onResize(): void {
-		this.positionPanel();
 	}
 
 	onChange(): void {

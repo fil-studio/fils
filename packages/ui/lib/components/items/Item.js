@@ -44,7 +44,7 @@ export class Item extends UIElement {
      */
     createDom() {
         super.createDom();
-        this.content = this.el.querySelector('div');
+        this.content = this.el.querySelector(`.${CSS_UI.content}`);
         this.el.classList.add(`${CSS_UI.baseClass}-${this.view}`);
     }
     refreshDom() { }

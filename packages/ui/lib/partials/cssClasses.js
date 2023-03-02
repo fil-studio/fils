@@ -4,6 +4,7 @@ export const CSS_UI = {
     parent: '_ui-wrapper-has-parent',
     resizer: '_ui-wrapper-resizer',
     item: '_ui-item',
+    content: '_ui-item-content',
     utility: {
         hidden: '_ui--hidden',
         grab: '_ui--grab',

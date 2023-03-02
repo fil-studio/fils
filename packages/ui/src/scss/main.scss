@@ -6,8 +6,7 @@
 
 
 
-._ui-wrapper,
-._ui-panel {
+._ui-wrapper {
 	z-index: var(--ui-index);
 
 	* {
@@ -71,8 +70,7 @@
 	}
 }
 
-._ui-wrapper,
-._ui-panel {
+._ui-wrapper {
 	@import "./partials/base-components/section";
 	@import "./partials/fold";
 
@@ -88,8 +86,10 @@
 	@import "./items/range";
 	@import "./items/select";
 	@import "./items/color";
+
+	@import "./partials/base-components/panel";
+	@import "./panels/select";
+	@import "./panels/color";
+
 }
 
-@import "./partials/base-components/panel";
-@import "./panels/select";
-@import "./panels/color";

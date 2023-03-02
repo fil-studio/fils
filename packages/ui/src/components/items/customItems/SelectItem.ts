@@ -31,6 +31,7 @@ export class SelectPanel extends Panel {
 	}> = [];
 
 	addEventListeners(): void {
+
 		super.addEventListeners();
 
 		window.addEventListener('click', (e: MouseEvent) => {
@@ -38,17 +39,12 @@ export class SelectPanel extends Panel {
 			const t = e.target as HTMLElement;
 			if (this.el.contains(t)) return;
 			if(this.parent!.el.contains(t)) return;
-
-			this.destroy();
-			this.parent!.close();
+			this.parent.close();
 		});
 
 	}
 
-	createPanelContent(): void {
-
-		// this.createSearch();
-
+	sortOptions(){
 		const parentContent = this.parent!.params.options;
 
 		this.options = Object.keys(parentContent).map((key) => {
@@ -63,7 +59,7 @@ export class SelectPanel extends Panel {
 			const value = (parentContent as Record<string, unknown>)[key];
 
 			// Hide selected option
-			if (this.parent!.value === value ) div.classList.add(CSS_UI.utility.active);
+			if (this.parent!.value === value) div.classList.add(CSS_UI.utility.active);
 
 			// Add event listener
 			div.addEventListener('click', () => {
@@ -78,6 +74,14 @@ export class SelectPanel extends Panel {
 				dom: div,
 			}
 		});
+
+	}
+
+	createPanelContent(): void {
+
+		// this.createSearch();
+
+		this.sortOptions();
 
 		// Empty options message
 		this.optionNone = el('div', c.optionNone);
@@ -151,14 +155,15 @@ export class SelectItem extends ItemPanel {
 	}
 
 	open() {
-		this.panel!.create(this, this.content);
+		// this.panel.create(this, this.content);
+		this.panel.create(this);
 		this.panel.el.classList.add(`${CSS_UI.panel.baseClass}-${this.view}`)
 		this.el.classList.add(c.open);
 	}
 
 	close() {
 		this.el.classList.remove(c.open);
-		this.panel!.destroy();
+		this.panel.destroy();
 	}
 
 	protected createContent(): void {
@@ -184,6 +189,7 @@ export class SelectItem extends ItemPanel {
 		const label = findKeyByValue(this.params.options, value);
 
 		this.label.innerHTML = isNull(value) || isUndefined(value) ? 'Select...' : label;
+
 		super.setValue(value);
 	}
 

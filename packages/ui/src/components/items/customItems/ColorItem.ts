@@ -60,8 +60,6 @@ export class ColorPanel extends Panel {
 
 	addEventListeners(): void {
 
-		super.addEventListeners();
-
 		window.addEventListener('mouseup', (e: MouseEvent) => {
 			if(!this.created) return;
 

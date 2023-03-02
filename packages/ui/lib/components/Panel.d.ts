@@ -25,12 +25,10 @@ export declare class Panel {
     appendTo: HTMLElement;
     parent: ItemPanel | ButtonPanel;
     created: boolean;
-    constructor();
     addEventListeners(): void;
-    positionPanel(): void;
     createPanelContent(): void;
+    positionPanel(): void;
     create(parent: ItemPanel | ButtonPanel, appendTo?: HTMLElement): void;
     destroy(): void;
-    onResize(): void;
     onChange(): void;
 }

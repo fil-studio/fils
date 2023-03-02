@@ -101,7 +101,7 @@ const dom = {
 				row.appendChild(h4);
 			}
 
-			const contentWrapper = el('div');
+			const contentWrapper = el('div', CSS_UI.content);
 			row.appendChild(contentWrapper);
 		}
 

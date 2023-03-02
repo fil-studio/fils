@@ -32,12 +32,10 @@ export class SelectPanel extends Panel {
                 return;
             if (this.parent.el.contains(t))
                 return;
-            this.destroy();
             this.parent.close();
         });
     }
-    createPanelContent() {
-        // this.createSearch();
+    sortOptions() {
         const parentContent = this.parent.params.options;
         this.options = Object.keys(parentContent).map((key) => {
             // Create option
@@ -62,6 +60,10 @@ export class SelectPanel extends Panel {
                 dom: div,
             };
         });
+    }
+    createPanelContent() {
+        // this.createSearch();
+        this.sortOptions();
         // Empty options message
         this.optionNone = el('div', c.optionNone);
         const p = el('p');

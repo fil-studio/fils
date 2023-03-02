@@ -4,6 +4,7 @@ export declare const CSS_UI: {
     parent: string;
     resizer: string;
     item: string;
+    content: string;
     utility: {
         hidden: string;
         grab: string;

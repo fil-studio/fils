@@ -75,7 +75,7 @@ const dom = {
                 h4.title = title;
                 row.appendChild(h4);
             }
-            const contentWrapper = el('div');
+            const contentWrapper = el('div', CSS_UI.content);
             row.appendChild(contentWrapper);
         }
         /**

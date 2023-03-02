@@ -41,7 +41,6 @@ export class ColorPanel extends Panel {
         setTimeout(() => this.reverseUpdate(), 10);
     }
     addEventListeners() {
-        super.addEventListeners();
         window.addEventListener('mouseup', (e) => {
             var _a;
             if (!this.created)
