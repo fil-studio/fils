@@ -129,10 +129,10 @@ export class ColorItem extends ItemPanel {
         this.colorBox = el('div');
     }
     afterCreate() {
-        this.panel = new ColorPanel();
+        this.panel = new ColorPanel(this, this.content);
     }
     open() {
-        this.panel.create(this, this.content);
+        this.panel.create();
     }
     close() {
         this.panel.destroy();

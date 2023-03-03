@@ -55,15 +55,15 @@ export class UI extends Group {
 	}
 
 	createDom(): void {
-		super.createDom();
 
 		this.wrapper = dom.createRow({
 			type: RowTypes.ui,
 			depth: this.depth,
 		})
 
-		this.wrapper.appendChild(this.el);
+		super.createDom();
 
+		this.wrapper.appendChild(this.el);
 	}
 
 	protected addEventListeners(){

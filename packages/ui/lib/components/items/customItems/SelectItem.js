@@ -16,7 +16,6 @@ const c = {
 export class SelectPanel extends Panel {
     constructor() {
         super(...arguments);
-        this.parent = null;
         this.search = el('div');
         this.searchInput = el('input');
         this.optionNone = el('div');
@@ -51,7 +50,6 @@ export class SelectPanel extends Panel {
             // Add event listener
             div.addEventListener('click', () => {
                 this.parent.setValue(value);
-                this.destroy();
                 this.parent.close();
             });
             return {
@@ -108,23 +106,19 @@ export class SelectItem extends ItemPanel {
         this.activeOption = el('div');
     }
     afterCreate() {
-        this.panel = new SelectPanel();
+        this.panel = new SelectPanel(this);
     }
     addEventListeners() {
         super.addEventListeners();
         this.input.addEventListener('click', () => {
-            if (!this.panel.created) {
+            if (!this.panel.created)
                 this.open();
-            }
-            else {
+            else
                 this.close();
-            }
         });
     }
     open() {
-        // this.panel.create(this, this.content);
-        this.panel.create(this);
-        this.panel.el.classList.add(`${CSS_UI.panel.baseClass}-${this.view}`);
+        this.panel.create();
         this.el.classList.add(c.open);
     }
     close() {

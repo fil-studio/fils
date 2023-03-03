@@ -27,11 +27,11 @@ export declare class Panel {
     created: boolean;
     uiWrapper: HTMLElement;
     spacing: number;
-    constructor();
+    constructor(parent: ItemPanel | ButtonPanel, dropdownFrom?: HTMLElement);
     addEventListeners(): void;
     createPanelContent(): void;
     positionPanel(): void;
-    create(parent: ItemPanel | ButtonPanel, dropdownFrom?: HTMLElement): void;
+    create(): void;
     destroy(): void;
     onChange(): void;
 }

@@ -165,11 +165,11 @@ export class ColorItem extends ItemPanel {
 	panel: ColorPanel;
 
 	afterCreate(): void {
-		this.panel = new ColorPanel();
+		this.panel = new ColorPanel(this, this.content);
 	}
 
 	open(): void {
-		this.panel.create(this, this.content);
+		this.panel.create();
 	}
 	close(): void {
 		this.panel.destroy();

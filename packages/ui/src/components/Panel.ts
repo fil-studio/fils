@@ -3,6 +3,12 @@ import { CSS_UI } from "../partials/cssClasses";
 import { Button } from "./Button";
 import { Item } from "./items/Item";
 
+const c = {
+	left: "_ui-panel-left",
+	right: "_ui-panel-right",
+	dropdown: "_ui-panel-dropdown",
+};
+
 export interface ItemWithPanel extends Item {
 	panel: Panel;
 	close(): void;
@@ -33,8 +39,11 @@ export class Panel {
 	uiWrapper:HTMLElement;
 	spacing:number = 0;
 
-	constructor() {
-		this.uiWrapper = document.querySelector(`.${CSS_UI.wrapper}`) as HTMLElement;
+	constructor(parent: ItemPanel | ButtonPanel, dropdownFrom?: HTMLElement) {
+
+		this.parent = parent;
+		this.dropdownFrom = dropdownFrom ? dropdownFrom : null;
+
 		this.spacing = 3;
 	}
 
@@ -53,12 +62,14 @@ export class Panel {
 
 	positionPanel(): void {
 
-		this.uiWrapper.appendChild(this.el);
 		const panelRect = this.el.getBoundingClientRect();
 		const uiRect = this.uiWrapper.getBoundingClientRect();
 
+
 		// Panel is droppdown
 		if(!isNull(this.dropdownFrom)){
+
+			this.el.classList.add(c.dropdown);
 
 			const dropdownFromRect = this.dropdownFrom.getBoundingClientRect();
 
@@ -80,29 +91,31 @@ export class Panel {
 
 		// Panel is on the left
 	  if(uiRect.left > window.innerWidth * .5) {
+			this.el.classList.add(c.left);
 			this.el.style.left = `-${uiRect.width + this.spacing}px`;
 
 		// Panel is on the right
 		}	else {
+			this.el.classList.add(c.right);
 			this.el.style.right = `-${uiRect.width + this.spacing}px`;
 		}
 
 
 	}
 
-	create(parent: ItemPanel | ButtonPanel, dropdownFrom?: HTMLElement): void {
+	create(): void {
+
+		// This is the wrapper for the UI, has to be added here, is not ready on constructor
+		this.uiWrapper = this.parent.el.closest(`.${CSS_UI.wrapper}`) as HTMLElement;
 
 		if (this.created) return;
 		this.created = true;
 
-		this.parent = parent;
-
-		this.el = el('div', CSS_UI.panel.baseClass);
+		this.el = el('div', CSS_UI.panel.baseClass, this.uiWrapper);
 
 		this.createPanelContent();
 
 		// Append to for dropdowns, else append to wrapper and positioning is required
-		this.dropdownFrom = dropdownFrom ? dropdownFrom : null;
 		this.positionPanel();
 
 		// This needs to be provided by the parent each time as the dom changes
@@ -111,7 +124,6 @@ export class Panel {
 		const bg1 = parentDomStyle.getPropertyValue('--section-bg-1');
 		this.el.style.setProperty('--section-bg-0', bg0);
 		this.el.style.setProperty('--section-bg-1', bg1);
-
 
 		this.el.classList.add(CSS_UI.utility.loaded);
 

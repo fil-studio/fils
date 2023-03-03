@@ -23,5 +23,19 @@
 	&._ui--active {
 		opacity: 1;
 	}
+
+	&._ui-panel-dropdown {
+		height: auto;
+		max-height: 300px;
+		overflow-y: scroll;
+	}
+
+	&._ui-panel-left,
+	&._ui-panel-right {
+		width: 300px;
+		height: auto;
+		max-height: calc(100vh - 10px);
+		overflow-y: scroll;
+	}
 }
 

@@ -4,7 +4,7 @@ import dom, { RowTypes } from "../utils/dom";
 export class UIElement extends EventsManager {
 	protected depth!: number;
 
-	el!: HTMLElement;
+	el: HTMLElement;
 
 	type!: RowTypes;
 	title: string;

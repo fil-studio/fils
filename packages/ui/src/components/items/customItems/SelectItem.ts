@@ -18,7 +18,7 @@ const c = {
 	searchInput: '_ui-panel-select-search-input',
 };
 export class SelectPanel extends Panel {
-	parent: SelectItem | null = null;
+	parent: SelectItem;
 
 	search: HTMLElement = el('div');
 	searchInput: HTMLInputElement = el('input') as HTMLInputElement;
@@ -38,14 +38,15 @@ export class SelectPanel extends Panel {
 			if(!this.created) return;
 			const t = e.target as HTMLElement;
 			if (this.el.contains(t)) return;
-			if(this.parent!.el.contains(t)) return;
+			if(this.parent.el.contains(t)) return;
 			this.parent.close();
 		});
 
 	}
 
 	sortOptions(){
-		const parentContent = this.parent!.params.options;
+
+		const parentContent = this.parent.params.options;
 
 		this.options = Object.keys(parentContent).map((key) => {
 
@@ -59,13 +60,12 @@ export class SelectPanel extends Panel {
 			const value = (parentContent as Record<string, unknown>)[key];
 
 			// Hide selected option
-			if (this.parent!.value === value) div.classList.add(CSS_UI.utility.active);
+			if (this.parent.value === value) div.classList.add(CSS_UI.utility.active);
 
 			// Add event listener
 			div.addEventListener('click', () => {
-				this.parent!.setValue(value);
-				this.destroy();
-				this.parent!.close();
+				this.parent.setValue(value);
+				this.parent.close();
 			});
 
 			return {
@@ -139,25 +139,20 @@ export class SelectItem extends ItemPanel {
 	protected activeOption: HTMLElement = el('div');
 
 	afterCreate(): void {
-		this.panel = new SelectPanel();
+		this.panel = new SelectPanel(this);
 	}
 
 	protected addEventListeners(): void {
 		super.addEventListeners();
 
 		this.input.addEventListener('click', () => {
-			if(!this.panel!.created) {
-				this.open();
-			} else {
-				this.close();
-			}
+			if (!this.panel.created) this.open();
+			else this.close();
 		});
 	}
 
 	open() {
-		// this.panel.create(this, this.content);
-		this.panel.create(this);
-		this.panel.el.classList.add(`${CSS_UI.panel.baseClass}-${this.view}`)
+		this.panel.create();
 		this.el.classList.add(c.open);
 	}
 

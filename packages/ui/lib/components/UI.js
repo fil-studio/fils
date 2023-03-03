@@ -32,11 +32,11 @@ export class UI extends Group {
         dom.addIcon(this.el.querySelector('header'), icon);
     }
     createDom() {
-        super.createDom();
         this.wrapper = dom.createRow({
             type: RowTypes.ui,
             depth: this.depth,
         });
+        super.createDom();
         this.wrapper.appendChild(this.el);
     }
     addEventListeners() {
