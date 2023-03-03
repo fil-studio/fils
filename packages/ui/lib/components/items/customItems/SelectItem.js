@@ -60,7 +60,6 @@ export class SelectPanel extends Panel {
         });
     }
     createPanelContent() {
-        // this.createSearch();
         this.sortOptions();
         // Empty options message
         this.optionNone = el('div', c.optionNone);

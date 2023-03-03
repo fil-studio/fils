@@ -79,8 +79,6 @@ export class SelectPanel extends Panel {
 
 	createPanelContent(): void {
 
-		// this.createSearch();
-
 		this.sortOptions();
 
 		// Empty options message
