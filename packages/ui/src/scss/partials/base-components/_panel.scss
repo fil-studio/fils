@@ -3,10 +3,10 @@
 	position: absolute;
 	height: auto;
 	background-color: var(--section-bg-1);
-	border: 1px solid var(--section-bg-0);
 	color: var(--color-1);
 	// margin-top:var(--spacer);
 	overflow: hidden;
+	border-radius: var(--radius-0);
 
 	width: 100%;
 	top: 100%;
@@ -27,13 +27,12 @@
 		height: auto;
 		max-height: 300px;
 		overflow-y: scroll;
-		border-radius: var(--radius-0);
+		border: 1px solid var(--section-bg-0);
 	}
 
 	&._ui-panel-left,
 	&._ui-panel-right {
 		width: 300px;
-		border-radius: var(--radius-1);
 		height: auto;
 		max-height: calc(100vh - 10px);
 		overflow-y: scroll;
