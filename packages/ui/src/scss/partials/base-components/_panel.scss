@@ -2,9 +2,6 @@
 	z-index: var(--ui-panels-index);
 	position: absolute;
 	height: auto;
-	background-color: var(--section-bg-1);
-	color: var(--color-1);
-	// margin-top:var(--spacer);
 	overflow: hidden;
 	border-radius: var(--radius-0);
 
@@ -27,7 +24,6 @@
 		height: auto;
 		max-height: 300px;
 		overflow-y: scroll;
-		border: 1px solid var(--section-bg-0);
 	}
 
 	&._ui-panel-left,

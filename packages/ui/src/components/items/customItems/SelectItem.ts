@@ -81,6 +81,8 @@ export class SelectPanel extends Panel {
 
 		this.sortOptions();
 
+		this.el.classList.add(c.panel);
+
 		// Empty options message
 		this.optionNone = el('div', c.optionNone);
 		const p = el('p');
@@ -137,7 +139,7 @@ export class SelectItem extends ItemPanel {
 	protected activeOption: HTMLElement = el('div');
 
 	afterCreate(): void {
-		this.panel = new SelectPanel(this);
+		this.panel = new SelectPanel(this, this.content);
 	}
 
 	protected addEventListeners(): void {

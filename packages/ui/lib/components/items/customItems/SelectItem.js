@@ -61,6 +61,7 @@ export class SelectPanel extends Panel {
     }
     createPanelContent() {
         this.sortOptions();
+        this.el.classList.add(c.panel);
         // Empty options message
         this.optionNone = el('div', c.optionNone);
         const p = el('p');
@@ -105,7 +106,7 @@ export class SelectItem extends ItemPanel {
         this.activeOption = el('div');
     }
     afterCreate() {
-        this.panel = new SelectPanel(this);
+        this.panel = new SelectPanel(this, this.content);
     }
     addEventListeners() {
         super.addEventListeners();
