@@ -2,7 +2,7 @@
 import { UI } from '../../../../packages/ui/src/main.js';
 
 import { Vector3, Euler } from 'three';
-import { uiBrushData } from '@fils/ui-icons';
+import { uiBrushData, uiAppendBlend } from '@fils/ui-icons';
 
 import { Texture, TextureLoader } from 'three';
 
@@ -137,14 +137,16 @@ export class App {
 			view: 'color'
 		});
 
-		// group.add(this.obj, 'uploadTest', {
-		// 	title: 'Upload Button',
-		// 	text: 'Upload',
-		// 	icon: uiAppendBlend,
-		// 	view: 'upload'
-		// });
+		group.add(this.obj, 'uploadTest', {
+			title: 'title string',
+			text: 'text string',
+			icon: uiAppendBlend,
+			view: 'upload'
+		});
 
-		group.addSpacer();
+		group.addSpacer({
+
+		});
 
 		group.add(this.obj, 'booleanTest', {
 			title: 'Boolean Test',
