@@ -5,6 +5,7 @@ import { EventsManager } from "../partials/EventsManager";
 import { CreateItemParams, ItemFactory } from "../partials/ItemFactory";
 import { RowTypes } from "../utils/dom";
 import { Button } from "./Button";
+import { Info, InfoParams } from "./Info";
 import { Item } from "./items/Item";
 import { ItemParameters } from "./items/ItemParameters";
 import { Spacer, SpacerParams } from "./Spacer";
@@ -169,6 +170,13 @@ export class Group extends UIElement {
 	addSpacer(params:SpacerParams = {}) {
 		const spacer = new Spacer(this.depth + 1, params);
 		if(spacer && spacer.el) this.content.appendChild(spacer.el);
+	}
+
+	addInfo(params:InfoParams = {
+		text: 'No Text'
+	}){
+		const info = new Info(this.depth + 1, params);
+		if(info && info.el) this.content.appendChild(info.el);
 	}
 
 	/**

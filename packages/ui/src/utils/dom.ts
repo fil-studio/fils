@@ -8,7 +8,8 @@ export enum RowTypes {
 	group,
 	item,
 	button,
-	spacer
+	spacer,
+	info
 }
 
 interface DomOptions {
@@ -55,6 +56,7 @@ const dom = {
 		if(type === RowTypes.item) domEl = 'fieldset';
 		if(type === RowTypes.button) domEl = 'fieldset';
 		if(type === RowTypes.spacer) domEl = 'div';
+		if(type === RowTypes.info) domEl = 'fieldset';
 
 		const row = el(domEl);
 		row.setAttribute('ui-depth', `${depth}`);
@@ -121,6 +123,13 @@ const dom = {
 		 */
 		if(type === RowTypes.spacer) {
 			row.classList.add(CSS_UI.spacer.baseClass);
+		}
+
+		/**
+		 * Create a Spacer Row
+		 */
+		if(type === RowTypes.info) {
+			row.classList.add(CSS_UI.info.baseClass);
 		}
 
 		return row;

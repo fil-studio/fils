@@ -8,6 +8,7 @@ export var RowTypes;
     RowTypes[RowTypes["item"] = 2] = "item";
     RowTypes[RowTypes["button"] = 3] = "button";
     RowTypes[RowTypes["spacer"] = 4] = "spacer";
+    RowTypes[RowTypes["info"] = 5] = "info";
 })(RowTypes || (RowTypes = {}));
 const dom = {
     createButton: (title, icon) => {
@@ -41,6 +42,8 @@ const dom = {
             domEl = 'fieldset';
         if (type === RowTypes.spacer)
             domEl = 'div';
+        if (type === RowTypes.info)
+            domEl = 'fieldset';
         const row = el(domEl);
         row.setAttribute('ui-depth', `${depth}`);
         /**
@@ -93,6 +96,12 @@ const dom = {
          */
         if (type === RowTypes.spacer) {
             row.classList.add(CSS_UI.spacer.baseClass);
+        }
+        /**
+         * Create a Spacer Row
+         */
+        if (type === RowTypes.info) {
+            row.classList.add(CSS_UI.info.baseClass);
         }
         return row;
     },

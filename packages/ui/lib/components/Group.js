@@ -3,6 +3,7 @@ import { CSS_UI } from "../partials/cssClasses";
 import { ItemFactory } from "../partials/ItemFactory";
 import { RowTypes } from "../utils/dom";
 import { Button } from "./Button";
+import { Info } from "./Info";
 import { Spacer } from "./Spacer";
 import { UIElement } from "./UIElement";
 export class Group extends UIElement {
@@ -118,6 +119,13 @@ export class Group extends UIElement {
         const spacer = new Spacer(this.depth + 1, params);
         if (spacer && spacer.el)
             this.content.appendChild(spacer.el);
+    }
+    addInfo(params = {
+        text: 'No Text'
+    }) {
+        const info = new Info(this.depth + 1, params);
+        if (info && info.el)
+            this.content.appendChild(info.el);
     }
     /**
      * Adds an item element to the parent and returns it.

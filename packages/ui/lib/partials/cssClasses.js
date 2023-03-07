@@ -52,5 +52,9 @@ export const CSS_UI = {
         optionNone: '_ui-panel-select-option-none',
         option: '_ui-panel-select-option',
         optionButton: '_ui-panel-select-option-button',
+    },
+    info: {
+        baseClass: '_ui-info',
+        text: '_ui-info-text',
     }
 };

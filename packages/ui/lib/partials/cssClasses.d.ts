@@ -53,4 +53,8 @@ export declare const CSS_UI: {
         option: string;
         optionButton: string;
     };
+    info: {
+        baseClass: string;
+        text: string;
+    };
 };
