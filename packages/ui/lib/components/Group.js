@@ -168,7 +168,7 @@ export class Group extends UIElement {
         }
     }
     addCustomUIElement(element, params) {
-        const customElement = new element(this.depth + 1, params);
+        const customElement = new element(params);
         if (customElement) {
             customElement.on('__childrenChange', () => {
                 this.change(customElement);
@@ -177,5 +177,6 @@ export class Group extends UIElement {
             this.content.appendChild(customElement.el);
             this.children.push(customElement);
         }
+        return customElement;
     }
 }

@@ -1,4 +1,4 @@
-import { UI } from "../main";
+import { CustomUIElement, UI } from "../main";
 import { EventsManager } from "../partials/EventsManager";
 import { Button } from "./Button";
 import { InfoParams } from "./Info";
@@ -82,5 +82,5 @@ export declare class Group extends UIElement {
     addItem(object: Object, key: string, params?: ItemParameters): Item;
     change(target: EventsManager): void;
     refresh(): void;
-    addCustomUIElement(element: typeof UIElement, params: any): void;
+    addCustomUIElement(element: typeof CustomUIElement, params: Object): CustomUIElement;
 }

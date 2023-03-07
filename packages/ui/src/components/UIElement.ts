@@ -2,11 +2,11 @@ import { EventsManager } from "../partials/EventsManager";
 import dom, { RowTypes } from "../utils/dom";
 
 export class UIElement extends EventsManager {
-	protected depth!: number;
+	protected depth: number;
 
 	el: HTMLElement;
 
-	type!: RowTypes;
+	type: RowTypes;
 	title: string;
 
 

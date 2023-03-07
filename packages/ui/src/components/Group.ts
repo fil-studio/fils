@@ -1,5 +1,5 @@
 import { el } from "@fils/utils";
-import { UI } from "../main";
+import { CustomUIElement, UI } from "../main";
 import { CSS_UI } from "../partials/cssClasses";
 import { EventsManager } from "../partials/EventsManager";
 import { CreateItemParams, ItemFactory } from "../partials/ItemFactory";
@@ -229,8 +229,9 @@ export class Group extends UIElement {
 		}
 	}
 
-	addCustomUIElement(element:typeof UIElement, params:any){
-		const customElement = new element(this.depth + 1, params);
+	addCustomUIElement(element:typeof CustomUIElement, params:Object):CustomUIElement{
+
+		const customElement = new element(params) as CustomUIElement;
 		if (customElement) {
 			customElement.on('__childrenChange', () => {
 				this.change(customElement as EventsManager);
@@ -241,6 +242,8 @@ export class Group extends UIElement {
 
 			this.children.push(customElement);
 		}
+
+		return customElement as CustomUIElement;
 	}
 
 }

@@ -2,9 +2,9 @@ import { RowTypes } from "../main";
 import { UIElement } from "./UIElement";
 
 export class CustomUIElement extends UIElement {
-	params: any;
+	params: Object;
 
-	constructor(params: any) {
+	constructor(params: Object) {
 		super(RowTypes.custom);
 		this.params = params;
 	}
