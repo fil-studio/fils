@@ -12,15 +12,14 @@
 	cursor: pointer;
 }
 
-._ui-panel-select-search {
-	position: sticky;
-	top: 0;
-	border-bottom: 2px solid var(--section-bg-0);
-}
 
 ._ui-panel-select-option {
 	text-align: left;
 	border-radius: var(--radius-0);
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	min-height: 40px;
 
 	&._ui--active {
 		border: 1px solid var(--accent-color);
@@ -32,5 +31,15 @@
 		p {
 			color: var(--white);
 		}
+	}
+}
+
+._ui-panel-select-option-button {
+	position: sticky;
+	top: 0;
+	border-bottom: 2px solid var(--section-bg-0);
+
+	svg {
+		margin-right: 5px;
 	}
 }

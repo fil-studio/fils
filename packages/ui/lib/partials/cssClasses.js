@@ -47,4 +47,10 @@ export const CSS_UI = {
     panel: {
         baseClass: '_ui-panel',
     },
+    select: {
+        panel: '_ui-panel-select',
+        optionNone: '_ui-panel-select-option-none',
+        option: '_ui-panel-select-option',
+        optionButton: '_ui-panel-select-option-button',
+    }
 };

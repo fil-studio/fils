@@ -6,7 +6,6 @@
 	transition: var(--duration) var(--timing);
 	margin-top: var(--animation-space);
 
-	&:active,
 	&._ui--active {
 		background-color: var(--accent-color);
 		color: var(--white);

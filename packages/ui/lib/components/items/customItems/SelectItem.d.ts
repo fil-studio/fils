@@ -2,6 +2,7 @@ import { ItemPanel, Panel } from '../../Panel';
 import { SelectItemParameters } from '../ItemParameters';
 export declare class SelectPanel extends Panel {
     parent: SelectItem;
+    enableSearch: boolean;
     search: HTMLElement;
     searchInput: HTMLInputElement;
     optionNone: HTMLElement;

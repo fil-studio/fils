@@ -2,7 +2,6 @@ import { uiDownarrowHlt } from '@fils/ui-icons';
 import { el, isNull, isUndefined } from '@fils/utils';
 import { CSS_UI } from '../../../partials/cssClasses';
 import { ItemPanel, Panel } from '../../Panel';
-import { Item } from '../Item';
 import { SelectItemParameters } from '../ItemParameters';
 
 const c = {
@@ -11,15 +10,13 @@ const c = {
 	label: '_ui-select-label',
 	open: '_ui-select-open',
 
-	panel: '_ui-panel-select',
-	option: '_ui-panel-select-option',
 	search: '_ui-panel-select-search',
-	optionNone: '_ui-panel-select-option-none',
 	searchInput: '_ui-panel-select-search-input',
 };
 export class SelectPanel extends Panel {
 	parent: SelectItem;
 
+	enableSearch: boolean = false;
 	search: HTMLElement = el('div');
 	searchInput: HTMLInputElement = el('input') as HTMLInputElement;
 	optionNone: HTMLElement = el('div');
@@ -51,7 +48,7 @@ export class SelectPanel extends Panel {
 		this.options = Object.keys(parentContent).map((key) => {
 
 			// Create option
-			const div = el('div', c.option);
+			const div = el('div', CSS_UI.select.option);
 			const p = el('p');
 			p.innerHTML = key;
 			div.appendChild(p);
@@ -79,12 +76,14 @@ export class SelectPanel extends Panel {
 
 	createPanelContent(): void {
 
+		if(this.enableSearch) this.createSearch();
+
 		this.sortOptions();
 
-		this.el.classList.add(c.panel);
+		this.el.classList.add(CSS_UI.select.panel);
 
 		// Empty options message
-		this.optionNone = el('div', c.optionNone);
+		this.optionNone = el('div', CSS_UI.select.optionNone);
 		const p = el('p');
 		p.innerHTML = 'No options found';
 		this.optionNone.appendChild(p);
@@ -92,6 +91,7 @@ export class SelectPanel extends Panel {
 		if(this.options.length > 0) this.optionNone.classList.add(CSS_UI.utility.hidden);
 
 		setTimeout(() => this.searchInput.focus(), 10);
+
 
 	}
 
@@ -114,6 +114,7 @@ export class SelectPanel extends Panel {
 	createSearch(): void {
 
 		this.search = el('div', c.search, this.el);
+		this.search.classList.add(CSS_UI.select.optionButton);
 		this.searchInput = el('input', c.searchInput ) as HTMLInputElement;
 		this.searchInput.placeholder = 'Search';
 		this.searchInput.type = 'text';

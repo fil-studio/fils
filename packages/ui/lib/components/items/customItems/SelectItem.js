@@ -7,15 +7,13 @@ const c = {
     input: '_ui-select-input',
     label: '_ui-select-label',
     open: '_ui-select-open',
-    panel: '_ui-panel-select',
-    option: '_ui-panel-select-option',
     search: '_ui-panel-select-search',
-    optionNone: '_ui-panel-select-option-none',
     searchInput: '_ui-panel-select-search-input',
 };
 export class SelectPanel extends Panel {
     constructor() {
         super(...arguments);
+        this.enableSearch = false;
         this.search = el('div');
         this.searchInput = el('input');
         this.optionNone = el('div');
@@ -38,7 +36,7 @@ export class SelectPanel extends Panel {
         const parentContent = this.parent.params.options;
         this.options = Object.keys(parentContent).map((key) => {
             // Create option
-            const div = el('div', c.option);
+            const div = el('div', CSS_UI.select.option);
             const p = el('p');
             p.innerHTML = key;
             div.appendChild(p);
@@ -60,10 +58,12 @@ export class SelectPanel extends Panel {
         });
     }
     createPanelContent() {
+        if (this.enableSearch)
+            this.createSearch();
         this.sortOptions();
-        this.el.classList.add(c.panel);
+        this.el.classList.add(CSS_UI.select.panel);
         // Empty options message
-        this.optionNone = el('div', c.optionNone);
+        this.optionNone = el('div', CSS_UI.select.optionNone);
         const p = el('p');
         p.innerHTML = 'No options found';
         this.optionNone.appendChild(p);
@@ -87,6 +87,7 @@ export class SelectPanel extends Panel {
     }
     createSearch() {
         this.search = el('div', c.search, this.el);
+        this.search.classList.add(CSS_UI.select.optionButton);
         this.searchInput = el('input', c.searchInput);
         this.searchInput.placeholder = 'Search';
         this.searchInput.type = 'text';

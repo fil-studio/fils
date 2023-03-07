@@ -23,6 +23,10 @@ export class Button extends UIElement {
 
 	protected addEventListeners(){
 		this.button.addEventListener('click', () => {
+			this.button.classList.add(CSS_UI.utility.active);
+			setTimeout(() => {
+				this.button.classList.remove(CSS_UI.utility.active);
+			}, 50);
 			this.clickCallback();
 			this.emit('__childrenChange');
 			this.emit('click');

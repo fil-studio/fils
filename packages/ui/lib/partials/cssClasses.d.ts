@@ -47,4 +47,10 @@ export declare const CSS_UI: {
     panel: {
         baseClass: string;
     };
+    select: {
+        panel: string;
+        optionNone: string;
+        option: string;
+        optionButton: string;
+    };
 };
