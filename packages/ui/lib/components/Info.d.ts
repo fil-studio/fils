@@ -1,6 +1,6 @@
 import { UIElement } from "./UIElement";
 export type InfoParams = {
-    text: string | string[];
+    text?: string | string[];
 };
 export declare class Info extends UIElement {
     params: InfoParams;

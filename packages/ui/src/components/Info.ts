@@ -4,7 +4,7 @@ import { RowTypes } from "../utils/dom";
 import { UIElement } from "./UIElement";
 
 export type InfoParams = {
-	text: string | string[];
+	text?: string | string[];
 }
 
 
