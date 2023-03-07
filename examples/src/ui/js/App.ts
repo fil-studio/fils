@@ -5,6 +5,7 @@ import { Vector3, Euler } from 'three';
 import { uiBrushData, uiAppendBlend } from '@fils/ui-icons';
 
 import { Texture, TextureLoader } from 'three';
+import { CustomElementTest } from './ExternalTest.js';
 
 /**
  * S'ha de poder crear els components manualment
@@ -52,6 +53,10 @@ export class App {
 		this.ui.on('change', () => {
 			console.log('Change');
 		});
+
+		this.ui.addCustomUIElement(CustomElementTest, {
+			title: 'Custom Element Test',
+		})
 
 		this.ui.addInfo({
 			text: 'Info text with super long text what is going on hereInfo text with super long text whatisgoing on here Info text with super long text what is going on here'

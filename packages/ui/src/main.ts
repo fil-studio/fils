@@ -6,6 +6,7 @@ export * from './components/Group';
 export * from './components/Panel';
 export * from './components/Spacer';
 export * from './components/UIElement';
+export * from './components/CustomUIElement';
 
 export * from './components/items/Item';
 export * from './components/items/ItemParameters';

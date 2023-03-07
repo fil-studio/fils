@@ -167,4 +167,15 @@ export class Group extends UIElement {
             child.refresh();
         }
     }
+    addCustomUIElement(element, params) {
+        const customElement = new element(this.depth + 1, params);
+        if (customElement) {
+            customElement.on('__childrenChange', () => {
+                this.change(customElement);
+            });
+            customElement.init(this.depth + 1);
+            this.content.appendChild(customElement.el);
+            this.children.push(customElement);
+        }
+    }
 }

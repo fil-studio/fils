@@ -16,6 +16,7 @@ export declare const CSS_UI: {
         baseClass: string;
         vertical: string;
         hasButton: string;
+        custom: string;
     };
     button: {
         baseClass: string;

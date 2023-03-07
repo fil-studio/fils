@@ -16,6 +16,7 @@ export const CSS_UI = {
         baseClass: '_ui-row',
         vertical: '_ui-row-vertical',
         hasButton: '_ui-row-has-button',
+        custom: '_ui-row-custom',
     },
     button: {
         baseClass: '_ui-button',

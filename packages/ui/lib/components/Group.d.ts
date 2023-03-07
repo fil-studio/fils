@@ -13,7 +13,7 @@ export interface GroupParams {
     foldable?: boolean;
 }
 export declare class Group extends UIElement {
-    protected children: Array<Group | Item | Button>;
+    protected children: Array<Group | Item | Button | UIElement>;
     folded: boolean;
     foldable: boolean;
     protected height: number;
@@ -82,4 +82,5 @@ export declare class Group extends UIElement {
     addItem(object: Object, key: string, params?: ItemParameters): Item;
     change(target: EventsManager): void;
     refresh(): void;
+    addCustomUIElement(element: typeof UIElement, params: any): void;
 }

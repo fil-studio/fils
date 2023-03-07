@@ -19,7 +19,7 @@ export interface GroupParams {
 	foldable?: boolean;
 }
 export class Group extends UIElement {
-	protected children: Array<Group | Item | Button > = [];
+	protected children: Array<Group | Item | Button | UIElement > = [];
 
 	folded: boolean;
 	foldable: boolean;
@@ -226,6 +226,20 @@ export class Group extends UIElement {
 		this.emit('refresh');
 		for(let child of this.children){
 			child.refresh();
+		}
+	}
+
+	addCustomUIElement(element:typeof UIElement, params:any){
+		const customElement = new element(this.depth + 1, params);
+		if (customElement) {
+			customElement.on('__childrenChange', () => {
+				this.change(customElement as EventsManager);
+			});
+
+			customElement.init(this.depth + 1)
+			this.content.appendChild(customElement.el);
+
+			this.children.push(customElement);
 		}
 	}
 
