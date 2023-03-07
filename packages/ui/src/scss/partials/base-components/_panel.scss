@@ -23,7 +23,7 @@
 	&._ui-panel-dropdown {
 		height: auto;
 		max-height: 300px;
-		overflow-y: scroll;
+		overflow-y: auto;
 	}
 
 	&._ui-panel-left,
@@ -31,7 +31,7 @@
 		width: 300px;
 		height: auto;
 		max-height: calc(100vh - 10px);
-		overflow-y: scroll;
+		overflow-y: auto;
 	}
 }
 
