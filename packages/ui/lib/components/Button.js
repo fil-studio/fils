@@ -19,8 +19,8 @@ export class Button extends UIElement {
                 this.button.classList.remove(CSS_UI.utility.active);
             }, 50);
             this.clickCallback();
-            this.emit('__childrenChange');
             this.emit('click');
+            this.emit('__childrenChange');
         });
     }
     /**

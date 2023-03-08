@@ -158,8 +158,8 @@ export class Group extends UIElement {
         return item;
     }
     change(target) {
-        this.emit('__childrenChange', target);
         this.emit('change', target);
+        this.emit('__childrenChange', target);
     }
     refresh() {
         this.emit('refresh');

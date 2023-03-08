@@ -218,8 +218,8 @@ export class Group extends UIElement {
 	}
 
  	change(target:EventsManager){
-		this.emit('__childrenChange', target);
 		this.emit('change', target);
+		this.emit('__childrenChange', target);
 	}
 
 	refresh(): void {

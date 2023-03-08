@@ -36,8 +36,8 @@ export class Item extends UIElement {
         else
             this.object[this.key] = this.value;
         if (this.value !== undefined && !this._refreshing) {
-            this.emit('__childrenChange');
             this.emit('change');
+            this.emit('__childrenChange');
         }
         this.refreshDom();
     }
