@@ -153,8 +153,6 @@ export class Panel {
 	}
 
 	refresh(): void {
-		if(!this.created) return;
-		this.destroy();
-		this.create();
+
 	}
 }

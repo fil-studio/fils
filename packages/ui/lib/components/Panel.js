@@ -102,9 +102,5 @@ export class Panel {
     onChange() {
     }
     refresh() {
-        if (!this.created)
-            return;
-        this.destroy();
-        this.create();
     }
 }
