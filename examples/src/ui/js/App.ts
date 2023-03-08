@@ -144,10 +144,6 @@ export class App {
 			"Loraaem Ipsum": "Lorem Ipsum text",
 		};
 
-		group.add(this.obj, 'testArray', {
-			title: 'Select Array',
-			options: dataArrayExample,
-		});
 
 		// group.add(this.obj, 'colorTest', {
 		// 	title: 'Color Test',
@@ -201,6 +197,10 @@ export class App {
 		});
 
 
+		group.add(this.obj, 'testArray', {
+			title: 'Select Array',
+			options: dataArrayExample,
+		});
 
 
 		const g2 = this.ui.addGroup({
