@@ -13,21 +13,31 @@ export interface ItemWithPanel extends Item {
 	panel: Panel;
 	close(): void;
 	open(): void;
+	refresh(): void;
 }
 export interface ButtonWithPanel extends Button {
 	panel: Panel;
 	close(): void;
 	open(): void;
+	refresh(): void;
 }
 export class ItemPanel extends Item implements ItemWithPanel {
 	panel: Panel;
 	close() {}
 	open() {}
+	refresh(){
+		super.refresh();
+		this.panel.refresh();
+	}
 }
 export class ButtonPanel extends Button implements ButtonWithPanel {
 	panel: Panel;
 	close() {}
 	open() {}
+	refresh(){
+		super.refresh();
+		this.panel.refresh();
+	}
 }
 export class Panel {
 	el!: HTMLElement;
@@ -140,5 +150,11 @@ export class Panel {
 	}
 
 	onChange(): void {
+	}
+
+	refresh(): void {
+		if(!this.created) return;
+		this.destroy();
+		this.create();
 	}
 }

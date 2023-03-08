@@ -10,10 +10,18 @@ const c = {
 export class ItemPanel extends Item {
     close() { }
     open() { }
+    refresh() {
+        super.refresh();
+        this.panel.refresh();
+    }
 }
 export class ButtonPanel extends Button {
     close() { }
     open() { }
+    refresh() {
+        super.refresh();
+        this.panel.refresh();
+    }
 }
 export class Panel {
     constructor(parent, dropdownFrom) {
@@ -92,5 +100,11 @@ export class Panel {
         this.created = false;
     }
     onChange() {
+    }
+    refresh() {
+        if (!this.created)
+            return;
+        this.destroy();
+        this.create();
     }
 }
