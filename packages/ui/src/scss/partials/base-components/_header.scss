@@ -11,10 +11,6 @@ header {
 
 	user-select: none;
 
-	&._ui-section-header-has-icon {
-
-	}
-
 	._ui-section-header-icon {
 		width: auto;
 		max-width: 20px;
@@ -28,4 +24,8 @@ header {
 	h3 {
 		margin: 0;
 	}
+}
+
+section:not(._ui-section-foldable) > header > ._ui-section-header-chevron {
+	display: none;
 }

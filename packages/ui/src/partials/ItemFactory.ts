@@ -1,5 +1,5 @@
+import { isBoolean, isNumber, isObject, isString, isUndefined } from "@fils/utils";
 import { ItemParameters } from "../components/items/ItemParameters";
-import check from "../utils/check";
 import AvailableItems, { AvailableItem } from "./AvailableItems";
 
 // Available items array
@@ -11,11 +11,9 @@ export interface CreateItemParams {
 }
 
 const compareArrays = (a: any[], b: any[]) => {
-	if(a.length !== b.length) return false;
 
-
-	for (const item of a) {
-		if (b.indexOf(item) === -1) {
+	for (const item of b) {
+		if (a.indexOf(item) === -1) {
 			return false;
 		}
 	}
@@ -23,31 +21,34 @@ const compareArrays = (a: any[], b: any[]) => {
 	return true;
 }
 
-export const ItemFactory = (createParams:CreateItemParams) => {
+export const ItemFactory = ({object, key, params = {}}:CreateItemParams) => {
 
-	const params = createParams.params;
-
-	if(!createParams.object) throw new Error('ItemFactory - object is required');
-	if(!createParams.key) throw new Error('ItemFactory - key is required');
+	if(!object) throw new Error('ItemFactory - object is required');
+	if(!key) throw new Error('ItemFactory - key is required');
 
 	// Force item type
-	if(params && params.view){
+	if (params && params.view){
 		const item = AvailableItems.items.find(item => item.view === params.view);
 		if(!item) throw new Error('ItemFactory - unknown view');
-		return item.create(createParams);
+		return item.create({ object, key, params });
 	}
 
-	const item = getItemByValue(createParams.object[createParams.key], createParams.params);
+	const item = getItemByValue(object[key], params);
+
 	if(item) {
-		createParams.params!.view = item.view;
-		return item.create(createParams);
+		params.view = item.view;
+		return item.create({object, key, params});
 	}
 
 }
 
 const getItemByValue = (value:any, params:any): AvailableItem | undefined => {
 
-	if(check.isObject(value)) {
+	// If options use select
+	if (!isUndefined(params.options)) return AvailableItems.items.find(item => item.view === 'select');
+
+
+	if(isObject(value)) {
 
 		let keys = Object.keys(value);
 		keys = keys.map(key => key.toLowerCase());
@@ -59,25 +60,27 @@ const getItemByValue = (value:any, params:any): AvailableItem | undefined => {
 
 		const n1 = ['x', 'y'];
 		const n2 = ['x', 'y', 'z'];
-		const n3 = ['x', 'y', 'z', 'w'];
-		if (compareArrays(keys, n1) || compareArrays(keys, n2) || compareArrays(keys, n3)) return AvailableItems.items.find(item => item.view === 'number');
+		const n3 = ['_x', '_y', '_z'];
+		const n4 = ['x', 'y', 'z', 'w'];
+
+		if (compareArrays(keys, n1) || compareArrays(keys, n2) || compareArrays(keys, n3) || compareArrays(keys, n4)) return AvailableItems.items.find(item => item.view === 'number');
 	}
 
 	// If min max or step use range
-	if (check.isNumber(value)) {
+	if (isNumber(value)) {
 		if(params){
 			if(params.min || params.max || params.step) return AvailableItems.items.find(item => item.view === 'range');
 		}
 		return AvailableItems.items.find(item => item.view === 'number');
 	}
 
-	if (check.isString(value)) {
+	if (isString(value)) {
 		if(value.substring(0,1) === '#') return AvailableItems.items.find(item => item.view === 'color');
 		if(value.substring(0,2) === '0x') return AvailableItems.items.find(item => item.view === 'color');
 		return AvailableItems.items.find(item => item.view === 'string');
 	}
 
-	if(check.isBoolean(value)) return AvailableItems.items.find(item => item.view === 'boolean');
+	if(isBoolean(value)) return AvailableItems.items.find(item => item.view === 'boolean');
 
 	return undefined;
 

@@ -1,9 +1,12 @@
+export * from './init';
+
 export * from './components/UI';
 export * from './components/Button';
 export * from './components/Group';
 export * from './components/Panel';
 export * from './components/Spacer';
 export * from './components/UIElement';
+export * from './components/CustomUIElement';
 
 export * from './components/items/Item';
 export * from './components/items/ItemParameters';
@@ -22,6 +25,5 @@ export * from './partials/ItemFactory';
 export * from './partials/RegisterBaseItems';
 export * from './partials/AvailableItems';
 
-export * from './utils/check';
 export * from './utils/css';
 export * from './utils/dom';

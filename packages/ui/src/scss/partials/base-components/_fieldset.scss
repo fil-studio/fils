@@ -2,7 +2,7 @@ fieldset {
 
 	// This needs to be using margin instead of padding for the Panels sizes
 	width: calc(100% - 0.5rem);
-	margin: var(--spacer) 0.25rem 0 0.25rem;
+	margin: var(--spacer) var(--spacer) 0 var(--spacer);
 	padding: 0;
 
 	position: relative;
@@ -22,9 +22,10 @@ fieldset {
 		padding-right: 5px;
 		flex-grow: 0;
 		flex-shrink: 0;
+		user-select: none;
 	}
 
-	> div {
+	._ui-item-content {
 		width: 66.66%;
 		display: flex;
 		justify-content: flex-end;

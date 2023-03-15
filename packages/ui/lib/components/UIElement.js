@@ -13,6 +13,13 @@ export class UIElement extends EventsManager {
         this.createContent();
         this.addEventListeners();
         this.afterCreate();
+        this.preventPropagation();
+    }
+    preventPropagation() {
+        // Prevents the propagation of the keydown event to the window
+        this.el.addEventListener('keydown', (e) => {
+            e.stopPropagation();
+        });
     }
     /**
     * Lifecycle
@@ -33,4 +40,9 @@ export class UIElement extends EventsManager {
     destroy() {
         this.el.remove();
     }
+    /**
+    * A method to refresh the item and all its children values.
+    * Use this method when you change the value of an item outside of the UI to keep it in sync.
+    */
+    refresh() { }
 }

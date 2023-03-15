@@ -2,11 +2,11 @@ import { EventsManager } from "../partials/EventsManager";
 import dom, { RowTypes } from "../utils/dom";
 
 export class UIElement extends EventsManager {
-	protected depth!: number;
+	protected depth: number;
 
-	el!: HTMLElement;
+	el: HTMLElement;
 
-	type!: RowTypes;
+	type: RowTypes;
 	title: string;
 
 
@@ -27,6 +27,15 @@ export class UIElement extends EventsManager {
 		this.addEventListeners();
 
 		this.afterCreate();
+
+		this.preventPropagation();
+	}
+
+	protected preventPropagation(){
+		// Prevents the propagation of the keydown event to the window
+		this.el.addEventListener('keydown', (e) => {
+			e.stopPropagation();
+		});
 	}
 
 	/**

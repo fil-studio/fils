@@ -1,8 +1,7 @@
 import { drawColorPickerBar, drawColorPickerSL, fixHex, hexToRgb, HSBColor, hsbToHex, rgbToHsb } from '@fils/color';
-import { el } from "@fils/utils";
+import { el, isNull, isUndefined } from "@fils/utils";
 import { CSS_UI } from '../../../main';
-import check from "../../../utils/check";
-import { Panel } from "../../Panel";
+import { ItemPanel, Panel } from "../../Panel";
 import { Item } from "../Item";
 
 const c = {
@@ -20,8 +19,11 @@ const c = {
 
 
 export class ColorPanel extends Panel {
+
 	view: HTMLElement = el('div');
 	info: HTMLElement = el('div');
+
+	parent: ItemPanel;
 
 	canvas1: HTMLCanvasElement = el('canvas') as HTMLCanvasElement;
 	canvas2: HTMLCanvasElement = el('canvas') as HTMLCanvasElement;
@@ -36,6 +38,8 @@ export class ColorPanel extends Panel {
 	dragging2: boolean = false;
 
 	createPanelContent(): void {
+
+		this.el.classList.add(`${CSS_UI.panel.baseClass}-${this.parent.view}`)
 
 		this.view = el('div', c.view, this.el);
 		this.info = el('div', c.info, this.el);
@@ -55,8 +59,6 @@ export class ColorPanel extends Panel {
 	}
 
 	addEventListeners(): void {
-
-		super.addEventListeners();
 
 		window.addEventListener('mouseup', (e: MouseEvent) => {
 			if(!this.created) return;
@@ -125,7 +127,7 @@ export class ColorPanel extends Panel {
 		drawColorPickerBar(this.canvas2);
 
 		// Todo aqui update de l'Item parent
-		this.parent!.setValue(hsbToHex(this.color));
+		this.parent.setValue(hsbToHex(this.color));
 	}
 
 	updateCanvas1(x:number, y:number): void {
@@ -157,13 +159,20 @@ export class ColorPanel extends Panel {
 
 
 }
-export class ColorItem extends Item {
+export class ColorItem extends ItemPanel {
 	input: HTMLInputElement = el('input') as HTMLInputElement;
 	colorBox: HTMLElement = el('div');
-	panel: ColorPanel | null = null;
+	panel: ColorPanel;
 
 	afterCreate(): void {
-		this.panel = new ColorPanel();
+		this.panel = new ColorPanel(this, this.content);
+	}
+
+	open(): void {
+		this.panel.create();
+	}
+	close(): void {
+		this.panel.destroy();
 	}
 
 	protected addEventListeners(): void {
@@ -173,8 +182,8 @@ export class ColorItem extends Item {
 		});
 
 		this.colorBox.addEventListener('click', () => {
-			if (!this.panel!.created) this.panel!.create(this, this.el);
-			else this.panel!.destroy();
+			if (!this.panel!.created) this.open();
+			else this.close();
 		});
 
 		window.addEventListener('keydown', (e:KeyboardEvent)=> {
@@ -199,7 +208,7 @@ export class ColorItem extends Item {
 
 	setValue(value: any): void {
 
-		if (check.isNull(value) || check.isUndefined(value) || value === '') {
+		if (isNull(value) || isUndefined(value) || value === '') {
 			value = '#FFFFFF';
 		}
 		value = fixHex(value);
@@ -217,6 +226,11 @@ export class ColorItem extends Item {
 		this.input.value = this.value;
 
 		super.refreshDom();
+	}
+
+	destroy(): void {
+		super.destroy();
+		this.panel!.destroy();
 	}
 }
 

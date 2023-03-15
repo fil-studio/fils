@@ -1,9 +1,10 @@
-import { UI } from "../main";
+import { CustomUIElement, UI } from "../main";
 import { EventsManager } from "../partials/EventsManager";
 import { Button } from "./Button";
+import { InfoParams } from "./Info";
 import { Item } from "./items/Item";
 import { ItemParameters } from "./items/ItemParameters";
-import { Spacer, SpacerParams } from "./Spacer";
+import { SpacerParams } from "./Spacer";
 import { UIElement } from "./UIElement";
 export interface GroupParams {
     parent?: Group | UI;
@@ -12,7 +13,7 @@ export interface GroupParams {
     foldable?: boolean;
 }
 export declare class Group extends UIElement {
-    protected children: Array<Group | Item | Button | Spacer>;
+    protected children: Array<Group | Item | Button | UIElement>;
     folded: boolean;
     foldable: boolean;
     protected height: number;
@@ -33,7 +34,7 @@ export declare class Group extends UIElement {
      */
     addButton(title?: string, clickCallback?: Function): Button;
     /**
-    * Creates a group.
+    * Creates a new group, adds it to the parent and returns it.
     *
     * @param {title} title - Group tab title
     * @param {folded} folded - Is the group folded or not
@@ -42,15 +43,29 @@ export declare class Group extends UIElement {
     */
     addGroup(params: GroupParams): Group;
     /**
-     * A function that does something with a widget option.
+    * @typedef {Object} SpacerOptions
+    * @property {boolean} [line=true] - If true, the spacer will have a line. Default is true.
+    * @property {'large'|'medium'|'small'} [size='medium'] - The size of the spacer. Default is 'medium'.
+    */
+    /**
+     * Adds a spacer element to the page.
      *
-     * @param {SpacerSize} option - The option to use.
-     * @param {boolean} line - If the spacer should be a line or not
-     * @default true
+     * @param {SpacerOptions} [options] - The options for the spacer.
+     * @property {boolean} [line=true] - If true, the spacer will have a line. Default is true.
+     * @property {'large'|'medium'|'small'} [size='medium'] - The size of the spacer. Default is 'medium'.
+     * @returns {void}
+     * @example
+     *
+     * // Adds a spacer with default options
+     * addSpacer();
+     *
+     * // Adds a spacer with a line and a size of 'large'
+     * addSpacer({ line: true, size: 'large' });
      */
     addSpacer(params?: SpacerParams): void;
+    addInfo(params?: InfoParams): void;
     /**
-     * A function that creates an Item.
+     * Adds an item element to the parent and returns it.
      *
      * @param {title} title - Item title.
      * @param {view} view - Force item view. If not specified, it will be automatically detected.
@@ -58,7 +73,7 @@ export declare class Group extends UIElement {
      */
     add(object: Object, key: string, params?: ItemParameters): Item;
     /**
-    * A function that creates an Item.
+    * Adds an item element to the parent and returns it.
     *
     * @param {title} title - Item title.
     * @param {view} view - Force item view. If not specified, it will be automatically detected.
@@ -66,4 +81,6 @@ export declare class Group extends UIElement {
     */
     addItem(object: Object, key: string, params?: ItemParameters): Item;
     change(target: EventsManager): void;
+    refresh(): void;
+    addCustomUIElement(element: typeof CustomUIElement, params: Object): CustomUIElement;
 }

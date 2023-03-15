@@ -1,5 +1,4 @@
-import { el } from "@fils/utils";
-import check from "../../../utils/check";
+import { el, getType, isArray, isNumber, isObject } from "@fils/utils";
 import { uiDownarrowHlt } from '@fils/ui-icons';
 import { CSS_UI } from "../../../partials/cssClasses";
 import { Item } from "../Item";
@@ -36,51 +35,61 @@ export class NumberItem extends Item {
     }
     addEventListeners() {
         for (const inputElement of this.inputElements) {
-            inputElement.input.valueAsNumber = inputElement.value;
             inputElement.input.addEventListener('change', () => {
-                inputElement.value = inputElement.input.valueAsNumber;
-                inputElement.value = this.limitNumber(inputElement.value);
-                inputElement.input.valueAsNumber = inputElement.value;
+                let val = inputElement.input.valueAsNumber;
+                val = isNaN(val) ? 0 : val;
+                inputElement.value = val;
                 this.setValue();
             });
             inputElement.buttonIncrease.addEventListener('click', () => {
                 inputElement.value += this.step;
-                inputElement.value = this.limitNumber(inputElement.value);
-                inputElement.input.valueAsNumber = inputElement.value;
                 this.setValue();
             });
             inputElement.buttonDecrease.addEventListener('click', () => {
                 inputElement.value -= this.step;
-                inputElement.value = this.limitNumber(inputElement.value);
-                inputElement.input.valueAsNumber = inputElement.value;
                 this.setValue();
             });
         }
     }
     setValue(_value) {
-        // Only first setValue will have a value
-        if (_value)
-            this.originalDataType = check.getType(_value);
+        // If value is not set, update this value to the current value
+        if (_value) {
+            this.originalDataType = getType(_value);
+            super.setValue(_value);
+            return;
+        }
         // Update this value to the current value
-        let inputsValue = [];
-        for (const inputElement of this.inputElements)
-            inputsValue.push(inputElement.value);
-        this.value = inputsValue;
-        // Translate from array to the original data type
-        let valueForOutput = null;
-        if (this.originalDataType === 'number')
-            valueForOutput = inputsValue[0];
-        else if (this.originalDataType === 'array')
-            valueForOutput = inputsValue;
-        else if (this.originalDataType === 'object') {
-            valueForOutput = {};
-            let i = 0;
-            for (const key in this.object[this.key]) {
-                valueForOutput[key] = inputsValue[i];
+        const valueForOutput = this.convertArrayToOriginal();
+        super.setValue(valueForOutput);
+    }
+    refreshDom() {
+        const values = this.convertOriginalToArray();
+        for (let i = 0; i < this.inputElements.length; i++) {
+            this.inputElements[i].value = values[i];
+            this.inputElements[i].input.valueAsNumber = this.limitNumber(values[i]);
+        }
+    }
+    createInputs(value) {
+        this.inputElements = [];
+        // If value is a number, create one input
+        if (isNumber(value))
+            this.inputElements.push(this.createInput(value));
+        // If value is an array, create one input for each item
+        else if (isArray(value)) {
+            for (const item of value) {
+                this.inputElements.push(this.createInput(item));
             }
         }
-        this.object[this.key] = valueForOutput;
-        this.refreshDom();
+        // If value is an object, create one input for each key
+        else if (isObject(value)) {
+            for (const key in value) {
+                if (!isNumber(value[key]))
+                    continue;
+                const item = this.createInput(value[key]);
+                item.placeholder = key;
+                this.inputElements.push(item);
+            }
+        }
     }
     createInput(value) {
         const inputElement = {
@@ -91,27 +100,8 @@ export class NumberItem extends Item {
             buttonIncrease: null,
             buttonDecrease: null
         };
+        this.createInputContent(inputElement);
         return inputElement;
-    }
-    createInputs(value) {
-        this.inputElements = [];
-        // If value is a number, create one input
-        if (check.isNumber(value))
-            this.inputElements.push(this.createInput(value));
-        // If value is an array, create one input for each item
-        else if (check.isArray(value)) {
-            for (const item of value) {
-                this.inputElements.push(this.createInput(item));
-            }
-        }
-        // If value is an object, create one input for each key
-        else if (check.isObject(value)) {
-            for (const key in value) {
-                const item = this.createInput(value[key]);
-                item.placeholder = key;
-                this.inputElements.push(item);
-            }
-        }
     }
     createInputContent(inputElement) {
         // Create wrapper
@@ -150,8 +140,43 @@ export class NumberItem extends Item {
         this.min = this.params.min ? this.params.min : null;
         this.step = this.params.step ? this.params.step : this.step;
         this.createInputs(this.object[this.key]);
-        for (const inputElement of this.inputElements) {
-            this.createInputContent(inputElement);
+    }
+    convertOriginalToArray() {
+        switch (this.originalDataType) {
+            case 'number':
+                return [this.object[this.key]];
+            case 'array':
+                return this.object[this.key];
+            case 'object':
+                const values = [];
+                for (const key in this.object[this.key]) {
+                    if (!isNumber(this.object[this.key][key]))
+                        continue;
+                    values.push(this.object[this.key][key]);
+                }
+                return values;
         }
+    }
+    convertArrayToOriginal() {
+        let inputsValue = [];
+        for (const inputElement of this.inputElements)
+            inputsValue.push(inputElement.value);
+        // Translate from array to the original data type
+        let valueForOutput = null;
+        if (this.originalDataType === 'number')
+            valueForOutput = inputsValue[0];
+        else if (this.originalDataType === 'array')
+            valueForOutput = inputsValue;
+        else if (this.originalDataType === 'object') {
+            valueForOutput = {};
+            let i = 0;
+            for (const key in this.object[this.key]) {
+                if (!isNumber(this.object[this.key][key]))
+                    continue;
+                valueForOutput[key] = inputsValue[i];
+                i++;
+            }
+        }
+        return valueForOutput;
     }
 }

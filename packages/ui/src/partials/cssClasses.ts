@@ -4,6 +4,7 @@ export const CSS_UI = {
 	parent: '_ui-wrapper-has-parent',
 	resizer: '_ui-wrapper-resizer',
 	item: '_ui-item',
+	content: '_ui-item-content',
 	utility: {
 		hidden: '_ui--hidden',
 		grab: '_ui--grab',
@@ -15,6 +16,7 @@ export const CSS_UI = {
 		baseClass: '_ui-row',
 		vertical: '_ui-row-vertical',
 		hasButton: '_ui-row-has-button',
+		custom: '_ui-row-custom',
 	},
 	button: {
 		baseClass: '_ui-button',
@@ -27,6 +29,7 @@ export const CSS_UI = {
 			baseClass: '_ui-section-header',
 			hasIcon: '_ui-section-header-has-icon',
 			icon: '_ui-section-header-icon',
+			chevron: '_ui-section-header-chevron',
 		},
 		content: '_ui-section-content',
 		foldable: '_ui-section-foldable',
@@ -45,4 +48,16 @@ export const CSS_UI = {
 	panel: {
 		baseClass: '_ui-panel',
 	},
+
+	select: {
+		panel: '_ui-panel-select',
+		optionNone: '_ui-panel-select-option-none',
+		option: '_ui-panel-select-option',
+		optionButton: '_ui-panel-select-option-button',
+	},
+
+	info: {
+		baseClass: '_ui-info',
+		text: '_ui-info-text',
+	}
 };

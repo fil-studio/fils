@@ -1,19 +1,19 @@
 // Import CSS
 import { el } from '@fils/utils';
-import { InitUI } from '../init';
+import { EventsManager, InitUI } from '../main';
 import { CSS_UI } from '../partials/cssClasses';
 import dom, { RowTypes } from '../utils/dom';
 import { Group, GroupParams } from './Group';
 
-interface UIParams extends GroupParams {
+export interface UIParams extends GroupParams {
 	parentElement?: HTMLElement;
 	resizable?: boolean;
 	icon?: string;
 	width?: number;
 }
 
-// Injects styles and registers base components
 InitUI();
+
 export class UI extends Group {
 	wrapper: HTMLElement = el('div');
 
@@ -55,15 +55,15 @@ export class UI extends Group {
 	}
 
 	createDom(): void {
-		super.createDom();
 
 		this.wrapper = dom.createRow({
 			type: RowTypes.ui,
 			depth: this.depth,
 		})
 
-		this.wrapper.appendChild(this.el);
+		super.createDom();
 
+		this.wrapper.appendChild(this.el);
 	}
 
 	protected addEventListeners(){
@@ -113,4 +113,27 @@ export class UI extends Group {
 
 	}
 
+	/**
+	* @typedef {'resize'| EventType } UIEventType
+	*
+	* @description Available event types:
+	* - change: Triggered when the value of the item or one of its children changes.
+	* - resize: Triggered when the UI is resized.
+	*
+	* @param {UIEventType} eventType - The type of event to listen for.
+	* @param {Function} callback - The callback function to call when the event occurs.
+	* @returns {void}
+	*/
+	on(event: string, callback: Function): void {
+		super.on(event, callback);
+	}
+
+	change(target: EventsManager): void {
+		super.change(target);
+	}
+
+	destroy(): void {
+		super.destroy();
+		this.wrapper.remove();
+	}
 }

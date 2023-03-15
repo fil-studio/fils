@@ -6,9 +6,6 @@ import { Item } from '../Item';
 export class UploadItem extends Item {
     constructor() {
         super(...arguments);
-        this.params = {
-            text: '',
-        };
         this.buttonTitle = '';
         this.uploadButton = el('div');
         this.removeUploadButton = el('div');
@@ -36,9 +33,11 @@ export class UploadItem extends Item {
     createContent() {
         this.buttonTitle = this.params.text ? this.params.text : this.title;
         this.uploadButton = dom.createButton(this.buttonTitle, this.params.icon);
+        this.uploadButton.classList.add(CSS_UI.item);
         this.content.appendChild(this.uploadButton);
         this.removeUploadButton = dom.createButton('', uiRemove);
-        this.removeUploadButton.classList.add(`${CSS_UI.utility.hidden}`);
+        this.removeUploadButton.classList.add(CSS_UI.utility.hidden);
+        this.removeUploadButton.classList.add(CSS_UI.item);
         this.content.appendChild(this.removeUploadButton);
         this.el.classList.add(CSS_UI.row.vertical);
         this.input = document.createElement('input');

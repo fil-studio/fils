@@ -1,9 +1,11 @@
 // import { UI } from '@fils/ui';
 import { UI } from '../../../../packages/ui/src/main.js';
 
-import { uiBrushData } from '@fils/ui-icons';
+import { Vector3, Euler } from 'three';
+import { uiBrushData, uiAppendBlend } from '@fils/ui-icons';
 
 import { Texture, TextureLoader } from 'three';
+import { CustomElementTest } from './ExternalTest.js';
 
 /**
  * S'ha de poder crear els components manualment
@@ -11,6 +13,7 @@ import { Texture, TextureLoader } from 'three';
  * S'ha de poder exportar els valors actuals dels components a un JSON
  */
 
+const VectorTest = new Euler();
 export class App {
 	ui: UI;
 	obj: any;
@@ -24,11 +27,12 @@ export class App {
 			// numberTest: [1,2],
 			// numberTest: [1, 2, 3, 4],
 			numberTest: {
-				x: 1,
+				x: 0.00002020201012003023,
 				y: 2,
 				z: 3,
 				w: 5
 			},
+			position: VectorTest,
 			uploadTest: null,
 			numberTestSlider: 0,
 			numberTestFloat: 0.5,
@@ -40,50 +44,62 @@ export class App {
 		}
 
 
-		const loader = new TextureLoader();
-
-		let loaded = 0;
-		for(let i = 0; i <= 10; i++) {
-			loader.load('../assets/texture-test.png', (texture:Texture) => {
-				texture.name = `Texture ${i}`;
-
-				this.obj.textures.push(texture);
-				loaded++;
-				if(loaded === 10) this.createUI();
-			});
-		}
-
-	}
-
-	createUI() {
-
 		this.ui = new UI({
 			title: 'UI',
 			icon: uiBrushData,
+			foldable: false
 			// parentElement: document.querySelector('.parent-example') as HTMLElement,
+		})
+		this.ui.on('change', () => {
+			console.log('Change');
 		});
 
-		window.addEventListener('keydown', (e) => {
-			if(e.key === 'Escape') this.ui.foldToggle();
+		this.ui.addCustomUIElement(CustomElementTest, {
+			title: 'Custom Element Test',
+		})
+
+		this.ui.addInfo({
+			text: 'Info text with super long text what is going on hereInfo text with super long text whatisgoing on here Info text with super long text what is going on here'
+		});
+
+		this.ui.addInfo({
+			text: [
+				'Info text with super long text what is going on here',
+				'Info text with super long text what is going on here Info text with super long text what is going on here Info text with super long text what is going on here Info text with super long text what is going on here',
+				'Info text with super long text what is going on here',
+			]
 		});
 
 		const group = this.ui.addGroup({
 			title: 'Group Test',
 		});
 
-		this.ui.on('change', (target) => {
+		group.add(this.obj, 'position').on('change', () => {
+			console.log('Position Change', this.obj.position);
 		});
 
-		this.ui.addButton('Hello', () => {
+		group.addInfo({
+			text: 'Info text with super /n long text what is going on hereInfo text with super long text whatisgoing on here Info text with super long text what is going on here'
+		});
+
+
+
+		const b = this.ui.addButton('Hello', () => {
 			console.log('Hello');
 
 			this.obj.stringTest = 'Hello Refresh';
 
 			this.obj.booleanTest = !this.obj.booleanTest;
 
+			this.obj.testArray = "test text";
+
+			this.obj.numberTest.x = 10;
+
+			this.obj.position.x = 10;
+			this.obj.position.y -= 5;
+
 			setTimeout(() => {
 				console.log('Refresh');
-
 				this.ui.refresh();
 			}, 1000);
 
@@ -128,29 +144,26 @@ export class App {
 			"Loraaem Ipsum": "Lorem Ipsum text",
 		};
 
-		group.add(this.obj, 'testArray', {
-			title: 'Select Array',
-			view: 'select',
-			options: dataArrayExample,
-		});
 
 		// group.add(this.obj, 'colorTest', {
 		// 	title: 'Color Test',
 		// 	view: 'color'
 		// });
-		// group.add(this.obj, 'colorTest', {
-		// 	title: 'COLOR',
-		// 	view: 'color'
-		// });
+		group.add(this.obj, 'colorTest', {
+			title: 'COLOR',
+			view: 'color'
+		});
 
-		// group.add(this.obj, 'uploadTest', {
-		// 	title: 'Upload Button',
-		// 	text: 'Upload',
-		// 	icon: uiAppendBlend,
-		// 	view: 'upload'
-		// });
+		group.add(this.obj, 'uploadTest', {
+			title: 'title string',
+			text: 'text string',
+			icon: uiAppendBlend,
+			view: 'upload'
+		});
 
-		group.addSpacer();
+		group.addSpacer({
+
+		});
 
 		group.add(this.obj, 'booleanTest', {
 			title: 'Boolean Test',
@@ -164,9 +177,10 @@ export class App {
 
 		group.addSpacer();
 
-		group.add(this.obj, 'numberTest', {
+		const o = group.add(this.obj, 'numberTest', {
 			title: 'Number Test',
-		});
+		})
+
 
 
 		group.addSpacer();
@@ -183,6 +197,10 @@ export class App {
 		});
 
 
+		group.add(this.obj, 'testArray', {
+			title: 'Select Array',
+			options: dataArrayExample,
+		});
 
 
 		const g2 = this.ui.addGroup({
@@ -199,17 +217,17 @@ export class App {
 			folded: true
 		});
 
-		g4.add(this.obj, 'booleanTest', {
-			title: 'Boolean Test',
-		});
+		// g4.add(this.obj, 'booleanTest', {
+		// 	title: 'Boolean Test',
+		// });
 
-		g4.addItem(this.obj, 'stringTest', {
-			title: 'String Test',
-		});
+		// g4.addItem(this.obj, 'stringTest', {
+		// 	title: 'String Test',
+		// });
 
-		g4.add(this.obj, 'numberTest', {
-			title: 'Number Test',
-		});
+		// g4.add(this.obj, 'numberTest', {
+		// 	title: 'Number Test',
+		// });
 
 		g4.addButton('Button Test g4').on('click', () => {
 			console.log('Button Test g4');
@@ -218,6 +236,8 @@ export class App {
 		g2.addButton('Button Test g2').on('click', () => {
 			console.log('Button Test g2');
 		});
+
+
 
 		// console.log('UI', this.ui);
 	}

@@ -1,13 +1,14 @@
 import { el } from "@fils/utils";
-import { UI } from "../main";
+import { CustomUIElement, UI } from "../main";
 import { CSS_UI } from "../partials/cssClasses";
 import { EventsManager } from "../partials/EventsManager";
 import { CreateItemParams, ItemFactory } from "../partials/ItemFactory";
 import { RowTypes } from "../utils/dom";
 import { Button } from "./Button";
+import { Info, InfoParams } from "./Info";
 import { Item } from "./items/Item";
 import { ItemParameters } from "./items/ItemParameters";
-import { Spacer, SpacerParams, SpacerSize } from "./Spacer";
+import { Spacer, SpacerParams } from "./Spacer";
 import { UIElement } from "./UIElement";
 
 export interface GroupParams {
@@ -18,7 +19,7 @@ export interface GroupParams {
 	foldable?: boolean;
 }
 export class Group extends UIElement {
-	protected children: Array<Group | Item > = [];
+	protected children: Array<Group | Item | Button | UIElement > = [];
 
 	folded: boolean;
 	foldable: boolean;
@@ -49,14 +50,11 @@ export class Group extends UIElement {
 	}
 
 	protected addEventListeners(){
+		if (!this.foldable) return;
 
-		if(!this.foldable) return;
-
-		this.el.classList.add(CSS_UI.section.foldable);
-
-		this.foldWrapper = el('div', CSS_UI.section.foldableElement);
-		this.el.appendChild(this.foldWrapper);
+		this.foldWrapper = el('div', CSS_UI.section.foldableElement, this.el);
 		this.foldWrapper.appendChild(this.content);
+		this.el.classList.add(CSS_UI.section.foldable);
 
 		const header = this.el.querySelector('header') as HTMLElement;
 
@@ -111,13 +109,19 @@ export class Group extends UIElement {
 		if (button) {
 			button.init(this.depth + 1);
 			this.content.appendChild(button.el);
+
+			button.on('__childrenChange', () => {
+				this.change(button as EventsManager);
+			});
+
+			this.children.push(button);
 		}
 
 		return button;
 	}
 
 	/**
-	* Creates a group.
+	* Creates a new group, adds it to the parent and returns it.
 	*
 	* @param {title} title - Group tab title
 	* @param {folded} folded - Is the group folded or not
@@ -129,9 +133,9 @@ export class Group extends UIElement {
 
 		if (group) {
 
-			group.on('__childrenChange', (target:any) => {
+			group.on('__childrenChange', (target: any) => {
 				this.change(target as EventsManager);
-			})
+			});
 
 			group.init(this.depth + 1);
 			this.content.appendChild(group.el);
@@ -143,19 +147,40 @@ export class Group extends UIElement {
 	}
 
 	/**
-	 * A function that does something with a widget option.
+	* @typedef {Object} SpacerOptions
+	* @property {boolean} [line=true] - If true, the spacer will have a line. Default is true.
+	* @property {'large'|'medium'|'small'} [size='medium'] - The size of the spacer. Default is 'medium'.
+	*/
+
+	/**
+	 * Adds a spacer element to the page.
 	 *
-	 * @param {SpacerSize} option - The option to use.
-	 * @param {boolean} line - If the spacer should be a line or not
-	 * @default true
+	 * @param {SpacerOptions} [options] - The options for the spacer.
+	 * @property {boolean} [line=true] - If true, the spacer will have a line. Default is true.
+	 * @property {'large'|'medium'|'small'} [size='medium'] - The size of the spacer. Default is 'medium'.
+	 * @returns {void}
+	 * @example
+	 *
+	 * // Adds a spacer with default options
+	 * addSpacer();
+	 *
+	 * // Adds a spacer with a line and a size of 'large'
+	 * addSpacer({ line: true, size: 'large' });
 	 */
 	addSpacer(params:SpacerParams = {}) {
 		const spacer = new Spacer(this.depth + 1, params);
 		if(spacer && spacer.el) this.content.appendChild(spacer.el);
 	}
 
+	addInfo(params:InfoParams = {
+		text: 'No Text'
+	}){
+		const info = new Info(this.depth + 1, params);
+		if(info && info.el) this.content.appendChild(info.el);
+	}
+
 	/**
-	 * A function that creates an Item.
+	 * Adds an item element to the parent and returns it.
 	 *
 	 * @param {title} title - Item title.
 	 * @param {view} view - Force item view. If not specified, it will be automatically detected.
@@ -165,7 +190,7 @@ export class Group extends UIElement {
 		return this.addItem(object, key, params);
 	}
 	/**
-	* A function that creates an Item.
+	* Adds an item element to the parent and returns it.
 	*
 	* @param {title} title - Item title.
 	* @param {view} view - Force item view. If not specified, it will be automatically detected.
@@ -178,9 +203,10 @@ export class Group extends UIElement {
 		const item = ItemFactory(createItemParams);
 
 		if (item){
+
 			item.on('__childrenChange', () => {
 				this.change(item as EventsManager);
-			})
+			});
 
 			item.init(this.depth + 1)
 			this.content.appendChild(item.el);
@@ -188,19 +214,36 @@ export class Group extends UIElement {
 			this.children.push(item);
 		}
 
-
 		return item as Item;
 	}
 
  	change(target:EventsManager){
-		this.emit('__childrenChange', target)
 		this.emit('change', target);
+		this.emit('__childrenChange', target);
 	}
 
 	refresh(): void {
+		this.emit('refresh');
 		for(let child of this.children){
 			child.refresh();
 		}
+	}
+
+	addCustomUIElement(element:typeof CustomUIElement, params:Object):CustomUIElement{
+
+		const customElement = new element(params) as CustomUIElement;
+		if (customElement) {
+			customElement.on('__childrenChange', () => {
+				this.change(customElement as EventsManager);
+			});
+
+			customElement.init(this.depth + 1)
+			this.content.appendChild(customElement.el);
+
+			this.children.push(customElement);
+		}
+
+		return customElement as CustomUIElement;
 	}
 
 }

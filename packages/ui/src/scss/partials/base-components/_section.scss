@@ -12,15 +12,10 @@ section {
 		--section-bg-1: var(--bg-1);
 	}
 
-	// It's just like a flag to tell the user is going too deep for it to make anys fucking sense
-	[ui-depth="12"]{
-		--section-bg-0: red;
-		--section-bg-1: green;
-	}
-
 	position: relative;
 	width: 100%;
 	height: auto;
+	overflow: hidden;
 
 	border-radius: var(--radius-1);
 

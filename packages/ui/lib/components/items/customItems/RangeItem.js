@@ -1,7 +1,6 @@
 import { MathUtils } from "@fils/math";
-import { el } from "@fils/utils";
+import { el, isArray } from "@fils/utils";
 import { CSS_UI } from "../../../partials/cssClasses";
-import check from "../../../utils/check";
 import { Item } from "../Item";
 const c = {
     type: 'range',
@@ -121,7 +120,7 @@ export class RangeItem extends Item {
     setUpOverExpose() {
         const overExpose = this.params.overExpose || [0, 0];
         let limits = [0, 0];
-        if (!check.isArray(overExpose))
+        if (!isArray(overExpose))
             limits = [overExpose, overExpose];
         else
             limits = overExpose;

@@ -1,15 +1,42 @@
+import { Button } from "./Button";
 import { Item } from "./items/Item";
+export interface ItemWithPanel extends Item {
+    panel: Panel;
+    close(): void;
+    open(): void;
+    refresh(): void;
+}
+export interface ButtonWithPanel extends Button {
+    panel: Panel;
+    close(): void;
+    open(): void;
+    refresh(): void;
+}
+export declare class ItemPanel extends Item implements ItemWithPanel {
+    panel: Panel;
+    close(): void;
+    open(): void;
+    refresh(): void;
+}
+export declare class ButtonPanel extends Button implements ButtonWithPanel {
+    panel: Panel;
+    close(): void;
+    open(): void;
+    refresh(): void;
+}
 export declare class Panel {
     el: HTMLElement;
-    appendTo: HTMLElement;
-    parent: Item | null;
+    dropdownFrom: HTMLElement;
+    parent: ItemPanel | ButtonPanel;
     created: boolean;
-    constructor();
+    uiWrapper: HTMLElement;
+    spacing: number;
+    constructor(parent: ItemPanel | ButtonPanel, dropdownFrom?: HTMLElement);
     addEventListeners(): void;
-    positionPanel(): void;
     createPanelContent(): void;
-    create(parent: Item, appendTo?: HTMLElement): void;
+    positionPanel(): void;
+    create(): void;
     destroy(): void;
-    onResize(): void;
     onChange(): void;
+    refresh(): void;
 }

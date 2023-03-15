@@ -1,9 +1,7 @@
 import { drawColorPickerBar, drawColorPickerSL, fixHex, hexToRgb, hsbToHex, rgbToHsb } from '@fils/color';
-import { el } from "@fils/utils";
+import { el, isNull, isUndefined } from "@fils/utils";
 import { CSS_UI } from '../../../main';
-import check from "../../../utils/check";
-import { Panel } from "../../Panel";
-import { Item } from "../Item";
+import { ItemPanel, Panel } from "../../Panel";
 const c = {
     type: 'color',
     input: '_ui-color-input',
@@ -29,6 +27,7 @@ export class ColorPanel extends Panel {
         this.dragging2 = false;
     }
     createPanelContent() {
+        this.el.classList.add(`${CSS_UI.panel.baseClass}-${this.parent.view}`);
         this.view = el('div', c.view, this.el);
         this.info = el('div', c.info, this.el);
         this.target = el('div', c.target, this.view);
@@ -42,7 +41,6 @@ export class ColorPanel extends Panel {
         setTimeout(() => this.reverseUpdate(), 10);
     }
     addEventListeners() {
-        super.addEventListeners();
         window.addEventListener('mouseup', (e) => {
             var _a;
             if (!this.created)
@@ -124,15 +122,20 @@ export class ColorPanel extends Panel {
         this.update();
     }
 }
-export class ColorItem extends Item {
+export class ColorItem extends ItemPanel {
     constructor() {
         super(...arguments);
         this.input = el('input');
         this.colorBox = el('div');
-        this.panel = null;
     }
     afterCreate() {
-        this.panel = new ColorPanel();
+        this.panel = new ColorPanel(this, this.content);
+    }
+    open() {
+        this.panel.create();
+    }
+    close() {
+        this.panel.destroy();
     }
     addEventListeners() {
         this.input.addEventListener('change', () => {
@@ -140,9 +143,9 @@ export class ColorItem extends Item {
         });
         this.colorBox.addEventListener('click', () => {
             if (!this.panel.created)
-                this.panel.create(this, this.el);
+                this.open();
             else
-                this.panel.destroy();
+                this.close();
         });
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Enter')
@@ -160,7 +163,7 @@ export class ColorItem extends Item {
         this.content.appendChild(this.input);
     }
     setValue(value) {
-        if (check.isNull(value) || check.isUndefined(value) || value === '') {
+        if (isNull(value) || isUndefined(value) || value === '') {
             value = '#FFFFFF';
         }
         value = fixHex(value);
@@ -173,5 +176,9 @@ export class ColorItem extends Item {
         this.colorBox.style.setProperty('--active-color', this.value);
         this.input.value = this.value;
         super.refreshDom();
+    }
+    destroy() {
+        super.destroy();
+        this.panel.destroy();
     }
 }

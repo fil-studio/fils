@@ -7,6 +7,8 @@ export declare class Item extends UIElement {
     protected key: keyof Object;
     value: any;
     params: ItemParameters;
+    view: string;
+    protected _refreshing: boolean;
     constructor(params: CreateItemParams);
     init(depth?: number): void;
     setValue(value: any): void;
@@ -15,4 +17,5 @@ export declare class Item extends UIElement {
      */
     protected createDom(): void;
     refreshDom(): void;
+    refresh(): void;
 }

@@ -3,7 +3,9 @@ export declare enum RowTypes {
     group = 1,
     item = 2,
     button = 3,
-    spacer = 4
+    spacer = 4,
+    info = 5,
+    custom = 6
 }
 interface DomOptions {
     type: RowTypes;

@@ -4,6 +4,7 @@ export declare const CSS_UI: {
     parent: string;
     resizer: string;
     item: string;
+    content: string;
     utility: {
         hidden: string;
         grab: string;
@@ -15,6 +16,7 @@ export declare const CSS_UI: {
         baseClass: string;
         vertical: string;
         hasButton: string;
+        custom: string;
     };
     button: {
         baseClass: string;
@@ -27,6 +29,7 @@ export declare const CSS_UI: {
             baseClass: string;
             hasIcon: string;
             icon: string;
+            chevron: string;
         };
         content: string;
         foldable: string;
@@ -44,5 +47,15 @@ export declare const CSS_UI: {
     };
     panel: {
         baseClass: string;
+    };
+    select: {
+        panel: string;
+        optionNone: string;
+        option: string;
+        optionButton: string;
+    };
+    info: {
+        baseClass: string;
+        text: string;
     };
 };

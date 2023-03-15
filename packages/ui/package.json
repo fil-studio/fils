@@ -1,8 +1,9 @@
 {
 	"name": "@fils/ui",
-	"version": "0.0.39",
+	"version": "0.0.113",
 	"description": "Fil Studio UI library written in TypeScript",
 	"main": "lib/main.js",
+	"module": "lib/main.js",
 	"repository": "git@github.com:fil-studio/fils.git",
 	"homepage": "https://github.com/fil-studio/fils/tree/main/packages/ui",
 	"author": "fil studio <hello@fil.studio>",
@@ -25,6 +26,6 @@
 		"@fils/color": "^0.0.9",
 		"@fils/math": "^0.0.8",
 		"@fils/ui-icons": "^0.0.12",
-		"@fils/utils": "^0.0.8"
+		"@fils/utils": "^0.0.13"
 	}
 }

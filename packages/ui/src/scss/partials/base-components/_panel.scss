@@ -1,25 +1,36 @@
 ._ui-panel {
-	z-index: $panelsIndex;
-	position: fixed;
+	z-index: var(--ui-panels-index);
+	position: absolute;
 	height: auto;
-	background-color: var(--section-bg-1);
-	color: var(--color-1);
 	border-radius: var(--radius-0);
-	margin-top:var(--spacer);
-	overflow: hidden;
+
+	width: 100%;
+	top: 100%;
 
 	opacity: 0;
-	transform: translate3d(0%, 10px, 0);
 
 	&._ui--loaded {
-		transition-property: opacity, transform;
+		transition-property: opacity;
 		transition-duration: var(--duration);
 		transition-timing-function: var(--timing);
 	}
 
 	&._ui--active {
 		opacity: 1;
-		transform: translate3d(0%, 0%, 0);
+	}
+
+	&._ui-panel-dropdown {
+		height: auto;
+		max-height: 300px;
+		overflow-y: auto;
+	}
+
+	&._ui-panel-left,
+	&._ui-panel-right {
+		width: 300px;
+		height: auto;
+		max-height: calc(100vh - 10px);
+		overflow-y: auto;
 	}
 }
 

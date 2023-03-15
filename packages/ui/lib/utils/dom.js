@@ -1,5 +1,5 @@
-import { el } from "@fils/utils";
 import { uiTriaDown } from '@fils/ui-icons';
+import { el, isUndefined } from "@fils/utils";
 import { CSS_UI } from "../partials/cssClasses";
 export var RowTypes;
 (function (RowTypes) {
@@ -8,6 +8,8 @@ export var RowTypes;
     RowTypes[RowTypes["item"] = 2] = "item";
     RowTypes[RowTypes["button"] = 3] = "button";
     RowTypes[RowTypes["spacer"] = 4] = "spacer";
+    RowTypes[RowTypes["info"] = 5] = "info";
+    RowTypes[RowTypes["custom"] = 6] = "custom";
 })(RowTypes || (RowTypes = {}));
 const dom = {
     createButton: (title, icon) => {
@@ -41,6 +43,10 @@ const dom = {
             domEl = 'fieldset';
         if (type === RowTypes.spacer)
             domEl = 'div';
+        if (type === RowTypes.info)
+            domEl = 'fieldset';
+        if (type === RowTypes.custom)
+            domEl = 'fieldset';
         const row = el(domEl);
         row.setAttribute('ui-depth', `${depth}`);
         /**
@@ -75,7 +81,7 @@ const dom = {
                 h4.title = title;
                 row.appendChild(h4);
             }
-            const contentWrapper = el('div');
+            const contentWrapper = el('div', CSS_UI.content);
             row.appendChild(contentWrapper);
         }
         /**
@@ -94,12 +100,32 @@ const dom = {
         if (type === RowTypes.spacer) {
             row.classList.add(CSS_UI.spacer.baseClass);
         }
+        /**
+         * Create a Spacer Row
+         */
+        if (type === RowTypes.info) {
+            row.classList.add(CSS_UI.info.baseClass);
+        }
+        /**
+         * Create a Spacer Row
+         */
+        if (type === RowTypes.custom) {
+            row.classList.add(CSS_UI.row.custom);
+        }
         return row;
     },
     addIcon: (header, icon) => {
         const iconClass = CSS_UI.section.header.icon;
         const iconWrapper = header.querySelector(`.${iconClass}`) ? header.querySelector(`.${iconClass}`) : el('div', iconClass);
-        iconWrapper.innerHTML = icon ? icon : uiTriaDown;
+        if (isUndefined(icon)) {
+            iconWrapper.classList.add(CSS_UI.section.header.chevron);
+            icon = uiTriaDown;
+        }
+        else {
+            // Handles UI with icon but foldable false
+            iconWrapper.classList.remove(CSS_UI.section.header.chevron);
+        }
+        iconWrapper.innerHTML = icon;
         header.prepend(iconWrapper);
     },
 };

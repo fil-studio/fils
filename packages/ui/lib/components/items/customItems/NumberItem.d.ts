@@ -11,6 +11,8 @@ export declare class NumberItem extends Item {
     limitNumber: (value: number) => number;
     protected addEventListeners(): void;
     setValue(_value?: string | Array<number> | Object): void;
+    refreshDom(): void;
+    protected createInputs(value: number | number[] | Object): void;
     protected createInput(value: number): {
         value: number;
         placeholder: string;
@@ -19,7 +21,8 @@ export declare class NumberItem extends Item {
         buttonIncrease: any;
         buttonDecrease: any;
     };
-    protected createInputs(value: number | number[] | Object): void;
     protected createInputContent(inputElement: any): void;
     protected createContent(): void;
+    convertOriginalToArray(): any;
+    convertArrayToOriginal(): any;
 }
