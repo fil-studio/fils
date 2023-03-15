@@ -22,6 +22,14 @@ export class io {
             if (r.status == 200 && callback != undefined)
                 callback(r.response);
         };
+        r.onerror = () => {
+            if (errorCallback) {
+                errorCallback({
+                    status: "UNKNOWN",
+                    response: ""
+                });
+            }
+        };
         r.send();
     }
     static fetchVimeo(url, callback) {
