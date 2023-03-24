@@ -16,3 +16,4 @@ export declare function copyToClipboard(str: string): void;
 export declare function slugify(str: string): string;
 export declare function getWorkerURL(url: string): string;
 export declare function generateUniqueId(prefix?: string): string;
+export declare function debounce(func: Function, delay?: number): () => void;

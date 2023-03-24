@@ -89,3 +89,14 @@ export function getWorkerURL(url) {
 export function generateUniqueId(prefix = '') {
     return `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 }
+// Example:
+// window.addEventListener('resize', debounce(function () {
+// 	// your code here
+// }, 250));
+export function debounce(func, delay = 250) {
+    let timerId;
+    return function () {
+        clearTimeout(timerId);
+        timerId = setTimeout(() => func.apply(this, arguments), delay);
+    };
+}
