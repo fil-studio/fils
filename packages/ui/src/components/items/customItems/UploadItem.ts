@@ -51,6 +51,7 @@ export class UploadItem extends Item {
 
 		this.buttonTitle = this.params.text ? this.params.text : this.title;
 
+
 		this.uploadButton = dom.createButton(this.buttonTitle, this.params.icon);
 		this.uploadButton.classList.add(CSS_UI.item);
 		this.content.appendChild(this.uploadButton);
@@ -65,6 +66,7 @@ export class UploadItem extends Item {
 		this.input = document.createElement('input');
 		this.input.type = 'file';
 		this.input.style.display = 'none';
+		if(this.params.accept) this.input.setAttribute('accept', this.params.accept);
 		this.input.classList.add(CSS_UI.item)
 		this.content.appendChild(this.input);
 

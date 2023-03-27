@@ -158,7 +158,8 @@ export class App {
 			title: 'title string',
 			text: 'text string',
 			icon: uiAppendBlend,
-			view: 'upload'
+			view: 'upload',
+			accept: '.png',
 		});
 
 		group.addSpacer({
