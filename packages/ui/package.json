@@ -26,6 +26,6 @@
 		"@fils/color": "^0.0.9",
 		"@fils/math": "^0.0.8",
 		"@fils/ui-icons": "^0.0.12",
-		"@fils/utils": "^0.0.13"
+		"@fils/utils": "0.0.15"
 	}
 }
