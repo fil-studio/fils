@@ -178,6 +178,10 @@ export class ColorItem extends ItemPanel {
         this.content.appendChild(this.input);
     }
     setValue(value) {
+        // Check if value starts with 0x
+        if (value.startsWith('0x')) {
+            value = value.replace('0x', '#');
+        }
         if (isNull(value) || isUndefined(value) || value === '') {
             value = '#FFFFFF';
         }
