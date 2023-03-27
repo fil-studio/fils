@@ -1,6 +1,6 @@
 {
 	"name": "@fils/utils",
-	"version": "0.0.14",
+	"version": "0.0.15",
 	"description": "Web Utils Package written in TypeScript",
 	"repository": "git@github.com:fil-studio/fils.git",
 	"homepage": "https://github.com/fil-studio/fils/tree/main/packages/utils",
