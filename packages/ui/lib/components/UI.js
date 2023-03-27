@@ -1,5 +1,5 @@
 // Import CSS
-import { el } from '@fils/utils';
+import { el, remove } from '@fils/utils';
 import { InitUI } from '../main';
 import { CSS_UI } from '../partials/cssClasses';
 import dom, { RowTypes } from '../utils/dom';
@@ -95,6 +95,6 @@ export class UI extends Group {
     }
     destroy() {
         super.destroy();
-        this.wrapper.remove();
+        remove(this.wrapper);
     }
 }

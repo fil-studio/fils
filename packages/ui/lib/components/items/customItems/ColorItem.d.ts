@@ -1,11 +1,19 @@
 import { HSBColor } from '@fils/color';
 import { ItemPanel, Panel } from "../../Panel";
+type Position = {
+    x: number;
+    y: number;
+};
 export declare class ColorPanel extends Panel {
     view: HTMLElement;
     info: HTMLElement;
     parent: ItemPanel;
     canvas1: HTMLCanvasElement;
     canvas2: HTMLCanvasElement;
+    tmpPosition: Position;
+    position: Position;
+    tmpX: number;
+    x: number;
     width: number;
     color: HSBColor;
     target: HTMLElement;
@@ -13,11 +21,12 @@ export declare class ColorPanel extends Panel {
     dragging1: boolean;
     dragging2: boolean;
     createPanelContent(): void;
+    create(): void;
     addEventListeners(): void;
     reverseUpdate(): void;
     update(): void;
-    updateCanvas1(x: number, y: number): void;
-    updateCanvas2(x: number): void;
+    updateCanvas1(): void;
+    updateCanvas2(): void;
 }
 export declare class ColorItem extends ItemPanel {
     input: HTMLInputElement;
@@ -32,3 +41,4 @@ export declare class ColorItem extends ItemPanel {
     refreshDom(): void;
     destroy(): void;
 }
+export {};

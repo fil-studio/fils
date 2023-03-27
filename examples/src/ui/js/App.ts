@@ -50,9 +50,9 @@ export class App {
 			foldable: false
 			// parentElement: document.querySelector('.parent-example') as HTMLElement,
 		})
-		this.ui.on('change', () => {
-			console.log('Change');
-		});
+		// this.ui.on('change', () => {
+		// 	console.log('Change');
+		// });
 
 		this.ui.addCustomUIElement(CustomElementTest, {
 			title: 'Custom Element Test',

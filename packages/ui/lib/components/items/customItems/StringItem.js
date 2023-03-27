@@ -1,4 +1,4 @@
-import { el, isNull, isUndefined } from "@fils/utils";
+import { el, isNull, isUndefined, remove } from "@fils/utils";
 import { CSS_UI } from "../../../main";
 import { Item } from "../Item";
 export class StringItem extends Item {
@@ -27,5 +27,9 @@ export class StringItem extends Item {
     refreshDom() {
         this.input.value = this.value;
         super.refreshDom();
+    }
+    destroy() {
+        remove(this.input);
+        super.destroy();
     }
 }

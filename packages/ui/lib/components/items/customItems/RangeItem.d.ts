@@ -19,4 +19,5 @@ export declare class RangeItem extends Item {
     protected updateInput(): void;
     setValue(value: any): void;
     refreshDom(): void;
+    destroy(): void;
 }

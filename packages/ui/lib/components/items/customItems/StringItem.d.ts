@@ -5,4 +5,5 @@ export declare class StringItem extends Item {
     protected createContent(): void;
     setValue(value: string): void;
     refreshDom(): void;
+    destroy(): void;
 }

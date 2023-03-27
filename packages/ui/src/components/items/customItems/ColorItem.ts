@@ -1,6 +1,6 @@
 import { drawColorPickerBar, drawColorPickerSL, fixHex, hexToRgb, HSBColor, hsbToHex, rgbToHsb } from '@fils/color';
 import { MathUtils, Vec } from '@fils/math';
-import { el, isNull, isUndefined } from "@fils/utils";
+import { el, isNull, isUndefined, remove } from "@fils/utils";
 import { CSS_UI } from '../../../main';
 import { ItemPanel, Panel } from "../../Panel";
 import { Item } from "../Item";
@@ -83,6 +83,12 @@ export class ColorPanel extends Panel {
 		raf();
 	}
 
+	create(): void {
+		super.create();
+		setTimeout(() => this.reverseUpdate(), 10);
+	}
+
+
 	addEventListeners(): void {
 
 		window.addEventListener('mouseup', (e: MouseEvent) => {
@@ -149,7 +155,6 @@ export class ColorPanel extends Panel {
 		drawColorPickerSL(this.canvas1, this.color.h);
 		drawColorPickerBar(this.canvas2);
 
-		// Todo aqui update de l'Item parent
 		this.parent.setValue(hsbToHex(this.color));
 	}
 
@@ -159,14 +164,11 @@ export class ColorPanel extends Panel {
 		const x = Math.min(Math.max(this.position.x - r.left, 0), this.width);
 		const y = Math.min(Math.max(this.position.y - r.top, 0), this.width);
 
-		console.log(x, y);
+		this.color.s = Math.round(100 * x / this.width);
+		this.color.b = 100 - Math.round(100 * y / this.width);
 
-
-		// this.color.s = Math.round(100 * x / this.width);
-		// this.color.b = 100 - Math.round(100 * y / this.width);
-
-		this.target.style.left = `${x}px`;
-		this.target.style.top = `${y}px`;
+		this.target.style.left = `${MathUtils.map(x, 0, this.width, 0, 100)}%`;
+		this.target.style.top = `${MathUtils.map(y, 0, this.width, 0, 100)}%`;
 
 		this.update();
 	}
@@ -238,10 +240,6 @@ export class ColorItem extends ItemPanel {
 			value = '#FFFFFF';
 		}
 		value = fixHex(value);
-
-		if(this.panel!.created){
-			this.panel!.reverseUpdate();
-		}
 
 		super.setValue(value);
 	}

@@ -1,5 +1,5 @@
 import { MathUtils } from "@fils/math";
-import { el, isArray } from "@fils/utils";
+import { el, isArray, remove } from "@fils/utils";
 import { CSS_UI } from "../../../partials/cssClasses";
 import { Item } from "../Item";
 const c = {
@@ -147,5 +147,10 @@ export class RangeItem extends Item {
         this.updateInput();
         this.updateRange();
         super.refreshDom();
+    }
+    destroy() {
+        remove(this.input);
+        remove(this.range);
+        super.destroy();
     }
 }

@@ -1,4 +1,4 @@
-import { el, isNull } from "@fils/utils";
+import { el, isNull, remove } from "@fils/utils";
 import { CSS_UI } from "../partials/cssClasses";
 import { Button } from "./Button";
 import { Item } from "./items/Item";
@@ -96,7 +96,7 @@ export class Panel {
     destroy() {
         if (!this.created)
             return;
-        this.el.remove();
+        remove(this.el);
         this.created = false;
     }
     onChange() {

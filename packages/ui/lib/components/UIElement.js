@@ -1,3 +1,4 @@
+import { remove } from "@fils/utils";
 import { EventsManager } from "../partials/EventsManager";
 import dom from "../utils/dom";
 export class UIElement extends EventsManager {
@@ -38,7 +39,7 @@ export class UIElement extends EventsManager {
     createContent() { }
     addEventListeners() { }
     destroy() {
-        this.el.remove();
+        remove(this.el);
     }
     /**
     * A method to refresh the item and all its children values.

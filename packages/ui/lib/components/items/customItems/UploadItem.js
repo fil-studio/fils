@@ -1,4 +1,4 @@
-import { el } from '@fils/utils';
+import { el, remove } from '@fils/utils';
 import { uiRemove } from '@fils/ui-icons';
 import { CSS_UI } from "../../../partials/cssClasses";
 import dom from "../../../utils/dom";
@@ -29,6 +29,12 @@ export class UploadItem extends Item {
             this.uploadButton.classList.remove(`${CSS_UI.utility.hidden}`);
             this.setValue(null);
         });
+    }
+    destroy() {
+        remove(this.input);
+        remove(this.uploadButton);
+        remove(this.removeUploadButton);
+        super.destroy();
     }
     createContent() {
         this.buttonTitle = this.params.text ? this.params.text : this.title;

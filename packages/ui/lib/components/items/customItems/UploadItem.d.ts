@@ -7,5 +7,6 @@ export declare class UploadItem extends Item {
     protected removeUploadButton: HTMLElement;
     protected input: HTMLInputElement;
     protected addEventListeners(): void;
+    destroy(): void;
     protected createContent(): void;
 }
