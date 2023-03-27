@@ -10,6 +10,19 @@ export function el(type, className, parent) {
         parent.appendChild(e);
     return e;
 }
+export function remove(el) {
+    removeListeners(el);
+    el.remove();
+}
+export function removeListeners(el) {
+    const eventListeners = Object.keys(el.__events || {});
+    Object.keys(eventListeners).forEach(eventType => {
+        eventListeners[eventType].forEach(listener => {
+            el.removeEventListener(eventType, listener);
+        });
+    });
+    delete el.__events;
+}
 export function webgl2() {
     var canvas = document.createElement("canvas");
     // Get WebGLRenderingContext from canvas element.
@@ -87,7 +100,7 @@ export function getWorkerURL(url) {
     return URL.createObjectURL(new Blob([content], { type: "text/javascript" }));
 }
 export function generateUniqueId(prefix = '') {
-    return `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `${prefix}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 }
 // Example:
 // window.addEventListener('resize', debounce(function () {

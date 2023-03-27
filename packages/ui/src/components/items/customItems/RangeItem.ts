@@ -1,5 +1,5 @@
 import { MathUtils } from "@fils/math";
-import { el, isArray } from "@fils/utils";
+import { el, isArray, remove } from "@fils/utils";
 import { CSS_UI } from "../../../partials/cssClasses";
 import { Item } from "../Item";
 import { RangeItemParameters } from "../ItemParameters";
@@ -187,4 +187,9 @@ export class RangeItem extends Item {
 		super.refreshDom();
 	}
 
+	destroy(): void {
+		remove(this.input);
+		remove(this.range);
+		super.destroy();
+	}
 }

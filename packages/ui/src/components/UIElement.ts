@@ -1,3 +1,4 @@
+import { remove } from "@fils/utils";
 import { EventsManager } from "../partials/EventsManager";
 import dom, { RowTypes } from "../utils/dom";
 
@@ -60,7 +61,7 @@ export class UIElement extends EventsManager {
 	protected addEventListeners(): void {}
 
 	destroy(){
-		this.el.remove();
+		remove(this.el);
 	}
 
 	/**

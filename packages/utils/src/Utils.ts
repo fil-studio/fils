@@ -11,6 +11,23 @@ export function el (type:string, className?:string, parent?:HTMLElement):HTMLEle
 	return e;
 }
 
+export function remove(el:HTMLElement):void {
+	removeListeners(el)
+	el.remove();
+}
+
+export function removeListeners (el:any):void {
+	const eventListeners = Object.keys(el.__events || {});
+
+	Object.keys(eventListeners).forEach(eventType => {
+		eventListeners[eventType].forEach(listener => {
+			el.removeEventListener(eventType, listener);
+		});
+	});
+
+	delete(el as any).__events;
+}
+
 export function webgl2 ():boolean {
 	var canvas = document.createElement("canvas");
 	// Get WebGLRenderingContext from canvas element.

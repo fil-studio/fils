@@ -1,4 +1,4 @@
-import { el } from '@fils/utils';
+import { el, remove } from '@fils/utils';
 import { uiRemove } from '@fils/ui-icons';
 import { CSS_UI } from "../../../partials/cssClasses";
 import dom from "../../../utils/dom";
@@ -37,6 +37,13 @@ export class UploadItem extends Item {
 			this.setValue(null);
 		});
 
+	}
+
+	destroy(): void {
+		remove(this.input);
+		remove(this.uploadButton);
+		remove(this.removeUploadButton);
+		super.destroy();
 	}
 
 
