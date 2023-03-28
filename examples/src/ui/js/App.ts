@@ -58,17 +58,14 @@ export class App {
 			title: 'Custom Element Test',
 		})
 
-		this.ui.addInfo({
-			text: 'Info text with super long text what is going on hereInfo text with super long text whatisgoing on here Info text with super long text what is going on here'
-		});
+		this.ui.addInfo('Info text with super long text what is going on hereInfo text with super long text whatisgoing on here Info text with super long text what is going on here');
 
-		this.ui.addInfo({
-			text: [
+		this.ui.addInfo( [
 				'Info text with super long text what is going on here',
 				'Info text with super long text what is going on here Info text with super long text what is going on here Info text with super long text what is going on here Info text with super long text what is going on here',
 				'Info text with super long text what is going on here',
 			]
-		});
+		);
 
 		const group = this.ui.addGroup({
 			title: 'Group Test',
@@ -78,9 +75,7 @@ export class App {
 			console.log('Position Change', this.obj.position);
 		});
 
-		group.addInfo({
-			text: 'Info text with super /n long text what is going on hereInfo text with super long text whatisgoing on here Info text with super long text what is going on here'
-		});
+		group.addInfo('Info text with super /n long text what is going on hereInfo text with super long text whatisgoing on here Info text with super long text what is going on here');
 
 
 

@@ -175,12 +175,10 @@ export class Group extends UIElement {
 	/**
 	* Adds an info element to the parent and returns it.
 	*
-	* @param {title} text - Info text. String or Array of strings.
+	* @param {text} text - Info text. String or Array of strings.
 	*/
-	addInfo(params:InfoParams = {
-		text: 'No Text'
-	}){
-		const info = new Info(this.depth + 1, params);
+	addInfo(text: string | string[]){
+		const info = new Info(this.depth + 1, {text});
 		if(info && info.el) this.content.appendChild(info.el);
 	}
 

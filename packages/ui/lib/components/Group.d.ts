@@ -1,7 +1,6 @@
 import { CustomUIElement, UI } from "../main";
 import { EventsManager } from "../partials/EventsManager";
 import { Button } from "./Button";
-import { InfoParams } from "./Info";
 import { Item } from "./items/Item";
 import { ItemParameters } from "./items/ItemParameters";
 import { SpacerParams } from "./Spacer";
@@ -63,7 +62,12 @@ export declare class Group extends UIElement {
      * addSpacer({ line: true, size: 'large' });
      */
     addSpacer(params?: SpacerParams): void;
-    addInfo(params?: InfoParams): void;
+    /**
+    * Adds an info element to the parent and returns it.
+    *
+    * @param {text} text - Info text. String or Array of strings.
+    */
+    addInfo(text: string | string[]): void;
     /**
      * Adds an item element to the parent and returns it.
      *

@@ -120,10 +120,13 @@ export class Group extends UIElement {
         if (spacer && spacer.el)
             this.content.appendChild(spacer.el);
     }
-    addInfo(params = {
-        text: 'No Text'
-    }) {
-        const info = new Info(this.depth + 1, params);
+    /**
+    * Adds an info element to the parent and returns it.
+    *
+    * @param {text} text - Info text. String or Array of strings.
+    */
+    addInfo(text) {
+        const info = new Info(this.depth + 1, { text });
         if (info && info.el)
             this.content.appendChild(info.el);
     }
