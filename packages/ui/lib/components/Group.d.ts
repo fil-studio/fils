@@ -84,7 +84,8 @@ export declare class Group extends UIElement {
     * @returns {Item} The newly created item element.
     */
     addItem(object: Object, key: string, params?: ItemParameters): Item;
-    change(target: EventsManager): void;
-    refresh(): void;
     addCustomUIElement(element: typeof CustomUIElement, params: Object): CustomUIElement;
+    change(target: EventsManager): void;
+    changeComplete(target: EventsManager): void;
+    refresh(): void;
 }

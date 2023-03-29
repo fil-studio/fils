@@ -1,6 +1,8 @@
+import { debounce } from "@fils/utils";
 export class EventsManager {
     constructor() {
         this.subscribers = {};
+        this.debounce = debounce(this.emit.bind(this), 100);
     }
     /**
     * @typedef {'change'} EventType
@@ -17,12 +19,20 @@ export class EventsManager {
     on(event, callback) {
         if (!this.subscribers[event]) {
             this.subscribers[event] = [];
+            const completeEvent = event + 'Complete';
+            this.subscribers[completeEvent] = [];
+            this.subscribers[event].debounced = debounce(() => {
+                this.emit(completeEvent);
+            }, 100);
         }
         this.subscribers[event].push(callback);
     }
     emit(event, target) {
         if (this.subscribers[event]) {
             this.subscribers[event].forEach(subscriber => subscriber(target ? target : this));
+            if (this.subscribers[event].debounced) {
+                this.subscribers[event].debounced();
+            }
         }
     }
 }

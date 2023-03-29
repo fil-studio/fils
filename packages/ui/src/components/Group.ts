@@ -136,6 +136,9 @@ export class Group extends UIElement {
 			group.on('__childrenChange', (target: any) => {
 				this.change(target as EventsManager);
 			});
+			group.on('__childrenChangeComplete', (target: any) => {
+				this.changeComplete(target as EventsManager);
+			});
 
 			group.init(this.depth + 1);
 			this.content.appendChild(group.el);
@@ -210,6 +213,9 @@ export class Group extends UIElement {
 			item.on('__childrenChange', () => {
 				this.change(item as EventsManager);
 			});
+			item.on('__childrenChangeComplete', () => {
+				this.changeComplete(item as EventsManager);
+			});
 
 			item.init(this.depth + 1)
 			this.content.appendChild(item.el);
@@ -220,24 +226,15 @@ export class Group extends UIElement {
 		return item as Item;
 	}
 
- 	change(target:EventsManager){
-		this.emit('change', target);
-		this.emit('__childrenChange', target);
-	}
-
-	refresh(): void {
-		this.emit('refresh');
-		for(let child of this.children){
-			child.refresh();
-		}
-	}
-
 	addCustomUIElement(element:typeof CustomUIElement, params:Object):CustomUIElement{
 
 		const customElement = new element(params) as CustomUIElement;
 		if (customElement) {
 			customElement.on('__childrenChange', () => {
 				this.change(customElement as EventsManager);
+			});
+			customElement.on('__childrenChangeComplete', () => {
+				this.changeComplete(customElement as EventsManager);
 			});
 
 			customElement.init(this.depth + 1)
@@ -248,5 +245,22 @@ export class Group extends UIElement {
 
 		return customElement as CustomUIElement;
 	}
+
+ 	change(target:EventsManager){
+		this.emit('change', target);
+		this.emit('__childrenChange', target);
+	}
+
+	changeComplete(target:EventsManager){
+		this.emit('__childrenChangeComplete', target);
+	}
+
+	refresh(): void {
+		this.emit('refresh');
+		for(let child of this.children){
+			child.refresh();
+		}
+	}
+
 
 }

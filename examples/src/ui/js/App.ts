@@ -58,6 +58,15 @@ export class App {
 			title: 'Custom Element Test',
 		})
 
+		this.ui.on('change', () => {
+			console.log('Change');
+		});
+
+		this.ui.on('changeComplete', () => {
+			console.log('Change Complete');
+		});
+
+
 		this.ui.addInfo('Info text with super long text what is going on hereInfo text with super long text whatisgoing on here Info text with super long text what is going on here');
 
 		this.ui.addInfo( [

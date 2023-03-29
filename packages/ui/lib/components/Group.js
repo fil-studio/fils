@@ -89,6 +89,9 @@ export class Group extends UIElement {
             group.on('__childrenChange', (target) => {
                 this.change(target);
             });
+            group.on('__childrenChangeComplete', (target) => {
+                this.changeComplete(target);
+            });
             group.init(this.depth + 1);
             this.content.appendChild(group.el);
             this.children.push(group);
@@ -154,21 +157,14 @@ export class Group extends UIElement {
             item.on('__childrenChange', () => {
                 this.change(item);
             });
+            item.on('__childrenChangeComplete', () => {
+                this.changeComplete(item);
+            });
             item.init(this.depth + 1);
             this.content.appendChild(item.el);
             this.children.push(item);
         }
         return item;
-    }
-    change(target) {
-        this.emit('change', target);
-        this.emit('__childrenChange', target);
-    }
-    refresh() {
-        this.emit('refresh');
-        for (let child of this.children) {
-            child.refresh();
-        }
     }
     addCustomUIElement(element, params) {
         const customElement = new element(params);
@@ -176,10 +172,26 @@ export class Group extends UIElement {
             customElement.on('__childrenChange', () => {
                 this.change(customElement);
             });
+            customElement.on('__childrenChangeComplete', () => {
+                this.changeComplete(customElement);
+            });
             customElement.init(this.depth + 1);
             this.content.appendChild(customElement.el);
             this.children.push(customElement);
         }
         return customElement;
+    }
+    change(target) {
+        this.emit('change', target);
+        this.emit('__childrenChange', target);
+    }
+    changeComplete(target) {
+        this.emit('__childrenChangeComplete', target);
+    }
+    refresh() {
+        this.emit('refresh');
+        for (let child of this.children) {
+            child.refresh();
+        }
     }
 }

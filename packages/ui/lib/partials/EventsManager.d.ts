@@ -1,5 +1,7 @@
 export declare class EventsManager {
     protected subscribers: Object;
+    protected debounce: Function;
+    constructor();
     /**
     * @typedef {'change'} EventType
     * @typedef {'refresh'} EventType
