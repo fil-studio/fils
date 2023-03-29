@@ -10,8 +10,11 @@ export class Button extends UIElement {
 
 	view:string = 'button';
 
-	constructor(title:string = 'Button', clickCallback: Function) {
+	buttonType: string;
+
+	constructor(title:string = 'Button', clickCallback: Function, type: string) {
 		super(RowTypes.button, title);
+		this.buttonType = type;
 		this.clickCallback = clickCallback;
 	}
 
@@ -19,6 +22,10 @@ export class Button extends UIElement {
 		super.createDom();
 		this.button = this.el.querySelector('button') as HTMLButtonElement;
 		this.button.classList.add(CSS_UI.item)
+
+		if(this.buttonType === 'warning') this.button.classList.add(CSS_UI.button.warning);
+		if(this.buttonType === 'danger') this.button.classList.add(CSS_UI.button.danger);
+
 	}
 
 	protected addEventListeners(){

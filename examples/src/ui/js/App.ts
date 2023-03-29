@@ -107,7 +107,7 @@ export class App {
 				this.ui.refresh();
 			}, 1000);
 
-		});
+		}, 'danger');
 
 		// const group = this.ui;
 

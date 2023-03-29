@@ -100,11 +100,15 @@ export class Group extends UIElement {
 	 *
 	 * @param {string} title - The title to display on the button.
 	 * @default 'Button'
+	 * @param {Function} clickCallback - The callback to call when the button is clicked.
+	 * @default () => {}
+	 * @param {string} type - The type of the button. Can be 'normal', 'warning' or 'danger'.
+	 * @default 'normal'
 	 * @event click
 	 * @returns {Button} The newly created button element.
 	 */
-	addButton(title:string = 'Button', clickCallback:Function = () => {}): Button{
-		const button = new Button(title as string, clickCallback as Function);
+	addButton(title:string = 'Button', clickCallback:Function = () => {}, type:string = 'normal'): Button{
+		const button = new Button(title as string, clickCallback as Function, type);
 
 		if (button) {
 			button.init(this.depth + 1);
