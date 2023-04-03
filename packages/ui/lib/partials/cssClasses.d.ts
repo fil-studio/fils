@@ -10,7 +10,6 @@ export declare const CSS_UI: {
         grab: string;
         active: string;
         loaded: string;
-        error: string;
     };
     row: {
         baseClass: string;
@@ -22,6 +21,9 @@ export declare const CSS_UI: {
         baseClass: string;
         hasIcon: string;
         icon: string;
+        happy: string;
+        warning: string;
+        danger: string;
     };
     section: {
         baseClass: string;

@@ -23,6 +23,7 @@ export class Button extends UIElement {
 		this.button = this.el.querySelector('button') as HTMLButtonElement;
 		this.button.classList.add(CSS_UI.item)
 
+		if(this.buttonType === 'happy') this.button.classList.add(CSS_UI.button.happy);
 		if(this.buttonType === 'warning') this.button.classList.add(CSS_UI.button.warning);
 		if(this.buttonType === 'danger') this.button.classList.add(CSS_UI.button.danger);
 

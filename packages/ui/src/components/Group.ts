@@ -102,7 +102,7 @@ export class Group extends UIElement {
 	 * @default 'Button'
 	 * @param {Function} clickCallback - The callback to call when the button is clicked.
 	 * @default () => {}
-	 * @param {string} type - The type of the button. Can be 'normal', 'warning' or 'danger'.
+	 * @param {string} type - The type of the button. Can be 'normal', 'happy', 'warning' or 'danger'.
 	 * @default 'normal'
 	 * @event click
 	 * @returns {Button} The newly created button element.

@@ -1,6 +1,9 @@
 ._ui-button._ui-item {
 	--button-accent: var(--accent-color);
 
+	&._ui-button-happy {
+		--button-accent: var(--happy-color);
+	}
 	&._ui-button-warning {
 		--button-accent: var(--warning-color);
 	}

@@ -2,15 +2,22 @@ import { CSS_UI } from "../main";
 import { RowTypes } from "../utils/dom";
 import { UIElement } from "./UIElement";
 export class Button extends UIElement {
-    constructor(title = 'Button', clickCallback) {
+    constructor(title = 'Button', clickCallback, type) {
         super(RowTypes.button, title);
         this.view = 'button';
+        this.buttonType = type;
         this.clickCallback = clickCallback;
     }
     createDom() {
         super.createDom();
         this.button = this.el.querySelector('button');
         this.button.classList.add(CSS_UI.item);
+        if (this.buttonType === 'happy')
+            this.button.classList.add(CSS_UI.button.happy);
+        if (this.buttonType === 'warning')
+            this.button.classList.add(CSS_UI.button.warning);
+        if (this.buttonType === 'danger')
+            this.button.classList.add(CSS_UI.button.danger);
     }
     addEventListeners() {
         this.button.addEventListener('click', () => {

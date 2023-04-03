@@ -3,7 +3,8 @@ export declare class Button extends UIElement {
     button: HTMLButtonElement;
     clickCallback: Function;
     view: string;
-    constructor(title: string, clickCallback: Function);
+    buttonType: string;
+    constructor(title: string, clickCallback: Function, type: string);
     protected createDom(): void;
     protected addEventListeners(): void;
     /**

@@ -28,10 +28,14 @@ export declare class Group extends UIElement {
      *
      * @param {string} title - The title to display on the button.
      * @default 'Button'
+     * @param {Function} clickCallback - The callback to call when the button is clicked.
+     * @default () => {}
+     * @param {string} type - The type of the button. Can be 'normal', 'happy', 'warning' or 'danger'.
+     * @default 'normal'
      * @event click
      * @returns {Button} The newly created button element.
      */
-    addButton(title?: string, clickCallback?: Function): Button;
+    addButton(title?: string, clickCallback?: Function, type?: string): Button;
     /**
     * Creates a new group, adds it to the parent and returns it.
     *

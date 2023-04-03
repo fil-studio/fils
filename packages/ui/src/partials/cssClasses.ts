@@ -21,6 +21,7 @@ export const CSS_UI = {
 		baseClass: '_ui-button',
 		hasIcon: '_ui-button-has-icon',
 		icon: '_ui-button-icon',
+		happy: '_ui-button-happy',
 		warning: '_ui-button-warning',
 		danger: '_ui-button-danger',
 	},
