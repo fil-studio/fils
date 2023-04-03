@@ -51,8 +51,8 @@ export class UploadItem extends Item {
 
 		this.buttonTitle = this.params.text ? this.params.text : this.title;
 
-
 		this.uploadButton = dom.createButton(this.buttonTitle, this.params.icon);
+		this.uploadButton.setAttribute('tabindex', '1');
 		this.uploadButton.classList.add(CSS_UI.item);
 		this.content.appendChild(this.uploadButton);
 

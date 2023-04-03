@@ -13,6 +13,7 @@ export class StringItem extends Item {
 
 	protected createContent(): void {
 		this.input = el('input') as HTMLInputElement;
+		this.input.setAttribute('tabindex', '1');
 		this.input.placeholder = 'String';
 		this.input.type = 'text';
 		this.input.classList.add(CSS_UI.item);

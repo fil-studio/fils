@@ -226,6 +226,7 @@ export class ColorItem extends ItemPanel {
 		this.content.appendChild(this.colorBox);
 
 		this.input = el('input') as HTMLInputElement;
+		this.input.setAttribute('tabindex', '1');
 		this.input.type = 'text';
 		this.input.classList.add(c.input);
 		this.input.classList.add(CSS_UI.item)
