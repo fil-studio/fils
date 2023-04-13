@@ -47,7 +47,7 @@ export class App {
 		this.ui = new UI({
 			title: 'UI',
 			// icon: uiBrushData,
-			foldable: false
+			foldable: true
 			// parentElement: document.querySelector('.parent-example') as HTMLElement,
 		})
 		// this.ui.on('change', () => {
