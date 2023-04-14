@@ -89,6 +89,7 @@ export class SelectPanel extends Panel {
         this.search = el('div', c.search, this.el);
         this.search.classList.add(CSS_UI.select.optionButton);
         this.searchInput = el('input', c.searchInput);
+        this.searchInput.setAttribute('tabindex', '1');
         this.searchInput.placeholder = 'Search';
         this.searchInput.type = 'text';
         this.search.appendChild(this.searchInput);

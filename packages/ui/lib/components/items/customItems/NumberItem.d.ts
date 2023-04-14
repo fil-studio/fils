@@ -7,6 +7,8 @@ export declare class NumberItem extends Item {
     min: number | null;
     step: number;
     originalDataType: string;
+    isIncreasing: boolean;
+    isDecreasing: boolean;
     getDecimals(): number;
     limitNumber: (value: number) => number;
     protected addEventListeners(): void;

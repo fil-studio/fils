@@ -17,6 +17,8 @@ export class NumberItem extends Item {
         this.min = null;
         this.step = 0.01;
         this.originalDataType = 'number';
+        this.isIncreasing = false;
+        this.isDecreasing = false;
         this.limitNumber = (value) => {
             let tmp = value;
             if (this.max)
@@ -110,6 +112,7 @@ export class NumberItem extends Item {
         inputElement.input = el('input');
         ;
         inputElement.input.type = 'number';
+        inputElement.input.setAttribute('tabindex', '1');
         inputElement.input.placeholder = inputElement.placeholder;
         inputElement.input.classList.add(CSS_UI.item);
         if (this.min)
@@ -123,8 +126,10 @@ export class NumberItem extends Item {
         // Create buttons
         const btns = el('div', c.buttons);
         inputElement.buttonIncrease = el('button', c.btnIncrease);
+        inputElement.buttonIncrease.setAttribute('tabindex', '-1');
         inputElement.buttonIncrease.innerHTML = uiDownarrowHlt;
         inputElement.buttonDecrease = el('button', c.btnDecrease);
+        inputElement.buttonIncrease.setAttribute('tabindex', '-1');
         inputElement.buttonDecrease.innerHTML = uiDownarrowHlt;
         btns.appendChild(inputElement.buttonIncrease);
         btns.appendChild(inputElement.buttonDecrease);

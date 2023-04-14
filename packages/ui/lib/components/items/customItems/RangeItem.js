@@ -104,6 +104,7 @@ export class RangeItem extends Item {
 		`;
         this.input = el('input');
         this.input.type = 'number';
+        this.input.setAttribute('tabindex', '1');
         this.input.placeholder = 'Value';
         this.input.classList.add(CSS_UI.item);
         if (this.min)

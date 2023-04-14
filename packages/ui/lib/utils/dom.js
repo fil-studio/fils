@@ -107,7 +107,7 @@ const dom = {
             row.classList.add(CSS_UI.info.baseClass);
         }
         /**
-         * Create a Spacer Row
+         * Create a Spacer Rowi
          */
         if (type === RowTypes.custom) {
             row.classList.add(CSS_UI.row.custom);
