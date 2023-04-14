@@ -1,6 +1,6 @@
 {
 	"name": "@fils/ui-icons",
-	"version": "0.0.13",
+	"version": "0.0.14",
 	"description": "UI Icons Package written in TypeScript",
 	"main": "lib/main.js",
 	"module": "lib/main.js",
