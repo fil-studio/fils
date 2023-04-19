@@ -91,31 +91,12 @@ export class ColorPanel extends Panel {
 
 	addEventListeners(): void {
 
-		window.addEventListener('mouseup', (e: MouseEvent) => {
-			if(!this.created) return;
-
-			if(this.dragging1 || this.dragging2){
-				this.dragging1 = false;
-				this.dragging2 = false;
-				return;
-			}
-			const target = e.target as HTMLElement;
-			if(this.el?.contains(target)) return;
-			if(this.parent!.el.contains(target)) return;
-
-			this.destroy();
+		this.canvas1.addEventListener('mousedown', (e: MouseEvent) => {
+			this.dragging1 = true;
 		});
 
-		window.addEventListener('mousedown', (e: MouseEvent) => {
-			if(!this.created) return;
-			const t = e.target;
-			if(t === this.canvas1 || t === this.target) this.dragging1 = true;
-			if(t === this.canvas2 || t === this.dragger) this.dragging2 = true;
-
-			this.tmpPosition = { x: e.pageX, y: e.pageY };
-			this.tmpX = e.pageX;
-
-
+		this.canvas2.addEventListener('mousedown', (e: MouseEvent) => {
+			this.dragging2 = true;
 		});
 
 		window.addEventListener('mousemove', (e: MouseEvent) => {
@@ -124,6 +105,20 @@ export class ColorPanel extends Panel {
 			this.tmpPosition = { x: e.pageX, y: e.pageY };
 			this.tmpX = e.pageX;
 		});
+
+		window.addEventListener('mouseup', (e: MouseEvent) => {
+			if(!this.created) return;
+
+			this.dragging1 = false;
+			this.dragging2 = false;
+
+			const target = e.target as HTMLElement;
+			if(this.el?.contains(target)) return;
+			if(this.parent!.el.contains(target)) return;
+
+			this.destroy();
+		});
+
 	}
 
 	reverseUpdate(){
