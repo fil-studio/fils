@@ -63,32 +63,11 @@ export class ColorPanel extends Panel {
         setTimeout(() => this.reverseUpdate(), 10);
     }
     addEventListeners() {
-        window.addEventListener('mouseup', (e) => {
-            var _a;
-            if (!this.created)
-                return;
-            if (this.dragging1 || this.dragging2) {
-                this.dragging1 = false;
-                this.dragging2 = false;
-                return;
-            }
-            const target = e.target;
-            if ((_a = this.el) === null || _a === void 0 ? void 0 : _a.contains(target))
-                return;
-            if (this.parent.el.contains(target))
-                return;
-            this.destroy();
+        this.canvas1.addEventListener('mousedown', (e) => {
+            this.dragging1 = true;
         });
-        window.addEventListener('mousedown', (e) => {
-            if (!this.created)
-                return;
-            const t = e.target;
-            if (t === this.canvas1 || t === this.target)
-                this.dragging1 = true;
-            if (t === this.canvas2 || t === this.dragger)
-                this.dragging2 = true;
-            this.tmpPosition = { x: e.pageX, y: e.pageY };
-            this.tmpX = e.pageX;
+        this.canvas2.addEventListener('mousedown', (e) => {
+            this.dragging2 = true;
         });
         window.addEventListener('mousemove', (e) => {
             if (!this.created)
@@ -97,6 +76,19 @@ export class ColorPanel extends Panel {
                 return;
             this.tmpPosition = { x: e.pageX, y: e.pageY };
             this.tmpX = e.pageX;
+        });
+        window.addEventListener('mouseup', (e) => {
+            var _a;
+            if (!this.created)
+                return;
+            this.dragging1 = false;
+            this.dragging2 = false;
+            const target = e.target;
+            if ((_a = this.el) === null || _a === void 0 ? void 0 : _a.contains(target))
+                return;
+            if (this.parent.el.contains(target))
+                return;
+            this.destroy();
         });
     }
     reverseUpdate() {

@@ -20,7 +20,7 @@ export class App {
 	constructor() {
 
 		this.obj = {
-			colorTest: '0x0D5417',
+			colorTest: '#FFFFFF',
 			booleanTest: false,
 			stringTest: 'Test',
 			// numberTest: 1,
@@ -213,10 +213,6 @@ export class App {
 			folded: true
 		});
 
-		g2.on('fold', () => {
-			console.log('fold');
-		})
-
 		const g4 = g2.addGroup({
 			title: 'Subgroup Test 2',
 			folded: true
@@ -234,9 +230,11 @@ export class App {
 		// 	title: 'Number Test',
 		// });
 
-		g4.addButton('Button Test g4').on('click', () => {
+		const btn = g4.addButton('Button Test g4');
+		btn.on('click', () => {
 			console.log('Button Test g4');
 		})
+
 
 		g2.addButton('Button Test g2').on('click', () => {
 			console.log('Button Test g2');

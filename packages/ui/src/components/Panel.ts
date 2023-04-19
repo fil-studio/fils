@@ -29,6 +29,10 @@ export class ItemPanel extends Item implements ItemWithPanel {
 		super.refresh();
 		this.panel.refresh();
 	}
+	parentFold(): void {
+		super.parentFold();
+		this.close();
+	}
 }
 export class ButtonPanel extends Button implements ButtonWithPanel {
 	panel: Panel;
@@ -37,6 +41,10 @@ export class ButtonPanel extends Button implements ButtonWithPanel {
 	refresh(){
 		super.refresh();
 		this.panel.refresh();
+	}
+	parentFold(): void {
+		super.parentFold();
+		this.close();
 	}
 }
 export class Panel {

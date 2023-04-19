@@ -50,6 +50,7 @@ export class Group extends UIElement {
 	}
 
 	protected addEventListeners(){
+
 		if (!this.foldable) return;
 
 		this.foldWrapper = el('div', CSS_UI.section.foldableElement, this.el);
@@ -118,6 +119,10 @@ export class Group extends UIElement {
 				this.change(button as EventsManager);
 			});
 
+			this.on('fold', () => {
+				button.parentFold();
+			})
+
 			this.children.push(button);
 		}
 
@@ -144,6 +149,10 @@ export class Group extends UIElement {
 				this.changeComplete(target as EventsManager);
 			});
 
+			this.on('fold', () => {
+				group.parentFold();
+			})
+
 			group.init(this.depth + 1);
 			this.content.appendChild(group.el);
 
@@ -152,12 +161,6 @@ export class Group extends UIElement {
 
 		return group;
 	}
-
-	/**
-	* @typedef {Object} SpacerOptions
-	* @property {boolean} [line=true] - If true, the spacer will have a line. Default is true.
-	* @property {'large'|'medium'|'small'} [size='medium'] - The size of the spacer. Default is 'medium'.
-	*/
 
 	/**
 	 * Adds a spacer element to the page.
@@ -221,6 +224,10 @@ export class Group extends UIElement {
 				this.changeComplete(item as EventsManager);
 			});
 
+			this.on('fold', () => {
+				item.parentFold();
+			})
+
 			item.init(this.depth + 1)
 			this.content.appendChild(item.el);
 
@@ -241,6 +248,11 @@ export class Group extends UIElement {
 				this.changeComplete(customElement as EventsManager);
 			});
 
+			this.on('fold', () => {
+				customElement.parentFold();
+			})
+
+
 			customElement.init(this.depth + 1)
 			this.content.appendChild(customElement.el);
 
@@ -248,6 +260,10 @@ export class Group extends UIElement {
 		}
 
 		return customElement as CustomUIElement;
+	}
+
+	parentFold(){
+		this.emit('fold');
 	}
 
  	change(target:EventsManager){
@@ -265,6 +281,4 @@ export class Group extends UIElement {
 			child.refresh();
 		}
 	}
-
-
 }

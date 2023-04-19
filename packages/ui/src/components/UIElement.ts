@@ -55,6 +55,8 @@ export class UIElement extends EventsManager {
 
 	}
 
+	parentFold():void {}
+
 	// Populate ROW
 	protected createContent(): void {}
 
