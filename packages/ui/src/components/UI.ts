@@ -142,10 +142,6 @@ export class UI extends Group {
 		super.change(target);
 	}
 
-	resize(){
-		this.emit('resize');
-	}
-
 	destroy(): void {
 		super.destroy();
 		remove(this.wrapper);

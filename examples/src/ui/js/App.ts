@@ -54,6 +54,10 @@ export class App {
 		// 	console.log('Change');
 		// });
 
+		setTimeout(() => {
+			this.ui.resize();
+		}, 5000);
+
 		this.ui.addCustomUIElement(CustomElementTest, {
 			title: 'Custom Element Test',
 		})
@@ -239,6 +243,11 @@ export class App {
 		g2.addButton('Button Test g2').on('click', () => {
 			console.log('Button Test g2');
 		});
+
+		g2.on('resize', () => {
+			console.log('g2 resize');
+
+		})
 
 
 
