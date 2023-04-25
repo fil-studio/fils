@@ -1,6 +1,7 @@
 export const CSS_UI = {
     baseClass: '_ui',
     wrapper: '_ui-wrapper',
+    minimal: '_ui-minimal',
     parent: '_ui-wrapper-has-parent',
     resizer: '_ui-wrapper-resizer',
     item: '_ui-item',

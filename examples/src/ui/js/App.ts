@@ -1,10 +1,9 @@
 // import { UI } from '@fils/ui';
 import { UI } from '../../../../packages/ui/src/main.js';
 
-import { Vector3, Euler } from 'three';
-import { uiBrushData, uiAppendBlend } from '@fils/ui-icons';
+import { uiAppendBlend } from '@fils/ui-icons';
+import { Euler } from 'three';
 
-import { Texture, TextureLoader } from 'three';
 import { CustomElementTest } from './ExternalTest.js';
 
 /**
@@ -47,7 +46,8 @@ export class App {
 		this.ui = new UI({
 			title: 'UI',
 			// icon: uiBrushData,
-			foldable: true
+			foldable: true,
+			minimal: true
 			// parentElement: document.querySelector('.parent-example') as HTMLElement,
 		})
 		// this.ui.on('change', () => {

@@ -6,10 +6,12 @@ import dom, { RowTypes } from '../utils/dom';
 import { Group } from './Group';
 InitUI();
 export class UI extends Group {
-    constructor({ resizable = true, parentElement, icon, width } = {}) {
+    constructor({ resizable = true, parentElement, icon, width, minimal = false } = {}) {
         super(Object.assign({}, arguments[0]));
         this.wrapper = el('div');
         this.resizable = parentElement ? false : resizable;
+        this.resizable = minimal ? false : resizable;
+        this.minimal = minimal;
         this.init(0);
         this.addIcon(icon);
         this.appendTo(parentElement);
@@ -37,6 +39,9 @@ export class UI extends Group {
             depth: this.depth,
         });
         super.createDom();
+        if (this.minimal) {
+            this.wrapper.classList.add(CSS_UI.minimal);
+        }
         this.wrapper.appendChild(this.el);
     }
     addEventListeners() {
@@ -92,6 +97,9 @@ export class UI extends Group {
     }
     change(target) {
         super.change(target);
+    }
+    resize() {
+        this.emit('resize');
     }
     destroy() {
         super.destroy();

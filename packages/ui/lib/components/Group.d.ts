@@ -46,11 +46,6 @@ export declare class Group extends UIElement {
     */
     addGroup(params: GroupParams): Group;
     /**
-    * @typedef {Object} SpacerOptions
-    * @property {boolean} [line=true] - If true, the spacer will have a line. Default is true.
-    * @property {'large'|'medium'|'small'} [size='medium'] - The size of the spacer. Default is 'medium'.
-    */
-    /**
      * Adds a spacer element to the page.
      *
      * @param {SpacerOptions} [options] - The options for the spacer.
@@ -89,6 +84,7 @@ export declare class Group extends UIElement {
     */
     addItem(object: Object, key: string, params?: ItemParameters): Item;
     addCustomUIElement(element: typeof CustomUIElement, params: Object): CustomUIElement;
+    parentFold(): void;
     change(target: EventsManager): void;
     changeComplete(target: EventsManager): void;
     refresh(): void;

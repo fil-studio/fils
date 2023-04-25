@@ -17,12 +17,14 @@ export declare class ItemPanel extends Item implements ItemWithPanel {
     close(): void;
     open(): void;
     refresh(): void;
+    parentFold(): void;
 }
 export declare class ButtonPanel extends Button implements ButtonWithPanel {
     panel: Panel;
     close(): void;
     open(): void;
     refresh(): void;
+    parentFold(): void;
 }
 export declare class Panel {
     el: HTMLElement;

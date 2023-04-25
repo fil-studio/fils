@@ -75,6 +75,9 @@ export class Group extends UIElement {
             button.on('__childrenChange', () => {
                 this.change(button);
             });
+            this.on('fold', () => {
+                button.parentFold();
+            });
             this.children.push(button);
         }
         return button;
@@ -96,17 +99,15 @@ export class Group extends UIElement {
             group.on('__childrenChangeComplete', (target) => {
                 this.changeComplete(target);
             });
+            this.on('fold', () => {
+                group.parentFold();
+            });
             group.init(this.depth + 1);
             this.content.appendChild(group.el);
             this.children.push(group);
         }
         return group;
     }
-    /**
-    * @typedef {Object} SpacerOptions
-    * @property {boolean} [line=true] - If true, the spacer will have a line. Default is true.
-    * @property {'large'|'medium'|'small'} [size='medium'] - The size of the spacer. Default is 'medium'.
-    */
     /**
      * Adds a spacer element to the page.
      *
@@ -164,6 +165,9 @@ export class Group extends UIElement {
             item.on('__childrenChangeComplete', () => {
                 this.changeComplete(item);
             });
+            this.on('fold', () => {
+                item.parentFold();
+            });
             item.init(this.depth + 1);
             this.content.appendChild(item.el);
             this.children.push(item);
@@ -179,11 +183,17 @@ export class Group extends UIElement {
             customElement.on('__childrenChangeComplete', () => {
                 this.changeComplete(customElement);
             });
+            this.on('fold', () => {
+                customElement.parentFold();
+            });
             customElement.init(this.depth + 1);
             this.content.appendChild(customElement.el);
             this.children.push(customElement);
         }
         return customElement;
+    }
+    parentFold() {
+        this.emit('fold');
     }
     change(target) {
         this.emit('change', target);

@@ -14,6 +14,7 @@ export declare class UIElement extends EventsManager {
     protected beforeCreate(): void;
     protected afterCreate(): void;
     protected createDom(): void;
+    parentFold(): void;
     protected createContent(): void;
     protected addEventListeners(): void;
     destroy(): void;

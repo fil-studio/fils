@@ -14,6 +14,10 @@ export class ItemPanel extends Item {
         super.refresh();
         this.panel.refresh();
     }
+    parentFold() {
+        super.parentFold();
+        this.close();
+    }
 }
 export class ButtonPanel extends Button {
     close() { }
@@ -21,6 +25,10 @@ export class ButtonPanel extends Button {
     refresh() {
         super.refresh();
         this.panel.refresh();
+    }
+    parentFold() {
+        super.parentFold();
+        this.close();
     }
 }
 export class Panel {

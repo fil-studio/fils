@@ -10,24 +10,30 @@ export interface UIParams extends GroupParams {
 	resizable?: boolean;
 	icon?: string;
 	width?: number;
+	minimal?: boolean;
 }
 
 InitUI();
 
+
 export class UI extends Group {
 	wrapper: HTMLElement = el('div');
 
+	minimal: boolean;
 	resizable: boolean;
 
 	constructor({
 		resizable = true,
 		parentElement,
 		icon,
-		width
+		width,
+		minimal = false
 	}: UIParams = {}) {
 		super({...arguments[0] });
 
 		this.resizable = parentElement ? false : resizable;
+		this.resizable = minimal ? false : resizable;
+		this.minimal = minimal;
 
 		this.init(0);
 
@@ -62,6 +68,10 @@ export class UI extends Group {
 		})
 
 		super.createDom();
+
+		if(this.minimal){
+			this.wrapper.classList.add(CSS_UI.minimal);
+		}
 
 		this.wrapper.appendChild(this.el);
 	}
@@ -130,6 +140,10 @@ export class UI extends Group {
 
 	change(target: EventsManager): void {
 		super.change(target);
+	}
+
+	resize(){
+		this.emit('resize');
 	}
 
 	destroy(): void {

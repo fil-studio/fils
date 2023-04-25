@@ -5,11 +5,13 @@ export interface UIParams extends GroupParams {
     resizable?: boolean;
     icon?: string;
     width?: number;
+    minimal?: boolean;
 }
 export declare class UI extends Group {
     wrapper: HTMLElement;
+    minimal: boolean;
     resizable: boolean;
-    constructor({ resizable, parentElement, icon, width }?: UIParams);
+    constructor({ resizable, parentElement, icon, width, minimal }?: UIParams);
     protected appendTo(parentElement: HTMLElement): void;
     protected addIcon(icon: string): void;
     createDom(): void;
@@ -27,5 +29,6 @@ export declare class UI extends Group {
     */
     on(event: string, callback: Function): void;
     change(target: EventsManager): void;
+    resize(): void;
     destroy(): void;
 }

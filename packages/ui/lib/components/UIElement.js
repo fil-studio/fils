@@ -35,6 +35,7 @@ export class UIElement extends EventsManager {
             title: this.title,
         });
     }
+    parentFold() { }
     // Populate ROW
     createContent() { }
     addEventListeners() { }

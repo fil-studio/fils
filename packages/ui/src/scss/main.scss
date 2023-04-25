@@ -4,10 +4,16 @@
 @import "./partials/reset";
 @import "./partials/fonts";
 
-
-
 ._ui-wrapper {
 	z-index: var(--ui-index);
+
+	--wrapper-width: 300px;
+
+	position: fixed;
+	top: 5px;
+	right: 5px;
+	width: var(--wrapper-width);
+	min-width: 300px;
 
 	* {
 		&::selection {
@@ -38,18 +44,6 @@
 		}
 	}
 
-}
-
-._ui-wrapper {
-
-	--wrapper-width: 300px;
-
-	position: fixed;
-	top: 5px;
-	right: 5px;
-	width: var(--wrapper-width);
-	min-width: 300px;
-
 	&._ui-wrapper-has-parent {
 		position: relative;
 		top: unset;
@@ -65,6 +59,12 @@
 		left: 0;
 		cursor: ew-resize;
 		z-index: 1;
+	}
+
+	&._ui-minimal {
+		section[ui-depth="0"]>header {
+			display: none;
+		}
 	}
 }
 

@@ -1,6 +1,7 @@
 export declare const CSS_UI: {
     baseClass: string;
     wrapper: string;
+    minimal: string;
     parent: string;
     resizer: string;
     item: string;
