@@ -264,7 +264,6 @@ export class Group extends UIElement {
 				customElement.resize();
 			})
 
-
 			customElement.init(this.depth + 1)
 			this.content.appendChild(customElement.el);
 

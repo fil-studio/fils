@@ -2,11 +2,24 @@ import { el, isNull, remove } from "@fils/utils";
 import { CSS_UI } from "../partials/cssClasses";
 import { Button } from "./Button";
 import { Item } from "./items/Item";
+import { CustomUIElement } from "./CustomUIElement";
 const c = {
     left: "_ui-panel-left",
     right: "_ui-panel-right",
     dropdown: "_ui-panel-dropdown",
 };
+export class CustomUIElementPanel extends CustomUIElement {
+    close() { }
+    open() { }
+    refresh() {
+        super.refresh();
+        this.panel.refresh();
+    }
+    parentFold() {
+        super.parentFold();
+        this.close();
+    }
+}
 export class ItemPanel extends Item {
     close() { }
     open() { }

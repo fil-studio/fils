@@ -1,5 +1,12 @@
 import { Button } from "./Button";
 import { Item } from "./items/Item";
+import { CustomUIElement } from "./CustomUIElement";
+export interface CustomUIElementWithPanel extends CustomUIElement {
+    panel: Panel;
+    close(): void;
+    open(): void;
+    refresh(): void;
+}
 export interface ItemWithPanel extends Item {
     panel: Panel;
     close(): void;
@@ -11,6 +18,13 @@ export interface ButtonWithPanel extends Button {
     close(): void;
     open(): void;
     refresh(): void;
+}
+export declare class CustomUIElementPanel extends CustomUIElement implements CustomUIElementWithPanel {
+    panel: Panel;
+    close(): void;
+    open(): void;
+    refresh(): void;
+    parentFold(): void;
 }
 export declare class ItemPanel extends Item implements ItemWithPanel {
     panel: Panel;
