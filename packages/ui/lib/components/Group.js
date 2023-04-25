@@ -78,6 +78,9 @@ export class Group extends UIElement {
             this.on('fold', () => {
                 button.parentFold();
             });
+            this.on('resize', () => {
+                button.resize();
+            });
             this.children.push(button);
         }
         return button;
@@ -101,6 +104,9 @@ export class Group extends UIElement {
             });
             this.on('fold', () => {
                 group.parentFold();
+            });
+            this.on('resize', () => {
+                group.resize();
             });
             group.init(this.depth + 1);
             this.content.appendChild(group.el);
@@ -168,6 +174,9 @@ export class Group extends UIElement {
             this.on('fold', () => {
                 item.parentFold();
             });
+            this.on('resize', () => {
+                item.resize();
+            });
             item.init(this.depth + 1);
             this.content.appendChild(item.el);
             this.children.push(item);
@@ -186,6 +195,9 @@ export class Group extends UIElement {
             this.on('fold', () => {
                 customElement.parentFold();
             });
+            this.on('resize', () => {
+                customElement.resize();
+            });
             customElement.init(this.depth + 1);
             this.content.appendChild(customElement.el);
             this.children.push(customElement);
@@ -201,6 +213,9 @@ export class Group extends UIElement {
     }
     changeComplete(target) {
         this.emit('__childrenChangeComplete', target);
+    }
+    resize() {
+        this.emit('resize');
     }
     refresh() {
         this.emit('refresh');

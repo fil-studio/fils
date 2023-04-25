@@ -18,6 +18,7 @@ export declare class UIElement extends EventsManager {
     protected createContent(): void;
     protected addEventListeners(): void;
     destroy(): void;
+    resize(): void;
     /**
     * A method to refresh the item and all its children values.
     * Use this method when you change the value of an item outside of the UI to keep it in sync.

@@ -260,6 +260,9 @@ export class Group extends UIElement {
 			this.on('fold', () => {
 				customElement.parentFold();
 			})
+			this.on('resize', () => {
+				customElement.resize();
+			})
 
 
 			customElement.init(this.depth + 1)

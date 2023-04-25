@@ -87,5 +87,6 @@ export declare class Group extends UIElement {
     parentFold(): void;
     change(target: EventsManager): void;
     changeComplete(target: EventsManager): void;
+    resize(): void;
     refresh(): void;
 }

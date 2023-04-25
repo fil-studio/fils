@@ -29,6 +29,5 @@ export declare class UI extends Group {
     */
     on(event: string, callback: Function): void;
     change(target: EventsManager): void;
-    resize(): void;
     destroy(): void;
 }
