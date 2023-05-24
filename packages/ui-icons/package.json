@@ -1,13 +1,13 @@
 {
 	"name": "@fils/ui-icons",
-	"version": "0.0.13",
+	"version": "0.0.17",
 	"description": "UI Icons Package written in TypeScript",
 	"main": "lib/main.js",
 	"module": "lib/main.js",
-	"repository": "git@github.com:fil-sicons",
+	"repository": "git@github.com:fil-studio/fils.git",
 	"author": "fil studio <hello@fil.studio>",
-	"license": "Apactudio/fils.git",
-	"homepage": "https://github.com/fil-studio/fils/tree/main/packages/ui-he-2.0",
+	"license": "Apache-2.0",
+	"homepage": "https://github.com/fil-studio/fils/tree/main/packages/ui-icons",
 	"scripts": {
 		"prepare": "yarn build",
 		"create-icons": "node create-icons.js",

@@ -31,8 +31,8 @@
 		}
 	}
 
-	&._ui-section-folded:not([ui-depth="0"]) {
-		> header ._ui-section-header-icon {
+	&._ui-section-folded {
+		> header ._ui-section-header-chevron {
 			transform: rotate(-90deg);
 		}
 	}

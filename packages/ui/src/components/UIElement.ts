@@ -1,3 +1,4 @@
+import { remove } from "@fils/utils";
 import { EventsManager } from "../partials/EventsManager";
 import dom, { RowTypes } from "../utils/dom";
 
@@ -54,14 +55,18 @@ export class UIElement extends EventsManager {
 
 	}
 
+	parentFold():void {}
+
 	// Populate ROW
 	protected createContent(): void {}
 
 	protected addEventListeners(): void {}
 
 	destroy(){
-		this.el.remove();
+		remove(this.el);
 	}
+
+	resize(){}
 
 	/**
 	* A method to refresh the item and all its children values.

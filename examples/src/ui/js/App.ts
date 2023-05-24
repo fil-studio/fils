@@ -1,10 +1,9 @@
 // import { UI } from '@fils/ui';
 import { UI } from '../../../../packages/ui/src/main.js';
 
-import { Vector3, Euler } from 'three';
-import { uiBrushData, uiAppendBlend } from '@fils/ui-icons';
+import { uiAppendBlend } from '@fils/ui-icons';
+import { Euler } from 'three';
 
-import { Texture, TextureLoader } from 'three';
 import { CustomElementTest } from './ExternalTest.js';
 
 /**
@@ -20,7 +19,7 @@ export class App {
 	constructor() {
 
 		this.obj = {
-			colorTest: '#0D5417',
+			colorTest: '#FFFFFF',
 			booleanTest: false,
 			stringTest: 'Test',
 			// numberTest: 1,
@@ -46,29 +45,40 @@ export class App {
 
 		this.ui = new UI({
 			title: 'UI',
-			icon: uiBrushData,
-			foldable: false
+			// icon: uiBrushData,
+			foldable: true,
+			minimal: true
 			// parentElement: document.querySelector('.parent-example') as HTMLElement,
 		})
-		this.ui.on('change', () => {
-			console.log('Change');
-		});
+		// this.ui.on('change', () => {
+		// 	console.log('Change');
+		// });
+
+		setTimeout(() => {
+			this.ui.resize();
+		}, 5000);
 
 		this.ui.addCustomUIElement(CustomElementTest, {
 			title: 'Custom Element Test',
 		})
 
-		this.ui.addInfo({
-			text: 'Info text with super long text what is going on hereInfo text with super long text whatisgoing on here Info text with super long text what is going on here'
+		this.ui.on('change', () => {
+			console.log('Change');
 		});
 
-		this.ui.addInfo({
-			text: [
+		this.ui.on('changeComplete', () => {
+			console.log('Change Complete');
+		});
+
+
+		this.ui.addInfo('Info text with super long text what is going on hereInfo text with super long text whatisgoing on here Info text with super long text what is going on here');
+
+		this.ui.addInfo( [
 				'Info text with super long text what is going on here',
 				'Info text with super long text what is going on here Info text with super long text what is going on here Info text with super long text what is going on here Info text with super long text what is going on here',
 				'Info text with super long text what is going on here',
 			]
-		});
+		);
 
 		const group = this.ui.addGroup({
 			title: 'Group Test',
@@ -78,9 +88,7 @@ export class App {
 			console.log('Position Change', this.obj.position);
 		});
 
-		group.addInfo({
-			text: 'Info text with super /n long text what is going on hereInfo text with super long text whatisgoing on here Info text with super long text what is going on here'
-		});
+		group.addInfo('Info text with super /n long text what is going on hereInfo text with super long text whatisgoing on here Info text with super long text what is going on here');
 
 
 
@@ -103,7 +111,7 @@ export class App {
 				this.ui.refresh();
 			}, 1000);
 
-		});
+		}, 'happy');
 
 		// const group = this.ui;
 
@@ -158,7 +166,8 @@ export class App {
 			title: 'title string',
 			text: 'text string',
 			icon: uiAppendBlend,
-			view: 'upload'
+			view: 'upload',
+			accept: '.png',
 		});
 
 		group.addSpacer({
@@ -208,10 +217,6 @@ export class App {
 			folded: true
 		});
 
-		g2.on('fold', () => {
-			console.log('fold');
-		})
-
 		const g4 = g2.addGroup({
 			title: 'Subgroup Test 2',
 			folded: true
@@ -229,13 +234,20 @@ export class App {
 		// 	title: 'Number Test',
 		// });
 
-		g4.addButton('Button Test g4').on('click', () => {
+		const btn = g4.addButton('Button Test g4');
+		btn.on('click', () => {
 			console.log('Button Test g4');
 		})
+
 
 		g2.addButton('Button Test g2').on('click', () => {
 			console.log('Button Test g2');
 		});
+
+		g2.on('resize', () => {
+			console.log('g2 resize');
+
+		})
 
 
 

@@ -50,6 +50,7 @@ export class Group extends UIElement {
 	}
 
 	protected addEventListeners(){
+
 		if (!this.foldable) return;
 
 		this.foldWrapper = el('div', CSS_UI.section.foldableElement, this.el);
@@ -100,11 +101,15 @@ export class Group extends UIElement {
 	 *
 	 * @param {string} title - The title to display on the button.
 	 * @default 'Button'
+	 * @param {Function} clickCallback - The callback to call when the button is clicked.
+	 * @default () => {}
+	 * @param {string} type - The type of the button. Can be 'normal', 'happy', 'warning' or 'danger'.
+	 * @default 'normal'
 	 * @event click
 	 * @returns {Button} The newly created button element.
 	 */
-	addButton(title:string = 'Button', clickCallback:Function = () => {}): Button{
-		const button = new Button(title as string, clickCallback as Function);
+	addButton(title:string = 'Button', clickCallback:Function = () => {}, type:string = 'normal'): Button{
+		const button = new Button(title as string, clickCallback as Function, type);
 
 		if (button) {
 			button.init(this.depth + 1);
@@ -113,6 +118,13 @@ export class Group extends UIElement {
 			button.on('__childrenChange', () => {
 				this.change(button as EventsManager);
 			});
+
+			this.on('fold', () => {
+				button.parentFold();
+			})
+			this.on('resize', () => {
+				button.resize();
+			})
 
 			this.children.push(button);
 		}
@@ -136,6 +148,16 @@ export class Group extends UIElement {
 			group.on('__childrenChange', (target: any) => {
 				this.change(target as EventsManager);
 			});
+			group.on('__childrenChangeComplete', (target: any) => {
+				this.changeComplete(target as EventsManager);
+			});
+
+			this.on('fold', () => {
+				group.parentFold();
+			})
+			this.on('resize', () => {
+				group.resize();
+			})
 
 			group.init(this.depth + 1);
 			this.content.appendChild(group.el);
@@ -145,12 +167,6 @@ export class Group extends UIElement {
 
 		return group;
 	}
-
-	/**
-	* @typedef {Object} SpacerOptions
-	* @property {boolean} [line=true] - If true, the spacer will have a line. Default is true.
-	* @property {'large'|'medium'|'small'} [size='medium'] - The size of the spacer. Default is 'medium'.
-	*/
 
 	/**
 	 * Adds a spacer element to the page.
@@ -172,10 +188,13 @@ export class Group extends UIElement {
 		if(spacer && spacer.el) this.content.appendChild(spacer.el);
 	}
 
-	addInfo(params:InfoParams = {
-		text: 'No Text'
-	}){
-		const info = new Info(this.depth + 1, params);
+	/**
+	* Adds an info element to the parent and returns it.
+	*
+	* @param {text} text - Info text. String or Array of strings.
+	*/
+	addInfo(text: string | string[]){
+		const info = new Info(this.depth + 1, {text});
 		if(info && info.el) this.content.appendChild(info.el);
 	}
 
@@ -207,6 +226,16 @@ export class Group extends UIElement {
 			item.on('__childrenChange', () => {
 				this.change(item as EventsManager);
 			});
+			item.on('__childrenChangeComplete', () => {
+				this.changeComplete(item as EventsManager);
+			});
+
+			this.on('fold', () => {
+				item.parentFold();
+			})
+			this.on('resize', () => {
+				item.resize();
+			})
 
 			item.init(this.depth + 1)
 			this.content.appendChild(item.el);
@@ -217,18 +246,6 @@ export class Group extends UIElement {
 		return item as Item;
 	}
 
- 	change(target:EventsManager){
-		this.emit('change', target);
-		this.emit('__childrenChange', target);
-	}
-
-	refresh(): void {
-		this.emit('refresh');
-		for(let child of this.children){
-			child.refresh();
-		}
-	}
-
 	addCustomUIElement(element:typeof CustomUIElement, params:Object):CustomUIElement{
 
 		const customElement = new element(params) as CustomUIElement;
@@ -236,6 +253,16 @@ export class Group extends UIElement {
 			customElement.on('__childrenChange', () => {
 				this.change(customElement as EventsManager);
 			});
+			customElement.on('__childrenChangeComplete', () => {
+				this.changeComplete(customElement as EventsManager);
+			});
+
+			this.on('fold', () => {
+				customElement.parentFold();
+			})
+			this.on('resize', () => {
+				customElement.resize();
+			})
 
 			customElement.init(this.depth + 1)
 			this.content.appendChild(customElement.el);
@@ -246,4 +273,27 @@ export class Group extends UIElement {
 		return customElement as CustomUIElement;
 	}
 
+	parentFold(){
+		this.emit('fold');
+	}
+
+ 	change(target:EventsManager){
+		this.emit('change', target);
+		this.emit('__childrenChange', target);
+	}
+
+	changeComplete(target:EventsManager){
+		this.emit('__childrenChangeComplete', target);
+	}
+
+	resize(){
+		this.emit('resize');
+	}
+
+	refresh(): void {
+		this.emit('refresh');
+		for(let child of this.children){
+			child.refresh();
+		}
+	}
 }

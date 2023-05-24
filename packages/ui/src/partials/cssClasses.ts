@@ -1,6 +1,7 @@
 export const CSS_UI = {
 	baseClass: '_ui',
 	wrapper: '_ui-wrapper',
+	minimal: '_ui-minimal',
 	parent: '_ui-wrapper-has-parent',
 	resizer: '_ui-wrapper-resizer',
 	item: '_ui-item',
@@ -10,7 +11,6 @@ export const CSS_UI = {
 		grab: '_ui--grab',
 		active: '_ui--active',
 		loaded: '_ui--loaded',
-		error: '_ui--error',
 	},
 	row: {
 		baseClass: '_ui-row',
@@ -22,6 +22,9 @@ export const CSS_UI = {
 		baseClass: '_ui-button',
 		hasIcon: '_ui-button-has-icon',
 		icon: '_ui-button-icon',
+		happy: '_ui-button-happy',
+		warning: '_ui-button-warning',
+		danger: '_ui-button-danger',
 	},
 	section: {
 		baseClass: '_ui-section',

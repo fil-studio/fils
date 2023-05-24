@@ -27,5 +27,8 @@ header {
 }
 
 section:not(._ui-section-foldable) > header > ._ui-section-header-chevron {
-	display: none;
+	margin-right: 0.2em;
+	svg {
+		display: none;
+	}
 }

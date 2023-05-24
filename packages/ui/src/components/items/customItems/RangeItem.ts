@@ -1,5 +1,5 @@
 import { MathUtils } from "@fils/math";
-import { el, isArray } from "@fils/utils";
+import { el, isArray, remove } from "@fils/utils";
 import { CSS_UI } from "../../../partials/cssClasses";
 import { Item } from "../Item";
 import { RangeItemParameters } from "../ItemParameters";
@@ -133,6 +133,8 @@ export class RangeItem extends Item {
 
 		this.input = el('input') as HTMLInputElement;
 		this.input.type = 'number';
+		this.input.setAttribute('tabindex', '1');
+
 		this.input.placeholder = 'Value';
 		this.input.classList.add(CSS_UI.item);
 		if(this.min) this.input.setAttribute('min', this.min.toString());
@@ -187,4 +189,9 @@ export class RangeItem extends Item {
 		super.refreshDom();
 	}
 
+	destroy(): void {
+		remove(this.input);
+		remove(this.range);
+		super.destroy();
+	}
 }

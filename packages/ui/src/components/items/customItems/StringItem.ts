@@ -1,4 +1,4 @@
-import { el, isNull, isUndefined } from "@fils/utils";
+import { el, isNull, isUndefined, remove } from "@fils/utils";
 import { CSS_UI } from "../../../main";
 import { Item } from "../Item";
 
@@ -13,6 +13,7 @@ export class StringItem extends Item {
 
 	protected createContent(): void {
 		this.input = el('input') as HTMLInputElement;
+		this.input.setAttribute('tabindex', '1');
 		this.input.placeholder = 'String';
 		this.input.type = 'text';
 		this.input.classList.add(CSS_UI.item);
@@ -29,6 +30,11 @@ export class StringItem extends Item {
 	refreshDom(): void {
 		this.input.value = this.value;
 		super.refreshDom();
+	}
+
+	destroy(): void {
+		remove(this.input);
+		super.destroy();
 	}
 
 }

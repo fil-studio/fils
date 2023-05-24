@@ -11,6 +11,23 @@ export function el (type:string, className?:string, parent?:HTMLElement):HTMLEle
 	return e;
 }
 
+export function remove(el:HTMLElement):void {
+	removeListeners(el)
+	el.remove();
+}
+
+export function removeListeners (el:any):void {
+	const eventListeners = Object.keys(el.__events || {});
+
+	Object.keys(eventListeners).forEach(eventType => {
+		eventListeners[eventType].forEach(listener => {
+			el.removeEventListener(eventType, listener);
+		});
+	});
+
+	delete(el as any).__events;
+}
+
 export function webgl2 ():boolean {
 	var canvas = document.createElement("canvas");
 	// Get WebGLRenderingContext from canvas element.
@@ -102,5 +119,18 @@ export function getWorkerURL( url: string ) {
 	return URL.createObjectURL( new Blob( [ content ], { type: "text/javascript" } ) );
 }
 export function generateUniqueId(prefix:string = '') {
-	return `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+	return `${prefix}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+}
+
+// Example:
+// window.addEventListener('resize', debounce(function () {
+// 	// your code here
+// }, 250));
+
+export function debounce(func:Function, delay:number = 250) {
+	let timerId;
+	return function () {
+		clearTimeout(timerId);
+		timerId = setTimeout(() => func.apply(this, arguments), delay);
+	}
 }

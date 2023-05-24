@@ -1,13 +1,34 @@
-
 ._ui-button._ui-item {
+	--button-accent: var(--accent-color);
+
+	&._ui-button-happy {
+		--button-accent: var(--happy-color);
+	}
+	&._ui-button-warning {
+		--button-accent: var(--warning-color);
+	}
+
+	&._ui-button-danger {
+		--button-accent: var(--danger-color);
+	}
+
 	padding: 0.2rem 0.7rem;
 	justify-content: center;
+
+	border: 1px solid var(--section-bg-1);
 
 	transition: var(--duration) var(--timing);
 	margin-top: var(--animation-space);
 
+	user-select: none;
+
+	&:hover {
+		border: 1px solid var(--button-accent);
+	}
+
 	&._ui--active {
-		background-color: var(--accent-color);
+		background-color: var(--button-accent);
+		border: 1px solid var(--button-accent);
 		color: var(--white);
 		transition: 0s;
 	}
@@ -30,5 +51,4 @@
 			width: 20px;
 		}
 	}
-
 }

@@ -4,10 +4,16 @@
 @import "./partials/reset";
 @import "./partials/fonts";
 
-
-
 ._ui-wrapper {
 	z-index: var(--ui-index);
+
+	--wrapper-width: 300px;
+
+	position: fixed;
+	top: 5px;
+	right: 5px;
+	width: var(--wrapper-width);
+	min-width: 300px;
 
 	* {
 		&::selection {
@@ -21,36 +27,22 @@
 		pointer-events: none;
 	}
 
-	._ui--error {
-		box-shadow: 0px 0px 4px 0px var(--error-color);
-		transition-duration: var(--duration);
-		transition-timing-function: var(--timing);
-		transition-property: box-shadow;
-	}
-
 	._ui-item {
 		width: 100%;
 		min-height: 2rem;
 		padding: var(--padding);
 		text-align: left;
 		background-color: var(--section-bg-1);
+		border: 1px solid var(--section-bg-1);
 		border-radius: var(--radius-0);
 		display: flex;
 		align-items: center;
 		cursor: pointer;
+
+		&:focus {
+			border-color: var(--accent-color);
+		}
 	}
-
-}
-
-._ui-wrapper {
-
-	--wrapper-width: 300px;
-
-	position: fixed;
-	top: 5px;
-	right: 5px;
-	width: var(--wrapper-width);
-	min-width: 300px;
 
 	&._ui-wrapper-has-parent {
 		position: relative;
@@ -67,6 +59,12 @@
 		left: 0;
 		cursor: ew-resize;
 		z-index: 1;
+	}
+
+	&._ui-minimal {
+		section[ui-depth="0"]>header {
+			display: none;
+		}
 	}
 }
 

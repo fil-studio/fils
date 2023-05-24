@@ -1,5 +1,5 @@
 // Import CSS
-import { el } from '@fils/utils';
+import { el, remove } from '@fils/utils';
 import { EventsManager, InitUI } from '../main';
 import { CSS_UI } from '../partials/cssClasses';
 import dom, { RowTypes } from '../utils/dom';
@@ -10,24 +10,30 @@ export interface UIParams extends GroupParams {
 	resizable?: boolean;
 	icon?: string;
 	width?: number;
+	minimal?: boolean;
 }
 
 InitUI();
 
+
 export class UI extends Group {
 	wrapper: HTMLElement = el('div');
 
+	minimal: boolean;
 	resizable: boolean;
 
 	constructor({
 		resizable = true,
 		parentElement,
 		icon,
-		width
+		width,
+		minimal = false
 	}: UIParams = {}) {
 		super({...arguments[0] });
 
 		this.resizable = parentElement ? false : resizable;
+		this.resizable = minimal ? false : resizable;
+		this.minimal = minimal;
 
 		this.init(0);
 
@@ -62,6 +68,10 @@ export class UI extends Group {
 		})
 
 		super.createDom();
+
+		if(this.minimal){
+			this.wrapper.classList.add(CSS_UI.minimal);
+		}
 
 		this.wrapper.appendChild(this.el);
 	}
@@ -134,6 +144,6 @@ export class UI extends Group {
 
 	destroy(): void {
 		super.destroy();
-		this.wrapper.remove();
+		remove(this.wrapper);
 	}
 }

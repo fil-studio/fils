@@ -1,4 +1,4 @@
-import { el } from '@fils/utils';
+import { el, remove } from '@fils/utils';
 import { uiRemove } from '@fils/ui-icons';
 import { CSS_UI } from "../../../partials/cssClasses";
 import dom from "../../../utils/dom";
@@ -39,12 +39,20 @@ export class UploadItem extends Item {
 
 	}
 
+	destroy(): void {
+		remove(this.input);
+		remove(this.uploadButton);
+		remove(this.removeUploadButton);
+		super.destroy();
+	}
+
 
 	protected createContent(): void {
 
 		this.buttonTitle = this.params.text ? this.params.text : this.title;
 
 		this.uploadButton = dom.createButton(this.buttonTitle, this.params.icon);
+		this.uploadButton.setAttribute('tabindex', '1');
 		this.uploadButton.classList.add(CSS_UI.item);
 		this.content.appendChild(this.uploadButton);
 
@@ -58,6 +66,7 @@ export class UploadItem extends Item {
 		this.input = document.createElement('input');
 		this.input.type = 'file';
 		this.input.style.display = 'none';
+		if(this.params.accept) this.input.setAttribute('accept', this.params.accept);
 		this.input.classList.add(CSS_UI.item)
 		this.content.appendChild(this.input);
 

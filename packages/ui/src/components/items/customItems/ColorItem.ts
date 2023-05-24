@@ -1,5 +1,6 @@
 import { drawColorPickerBar, drawColorPickerSL, fixHex, hexToRgb, HSBColor, hsbToHex, rgbToHsb } from '@fils/color';
-import { el, isNull, isUndefined } from "@fils/utils";
+import { MathUtils, Vec } from '@fils/math';
+import { el, isNull, isUndefined, remove } from "@fils/utils";
 import { CSS_UI } from '../../../main';
 import { ItemPanel, Panel } from "../../Panel";
 import { Item } from "../Item";
@@ -17,6 +18,7 @@ const c = {
 	dragger: '_ui-color-dragger',
 };
 
+type Position = { x: number, y: number };
 
 export class ColorPanel extends Panel {
 
@@ -27,6 +29,13 @@ export class ColorPanel extends Panel {
 
 	canvas1: HTMLCanvasElement = el('canvas') as HTMLCanvasElement;
 	canvas2: HTMLCanvasElement = el('canvas') as HTMLCanvasElement;
+
+	tmpPosition: Position = { x: 0, y: 0 };
+	position: Position = { x: 0, y: 0 };
+
+	tmpX: number = 0;
+	x: number = 0;
+
 
 	width: number = 0;
 	color: HSBColor = { h: 0, s: 0, b: 0 };
@@ -54,20 +63,55 @@ export class ColorPanel extends Panel {
 		this.canvas2.width = 200;
 		this.canvas2.height = 20;
 
-		// Aixo dinamic
+		setTimeout(() => this.reverseUpdate(), 10);
+
+		const raf = () => {
+			if(!this.created) return;
+
+
+			this.width = this.view.getBoundingClientRect().width;
+
+			this.position.x = MathUtils.lerp(this.position.x, this.tmpPosition.x, 0.9);
+			this.position.y = MathUtils.lerp(this.position.y, this.tmpPosition.y, 0.9);
+			this.x = MathUtils.lerp(this.x, this.tmpX, 0.9);
+
+			if(this.dragging1) this.updateCanvas1();
+			if(this.dragging2) this.updateCanvas2();
+
+			requestAnimationFrame(raf);
+		}
+		raf();
+	}
+
+	create(): void {
+		super.create();
 		setTimeout(() => this.reverseUpdate(), 10);
 	}
 
+
 	addEventListeners(): void {
+
+		this.canvas1.addEventListener('mousedown', (e: MouseEvent) => {
+			this.dragging1 = true;
+		});
+
+		this.canvas2.addEventListener('mousedown', (e: MouseEvent) => {
+			this.dragging2 = true;
+		});
+
+		window.addEventListener('mousemove', (e: MouseEvent) => {
+			if(!this.created) return;
+			if(!this.dragging1 && !this.dragging2) return;
+			this.tmpPosition = { x: e.pageX, y: e.pageY };
+			this.tmpX = e.pageX;
+		});
 
 		window.addEventListener('mouseup', (e: MouseEvent) => {
 			if(!this.created) return;
 
-			if(this.dragging1 || this.dragging2){
-				this.dragging1 = false;
-				this.dragging2 = false;
-				return;
-			}
+			this.dragging1 = false;
+			this.dragging2 = false;
+
 			const target = e.target as HTMLElement;
 			if(this.el?.contains(target)) return;
 			if(this.parent!.el.contains(target)) return;
@@ -75,30 +119,11 @@ export class ColorPanel extends Panel {
 			this.destroy();
 		});
 
-		window.addEventListener('mousedown', (e: MouseEvent) => {
-			if(!this.created) return;
-			const t = e.target;
-			if(t === this.canvas1 || t === this.target) this.dragging1 = true;
-			if(t === this.canvas2 || t === this.dragger) this.dragging2 = true;
-
-			if(this.dragging1) this.updateCanvas1(e.pageX, e.pageY);
-			if(this.dragging2) this.updateCanvas2(e.pageX);
-		});
-
-		window.addEventListener('mousemove', (e: MouseEvent) => {
-			if(!this.created) return;
-			if(!this.dragging1 && !this.dragging2) return;
-
-			if(this.dragging1) this.updateCanvas1(e.pageX, e.pageY);
-			if(this.dragging2) this.updateCanvas2(e.pageX);
-		});
 	}
 
 	reverseUpdate(){
 
 		this.color = rgbToHsb(hexToRgb(this.parent!.value));
-
-		this.width = this.view.getBoundingClientRect().width;
 
 		let x = 0;
 		let y = 0;
@@ -121,34 +146,32 @@ export class ColorPanel extends Panel {
 	}
 
 	update(){
-		this.width = this.view.getBoundingClientRect().width;
 
 		drawColorPickerSL(this.canvas1, this.color.h);
 		drawColorPickerBar(this.canvas2);
 
-		// Todo aqui update de l'Item parent
 		this.parent.setValue(hsbToHex(this.color));
 	}
 
-	updateCanvas1(x:number, y:number): void {
+	updateCanvas1(): void {
 
 		const r = this.canvas1.getBoundingClientRect();
-		x = Math.min(Math.max(x - r.left, 0), this.width);
-		y = Math.min(Math.max(y - r.top, 0), this.width);
+		const x = Math.min(Math.max(this.position.x - r.left, 0), this.width);
+		const y = Math.min(Math.max(this.position.y - r.top, 0), this.width);
 
 		this.color.s = Math.round(100 * x / this.width);
 		this.color.b = 100 - Math.round(100 * y / this.width);
 
-		this.target.style.left = `${x}px`;
-		this.target.style.top = `${y}px`;
+		this.target.style.left = `${MathUtils.map(x, 0, this.width, 0, 100)}%`;
+		this.target.style.top = `${MathUtils.map(y, 0, this.width, 0, 100)}%`;
 
 		this.update();
 	}
 
-	updateCanvas2(x:number): void {
+	updateCanvas2(): void {
 
 		const r = this.canvas2.getBoundingClientRect();
-		x = Math.min(Math.max(x - r.left, 1), this.width - 1);
+		const x = Math.min(Math.max(this.x - r.left, 1), this.width - 1);
 
 		this.color.h = 360 * x / this.width;
 
@@ -198,6 +221,7 @@ export class ColorItem extends ItemPanel {
 		this.content.appendChild(this.colorBox);
 
 		this.input = el('input') as HTMLInputElement;
+		this.input.setAttribute('tabindex', '1');
 		this.input.type = 'text';
 		this.input.classList.add(c.input);
 		this.input.classList.add(CSS_UI.item)
@@ -208,14 +232,15 @@ export class ColorItem extends ItemPanel {
 
 	setValue(value: any): void {
 
+		// Check if value starts with 0x
+		if (value.startsWith('0x')) {
+			value = value.replace('0x', '#');
+		}
+
 		if (isNull(value) || isUndefined(value) || value === '') {
 			value = '#FFFFFF';
 		}
 		value = fixHex(value);
-
-		if(this.panel!.created){
-			this.panel!.reverseUpdate();
-		}
 
 		super.setValue(value);
 	}

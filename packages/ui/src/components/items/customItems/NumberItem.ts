@@ -23,6 +23,9 @@ export class NumberItem extends Item {
 
 	originalDataType: string = 'number';
 
+	isIncreasing:boolean = false;
+	isDecreasing:boolean = false;
+
 	getDecimals(): number {
 		const decimals = this.step.toString().split('.')[1];
 		return decimals ? decimals.length : 0;
@@ -145,6 +148,7 @@ export class NumberItem extends Item {
 		// Create input
 		inputElement.input = el('input') as HTMLInputElement;;
 		inputElement.input.type = 'number';
+		inputElement.input.setAttribute('tabindex', '1');
 		inputElement.input.placeholder = inputElement.placeholder;
 		inputElement.input.classList.add(CSS_UI.item);
 		if(this.min) inputElement.input.min = this.min.toString();
@@ -158,9 +162,11 @@ export class NumberItem extends Item {
 		const btns = el('div', c.buttons);
 
 		inputElement.buttonIncrease = el('button', c.btnIncrease) as HTMLButtonElement;
+		inputElement.buttonIncrease.setAttribute('tabindex', '-1');
 		inputElement.buttonIncrease.innerHTML = uiDownarrowHlt;
 
 		inputElement.buttonDecrease = el('button', c.btnDecrease) as HTMLButtonElement;
+		inputElement.buttonIncrease.setAttribute('tabindex', '-1');
 		inputElement.buttonDecrease.innerHTML = uiDownarrowHlt;
 
 		btns.appendChild(inputElement.buttonIncrease);

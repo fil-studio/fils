@@ -1,7 +1,8 @@
-import { el, isNull } from "@fils/utils";
+import { el, isNull, remove } from "@fils/utils";
 import { CSS_UI } from "../partials/cssClasses";
 import { Button } from "./Button";
 import { Item } from "./items/Item";
+import { CustomUIElement } from "./CustomUIElement";
 
 const c = {
 	left: "_ui-panel-left",
@@ -9,7 +10,14 @@ const c = {
 	dropdown: "_ui-panel-dropdown",
 };
 
+
 export interface ItemWithPanel extends Item {
+	panel: Panel;
+	close(): void;
+	open(): void;
+	refresh(): void;
+}
+export interface CustomUIElementWithPanel extends CustomUIElement {
 	panel: Panel;
 	close(): void;
 	open(): void;
@@ -29,6 +37,23 @@ export class ItemPanel extends Item implements ItemWithPanel {
 		super.refresh();
 		this.panel.refresh();
 	}
+	parentFold(): void {
+		super.parentFold();
+		this.close();
+	}
+}
+export class CustomUIElementPanel extends CustomUIElement implements CustomUIElementWithPanel {
+	panel: Panel;
+	close() { }
+	open() { }
+	refresh() {
+		super.refresh();
+		this.panel.refresh();
+	}
+	parentFold(): void {
+		super.parentFold();
+		this.close();
+	}
 }
 export class ButtonPanel extends Button implements ButtonWithPanel {
 	panel: Panel;
@@ -38,18 +63,22 @@ export class ButtonPanel extends Button implements ButtonWithPanel {
 		super.refresh();
 		this.panel.refresh();
 	}
+	parentFold(): void {
+		super.parentFold();
+		this.close();
+	}
 }
 export class Panel {
 	el!: HTMLElement;
 	dropdownFrom!: HTMLElement;
 
-	parent: ItemPanel | ButtonPanel;
+	parent: ItemPanel | ButtonPanel | CustomUIElementPanel;
 	created: boolean = false;
 
 	uiWrapper:HTMLElement;
 	spacing:number = 0;
 
-	constructor(parent: ItemPanel | ButtonPanel, dropdownFrom?: HTMLElement) {
+	constructor(parent: ItemPanel | ButtonPanel | CustomUIElementPanel, dropdownFrom?: HTMLElement) {
 
 		this.parent = parent;
 		this.dropdownFrom = dropdownFrom ? dropdownFrom : null;
@@ -145,7 +174,7 @@ export class Panel {
 
 	destroy(): void {
 		if (!this.created) return;
-		this.el.remove();
+		remove(this.el)
 		this.created = false;
 	}
 
