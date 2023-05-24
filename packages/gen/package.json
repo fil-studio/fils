@@ -20,7 +20,7 @@
 		"typescript": "^4.8.4"
 	},
 	"dependencies": {
-		"@fils/math": "^0.0.8"
+		"@fils/math": "^0.0.9"
 	},
 	"peerDependencies": {
 		"three": "^0.150.0"

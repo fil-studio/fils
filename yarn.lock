@@ -14,10 +14,22 @@
   dependencies:
     three "^0.149.0"
 
+"@fils/math@^0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@fils/math/-/math-0.0.8.tgz#6827b0f59ae61b54b6390a72d0e18e07b1471ce6"
+  integrity sha512-vNuppon7xCIvNqe+qIGypZ/qvj/LnwDE0Vdgtfq75hkwWDI8F4WKWDFjfMHlHgiiHfvhhwbS9A/Crjl2aIfihA==
+  dependencies:
+    mersenne "^0.0.4"
+
 "@fils/ui-icons@^0.0.12":
   version "0.0.12"
   resolved "https://registry.yarnpkg.com/@fils/ui-icons/-/ui-icons-0.0.12.tgz#fa7adf80927bdb0d1a43ff7a11ea7325927d3991"
   integrity sha512-02MqX2kguAshtJrWTZYeJjhydobNboPwumWPbHTch+rjuyo8K0OvctoZ6Xuk+5duSrlqTWhxoortgfTIKMKIuw==
+
+"@fils/utils@0.0.15":
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/@fils/utils/-/utils-0.0.15.tgz#068561e46ff4ab0b4992b673bc183f89a5b145dd"
+  integrity sha512-ZObyoT5KKUsKxfKGHpILDRSymbnTfgqXJnEwlP37eLbrsfmZSQmgtrhX4mjvZEsmYI+l8ep50F1WdhGO4qVsdA==
 
 "@fils/utils@^0.0.8":
   version "0.0.8"

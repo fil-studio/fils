@@ -25,6 +25,6 @@
 	"dependencies": {
 		"@fils/gfx": "0.0.9",
 		"@fils/io": "^0.0.4",
-		"@fils/math": "^0.0.8"
+		"@fils/math": "^0.0.9"
 	}
 }
