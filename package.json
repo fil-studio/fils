@@ -11,5 +11,9 @@
   ],
   "dependencies": {
     "three": "^0.150.0"
+  },
+  "scripts": {
+    "clean": "node scripts/clean.js",
+    "build-all": "node scripts/build-all.js"
   }
 }
