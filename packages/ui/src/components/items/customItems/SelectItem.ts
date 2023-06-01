@@ -1,7 +1,8 @@
 import { uiDownarrowHlt } from '@fils/ui-icons';
 import { el, isNull, isUndefined } from '@fils/utils';
 import { CSS_UI } from '../../../partials/cssClasses';
-import { ItemPanel, Panel } from '../../Panel';
+import { Panel, UIElementWithPanel } from '../../Panel';
+import { Item } from '../Item';
 import { SelectItemParameters } from '../ItemParameters';
 
 const c = {
@@ -129,7 +130,7 @@ export class SelectPanel extends Panel {
 
 	}
 }
-export class SelectItem extends ItemPanel {
+export class SelectItem extends Item implements UIElementWithPanel {
 	params!: SelectItemParameters;
 
 	panel: SelectPanel;

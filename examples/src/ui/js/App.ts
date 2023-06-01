@@ -47,9 +47,25 @@ export class App {
 			title: 'UI',
 			// icon: uiBrushData,
 			foldable: true,
-			minimal: true
-			// parentElement: document.querySelector('.parent-example') as HTMLElement,
+			minimal: true,
+			parentElement: document.querySelector('.parent-example') as HTMLElement,
 		})
+
+		const ui = new UI({
+			title: 'UI 2',
+			// icon: uiBrushData,
+			foldable: true,
+			minimal: true,
+			parentElement: document.querySelector('.parent-example') as HTMLElement,
+		})
+
+		ui.addInfo( [
+				'Info text with super long text what is going on here',
+				'Info text with super long text what is going on here Info text with super long text what is going on here Info text with super long text what is going on here Info text with super long text what is going on here',
+				'Info text with super long text what is going on here',
+			]
+		);
+
 		// this.ui.on('change', () => {
 		// 	console.log('Change');
 		// });

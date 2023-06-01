@@ -2,7 +2,7 @@ import { drawColorPickerBar, drawColorPickerSL, fixHex, hexToRgb, HSBColor, hsbT
 import { MathUtils, Vec } from '@fils/math';
 import { el, isNull, isUndefined, remove } from "@fils/utils";
 import { CSS_UI } from '../../../main';
-import { ItemPanel, Panel } from "../../Panel";
+import { ItemPanel, Panel, UIElementWithPanel } from "../../Panel";
 import { Item } from "../Item";
 
 const c = {
@@ -182,7 +182,7 @@ export class ColorPanel extends Panel {
 
 
 }
-export class ColorItem extends ItemPanel {
+export class ColorItem extends Item implements UIElementWithPanel {
 	input: HTMLInputElement = el('input') as HTMLInputElement;
 	colorBox: HTMLElement = el('div');
 	panel: ColorPanel;
