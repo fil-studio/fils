@@ -1,0 +1,23 @@
+body {
+	margin: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100dvh;
+}
+
+svg {
+	width: 500px;
+	height: 500px;
+}
+
+.bg {
+	fill: black;
+}
+
+.logo {
+	stroke: white;
+	stroke-width: 7;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}

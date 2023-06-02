@@ -1,8 +1,6 @@
 import { el, isNull, remove } from "@fils/utils";
 import { CSS_UI } from "../partials/cssClasses";
-import { Button } from "./Button";
-import { Item } from "./items/Item";
-import { CustomUIElement } from "./CustomUIElement";
+import { UIElement } from "./UIElement";
 
 const c = {
 	left: "_ui-panel-left",
@@ -11,43 +9,24 @@ const c = {
 };
 
 export interface HasPanel {
-	panel: Panel;
+	el:HTMLElement;
+	panel: Panel<UIElement>;
 	close(): void;
 	open(): void;
 	refresh(): void
 }
 
-export abstract class UIElementWithPanel implements HasPanel {
-	panel: Panel;
-	close() { }
-	open() { }
-	refresh() {
-		this.panel.refresh();
-	}
-	parentFold(): void {
-		this.close();
-	}
-}
-
-
-
-// export interface ItemWithPanel extends Item
-// export interface CustomUIElementWithPanel extends CustomUIElement
-// export interface ButtonWithPanel extends Button
-// export class ItemPanel extends Item
-// export class CustomUIElementPanel extends CustomUIElement
-// export class ButtonPanel extends Button
-export class Panel {
-	el!: HTMLElement;
+export class Panel<T extends UIElement> {
+	el: HTMLElement;
 	dropdownFrom!: HTMLElement;
 
-	parent: HasPanel;
+	parent: T;
 	created: boolean = false;
 
 	uiWrapper:HTMLElement;
 	spacing:number = 0;
 
-	constructor(parent: HasPanel, dropdownFrom?: HTMLElement) {
+	constructor(parent: T, dropdownFrom?: HTMLElement) {
 
 		this.parent = parent;
 		this.dropdownFrom = dropdownFrom ? dropdownFrom : null;
