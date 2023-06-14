@@ -38,8 +38,8 @@ export class RetroPass extends RenderPass {
 
     constructor(params:RetroPassSettings={}) {
         super();
-        ShaderChunk.luma = luma;
-        ShaderChunk.dither2 = dither2;
+        ShaderChunk['luma'] = luma;
+        ShaderChunk['dither2'] = dither2;
 
         for(const key in params) {
             this.shader.uniforms[key].value = params[key];

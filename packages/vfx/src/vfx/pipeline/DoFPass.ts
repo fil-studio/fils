@@ -54,7 +54,7 @@ export class DoFPass extends RenderPass {
 			height,
 			settings && settings.blur ? settings.blur : DEFAULTS.blur);
 
-		ShaderChunk.depth = depth;
+		ShaderChunk['depth'] = depth;
 
 		const s = settings ? settings : DEFAULTS;
 

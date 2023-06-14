@@ -31,8 +31,6 @@ const COMP = new RawShaderMaterial({
         tBackground: {value: null},
         tScene: {value: null},
         tGlow: {value: null},
-        exposure: {value: 1},
-        gamma: {value: 1},
         renderBackground: {value: true},
         renderGlow: {value: true},
         renderScene: {value: true}
@@ -42,8 +40,6 @@ const COMP = new RawShaderMaterial({
 
 export type VFXCompSettings = {
     glowSettings?:BlurSettings;
-    exposure?:number;
-    gamma?:number;
     samples?:number;
     useDepth?:boolean;
     customFargment?:string;
@@ -64,17 +60,16 @@ export class VFXRenderer {
     showBackground:boolean = true;
     showGlow:boolean = true;
     showScene:boolean = true;
-    exposure:number = COMP.uniforms.exposure.value;
-    gamma:number =  COMP.uniforms.gamma.value;
     shader:ShaderMaterial = COMP.clone();
     bgScene:Scene;
     bgRT:WebGLRenderTarget;
 
     constructor(renderer:WebGLRenderer, width:number, height:number, settings?:VFXCompSettings) {
         this.rnd = renderer;
+        const pr = this.rnd.pixelRatio || window.devicePixelRatio;
 
-        const w = width * window.devicePixelRatio;
-        const h = height * window.devicePixelRatio;
+        const w = width * pr;
+        const h = height * pr;
 
         this.sceneRT = new WebGLMultipleRenderTargets(w, h, 2, {
             format: RGBAFormat,
@@ -97,14 +92,6 @@ export class VFXRenderer {
 
         this.glow = new BlurPass(this.sceneRT.texture[1], w, h, bs);
 
-        if(settings && settings.exposure !== undefined) {
-            this.exposure = settings.exposure;
-        }
-
-        if(settings && settings.gamma) {
-            this.gamma = settings.gamma;
-        }
-
         // custom shader injection
         if(settings.customFargment !== undefined) {
             this.shader.vertexShader = settings.customFargment;
@@ -126,8 +113,9 @@ export class VFXRenderer {
     }
 
     setSize(width:number, height:number) {
-        const w = width * window.devicePixelRatio;
-        const h = height * window.devicePixelRatio;
+        const pr = this.rnd.pixelRatio || window.devicePixelRatio;
+        const w = width * pr;
+        const h = height * pr;
 
         this.sceneRT.setSize(w, h);
         this.bgRT.setSize(w, h);
@@ -136,8 +124,6 @@ export class VFXRenderer {
 
     private updateUniforms() {
         const u = this.shader.uniforms;
-        u.exposure.value = this.exposure;
-        u.gamma.value = this.gamma;
         u.renderBackground.value = this.showBackground;
         u.renderGlow.value = this.showGlow;
         u.renderScene.value = this.showScene;

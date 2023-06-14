@@ -164,6 +164,6 @@ export class LEDScreenTile {
 
         this.pixels.visible = o < 1;
 
-        this.screen.material.opacity = o;
+        this.screen.material['opacity'] = o;
     }
 }

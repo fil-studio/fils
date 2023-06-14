@@ -62,7 +62,7 @@ export class FinalPass extends RenderPass {
 
     constructor(params?:FinalPassSettings) {
         super();
-        ShaderChunk.lut = lut;
+        ShaderChunk['lut'] = lut;
         ShaderChunk['rgbSplit'] = rgb;
         ShaderChunk['dithering'] = dithering;
         
