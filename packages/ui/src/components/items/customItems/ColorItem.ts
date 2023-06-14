@@ -1,8 +1,8 @@
 import { drawColorPickerBar, drawColorPickerSL, fixHex, hexToRgb, HSBColor, hsbToHex, rgbToHsb } from '@fils/color';
-import { MathUtils, Vec } from '@fils/math';
-import { el, isNull, isUndefined, remove } from "@fils/utils";
+import { MathUtils } from '@fils/math';
+import { el, isNull, isUndefined } from "@fils/utils";
 import { CSS_UI } from '../../../main';
-import { ItemPanel, Panel } from "../../Panel";
+import { Panel } from "../../Panel";
 import { Item } from "../Item";
 
 const c = {
@@ -19,13 +19,10 @@ const c = {
 };
 
 type Position = { x: number, y: number };
-
-export class ColorPanel extends Panel {
+export class ColorPanel extends Panel<Item> {
 
 	view: HTMLElement = el('div');
 	info: HTMLElement = el('div');
-
-	parent: ItemPanel;
 
 	canvas1: HTMLCanvasElement = el('canvas') as HTMLCanvasElement;
 	canvas2: HTMLCanvasElement = el('canvas') as HTMLCanvasElement;
@@ -35,7 +32,6 @@ export class ColorPanel extends Panel {
 
 	tmpX: number = 0;
 	x: number = 0;
-
 
 	width: number = 0;
 	color: HSBColor = { h: 0, s: 0, b: 0 };
@@ -182,7 +178,7 @@ export class ColorPanel extends Panel {
 
 
 }
-export class ColorItem extends ItemPanel {
+export class ColorItem extends Item {
 	input: HTMLInputElement = el('input') as HTMLInputElement;
 	colorBox: HTMLElement = el('div');
 	panel: ColorPanel;

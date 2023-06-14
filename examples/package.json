@@ -33,7 +33,7 @@
 		"sass": "^1.56.1"
 	},
 	"dependencies": {
-		"gsap": "^3.11.3",
+		"gsap": "npm:@gsap/business",
 		"three": "^0.150.0"
 	}
 }

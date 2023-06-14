@@ -5,12 +5,12 @@ body {
 
 .parent-example {
 	// border: 1px solid rgba(204, 204, 204, 0.1);
-	position: fixed;
-	top: 50%;
-	left: 60%;
+	position: absolute;
+	top: 0;
+	right: 0;
 	width: 300px;
 	height: auto;
 	min-height: 30px;
-	transform: translate(-50%, -50%);
+	transform: translate(0%, 0);
 	padding: 20px;
 }

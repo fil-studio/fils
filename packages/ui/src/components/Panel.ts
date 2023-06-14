@@ -1,8 +1,6 @@
 import { el, isNull, remove } from "@fils/utils";
 import { CSS_UI } from "../partials/cssClasses";
-import { Button } from "./Button";
-import { Item } from "./items/Item";
-import { CustomUIElement } from "./CustomUIElement";
+import { UIElement } from "./UIElement";
 
 const c = {
 	left: "_ui-panel-left",
@@ -10,75 +8,25 @@ const c = {
 	dropdown: "_ui-panel-dropdown",
 };
 
+export interface HasPanel {
+	el:HTMLElement;
+	panel: Panel<UIElement>;
+	close(): void;
+	open(): void;
+	refresh(): void
+}
 
-export interface ItemWithPanel extends Item {
-	panel: Panel;
-	close(): void;
-	open(): void;
-	refresh(): void;
-}
-export interface CustomUIElementWithPanel extends CustomUIElement {
-	panel: Panel;
-	close(): void;
-	open(): void;
-	refresh(): void;
-}
-export interface ButtonWithPanel extends Button {
-	panel: Panel;
-	close(): void;
-	open(): void;
-	refresh(): void;
-}
-export class ItemPanel extends Item implements ItemWithPanel {
-	panel: Panel;
-	close() {}
-	open() {}
-	refresh(){
-		super.refresh();
-		this.panel.refresh();
-	}
-	parentFold(): void {
-		super.parentFold();
-		this.close();
-	}
-}
-export class CustomUIElementPanel extends CustomUIElement implements CustomUIElementWithPanel {
-	panel: Panel;
-	close() { }
-	open() { }
-	refresh() {
-		super.refresh();
-		this.panel.refresh();
-	}
-	parentFold(): void {
-		super.parentFold();
-		this.close();
-	}
-}
-export class ButtonPanel extends Button implements ButtonWithPanel {
-	panel: Panel;
-	close() {}
-	open() {}
-	refresh(){
-		super.refresh();
-		this.panel.refresh();
-	}
-	parentFold(): void {
-		super.parentFold();
-		this.close();
-	}
-}
-export class Panel {
-	el!: HTMLElement;
+export class Panel<T extends UIElement> {
+	el: HTMLElement;
 	dropdownFrom!: HTMLElement;
 
-	parent: ItemPanel | ButtonPanel | CustomUIElementPanel;
+	parent: T;
 	created: boolean = false;
 
 	uiWrapper:HTMLElement;
 	spacing:number = 0;
 
-	constructor(parent: ItemPanel | ButtonPanel | CustomUIElementPanel, dropdownFrom?: HTMLElement) {
+	constructor(parent: T, dropdownFrom?: HTMLElement) {
 
 		this.parent = parent;
 		this.dropdownFrom = dropdownFrom ? dropdownFrom : null;
@@ -95,9 +43,7 @@ export class Panel {
 		});
 	}
 
-	createPanelContent(){
-		// Override this
-	}
+	createPanelContent(): void {}
 
 	positionPanel(): void {
 
@@ -147,6 +93,11 @@ export class Panel {
 		// This is the wrapper for the UI, has to be added here, is not ready on constructor
 		this.uiWrapper = this.parent.el.closest(`.${CSS_UI.wrapper}`) as HTMLElement;
 
+		// Get parent z-index
+		const parentZIndex = getComputedStyle(this.uiWrapper).getPropertyValue('z-index');
+		this.uiWrapper.style.zIndex = `${parseInt(parentZIndex) + 1}`;
+
+
 		if (this.created) return;
 		this.created = true;
 
@@ -174,14 +125,12 @@ export class Panel {
 
 	destroy(): void {
 		if (!this.created) return;
+		this.uiWrapper.style.zIndex = ``;
 		remove(this.el)
 		this.created = false;
 	}
 
-	onChange(): void {
-	}
+	onChange(): void {}
 
-	refresh(): void {
-
-	}
+	refresh(): void {}
 }
