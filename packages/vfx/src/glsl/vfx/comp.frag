@@ -27,8 +27,8 @@ void main () {
     float bA = smoothstep(.9, 1., scene.a);
 
     scene = mix(bg, scene, bA);
-    scene.rgb += glow.rgb;
-    // scene = mix(bg, scene, scene.a + glowA);
+    scene.rgb = mix(scene.rgb, scene.rgb + glow.rgb, glow.a);
+    // scene = mix(bg, scene, scene.a * glow.a);
     
     pcColor = scene;
     // gl_FragColor = vec4(scene.rgb, scene.a + glow.a);
