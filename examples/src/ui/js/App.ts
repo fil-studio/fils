@@ -42,7 +42,6 @@ export class App {
 			multiNumberTest: [1, 2, 3],
 		}
 
-
 		this.ui = new UI({
 			title: 'UI',
 			// icon: uiBrushData,
@@ -50,6 +49,7 @@ export class App {
 			minimal: true,
 			parentElement: document.querySelector('.parent-example') as HTMLElement,
 		})
+
 
 		const ui = new UI({
 			title: 'UI 2',
@@ -66,26 +66,13 @@ export class App {
 			]
 		);
 
-		// this.ui.on('change', () => {
-		// 	console.log('Change');
-		// });
-
-		setTimeout(() => {
-			this.ui.resize();
-		}, 5000);
+		// setTimeout(() => {
+		// 	this.ui.resize();
+		// }, 5000);
 
 		this.ui.addCustomUIElement(CustomElementTest, {
 			title: 'Custom Element Test',
 		})
-
-		this.ui.on('change', () => {
-			console.log('Change');
-		});
-
-		this.ui.on('changeComplete', () => {
-			console.log('Change Complete');
-		});
-
 
 		this.ui.addInfo('Info text with super long text what is going on hereInfo text with super long text whatisgoing on here Info text with super long text what is going on here');
 
@@ -106,27 +93,6 @@ export class App {
 
 		group.addInfo('Info text with super /n long text what is going on hereInfo text with super long text whatisgoing on here Info text with super long text what is going on here');
 
-
-		const b = this.ui.addButton('Hello', () => {
-			console.log('Hello');
-
-			this.obj.stringTest = 'Hello Refresh';
-
-			this.obj.booleanTest = !this.obj.booleanTest;
-
-			this.obj.testArray = "test text";
-
-			this.obj.numberTest.x = 10;
-
-			this.obj.position.x = 10;
-			this.obj.position.y -= 5;
-
-			setTimeout(() => {
-				console.log('Refresh');
-				this.ui.refresh();
-			}, 1000);
-
-		}, 'happy');
 
 		// const group = this.ui;
 
@@ -168,10 +134,6 @@ export class App {
 		};
 
 
-		// group.add(this.obj, 'colorTest', {
-		// 	title: 'Color Test',
-		// 	view: 'color'
-		// });
 		group.add(this.obj, 'colorTest', {
 			title: 'COLOR',
 			view: 'color'
@@ -198,14 +160,11 @@ export class App {
 			view: 'string'
 		});
 
-
 		group.addSpacer();
 
 		const o = group.add(this.obj, 'numberTest', {
 			title: 'Number Test',
 		})
-
-
 
 		group.addSpacer();
 
@@ -237,35 +196,5 @@ export class App {
 			folded: true
 		});
 
-		// g4.add(this.obj, 'booleanTest', {
-		// 	title: 'Boolean Test',
-		// });
-
-		// g4.addItem(this.obj, 'stringTest', {
-		// 	title: 'String Test',
-		// });
-
-		// g4.add(this.obj, 'numberTest', {
-		// 	title: 'Number Test',
-		// });
-
-		const btn = g4.addButton('Button Test g4');
-		btn.on('click', () => {
-			console.log('Button Test g4');
-		})
-
-
-		g2.addButton('Button Test g2').on('click', () => {
-			console.log('Button Test g2');
-		});
-
-		g2.on('resize', () => {
-			console.log('g2 resize');
-
-		})
-
-
-
-		// console.log('UI', this.ui);
 	}
 }

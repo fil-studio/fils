@@ -135,10 +135,10 @@ export class Panel<T extends UIElement> extends EventsManager {
 
 	destroy(): void {
 		if (!this.created) return;
+		this.created = false;
 		this.removeEventListeners();
 		this.uiWrapper.style.zIndex = ``;
 		remove(this.el)
-		this.created = false;
 	}
 
 	onChange(): void {}

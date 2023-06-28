@@ -20,7 +20,7 @@ export class EventsManager {
 		event.target.addEventListener(event.type, event.callback);
 	}
 	removeEventListener(event:UIEventListener){
-		if(this.listeners.indexOf(event) > -1) return;
+		if(this.listeners.indexOf(event) === -1) return;
 		this.listeners.splice(this.listeners.indexOf(event), 1);
 		event.target.removeEventListener(event.type, event.callback);
 	}

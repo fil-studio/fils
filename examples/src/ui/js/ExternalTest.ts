@@ -4,6 +4,5 @@ export class CustomElementTest extends CustomUIElement {
 
 	createContent() {
 		this.el.innerHTML = "Hello World";
-		console.log('ExternalText', this.params)
 	}
 }

@@ -143,7 +143,6 @@ export class SelectItem extends Item  {
 	}
 
 	addEventListeners(): void {
-
 		const click:UIEventListener = {
 			target: this.input,
 			type: 'click',
@@ -191,10 +190,5 @@ export class SelectItem extends Item  {
 		this.label.innerHTML = isNull(value) || isUndefined(value) ? 'Select...' : label;
 
 		super.setValue(value);
-	}
-
-	destroy(): void {
-		super.destroy();
-		this.close();
 	}
 }

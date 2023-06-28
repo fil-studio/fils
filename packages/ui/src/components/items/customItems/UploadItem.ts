@@ -42,7 +42,6 @@ export class UploadItem extends Item {
 		}
 		this.addEventListener(change);
 
-
 		const removeClick:UIEventListener = {
 			target: this.removeUploadButton,
 			type: 'click',
