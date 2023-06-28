@@ -1,6 +1,6 @@
 // Import CSS
 import { el, remove } from '@fils/utils';
-import { EventsManager, InitUI } from '../main';
+import { EventsManager, InitUI, UIEventListener } from '../main';
 import { CSS_UI } from '../partials/cssClasses';
 import dom, { RowTypes } from '../utils/dom';
 import { Group, GroupParams } from './Group';
@@ -76,7 +76,7 @@ export class UI extends Group {
 		this.wrapper.appendChild(this.el);
 	}
 
-	protected addEventListeners(){
+	addEventListeners(){
 		super.addEventListeners();
 
 		if(!this.resizable) return;
@@ -85,12 +85,9 @@ export class UI extends Group {
 		const resizer = el('div', CSS_UI.resizer);
 		this.wrapper.appendChild(resizer);
 
-
 		const resize = (w:number, x:number) => {
-
 			if(x < 0 && w + x < 300) return;
 			this.wrapper!.style.setProperty('--wrapper-width', `${w + x}px`);
-
 			this.emit('resize');
 		}
 
@@ -99,28 +96,39 @@ export class UI extends Group {
 		let dragging = false;
 		let x = 0;
 		let distance = 0;
-
 		let width = 0;
 
-		resizer.addEventListener('mousedown', (e:MouseEvent) => {
-			dragging = true;
-			x = e.clientX;
-			width = this.wrapper!.getBoundingClientRect().width;
-		});
-
-		window.addEventListener('mousemove', (e: MouseEvent) => {
-			if(!dragging) return;
-			e.preventDefault();
-			distance = x - e.clientX;
-			resize(width, distance);
-		});
-
-		window.addEventListener('mouseup', (e: MouseEvent) => {
-			if(!dragging) return;
-			e.preventDefault();
-			dragging = false;
-		});
-
+		const mouseDownEvent:UIEventListener = {
+			target: resizer,
+			type: 'mousedown',
+			callback: (e:MouseEvent) => {
+				dragging = true;
+				x = e.clientX;
+				width = this.wrapper!.getBoundingClientRect().width;
+			}
+		}
+		const mouseMoveEvent:UIEventListener = {
+			target: resizer,
+			type: 'mousemove',
+			callback: (e:MouseEvent) => {
+				if(!dragging) return;
+				e.preventDefault();
+				distance = x - e.clientX;
+				resize(width, distance);
+			}
+		}
+		const mouseUpEvent:UIEventListener = {
+			target: resizer,
+			type: 'mouseup',
+			callback: (e:MouseEvent) => {
+				if(!dragging) return;
+				e.preventDefault();
+				dragging = false;
+			}
+		}
+		this.addEventListener(mouseDownEvent);
+		this.addEventListener(mouseMoveEvent);
+		this.addEventListener(mouseUpEvent);
 	}
 
 	/**

@@ -1,7 +1,7 @@
 import { el } from "@fils/utils";
 import { CustomUIElement, UI } from "../main";
 import { CSS_UI } from "../partials/cssClasses";
-import { EventsManager } from "../partials/EventsManager";
+import { EventsManager, UIEventListener } from "../partials/EventsManager";
 import { CreateItemParams, ItemFactory } from "../partials/ItemFactory";
 import { RowTypes } from "../utils/dom";
 import { Button } from "./Button";
@@ -49,7 +49,7 @@ export class Group extends UIElement {
 		this.content = this.el.querySelector(`.${CSS_UI.section.content}`) as HTMLElement;
 	}
 
-	protected addEventListeners(){
+	addEventListeners(){
 
 		if (!this.foldable) return;
 
@@ -59,9 +59,14 @@ export class Group extends UIElement {
 
 		const header = this.el.querySelector('header') as HTMLElement;
 
-		header.addEventListener('click', () => {
-			this.foldToggle();
-		});
+		const clickEvent:UIEventListener = {
+			target: header,
+			type: 'click',
+			callback: () => {
+				this.foldToggle();
+			}
+		}
+		this.addEventListener(clickEvent);
 
 		this.folded = !this.folded;
 		this.foldToggle();

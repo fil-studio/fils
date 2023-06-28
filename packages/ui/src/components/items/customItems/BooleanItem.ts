@@ -1,6 +1,7 @@
 import { el } from "@fils/utils";
 import { CSS_UI } from "../../../partials/cssClasses";
 import { Item } from "../Item";
+import { UIEventListener } from "../../../main";
 
 const c = {
 	type: 'boolean',
@@ -9,9 +10,15 @@ const c = {
 export class BooleanItem extends Item {
 
 	addEventListeners(): void {
-		this.el.addEventListener('click', () => {
-			this.setValue(!this.value);
- 		});
+
+		const clickEvent:UIEventListener = {
+			target: this.el,
+			type: 'click',
+			callback: (e) => {
+				this.setValue(!this.value);
+			}
+		}
+		this.addEventListener(clickEvent);
 	}
 
 	protected createContent(): void {

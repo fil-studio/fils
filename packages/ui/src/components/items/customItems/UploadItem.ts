@@ -4,6 +4,7 @@ import { CSS_UI } from "../../../partials/cssClasses";
 import dom from "../../../utils/dom";
 import { Item } from '../Item';
 import { UploadItemParameters } from "../ItemParameters";
+import { UIEventListener } from '../../../main';
 
 
 export class UploadItem extends Item {
@@ -17,25 +18,41 @@ export class UploadItem extends Item {
 
 	protected addEventListeners(): void {
 
-		this.uploadButton.addEventListener('click', () => {
-			this.input.click();
-		});
+		const click:UIEventListener = {
+			target: this.uploadButton,
+			type: 'click',
+			callback: () => {
+				this.input.click()
+			}
+		}
+		this.addEventListener(click);
 
-		this.input.addEventListener('change', () => {
-			const file = this.input && this.input.files && this.input.files[0] ? this.input.files[0] : null;
-			if(!file) return;
+		const change:UIEventListener = {
+			target: this.input,
+			type: 'change',
+			callback: () => {
+				const file = this.input && this.input.files && this.input.files[0] ? this.input.files[0] : null;
+				if(!file) return;
 
-			this.removeUploadButton.querySelector('h3')!.innerText = file.name;
-			this.removeUploadButton.classList.remove(`${CSS_UI.utility.hidden}`);
-			this.uploadButton.classList.add(`${CSS_UI.utility.hidden}`);
-			this.setValue(file);
-		});
+				this.removeUploadButton.querySelector('h3')!.innerText = file.name;
+				this.removeUploadButton.classList.remove(`${CSS_UI.utility.hidden}`);
+				this.uploadButton.classList.add(`${CSS_UI.utility.hidden}`);
+				this.setValue(file);
+			}
+		}
+		this.addEventListener(change);
 
-		this.removeUploadButton.addEventListener('click', () => {
-			this.removeUploadButton.classList.add(`${CSS_UI.utility.hidden}`);
-			this.uploadButton.classList.remove(`${CSS_UI.utility.hidden}`);
-			this.setValue(null);
-		});
+
+		const removeClick:UIEventListener = {
+			target: this.removeUploadButton,
+			type: 'click',
+			callback: (e) => {
+				this.removeUploadButton.classList.add(`${CSS_UI.utility.hidden}`);
+				this.uploadButton.classList.remove(`${CSS_UI.utility.hidden}`);
+				this.setValue(null);
+			}
+		}
+		this.addEventListener(removeClick)
 
 	}
 

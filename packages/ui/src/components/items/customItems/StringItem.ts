@@ -1,14 +1,19 @@
 import { el, isNull, isUndefined, remove } from "@fils/utils";
-import { CSS_UI } from "../../../main";
+import { CSS_UI, UIEventListener } from "../../../main";
 import { Item } from "../Item";
 
 export class StringItem extends Item {
 	input: HTMLInputElement = el('input') as HTMLInputElement;
 
-	protected addEventListeners(): void {
-		this.input.addEventListener('change', () => {
-			this.setValue(this.input.value);
-		});
+	addEventListeners(): void {
+		const change:UIEventListener = {
+			target: this.input,
+			type: 'change',
+			callback: () => {
+				this.setValue(this.input.value);
+			}
+		}
+		this.addEventListener(change);
 	}
 
 	protected createContent(): void {

@@ -48,10 +48,15 @@ export class SelectPanel extends Panel<SelectItem> {
 			if (this.parent.value === value) div.classList.add(CSS_UI.utility.active);
 
 			// Add event listener
-			div.addEventListener('click', () => {
-				this.parent.setValue(value);
-				this.parent.close();
-			});
+			const click:UIEventListener = {
+				target: div,
+				type: 'click',
+				callback: (e) => {
+					this.parent.setValue(value);
+					this.parent.close();
+				}
+			}
+			this.addEventListener(click);
 
 			return {
 				key,
@@ -111,9 +116,14 @@ export class SelectPanel extends Panel<SelectItem> {
 
 		this.el.appendChild(this.search);
 
-		this.searchInput.addEventListener('input', () => {
-			this.searchOptions();
-		});
+		const input:UIEventListener = {
+			target: this.searchInput,
+			type: 'input',
+			callback: (e) => {
+				this.searchOptions();
+			}
+		}
+		this.addEventListener(input);
 
 	}
 }
@@ -133,12 +143,17 @@ export class SelectItem extends Item  {
 	}
 
 	addEventListeners(): void {
-		super.addEventListeners();
 
-		this.input.addEventListener('click', () => {
-			if (!this.panel.created) this.open();
-			else this.close();
-		});
+		const click:UIEventListener = {
+			target: this.input,
+			type: 'click',
+			callback: () => {
+				if (!this.panel.created) this.open();
+				else this.close();
+			}
+		}
+		this.addEventListener(click);
+
 	}
 
 	open() {

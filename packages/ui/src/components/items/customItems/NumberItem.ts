@@ -3,6 +3,7 @@ import { NumberItemParameters } from "../ItemParameters";
 import { uiDownarrowHlt } from '@fils/ui-icons';
 import { CSS_UI } from "../../../partials/cssClasses";
 import { Item } from "../Item";
+import { UIEventListener } from "../../../main";
 
 
 const c = {
@@ -44,26 +45,41 @@ export class NumberItem extends Item {
 		return tmp;
 	}
 
-	protected addEventListeners(): void {
+	addEventListeners(): void {
 
 		for (const inputElement of this.inputElements) {
 
-			inputElement.input.addEventListener('change', () => {
-				let val = inputElement.input.valueAsNumber;
-				val = isNaN(val) ? 0 : val;
-				inputElement.value = val;
-				this.setValue();
-			});
+			const change:UIEventListener = {
+				target: inputElement.input,
+				type: 'change',
+				callback: (e) => {
+					let val = inputElement.input.valueAsNumber;
+					val = isNaN(val) ? 0 : val;
+					inputElement.value = val;
+					this.setValue();
+				}
+			}
+			this.addEventListener(change);
 
-			inputElement.buttonIncrease.addEventListener('click', () => {
-				inputElement.value += this.step;
-				this.setValue();
-			});
+			const clickIncrease:UIEventListener = {
+				target: inputElement.buttonIncrease,
+				type: 'click',
+				callback: (e) => {
+					inputElement.value += this.step;
+					this.setValue();
+				}
+			}
+			this.addEventListener(clickIncrease);
 
-			inputElement.buttonDecrease.addEventListener('click', () => {
-				inputElement.value -= this.step;
-				this.setValue();
-			});
+			const clickDecrease:UIEventListener = {
+				target: inputElement.buttonDecrease,
+				type: 'click',
+				callback: (e) => {
+					inputElement.value -= this.step;
+					this.setValue();
+				}
+			}
+			this.addEventListener(clickDecrease);
 
 		}
 

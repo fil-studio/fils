@@ -3,6 +3,7 @@ import { el, isArray, remove } from "@fils/utils";
 import { CSS_UI } from "../../../partials/cssClasses";
 import { Item } from "../Item";
 import { RangeItemParameters } from "../ItemParameters";
+import { UIEventListener } from "../../../main";
 
 const c = {
 	type: 'range',
@@ -47,11 +48,16 @@ export class RangeItem extends Item {
 		return parseFloat(tmp);
 	}
 
-	protected addEventListeners(): void {
+	addEventListeners(): void {
 
-		this.input.addEventListener('change', () => {
-			this.setValue(this.input.valueAsNumber);
-		});
+		const inputChange:UIEventListener = {
+			target: this.input,
+			type: 'change',
+			callback: (e) => {
+				this.setValue(this.input.valueAsNumber);
+			}
+		}
+		this.addEventListener(inputChange);
 
 		let dragging = false;
 		let x = 0;
@@ -97,19 +103,54 @@ export class RangeItem extends Item {
 			this.thumb.classList.remove(CSS_UI.utility.grab);
 		}
 
-		this.range.addEventListener('click', (e:MouseEvent) => {
-			mouseClick(e);
-		})
+		const rangeClick:UIEventListener = {
+			target: this.range,
+			type: 'click',
+			callback: (e: MouseEvent) => mouseClick(e)
+		}
+		this.addEventListener(rangeClick);
 
-		this.range.addEventListener('mousedown', (e: MouseEvent) => mouseDown(e.target as HTMLElement, e.clientX));
-		this.range.addEventListener('touchstart', (e: TouchEvent) => mouseDown(e.target as HTMLElement, e.touches[0].clientX));
+		const rangeMouseDown:UIEventListener = {
+			target: this.range,
+			type: 'mousedown',
+			callback: (e: MouseEvent) => mouseDown(e.target as HTMLElement, e.clientX)
+		}
+		this.addEventListener(rangeMouseDown);
 
-		window.addEventListener('mousemove', (e: MouseEvent) => mouseMove(e.clientX));
-		window.addEventListener('touchmove', (e: TouchEvent) => mouseMove(e.touches[0].clientX));
+		const rangeTouchStart:UIEventListener = {
+			target: this.range,
+			type: 'touchstart',
+			callback: (e: TouchEvent) => mouseDown(e.target as HTMLElement, e.touches[0].clientX)
+		}
+		this.addEventListener(rangeTouchStart);
 
-		window.addEventListener('mouseup', () => reset());
-		window.addEventListener('touchend', () => reset());
+		const windowMouseMove:UIEventListener = {
+			target: window,
+			type: 'mousemove',
+			callback: (e:MouseEvent) => mouseMove(e.clientX)
+		}
+		this.addEventListener(windowMouseMove);
 
+		const windowTouchMove:UIEventListener = {
+			target: window,
+			type: 'touchmove',
+			callback: (e: TouchEvent) => mouseMove(e.touches[0].clientX)
+		}
+		this.addEventListener(windowTouchMove);
+
+		const windowMouseUp:UIEventListener = {
+			target: window,
+			type: 'mouseup',
+			callback: (e:MouseEvent) => reset()
+		}
+		this.addEventListener(windowMouseUp);
+
+		const windowTouchEnd:UIEventListener = {
+			target: window,
+			type: 'touchend',
+			callback: (e: TouchEvent) => reset()
+		}
+		this.addEventListener(windowTouchEnd);
 	}
 
 	protected get mappedValue(): number {

@@ -1,9 +1,7 @@
 import { remove } from "@fils/utils";
-import { EventsManager } from "../partials/EventsManager";
+import { EventsManager, UIEventListener } from "../partials/EventsManager";
 import dom, { RowTypes } from "../utils/dom";
 import { HasPanel, Panel } from "./Panel";
-
-
 
 export class UIElement extends EventsManager implements HasPanel {
 	protected depth: number;
@@ -39,9 +37,15 @@ export class UIElement extends EventsManager implements HasPanel {
 
 	protected preventPropagation(){
 		// Prevents the propagation of the keydown event to the window
-		this.el.addEventListener('keydown', (e) => {
-			e.stopPropagation();
-		});
+
+		const preventPropagationEvent:UIEventListener = {
+			target: this.el,
+			type: 'keydown',
+			callback: (e) => {
+				e.stopPropagation();
+			}
+		}
+		this.addEventListener(preventPropagationEvent);
 	}
 
 	/**
@@ -69,6 +73,7 @@ export class UIElement extends EventsManager implements HasPanel {
 
 	destroy(){
 		this.removeEventListeners();
+		this.panel?.destroy();
 		remove(this.el);
 	}
 

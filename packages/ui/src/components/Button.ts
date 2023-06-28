@@ -1,4 +1,4 @@
-import { CSS_UI } from "../main";
+import { CSS_UI, UIEventListener } from "../main";
 import { RowTypes } from "../utils/dom";
 import { UIElement } from "./UIElement";
 
@@ -29,16 +29,22 @@ export class Button extends UIElement {
 
 	}
 
-	protected addEventListeners(){
-		this.button.addEventListener('click', () => {
-			this.button.classList.add(CSS_UI.utility.active);
-			setTimeout(() => {
-				this.button.classList.remove(CSS_UI.utility.active);
-			}, 50);
-			this.clickCallback();
-			this.emit('click');
-			this.emit('__childrenChange');
-		});
+	addEventListeners(){
+
+		const clickEvent:UIEventListener = {
+			target: this.button,
+			type: 'click',
+			callback: () => {
+				this.button.classList.add(CSS_UI.utility.active);
+				setTimeout(() => {
+					this.button.classList.remove(CSS_UI.utility.active);
+				}, 50);
+				this.clickCallback();
+				this.emit('click');
+				this.emit('__childrenChange');
+			}
+		}
+		this.addEventListener(clickEvent)
 	}
 
 	/**

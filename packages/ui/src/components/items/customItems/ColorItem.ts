@@ -1,7 +1,7 @@
 import { drawColorPickerBar, drawColorPickerSL, fixHex, hexToRgb, HSBColor, hsbToHex, rgbToHsb } from '@fils/color';
 import { MathUtils } from '@fils/math';
 import { el, isNull, isUndefined } from "@fils/utils";
-import { CSS_UI } from '../../../main';
+import { CSS_UI, UIEventListener } from '../../../main';
 import { Panel } from "../../Panel";
 import { Item } from "../Item";
 
@@ -19,7 +19,9 @@ const c = {
 };
 
 type Position = { x: number, y: number };
-export class ColorPanel extends Panel<Item> {
+export class ColorPanel extends Panel<ColorItem> {
+
+	parent: ColorItem;
 
 	view: HTMLElement = el('div');
 	info: HTMLElement = el('div');
@@ -64,7 +66,6 @@ export class ColorPanel extends Panel<Item> {
 		const raf = () => {
 			if(!this.created) return;
 
-
 			this.width = this.view.getBoundingClientRect().width;
 
 			this.position.x = MathUtils.lerp(this.position.x, this.tmpPosition.x, 0.9);
@@ -87,33 +88,53 @@ export class ColorPanel extends Panel<Item> {
 
 	addEventListeners(): void {
 
-		this.canvas1.addEventListener('mousedown', (e: MouseEvent) => {
-			this.dragging1 = true;
-		});
+		const c1Mousedown:UIEventListener = {
+			target: this.canvas1,
+			type: 'mousedown',
+			callback: (e:MouseEvent) => {
+				this.dragging1 = true;
+			}
+		}
+		this.addEventListener(c1Mousedown);
 
-		this.canvas2.addEventListener('mousedown', (e: MouseEvent) => {
-			this.dragging2 = true;
-		});
+		const c2Mousedown:UIEventListener = {
+			target: this.canvas2,
+			type: 'mousedown',
+			callback: (e:MouseEvent) => {
+				this.dragging2 = true;
+			}
+		}
+		this.addEventListener(c2Mousedown);
 
-		window.addEventListener('mousemove', (e: MouseEvent) => {
-			if(!this.created) return;
-			if(!this.dragging1 && !this.dragging2) return;
-			this.tmpPosition = { x: e.pageX, y: e.pageY };
-			this.tmpX = e.pageX;
-		});
+		const mousemove:UIEventListener = {
+			target: window,
+			type: 'mousemove',
+			callback: (e:MouseEvent) => {
+				if(!this.created) return;
+				if(!this.dragging1 && !this.dragging2) return;
+				this.tmpPosition = { x: e.pageX, y: e.pageY };
+				this.tmpX = e.pageX;
+			}
+		}
+		this.addEventListener(mousemove);
 
-		window.addEventListener('mouseup', (e: MouseEvent) => {
-			if(!this.created) return;
+		const mouseup:UIEventListener = {
+			target: window,
+			type: 'mouseup',
+			callback: (e:MouseEvent) => {
+				if(!this.created) return;
 
-			this.dragging1 = false;
-			this.dragging2 = false;
+				this.dragging1 = false;
+				this.dragging2 = false;
 
-			const target = e.target as HTMLElement;
-			if(this.el?.contains(target)) return;
-			if(this.parent!.el.contains(target)) return;
+				const target = e.target as HTMLElement;
+				if(this.el?.contains(target)) return;
+				if(this.parent!.el.contains(target)) return;
 
-			this.destroy();
-		});
+				this.destroy();
+			}
+		}
+		this.addEventListener(mouseup);
 
 	}
 
@@ -194,21 +215,39 @@ export class ColorItem extends Item {
 		this.panel.destroy();
 	}
 
-	protected addEventListeners(): void {
+	addEventListeners(): void {
 
-		this.input.addEventListener('change', () => {
-			this.setValue(this.input.value);
-		});
+		const inputChangeEvent:UIEventListener = {
+			target: this.input,
+			type: 'change',
+			callback: (e) => {
+				this.setValue(this.input.value)
+			}
+		}
 
-		this.colorBox.addEventListener('click', () => {
-			if (!this.panel!.created) this.open();
-			else this.close();
-		});
+		const colorBoxClick:UIEventListener = {
+			target: this.colorBox,
+			type: 'click',
+			callback: (e) => {
+				if (!this.panel!.created) this.open();
+				else this.close();
+			}
+		}
 
-		window.addEventListener('keydown', (e:KeyboardEvent)=> {
-			if(e.key === 'Enter') this.setValue(this.input.value);
-		});
+		const windowKeydownEvent:UIEventListener = {
+			target: window,
+			type: 'keydown',
+			callback: (e:KeyboardEvent) => {
+				if(e.key === 'Enter') {
+					this.setValue(this.input.value);
+					this.input.blur();
+				}
+			}
+		}
 
+		this.addEventListener(inputChangeEvent);
+		this.addEventListener(colorBoxClick);
+		this.addEventListener(windowKeydownEvent);
 	}
 
 	protected createContent(): void {
@@ -222,8 +261,6 @@ export class ColorItem extends Item {
 		this.input.classList.add(c.input);
 		this.input.classList.add(CSS_UI.item)
 		this.content.appendChild(this.input);
-
-
 	}
 
 	setValue(value: any): void {
@@ -247,11 +284,6 @@ export class ColorItem extends Item {
 		this.input.value = this.value;
 
 		super.refreshDom();
-	}
-
-	destroy(): void {
-		super.destroy();
-		this.panel!.destroy();
 	}
 }
 
