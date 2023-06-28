@@ -8,26 +8,21 @@ const c = {
 };
 export class BooleanItem extends Item {
 
-	protected addEventListeners(): void {
-
+	addEventListeners(): void {
 		this.el.addEventListener('click', () => {
 			this.setValue(!this.value);
  		});
-
 	}
 
 	protected createContent(): void {
-
 		const wrapper = el('div', c.input);
 		const thumb = el('div');
 		wrapper.appendChild(thumb);
 		this.content.appendChild(wrapper);
-
 	}
 
 	refreshDom(): void {
 		this.el.classList.toggle(CSS_UI.utility.active, this.value);
 		super.refreshDom();
-
 	}
 }

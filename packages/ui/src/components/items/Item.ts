@@ -1,7 +1,7 @@
 
-import { debounce, isNull, isObject, isUndefined } from '@fils/utils';
-import { CSS_UI } from '../../partials/cssClasses';
+import { isNull, isObject, isUndefined } from '@fils/utils';
 import { CreateItemParams } from '../../partials/ItemFactory';
+import { CSS_UI } from '../../partials/cssClasses';
 import { RowTypes } from '../../utils/dom';
 import { UIElement } from '../UIElement';
 import { ItemParameters } from './ItemParameters';
@@ -71,6 +71,7 @@ export class Item extends UIElement {
 	refreshDom() {}
 
 	refresh(): void {
+		super.refresh();
 		this.emit('refresh');
 		this._refreshing = true;
 		this.setValue(this.object[this.key]);

@@ -1,6 +1,7 @@
 import { el, isNull, remove } from "@fils/utils";
 import { CSS_UI } from "../partials/cssClasses";
 import { UIElement } from "./UIElement";
+import { EventsManager, UIEventListener } from "../main";
 
 const c = {
 	left: "_ui-panel-left",
@@ -16,7 +17,7 @@ export interface HasPanel {
 	refresh(): void
 }
 
-export class Panel<T extends UIElement> {
+export class Panel<T extends UIElement> extends EventsManager {
 	el: HTMLElement;
 	dropdownFrom!: HTMLElement;
 
@@ -27,6 +28,7 @@ export class Panel<T extends UIElement> {
 	spacing:number = 0;
 
 	constructor(parent: T, dropdownFrom?: HTMLElement) {
+		super();
 
 		this.parent = parent;
 		this.dropdownFrom = dropdownFrom ? dropdownFrom : null;
@@ -35,12 +37,20 @@ export class Panel<T extends UIElement> {
 	}
 
 	addEventListeners(): void {
-		window.addEventListener('keydown', (e: KeyboardEvent) => {
-			if (!this.created) return;
-			if (e.key === 'Escape') {
-				this.parent.close();
+
+		const event: UIEventListener = {
+			type: 'keydown',
+			target: window,
+			callback: (e:KeyboardEvent) => {
+				if (!this.created) return;
+				if (e.key === 'Escape') {
+					this.parent.close();
+				}
 			}
-		});
+		}
+
+		this.addEventListener(event);
+
 	}
 
 	createPanelContent(): void {}

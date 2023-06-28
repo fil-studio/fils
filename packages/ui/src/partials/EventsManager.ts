@@ -1,12 +1,28 @@
 import { debounce } from "@fils/utils";
-
+export interface UIEventListener {
+	type: string,
+	target: HTMLElement | Window;
+	callback: EventListenerOrEventListenerObject
+}
 export class EventsManager {
 	protected subscribers: Object = {};
+	listeners:UIEventListener[] = [];
 
-	protected debounce : Function;
-
-	constructor() {
-		this.debounce = debounce(this.emit.bind(this), 100);
+	addEventListeners(): void {}
+	removeEventListeners():void {
+		while(this.listeners.length > 0) {
+			this.removeEventListener(this.listeners[0]);
+		}
+	}
+	addEventListener(event:UIEventListener){
+		if(this.listeners.indexOf(event) > -1) return;
+		this.listeners.push(event);
+		event.target.addEventListener(event.type, event.callback);
+	}
+	removeEventListener(event:UIEventListener){
+		if(this.listeners.indexOf(event) > -1) return;
+		this.listeners.splice(this.listeners.indexOf(event), 1);
+		event.target.removeEventListener(event.type, event.callback);
 	}
 
 	/**
@@ -32,8 +48,6 @@ export class EventsManager {
 		}
 		this.subscribers[event].push(callback);
 	}
-
-
 	emit(event:string, target?:EventsManager) {
 
 		if (this.subscribers[event]) {

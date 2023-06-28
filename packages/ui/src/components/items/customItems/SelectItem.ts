@@ -4,6 +4,7 @@ import { CSS_UI } from '../../../partials/cssClasses';
 import { Panel} from '../../Panel';
 import { Item } from '../Item';
 import { SelectItemParameters } from '../ItemParameters';
+import { UIEventListener } from '../../../main';
 
 const c = {
 	type: 'select',
@@ -14,7 +15,7 @@ const c = {
 	search: '_ui-panel-select-search',
 	searchInput: '_ui-panel-select-search-input',
 };
-export class SelectPanel extends Panel<Item> {
+export class SelectPanel extends Panel<SelectItem> {
 	parent: SelectItem;
 
 	enableSearch: boolean = false;
@@ -27,20 +28,6 @@ export class SelectPanel extends Panel<Item> {
 		value: any;
 		dom: HTMLElement;
 	}> = [];
-
-	addEventListeners(): void {
-
-		super.addEventListeners();
-
-		window.addEventListener('click', (e: MouseEvent) => {
-			if(!this.created) return;
-			const t = e.target as HTMLElement;
-			if (this.el.contains(t)) return;
-			if(this.parent.el.contains(t)) return;
-			this.parent.close();
-		});
-
-	}
 
 	sortOptions(){
 
@@ -145,7 +132,7 @@ export class SelectItem extends Item  {
 		this.panel = new SelectPanel(this, this.content);
 	}
 
-	protected addEventListeners(): void {
+	addEventListeners(): void {
 		super.addEventListeners();
 
 		this.input.addEventListener('click', () => {

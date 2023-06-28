@@ -3,6 +3,8 @@ import { EventsManager } from "../partials/EventsManager";
 import dom, { RowTypes } from "../utils/dom";
 import { HasPanel, Panel } from "./Panel";
 
+
+
 export class UIElement extends EventsManager implements HasPanel {
 	protected depth: number;
 
@@ -12,6 +14,7 @@ export class UIElement extends EventsManager implements HasPanel {
 
 	type: RowTypes;
 	title: string;
+
 
 	constructor(type:RowTypes, title?: string) {
 		super();
@@ -64,9 +67,8 @@ export class UIElement extends EventsManager implements HasPanel {
 	// Populate ROW
 	protected createContent(): void {}
 
-	protected addEventListeners(): void {}
-
 	destroy(){
+		this.removeEventListeners();
 		remove(this.el);
 	}
 

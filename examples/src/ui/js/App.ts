@@ -107,7 +107,6 @@ export class App {
 		group.addInfo('Info text with super /n long text what is going on hereInfo text with super long text whatisgoing on here Info text with super long text what is going on here');
 
 
-
 		const b = this.ui.addButton('Hello', () => {
 			console.log('Hello');
 

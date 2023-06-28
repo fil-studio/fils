@@ -291,6 +291,7 @@ export class Group extends UIElement {
 	}
 
 	refresh(): void {
+		super.refresh();
 		this.emit('refresh');
 		for(let child of this.children){
 			child.refresh();
