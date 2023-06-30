@@ -100,6 +100,7 @@ export class Panel<T extends UIElement> extends EventsManager {
 
 	create(): void {
 
+
 		// This is the wrapper for the UI, has to be added here, is not ready on constructor
 		this.uiWrapper = this.parent.el.closest(`.${CSS_UI.wrapper}`) as HTMLElement;
 
@@ -143,5 +144,9 @@ export class Panel<T extends UIElement> extends EventsManager {
 
 	onChange(): void {}
 
-	refresh(): void {}
+	refresh(): void {
+		if (!this.created) return;
+		this.destroy();
+		this.create();
+	}
 }

@@ -137,7 +137,10 @@ export class App {
 		group.add(this.obj, 'colorTest', {
 			title: 'COLOR',
 			view: 'color'
-		});
+		}).on('change', () => {
+			console.log('change');
+
+		})
 
 		group.add(this.obj, 'uploadTest', {
 			title: 'title string',

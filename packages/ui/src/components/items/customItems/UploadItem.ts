@@ -16,7 +16,7 @@ export class UploadItem extends Item {
 	protected removeUploadButton: HTMLElement = el('div')
 	protected input: HTMLInputElement = el('input') as HTMLInputElement;
 
-	protected addEventListeners(): void {
+	addEventListeners(): void {
 
 		const click:UIEventListener = {
 			target: this.uploadButton,

@@ -38,14 +38,25 @@ export class UIElement extends EventsManager implements HasPanel {
 	protected preventPropagation(){
 		// Prevents the propagation of the keydown event to the window
 
-		const preventPropagationEvent:UIEventListener = {
+		const preventPropagationEventDown:UIEventListener = {
 			target: this.el,
 			type: 'keydown',
 			callback: (e) => {
 				e.stopPropagation();
+				e.stopImmediatePropagation();
 			}
 		}
-		this.addEventListener(preventPropagationEvent);
+		this.addEventListener(preventPropagationEventDown);
+
+		const preventPropagationEventUp:UIEventListener = {
+			target: this.el,
+			type: 'keyup',
+			callback: (e) => {
+				e.stopPropagation();
+				e.stopImmediatePropagation();
+			}
+		}
+		this.addEventListener(preventPropagationEventUp);
 	}
 
 	/**

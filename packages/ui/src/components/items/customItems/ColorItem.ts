@@ -44,6 +44,8 @@ export class ColorPanel extends Panel<ColorItem> {
 	dragging1: boolean = false;
 	dragging2: boolean = false;
 
+	needsUpdate: boolean = false;
+
 	createPanelContent(): void {
 
 		this.el.classList.add(`${CSS_UI.panel.baseClass}-${this.parent.view}`)
@@ -114,6 +116,7 @@ export class ColorPanel extends Panel<ColorItem> {
 				if(!this.dragging1 && !this.dragging2) return;
 				this.tmpPosition = { x: e.pageX, y: e.pageY };
 				this.tmpX = e.pageX;
+				this.needsUpdate = true;
 			}
 		}
 		this.addEventListener(mousemove);
@@ -126,6 +129,9 @@ export class ColorPanel extends Panel<ColorItem> {
 
 				this.dragging1 = false;
 				this.dragging2 = false;
+
+				if (this.needsUpdate) this.parent.setValue(hsbToHex(this.color));
+
 
 				const target = e.target as HTMLElement;
 				if(this.el?.contains(target)) return;
@@ -167,7 +173,8 @@ export class ColorPanel extends Panel<ColorItem> {
 		drawColorPickerSL(this.canvas1, this.color.h);
 		drawColorPickerBar(this.canvas2);
 
-		this.parent.setValue(hsbToHex(this.color));
+		this.parent.visualUpdate(hsbToHex(this.color))
+
 	}
 
 	updateCanvas1(): void {
@@ -278,12 +285,15 @@ export class ColorItem extends Item {
 		super.setValue(value);
 	}
 
-	refreshDom(): void {
+	visualUpdate(value:string):void {
+		const valueUpper = value.toUpperCase();
+		this.colorBox.style.setProperty('--active-color', valueUpper);
+		this.input.value = valueUpper;
+	}
 
+	refreshDom(): void {
 		this.colorBox.style.setProperty('--active-color', this.value);
 		this.input.value = this.value;
-
-		super.refreshDom();
 	}
 }
 
