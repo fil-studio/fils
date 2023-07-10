@@ -16,6 +16,19 @@ export function remove(el:HTMLElement):void {
 	el.remove();
 }
 
+export function openFullScreen(){
+	const el = document.documentElement as any;
+	if (el.requestFullscreen) {
+			el.requestFullscreen();
+	} else if (el.mozRequestFullScreen) { /* Firefox */
+			el.mozRequestFullScreen();
+	} else if (el.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+			el.webkitRequestFullscreen();
+	} else if (el.msRequestFullscreen) { /* IE/Edge */
+			el.msRequestFullscreen();
+	}
+}
+
 export function removeListeners (el:any):void {
 	const eventListeners = Object.keys(el.__events || {});
 
