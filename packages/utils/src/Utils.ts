@@ -2,7 +2,6 @@
  * Utils
  *
  */
-
 export function el (type:string, className?:string, parent?:HTMLElement):HTMLElement {
 	let e = document.createElement(type);
 	if (className != undefined) e.className = className;
@@ -16,16 +15,28 @@ export function remove(el:HTMLElement):void {
 	el.remove();
 }
 
-export function openFullScreen(){
-	const el = document.documentElement as any;
+export function openFullScreen(_el:HTMLElement = document.documentElement){
+	const el = _el as any;
 	if (el.requestFullscreen) {
-			el.requestFullscreen();
+		el.requestFullscreen();
 	} else if (el.mozRequestFullScreen) { /* Firefox */
-			el.mozRequestFullScreen();
+		el.mozRequestFullScreen();
 	} else if (el.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
-			el.webkitRequestFullscreen();
+		el.webkitRequestFullscreen();
 	} else if (el.msRequestFullscreen) { /* IE/Edge */
-			el.msRequestFullscreen();
+		el.msRequestFullscreen();
+	}
+}
+export function closeFullScreen() {
+	const doc = document as any;
+	if (doc.exitFullscreen) {
+		doc.exitFullscreen();
+	} else if (doc.mozCancelFullScreen) { /* Firefox */
+		doc.mozCancelFullScreen();
+	} else if (doc.webkitExitFullscreen) { /* Chrome, Safari & Opera */
+		doc.webkitExitFullscreen();
+	} else if (doc.msExitFullscreen) { /* IE/Edge */
+		doc.msExitFullscreen();
 	}
 }
 
