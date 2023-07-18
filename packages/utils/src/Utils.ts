@@ -15,28 +15,29 @@ export function remove(el:HTMLElement):void {
 	el.remove();
 }
 
-export function openFullScreen(_el:HTMLElement = document.documentElement){
-	const el = _el as any;
-	if (el.requestFullscreen) {
-		el.requestFullscreen();
-	} else if (el.mozRequestFullScreen) { /* Firefox */
-		el.mozRequestFullScreen();
-	} else if (el.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
-		el.webkitRequestFullscreen();
-	} else if (el.msRequestFullscreen) { /* IE/Edge */
-		el.msRequestFullscreen();
+export function openFullScreen(_el = document.documentElement) {
+	const el3 = _el as any;
+	if (el3.requestFullscreen) {
+		el3.requestFullscreen().catch(error => { console.log(error); });
+	} else if (el3.mozRequestFullScreen) {
+		el3.mozRequestFullScreen().catch(error => { console.log(error); });
+	} else if (el3.webkitRequestFullscreen) {
+		el3.webkitRequestFullscreen().catch(error => { console.log(error); });
+	} else if (el3.msRequestFullscreen) {
+		el3.msRequestFullscreen().catch(error => { console.log(error); });
 	}
 }
+
 export function closeFullScreen() {
 	const doc = document as any;
 	if (doc.exitFullscreen) {
-		doc.exitFullscreen();
+		doc.exitFullscreen().catch(error => { console.log(error); });
 	} else if (doc.mozCancelFullScreen) { /* Firefox */
-		doc.mozCancelFullScreen();
+		doc.mozCancelFullScreen().catch(error => { console.log(error); });
 	} else if (doc.webkitExitFullscreen) { /* Chrome, Safari & Opera */
-		doc.webkitExitFullscreen();
+		doc.webkitExitFullscreen().catch(error => { console.log(error); });
 	} else if (doc.msExitFullscreen) { /* IE/Edge */
-		doc.msExitFullscreen();
+		doc.msExitFullscreen().catch(error => { console.log(error); });
 	}
 }
 
