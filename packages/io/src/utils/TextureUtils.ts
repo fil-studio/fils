@@ -1,12 +1,12 @@
-import { CanvasTexture, ClampToEdgeWrapping, CubeTexture, LinearFilter, LinearMipmapLinearFilter, PixelFormat, RGBAFormat, Texture, TextureFilter, Vector2, VideoTexture, Wrapping } from "three";
+import { CanvasTexture, ClampToEdgeWrapping, CubeTexture, LinearFilter, LinearMipmapLinearFilter, MagnificationTextureFilter, MinificationTextureFilter, PixelFormat, RGBAFormat, Texture, Vector2, VideoTexture, Wrapping } from "three";
 
 class TextureOptions {
 	format?:PixelFormat;
 	wrapS?:Wrapping;
 	wrapT?:Wrapping;
 	repeat?:Vector2;
-	magFilter?:TextureFilter;
-	minFilter?:TextureFilter;
+	magFilter?:MagnificationTextureFilter;
+	minFilter?:MinificationTextureFilter;
 	flipY?:boolean;
 }
 
@@ -36,4 +36,4 @@ class TextureUtils {
 export {
 	TextureOptions,
 	TextureUtils
-}
+};

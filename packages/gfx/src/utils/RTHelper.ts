@@ -41,8 +41,8 @@ export class RTHelper {
 	renderMRT(target:WebGLMultipleRenderTargets, renderer:WebGLRenderer, index:number, x:number=0, y:number=0, width:number=0, height:number=0) {
 		// render FBO to screen
 		if (width == 0 || height == 0) {
-			width = target.width;
-			height = target.height;
+			width = target['width'];
+			height = target['height'];
 		}
 
 		this.drawTexture(target.texture[index], renderer, x, y, width, height);
@@ -69,7 +69,7 @@ export class RTHelper {
 	}
 
 	renderToTarget(target:WebGLRenderTarget|WebGLMultipleRenderTargets, renderer:WebGLRenderer, material:Material) {
-		let s = new Vector2(target.width, target.height);
+		let s = new Vector2(target['width'], target['height']);
 		
 		this.camera.left = -s.width / 2;
 		this.camera.right = s.width / 2;

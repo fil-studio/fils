@@ -101,13 +101,15 @@ export class WebGLSketch extends Sketch {
 		this.renderer.setSize(this.size.x, this.size.y);
 		
 		if(this.camera.type == "PerspectiveCamera") {
-			this.camera.aspect = this.size.x/this.size.y;
+			const cam = this.camera as PerspectiveCamera;
+			cam.aspect = this.size.x/this.size.y;
 		}
 		else {
-			this.camera.left = -width/2;
-			this.camera.right = width/2;
-			this.camera.top = height/2;
-			this.camera.bottom = -height/2;
+			const cam = this.camera as OrthographicCamera;
+			cam.left = -width/2;
+			cam.right = width/2;
+			cam.top = height/2;
+			cam.bottom = -height/2;
 		}
 
 		this.camera.updateProjectionMatrix();

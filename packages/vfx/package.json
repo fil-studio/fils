@@ -1,6 +1,6 @@
 {
 	"name": "@fils/vfx",
-	"version": "0.0.15",
+	"version": "0.1.0",
 	"description": "Web VFX Package written in TypeScript",
 	"module": "lib/main.js",
 	"main": "lib/main.js",
@@ -21,11 +21,11 @@
 		"typescript": "^4.8.4"
 	},
 	"peerDependencies": {
-		"three": "^0.150.0"
+		"three": "^0.155.0"
 	},
 	"dependencies": {
-		"@fils/gfx": "0.0.9",
-		"@fils/io": "^0.0.4",
+		"@fils/gfx": "0.1.0",
+		"@fils/io": "^0.0.8",
 		"@fils/math": "^0.0.9"
 	}
 }

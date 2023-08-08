@@ -2,18 +2,6 @@
 # yarn lockfile v1
 
 
-"@fils/gfx@0.0.9":
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/@fils/gfx/-/gfx-0.0.9.tgz#b053d9f653db07a6ee27c1b6b97e070648015603"
-  integrity sha512-m74S62fnYdsHjYn3/iq9kMTNVuoUuCZJwpenz/Ty+2NGLUAJuzByB48C0iBACzG190U0URHTTKhEIUEKl00NEQ==
-
-"@fils/io@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@fils/io/-/io-0.0.4.tgz#497cdfb0695f6ff288b7116b9c8123896f6f1652"
-  integrity sha512-+ul7IT+Ky9VX18ikLlaMBczfFb+77prs2CDy6qI1dZ6MwlyS9teVkrVSDPEC2GwPOVTIUzCdExdmUDlpR5YNxQ==
-  dependencies:
-    three "^0.149.0"
-
 "@fils/math@^0.0.8":
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/@fils/math/-/math-0.0.8.tgz#6827b0f59ae61b54b6390a72d0e18e07b1471ce6"
@@ -346,15 +334,10 @@ strip-ansi@^5.0.0, strip-ansi@^5.1.0, strip-ansi@^5.2.0:
   dependencies:
     ansi-regex "^4.1.0"
 
-three@^0.149.0:
-  version "0.149.0"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.149.0.tgz#a9cf78b17d02f063ffe6dfca1e300eff2eab2927"
-  integrity sha512-tohpUxPDht0qExRLDTM8sjRLc5d9STURNrdnK3w9A+V4pxaTBfKWWT/IqtiLfg23Vfc3Z+ImNfvRw1/0CtxrkQ==
-
-three@^0.150.0:
-  version "0.150.1"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.150.1.tgz#870d324a4d2daf1c7d55be97f3f73d83783e28be"
-  integrity sha512-5C1MqKUWaHYo13BX0Q64qcdwImgnnjSOFgBscOzAo8MYCzEtqfQqorEKMcajnA3FHy1yVlIe9AmaMQ0OQracNA==
+three@^0.155.0:
+  version "0.155.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.155.0.tgz#cca9b8ad817830c8b4fdd8f0d9a12a2e413a2672"
+  integrity sha512-sNgCYmDijnIqkD/bMfk+1pHg3YzsxW7V2ChpuP6HCQ8NiZr3RufsXQr8M3SSUMjW4hG+sUk7YbyuY0DncaDTJQ==
 
 to-regex-range@^5.0.1:
   version "5.0.1"

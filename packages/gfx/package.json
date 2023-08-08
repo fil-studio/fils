@@ -1,6 +1,6 @@
 {
 	"name": "@fils/gfx",
-	"version": "0.0.10",
+	"version": "0.1.0",
 	"description": "Web GFX Package written in TypeScript",
 	"module": "lib/main.js",
 	"main": "lib/main.js",
@@ -17,7 +17,7 @@
 		"lib"
 	],
 	"peerDependencies": {
-		"three": "^0.150.0"
+		"three": "^0.155.0"
 	},
 	"devDependencies": {
 		"typescript": "^4.8.4"

@@ -1,10 +1,10 @@
-import { BufferGeometry } from "three";
+import { BufferGeometry, InterleavedBufferAttribute } from "three";
 import { pt, Quad, Tri } from "./types";
 
 export function getV3FromVA(geo:BufferGeometry, id:string, i:number=0):pt {
     const attr = geo.getAttribute(id);
     const a = attr.array;
-    if(!attr.data && !attr.data.stride) {
+    if(!attr['data'] && !attr['data'].stride) {
         return {
             x: a[i*3],
             y: a[i*3+1],
@@ -12,8 +12,9 @@ export function getV3FromVA(geo:BufferGeometry, id:string, i:number=0):pt {
         }
     }
 
-    const stride = attr.data.stride;
-    const offset = attr.offset;
+    const att = attr as InterleavedBufferAttribute;
+    const stride = att.data.stride;
+    const offset = att.offset;
 
     return {
         x: a[i*stride + offset],
@@ -25,15 +26,16 @@ export function getV3FromVA(geo:BufferGeometry, id:string, i:number=0):pt {
 export function getV2FromVA(geo:BufferGeometry, id:string, i:number=0):pt {
     const attr = geo.getAttribute(id);
     const a = attr.array;
-    if(!attr.data && !attr.data.stride) {
+    if(!attr['data'] && !attr['data'].stride) {
         return {
             x: a[i*2],
             y: a[i*2+1]
         }
     }
 
-    const stride = attr.data.stride;
-    const offset = attr.offset;
+    const att = attr as InterleavedBufferAttribute;
+    const stride = att.data.stride;
+    const offset = att.offset;
 
     return {
         x: a[i*stride + offset],
