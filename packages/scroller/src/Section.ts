@@ -25,6 +25,8 @@ export class Section {
 	in:Function;
 	out:Function;
 
+	sticky:HTMLElement[] = [];
+
 
 	constructor(id: string, dom: HTMLElement, direction: D, animationIn:Function = ()=>{}, animationOut:Function = ()=>{}){
 
@@ -34,6 +36,14 @@ export class Section {
 
 		this.in = animationIn;
 		this.out = animationOut;
+
+		const s = dom.querySelectorAll('[fil-scroller-sticky]');
+
+		s.forEach(value=> {
+			this.sticky.push(value as HTMLElement);
+		})
+		// console.log(this.sticky);
+		
 	}
 
 	restore(){
@@ -77,7 +87,46 @@ export class Section {
 
 	updateTransform(){
 		if(this.disabled) return;
-		this.dom.style.transform = `translate3d(${this.position.x.toFixed(5)}px, ${this.position.y.toFixed(5)}px, 0)`;
+		let px = this.position.x, py = this.position.y;
+
+		const wH = window.innerHeight;
+
+		for(const s of this.sticky) {
+			let tY, sY;
+			switch(this.direction) {
+				case D.TOP:
+					// console.log(-this.threshold[1]+ wH, -this.threshold[0]-wH, py);
+					tY = 1 - MathUtils.smoothstep(-this.threshold[1]+ wH, -this.threshold[0]-wH, py);
+					sY = tY * (this.threshold[1] - this.threshold[0] - 2*wH);
+					s.style.transform = `translateY(${sY.toFixed(5)}px)`;
+					break;
+				case D.BOTTOM:
+					// console.log(-this.threshold[1]+ wH, -this.threshold[0]-wH, py);
+					tY = 1 - MathUtils.smoothstep(-this.threshold[1]+ wH, -this.threshold[0]-wH, py);
+					sY = tY * (this.threshold[1] - this.threshold[0] - 2*wH);
+					s.style.transform = `translateY(${sY.toFixed(5)}px)`;
+					break;
+				case D.LEFT:
+					break;
+				case D.RIGHT:
+					break;
+			}
+		}
+
+		/* if(this.sticky) {
+			console.log(py + this.threshold[0], py + this.threshold[1]);
+			switch (this.direction) {
+				case D.TOP:
+					if(py + this.threshold[1] > window.innerHeight && py + this.threshold[0] < -window.innerHeight) {
+						py = -this.threshold[0] - window.innerHeight;
+						console.log('sticky');
+						
+					}
+					break;
+			}
+		} */
+
+		this.dom.style.transform = `translate3d(${px.toFixed(5)}px, ${py.toFixed(5)}px, 0)`;
 	}
 
 	update(){

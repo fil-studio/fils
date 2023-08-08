@@ -1,4 +1,5 @@
 
+// import { Scroller } from '../../../../packages/scroller/src/Scroller';
 import { Scroller } from '@fils/scroller';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { UI } from '@fils/ui';
@@ -16,7 +17,7 @@ export class App {
 
 		this.cssVariablesElements = document.querySelectorAll('[css-var]');
 
-		const stats = Stats();
+		const stats = new Stats();
 		stats.showPanel(0);
 		document.body.appendChild(stats.dom);
 

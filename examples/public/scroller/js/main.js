@@ -245,11 +245,16 @@
           this.delta = 0;
           this.visible = true;
           this.disabled = false;
+          this.sticky = [];
           this.id = id;
           this.dom = dom2;
           this.direction = direction;
           this.in = animationIn;
           this.out = animationOut;
+          const s = dom2.querySelectorAll("[fil-scroller-sticky]");
+          s.forEach((value) => {
+            this.sticky.push(value);
+          });
         }
         restore() {
           this.dom.style.transform = "none";
@@ -289,7 +294,28 @@
         updateTransform() {
           if (this.disabled)
             return;
-          this.dom.style.transform = `translate3d(${this.position.x.toFixed(5)}px, ${this.position.y.toFixed(5)}px, 0)`;
+          let px = this.position.x, py = this.position.y;
+          const wH = window.innerHeight;
+          for (const s of this.sticky) {
+            let tY, sY;
+            switch (this.direction) {
+              case D.TOP:
+                tY = 1 - MathUtils.smoothstep(-this.threshold[1] + wH, -this.threshold[0] - wH, py);
+                sY = tY * (this.threshold[1] - this.threshold[0] - 2 * wH);
+                s.style.transform = `translateY(${sY.toFixed(5)}px)`;
+                break;
+              case D.BOTTOM:
+                tY = 1 - MathUtils.smoothstep(-this.threshold[1] + wH, -this.threshold[0] - wH, py);
+                sY = tY * (this.threshold[1] - this.threshold[0] - 2 * wH);
+                s.style.transform = `translateY(${sY.toFixed(5)}px)`;
+                break;
+              case D.LEFT:
+                break;
+              case D.RIGHT:
+                break;
+            }
+          }
+          this.dom.style.transform = `translate3d(${px.toFixed(5)}px, ${py.toFixed(5)}px, 0)`;
         }
         update() {
           if (this.scroll >= this.threshold[0] && this.scroll <= this.threshold[1]) {
@@ -3192,7 +3218,7 @@
         constructor() {
           this.scroller = new Scroller();
           this.cssVariablesElements = document.querySelectorAll("[css-var]");
-          const stats = stats_module_default();
+          const stats = new stats_module_default();
           stats.showPanel(0);
           document.body.appendChild(stats.dom);
           const animate = () => {
