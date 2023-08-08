@@ -75,7 +75,7 @@ const style = `
 		visibility: hidden;
 		will-change: transform;
 	}
-	[fil-scroller-section].fil-scroller-visible {
+	[fil-scroller-section].fil-scroller__visible {
 		opacity: 1;
 		visibility: visible;
 	}
@@ -98,12 +98,12 @@ export class Scroller {
 		target: 0
 	};
 
-	private _direction: D = D.RIGHT;
+	private _direction: D = D.TOP;
 
 	sections:Array<Section> = [];
 
 	private loaded: boolean = false;
-	private paused: boolean = false;
+	// private paused: boolean = false;
 	private disabled: boolean = false;
 
 	distance: number = 0;
@@ -118,24 +118,25 @@ export class Scroller {
 
 	pointerElements:NodeListOf<HTMLElement>;
 
-	constructor(){
+	in:Function;
+	out:Function;
+
+	constructor(animationsIn:Function=(section:Section)=>{}, animationOut:Function=(section:Section)=>{}){
 
 		this.html.scroller = document.querySelector('[fil-scroller]');
 
 		if(!this.html.scroller){
-			console.warn('Fil Scroller - No `fil-scroller` element');
+			console.warn('Fil Scroller - No `[fil-scroller]` element');
 			return;
 		}
 
-		this.create();
-	}
+		this.addStyles();
+		this.refresh();
+		this.addEventListeners();
 
-	// Pause - resume
-	pause(){
-		this.paused = true;
-	}
-	resume(){
-		this.paused = false;
+		this.in = animationsIn;
+		this.out = animationOut;
+
 	}
 
 	// Disable - enable
@@ -196,7 +197,7 @@ export class Scroller {
 		for(let i = 0, len = sections.length; i<len; i++){
 			const _section = sections[i];
 			const id = _section.getAttribute('fil-scroller-section') ? _section.getAttribute('fil-scroller-section') : `section-${i}`;
-			const section = new Section(id, _section, this.direction);
+			const section = new Section(id, _section, this.direction, this.in, this.out);
 			this.sections.push(section);
 		}
 	}
@@ -221,30 +222,42 @@ export class Scroller {
 		})
 
 		let timeout;
-		const disableScroll = () => {
+		const disableScroll = (e) => {
 			if(timeout) clearTimeout(timeout);
-			document.documentElement.classList.add('scroller__scrolling')
+			document.documentElement.classList.add('fil-scroller__scrolling')
 			timeout = setTimeout(() => {
-				document.documentElement.classList.remove('scroller__scrolling')
+				document.documentElement.classList.remove('fil-scroller__scrolling')
 			}, 20)
 		}
-		window.addEventListener('wheel', () => {
-			disableScroll();
+		window.addEventListener('wheel', (e) => {
+			disableScroll(e);
 		})
-		window.addEventListener('touchmove', () => {
-			disableScroll();
+		window.addEventListener('touchmove', (e) => {
+			disableScroll(e);
 		})
+	}
+
+	refresh(forceTop:boolean = true) {
+
+		this.loaded = false;
+
+		if(forceTop){
+			this.html.scroller.scrollTop = 0;
+		}
+		this.position.current = this.html.scroller.scrollTop;
+		this.position.target = this.html.scroller.scrollTop;
+
+		this.sections = [];
+
+		this.create();
+
 	}
 
 	create(){
 
-		this.addStyles();
-
 		this.addHTML();
 
 		this.addSections();
-
-		this.addEventListeners();
 
 		this.restore();
 
@@ -258,7 +271,7 @@ export class Scroller {
 
 	updateTarget(){
 		this.position.target = this.html.scroller.scrollTop;
-		if(this.paused) this.html.scroller.scrollTop = this.position.current;
+		// this.html.scroller.scrollTop = this.position.current;
 	}
 
 	updateCheckHeight(){
@@ -307,7 +320,6 @@ export class Scroller {
 			section.scroll = scroll;
 			section.delta = this.delta;
 			section.widthOffset = w;
-			w += section.rect.width;
 			section.update();
 		}
 

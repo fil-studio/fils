@@ -56,15 +56,15 @@
         }
         function multiplication32(n1, n2) {
           var sum = 0;
-          for (var i2 = 0; i2 < 32; ++i2) {
-            if (n1 >>> i2 & 1) {
-              sum = addition32(sum, unsigned32(n2 << i2));
+          for (var i = 0; i < 32; ++i) {
+            if (n1 >>> i & 1) {
+              sum = addition32(sum, unsigned32(n2 << i));
             }
           }
           return sum;
         }
-        this.init_genrand = function(s2) {
-          mt[0] = unsigned32(s2 & 4294967295);
+        this.init_genrand = function(s) {
+          mt[0] = unsigned32(s & 4294967295);
           for (mti = 1; mti < N; mti++) {
             mt[mti] = //c//(1812433253 * (mt[mti-1] ^ (mt[mti-1] >> 30)) + mti);
             addition32(multiplication32(1812433253, unsigned32(mt[mti - 1] ^ mt[mti - 1] >>> 30)), mti);
@@ -72,31 +72,31 @@
           }
         };
         this.init_by_array = function(init_key, key_length) {
-          var i2, j, k;
+          var i, j, k;
           this.init_genrand(19650218);
-          i2 = 1;
+          i = 1;
           j = 0;
           k = N > key_length ? N : key_length;
           for (; k; k--) {
-            mt[i2] = addition32(addition32(unsigned32(mt[i2] ^ multiplication32(unsigned32(mt[i2 - 1] ^ mt[i2 - 1] >>> 30), 1664525)), init_key[j]), j);
-            mt[i2] = //c//mt[i] &= 0xffffffff; /* for WORDSIZE > 32 machines */
-            unsigned32(mt[i2] & 4294967295);
-            i2++;
+            mt[i] = addition32(addition32(unsigned32(mt[i] ^ multiplication32(unsigned32(mt[i - 1] ^ mt[i - 1] >>> 30), 1664525)), init_key[j]), j);
+            mt[i] = //c//mt[i] &= 0xffffffff; /* for WORDSIZE > 32 machines */
+            unsigned32(mt[i] & 4294967295);
+            i++;
             j++;
-            if (i2 >= N) {
+            if (i >= N) {
               mt[0] = mt[N - 1];
-              i2 = 1;
+              i = 1;
             }
             if (j >= key_length)
               j = 0;
           }
           for (k = N - 1; k; k--) {
-            mt[i2] = subtraction32(unsigned32((dbg = mt[i2]) ^ multiplication32(unsigned32(mt[i2 - 1] ^ mt[i2 - 1] >>> 30), 1566083941)), i2);
-            mt[i2] = unsigned32(mt[i2] & 4294967295);
-            i2++;
-            if (i2 >= N) {
+            mt[i] = subtraction32(unsigned32((dbg = mt[i]) ^ multiplication32(unsigned32(mt[i - 1] ^ mt[i - 1] >>> 30), 1566083941)), i);
+            mt[i] = unsigned32(mt[i] & 4294967295);
+            i++;
+            if (i >= N) {
               mt[0] = mt[N - 1];
-              i2 = 1;
+              i = 1;
             }
           }
           mt[0] = 2147483648;
@@ -140,8 +140,8 @@
           return (this.genrand_int32() + 0.5) * (1 / 4294967296);
         };
         this.genrand_res53 = function() {
-          var a2 = this.genrand_int32() >>> 5, b = this.genrand_int32() >>> 6;
-          return (a2 * 67108864 + b) * (1 / 9007199254740992);
+          var a = this.genrand_int32() >>> 5, b = this.genrand_int32() >>> 6;
+          return (a * 67108864 + b) * (1 / 9007199254740992);
         };
       }
       exports.MersenneTwister19937 = MersenneTwister19937;
@@ -200,11 +200,11 @@
         static step(thrsh, val) {
           return val < thrsh ? 0 : 1;
         }
-        static map(x, a2, b, c2, d2) {
-          return (x - a2) * (d2 - c2) / (b - a2) + c2;
+        static map(x, a, b, c7, d) {
+          return (x - a) * (d - c7) / (b - a) + c7;
         }
-        static fract(n2) {
-          return n2 % 1;
+        static fract(n) {
+          return n % 1;
         }
       };
     }
@@ -233,7 +233,9 @@
       init_main();
       init_Scroller();
       Section = class {
-        constructor(id, dom, direction) {
+        constructor(id, dom2, direction, animationIn = () => {
+        }, animationOut = () => {
+        }) {
           this.w = {
             w: 0,
             h: 0
@@ -244,8 +246,10 @@
           this.visible = true;
           this.disabled = false;
           this.id = id;
-          this.dom = dom;
+          this.dom = dom2;
           this.direction = direction;
+          this.in = animationIn;
+          this.out = animationOut;
         }
         restore() {
           this.dom.style.transform = "none";
@@ -253,8 +257,10 @@
           this.rect = this.dom.getBoundingClientRect();
         }
         animationIn() {
+          this.in(this);
         }
         animationOut() {
+          this.out(this);
         }
         get threshold() {
           if (this.direction === D.TOP || this.direction === D.BOTTOM)
@@ -283,17 +289,17 @@
         updateTransform() {
           if (this.disabled)
             return;
-          this.dom.style.transform = `translate3d(${this.position.x}px, ${this.position.y}px, 0)`;
+          this.dom.style.transform = `translate3d(${this.position.x.toFixed(5)}px, ${this.position.y.toFixed(5)}px, 0)`;
         }
         update() {
           if (this.scroll >= this.threshold[0] && this.scroll <= this.threshold[1]) {
             if (!this.visible)
               this.animationIn();
             this.visible = true;
-            this.dom.classList.add("fil-scroller-visible");
-            this.dom.style.setProperty("--fil-scroller-delta", `${this.delta}`);
+            this.dom.classList.add("fil-scroller__visible");
+            this.dom.style.setProperty("--fil-scroller-delta", `${this.delta.toFixed(5)}`);
             this.progress = MathUtils.map(this.scroll, this.threshold[0], this.threshold[1], 0, 1);
-            this.dom.style.setProperty("--fil-scroller-progress", `${this.progress}`);
+            this.dom.style.setProperty("--fil-scroller-progress", `${this.progress.toFixed(5)}`);
             this.updateTransform();
             return;
           }
@@ -301,7 +307,7 @@
             return;
           this.animationOut();
           this.visible = false;
-          this.dom.classList.remove("fil-scroller-visible");
+          this.dom.classList.remove("fil-scroller__visible");
           this.dom.style.setProperty("--fil-scroller-delta", "0");
           this.progress = 0;
           this.updateTransform();
@@ -377,7 +383,7 @@
 		visibility: hidden;
 		will-change: transform;
 	}
-	[fil-scroller-section].fil-scroller-visible {
+	[fil-scroller-section].fil-scroller__visible {
 		opacity: 1;
 		visibility: visible;
 	}
@@ -387,7 +393,9 @@
 	}
 `;
       Scroller = class {
-        constructor() {
+        constructor(animationsIn = (section) => {
+        }, animationOut = (section) => {
+        }) {
           this.html = {
             scroller: null,
             holder: null,
@@ -398,10 +406,9 @@
             current: 0,
             target: 0
           };
-          this._direction = D.RIGHT;
+          this._direction = D.TOP;
           this.sections = [];
           this.loaded = false;
-          this.paused = false;
           this.disabled = false;
           this.distance = 0;
           this._ease = 0.16;
@@ -412,17 +419,14 @@
           };
           this.html.scroller = document.querySelector("[fil-scroller]");
           if (!this.html.scroller) {
-            console.warn("Fil Scroller - No `fil-scroller` element");
+            console.warn("Fil Scroller - No `[fil-scroller]` element");
             return;
           }
-          this.create();
-        }
-        // Pause - resume
-        pause() {
-          this.paused = true;
-        }
-        resume() {
-          this.paused = false;
+          this.addStyles();
+          this.refresh();
+          this.addEventListeners();
+          this.in = animationsIn;
+          this.out = animationOut;
         }
         // Disable - enable
         disable() {
@@ -464,18 +468,18 @@
           document.head.append(_styles);
         }
         addHTML() {
-          const dom = this.html.scroller;
-          this.html.holder = dom.querySelector("[fil-scroller-holder]");
-          this.html.container = dom.querySelector("[fil-scroller-container]");
-          this.html.content = dom.querySelector("[fil-scroller-content]");
-          this.pointerElements = dom.querySelectorAll("[fil-scroller-pointer]");
+          const dom2 = this.html.scroller;
+          this.html.holder = dom2.querySelector("[fil-scroller-holder]");
+          this.html.container = dom2.querySelector("[fil-scroller-container]");
+          this.html.content = dom2.querySelector("[fil-scroller-content]");
+          this.pointerElements = dom2.querySelectorAll("[fil-scroller-pointer]");
         }
         addSections() {
           const sections = this.html.content.querySelectorAll("[fil-scroller-section]");
-          for (let i2 = 0, len = sections.length; i2 < len; i2++) {
-            const _section = sections[i2];
-            const id = _section.getAttribute("fil-scroller-section") ? _section.getAttribute("fil-scroller-section") : `section-${i2}`;
-            const section = new Section(id, _section, this.direction);
+          for (let i = 0, len = sections.length; i < len; i++) {
+            const _section = sections[i];
+            const id = _section.getAttribute("fil-scroller-section") ? _section.getAttribute("fil-scroller-section") : `section-${i}`;
+            const section = new Section(id, _section, this.direction, this.in, this.out);
             this.sections.push(section);
           }
         }
@@ -495,26 +499,34 @@
             this.onResize();
           });
           let timeout;
-          const disableScroll = () => {
+          const disableScroll = (e) => {
             if (timeout)
               clearTimeout(timeout);
-            document.documentElement.classList.add("scroller__scrolling");
+            document.documentElement.classList.add("fil-scroller__scrolling");
             timeout = setTimeout(() => {
-              document.documentElement.classList.remove("scroller__scrolling");
+              document.documentElement.classList.remove("fil-scroller__scrolling");
             }, 20);
           };
-          window.addEventListener("wheel", () => {
-            disableScroll();
+          window.addEventListener("wheel", (e) => {
+            disableScroll(e);
           });
-          window.addEventListener("touchmove", () => {
-            disableScroll();
+          window.addEventListener("touchmove", (e) => {
+            disableScroll(e);
           });
         }
+        refresh(forceTop = true) {
+          this.loaded = false;
+          if (forceTop) {
+            this.html.scroller.scrollTop = 0;
+          }
+          this.position.current = this.html.scroller.scrollTop;
+          this.position.target = this.html.scroller.scrollTop;
+          this.sections = [];
+          this.create();
+        }
         create() {
-          this.addStyles();
           this.addHTML();
           this.addSections();
-          this.addEventListeners();
           this.restore();
           if ("scrollRestoration" in history)
             history.scrollRestoration = "manual";
@@ -523,17 +535,15 @@
         }
         updateTarget() {
           this.position.target = this.html.scroller.scrollTop;
-          if (this.paused)
-            this.html.scroller.scrollTop = this.position.current;
         }
         updateCheckHeight() {
           this.distance = 0;
           const vertical = this.direction === D.TOP || this.direction === D.BOTTOM;
-          for (let i2 = 0, len = this.sections.length; i2 < len; i2++) {
+          for (let i = 0, len = this.sections.length; i < len; i++) {
             if (vertical)
-              this.distance += this.sections[i2].rect.height;
+              this.distance += this.sections[i].rect.height;
             else
-              this.distance += this.sections[i2].rect.width;
+              this.distance += this.sections[i].rect.width;
           }
           if (!vertical)
             this.distance += this.w.h - this.w.w;
@@ -552,12 +562,11 @@
         updateSections() {
           const scroll = this.position.current;
           let w = 0;
-          for (let i2 = 0, len = this.sections.length; i2 < len; i2++) {
-            const section = this.sections[i2];
+          for (let i = 0, len = this.sections.length; i < len; i++) {
+            const section = this.sections[i];
             section.scroll = scroll;
             section.delta = this.delta;
             section.widthOffset = w;
-            w += section.rect.width;
             section.update();
           }
         }
@@ -598,8 +607,8 @@
           return panel;
         }
         function showPanel(id) {
-          for (var i2 = 0; i2 < container.children.length; i2++) {
-            container.children[i2].style.display = i2 === id ? "block" : "none";
+          for (var i = 0; i < container.children.length; i++) {
+            container.children[i].style.display = i === id ? "block" : "none";
           }
           mode = id;
         }
@@ -682,443 +691,2489 @@
     }
   });
 
-  // node_modules/three/examples/jsm/libs/lil-gui.module.min.js
-  function e(t2) {
-    let i2, e2;
-    return (i2 = t2.match(/(#|0x)?([a-f0-9]{6})/i)) ? e2 = i2[2] : (i2 = t2.match(/rgb\(\s*(\d*)\s*,\s*(\d*)\s*,\s*(\d*)\s*\)/)) ? e2 = parseInt(i2[1]).toString(16).padStart(2, 0) + parseInt(i2[2]).toString(16).padStart(2, 0) + parseInt(i2[3]).toString(16).padStart(2, 0) : (i2 = t2.match(/^#?([a-f0-9])([a-f0-9])([a-f0-9])$/i)) && (e2 = i2[1] + i2[1] + i2[2] + i2[2] + i2[3] + i2[3]), !!e2 && "#" + e2;
+  // ../packages/ui/node_modules/@fils/utils/lib/Utils.js
+  function el(type, className, parent) {
+    let e = document.createElement(type);
+    if (className != void 0)
+      e.className = className;
+    if (parent != void 0)
+      parent.appendChild(e);
+    return e;
   }
-  var t, i, s, n, l, r, o, a, h, d, c, u, p, g;
-  var init_lil_gui_module_min = __esm({
-    "node_modules/three/examples/jsm/libs/lil-gui.module.min.js"() {
-      t = class {
-        constructor(i2, e2, s2, n2, l2 = "div") {
-          this.parent = i2, this.object = e2, this.property = s2, this._disabled = false, this._hidden = false, this.initialValue = this.getValue(), this.domElement = document.createElement("div"), this.domElement.classList.add("controller"), this.domElement.classList.add(n2), this.$name = document.createElement("div"), this.$name.classList.add("name"), t.nextNameID = t.nextNameID || 0, this.$name.id = "lil-gui-name-" + ++t.nextNameID, this.$widget = document.createElement(l2), this.$widget.classList.add("widget"), this.$disable = this.$widget, this.domElement.appendChild(this.$name), this.domElement.appendChild(this.$widget), this.parent.children.push(this), this.parent.controllers.push(this), this.parent.$children.appendChild(this.domElement), this._listenCallback = this._listenCallback.bind(this), this.name(s2);
-        }
-        name(t2) {
-          return this._name = t2, this.$name.innerHTML = t2, this;
-        }
-        onChange(t2) {
-          return this._onChange = t2, this;
-        }
-        _callOnChange() {
-          this.parent._callOnChange(this), void 0 !== this._onChange && this._onChange.call(this, this.getValue()), this._changed = true;
-        }
-        onFinishChange(t2) {
-          return this._onFinishChange = t2, this;
-        }
-        _callOnFinishChange() {
-          this._changed && (this.parent._callOnFinishChange(this), void 0 !== this._onFinishChange && this._onFinishChange.call(this, this.getValue())), this._changed = false;
-        }
-        reset() {
-          return this.setValue(this.initialValue), this._callOnFinishChange(), this;
-        }
-        enable(t2 = true) {
-          return this.disable(!t2);
-        }
-        disable(t2 = true) {
-          return t2 === this._disabled || (this._disabled = t2, this.domElement.classList.toggle("disabled", t2), this.$disable.toggleAttribute("disabled", t2)), this;
-        }
-        show(t2 = true) {
-          return this._hidden = !t2, this.domElement.style.display = this._hidden ? "none" : "", this;
-        }
-        hide() {
-          return this.show(false);
-        }
-        options(t2) {
-          const i2 = this.parent.add(this.object, this.property, t2);
-          return i2.name(this._name), this.destroy(), i2;
-        }
-        min(t2) {
-          return this;
-        }
-        max(t2) {
-          return this;
-        }
-        step(t2) {
-          return this;
-        }
-        decimals(t2) {
-          return this;
-        }
-        listen(t2 = true) {
-          return this._listening = t2, void 0 !== this._listenCallbackID && (cancelAnimationFrame(this._listenCallbackID), this._listenCallbackID = void 0), this._listening && this._listenCallback(), this;
-        }
-        _listenCallback() {
-          this._listenCallbackID = requestAnimationFrame(this._listenCallback);
-          const t2 = this.save();
-          t2 !== this._listenPrevValue && this.updateDisplay(), this._listenPrevValue = t2;
-        }
-        getValue() {
-          return this.object[this.property];
-        }
-        setValue(t2) {
-          return this.object[this.property] = t2, this._callOnChange(), this.updateDisplay(), this;
-        }
-        updateDisplay() {
-          return this;
-        }
-        load(t2) {
-          return this.setValue(t2), this._callOnFinishChange(), this;
-        }
-        save() {
-          return this.getValue();
-        }
-        destroy() {
-          this.listen(false), this.parent.children.splice(this.parent.children.indexOf(this), 1), this.parent.controllers.splice(this.parent.controllers.indexOf(this), 1), this.parent.$children.removeChild(this.domElement);
-        }
-      };
-      i = class extends t {
-        constructor(t2, i2, e2) {
-          super(t2, i2, e2, "boolean", "label"), this.$input = document.createElement("input"), this.$input.setAttribute("type", "checkbox"), this.$input.setAttribute("aria-labelledby", this.$name.id), this.$widget.appendChild(this.$input), this.$input.addEventListener("change", () => {
-            this.setValue(this.$input.checked), this._callOnFinishChange();
-          }), this.$disable = this.$input, this.updateDisplay();
-        }
-        updateDisplay() {
-          return this.$input.checked = this.getValue(), this;
-        }
-      };
-      s = { isPrimitive: true, match: (t2) => "string" == typeof t2, fromHexString: e, toHexString: e };
-      n = { isPrimitive: true, match: (t2) => "number" == typeof t2, fromHexString: (t2) => parseInt(t2.substring(1), 16), toHexString: (t2) => "#" + t2.toString(16).padStart(6, 0) };
-      l = { isPrimitive: false, match: Array.isArray, fromHexString(t2, i2, e2 = 1) {
-        const s2 = n.fromHexString(t2);
-        i2[0] = (s2 >> 16 & 255) / 255 * e2, i2[1] = (s2 >> 8 & 255) / 255 * e2, i2[2] = (255 & s2) / 255 * e2;
-      }, toHexString: ([t2, i2, e2], s2 = 1) => n.toHexString(t2 * (s2 = 255 / s2) << 16 ^ i2 * s2 << 8 ^ e2 * s2 << 0) };
-      r = { isPrimitive: false, match: (t2) => Object(t2) === t2, fromHexString(t2, i2, e2 = 1) {
-        const s2 = n.fromHexString(t2);
-        i2.r = (s2 >> 16 & 255) / 255 * e2, i2.g = (s2 >> 8 & 255) / 255 * e2, i2.b = (255 & s2) / 255 * e2;
-      }, toHexString: ({ r: t2, g: i2, b: e2 }, s2 = 1) => n.toHexString(t2 * (s2 = 255 / s2) << 16 ^ i2 * s2 << 8 ^ e2 * s2 << 0) };
-      o = [s, n, l, r];
-      a = class extends t {
-        constructor(t2, i2, s2, n2) {
-          var l2;
-          super(t2, i2, s2, "color"), this.$input = document.createElement("input"), this.$input.setAttribute("type", "color"), this.$input.setAttribute("tabindex", -1), this.$input.setAttribute("aria-labelledby", this.$name.id), this.$text = document.createElement("input"), this.$text.setAttribute("type", "text"), this.$text.setAttribute("spellcheck", "false"), this.$text.setAttribute("aria-labelledby", this.$name.id), this.$display = document.createElement("div"), this.$display.classList.add("display"), this.$display.appendChild(this.$input), this.$widget.appendChild(this.$display), this.$widget.appendChild(this.$text), this._format = (l2 = this.initialValue, o.find((t3) => t3.match(l2))), this._rgbScale = n2, this._initialValueHexString = this.save(), this._textFocused = false, this.$input.addEventListener("input", () => {
-            this._setValueFromHexString(this.$input.value);
-          }), this.$input.addEventListener("blur", () => {
-            this._callOnFinishChange();
-          }), this.$text.addEventListener("input", () => {
-            const t3 = e(this.$text.value);
-            t3 && this._setValueFromHexString(t3);
-          }), this.$text.addEventListener("focus", () => {
-            this._textFocused = true, this.$text.select();
-          }), this.$text.addEventListener("blur", () => {
-            this._textFocused = false, this.updateDisplay(), this._callOnFinishChange();
-          }), this.$disable = this.$text, this.updateDisplay();
-        }
-        reset() {
-          return this._setValueFromHexString(this._initialValueHexString), this;
-        }
-        _setValueFromHexString(t2) {
-          if (this._format.isPrimitive) {
-            const i2 = this._format.fromHexString(t2);
-            this.setValue(i2);
-          } else
-            this._format.fromHexString(t2, this.getValue(), this._rgbScale), this._callOnChange(), this.updateDisplay();
-        }
-        save() {
-          return this._format.toHexString(this.getValue(), this._rgbScale);
-        }
-        load(t2) {
-          return this._setValueFromHexString(t2), this._callOnFinishChange(), this;
-        }
-        updateDisplay() {
-          return this.$input.value = this._format.toHexString(this.getValue(), this._rgbScale), this._textFocused || (this.$text.value = this.$input.value.substring(1)), this.$display.style.backgroundColor = this.$input.value, this;
-        }
-      };
-      h = class extends t {
-        constructor(t2, i2, e2) {
-          super(t2, i2, e2, "function"), this.$button = document.createElement("button"), this.$button.appendChild(this.$name), this.$widget.appendChild(this.$button), this.$button.addEventListener("click", (t3) => {
-            t3.preventDefault(), this.getValue().call(this.object);
-          }), this.$button.addEventListener("touchstart", () => {
-          }, { passive: true }), this.$disable = this.$button;
-        }
-      };
-      d = class extends t {
-        constructor(t2, i2, e2, s2, n2, l2) {
-          super(t2, i2, e2, "number"), this._initInput(), this.min(s2), this.max(n2);
-          const r2 = void 0 !== l2;
-          this.step(r2 ? l2 : this._getImplicitStep(), r2), this.updateDisplay();
-        }
-        decimals(t2) {
-          return this._decimals = t2, this.updateDisplay(), this;
-        }
-        min(t2) {
-          return this._min = t2, this._onUpdateMinMax(), this;
-        }
-        max(t2) {
-          return this._max = t2, this._onUpdateMinMax(), this;
-        }
-        step(t2, i2 = true) {
-          return this._step = t2, this._stepExplicit = i2, this;
-        }
-        updateDisplay() {
-          const t2 = this.getValue();
-          if (this._hasSlider) {
-            let i2 = (t2 - this._min) / (this._max - this._min);
-            i2 = Math.max(0, Math.min(i2, 1)), this.$fill.style.width = 100 * i2 + "%";
+  function remove(el2) {
+    removeListeners(el2);
+    el2.remove();
+  }
+  function removeListeners(el2) {
+    const eventListeners = Object.keys(el2.__events || {});
+    Object.keys(eventListeners).forEach((eventType) => {
+      eventListeners[eventType].forEach((listener) => {
+        el2.removeEventListener(eventType, listener);
+      });
+    });
+    delete el2.__events;
+  }
+  function debounce(func, delay = 250) {
+    let timerId;
+    return function() {
+      clearTimeout(timerId);
+      timerId = setTimeout(() => func.apply(this, arguments), delay);
+    };
+  }
+  var init_Utils = __esm({
+    "../packages/ui/node_modules/@fils/utils/lib/Utils.js"() {
+    }
+  });
+
+  // ../packages/ui/node_modules/@fils/utils/lib/FileUtils.js
+  var init_FileUtils = __esm({
+    "../packages/ui/node_modules/@fils/utils/lib/FileUtils.js"() {
+    }
+  });
+
+  // ../packages/ui/node_modules/@fils/utils/lib/TypeUtils.js
+  function isUndefined(obj) {
+    return obj === void 0;
+  }
+  function isNull(obj) {
+    return obj === null;
+  }
+  function isArray(obj) {
+    return obj.constructor === Array;
+  }
+  function isObject(obj) {
+    return obj === Object(obj);
+  }
+  function isNumber(obj) {
+    return obj === obj + 0;
+  }
+  function isString(obj) {
+    return obj === obj + "";
+  }
+  function isBoolean(obj) {
+    return obj === false || obj === true;
+  }
+  function isFunction(obj) {
+    return obj instanceof Function;
+  }
+  function getType(obj) {
+    if (isUndefined(obj))
+      return "undefined";
+    if (isNull(obj))
+      return "null";
+    if (isArray(obj))
+      return "array";
+    if (isObject(obj))
+      return "object";
+    if (isNumber(obj))
+      return "number";
+    if (isString(obj))
+      return "string";
+    if (isBoolean(obj))
+      return "boolean";
+    if (isFunction(obj))
+      return "function";
+  }
+  var init_TypeUtils = __esm({
+    "../packages/ui/node_modules/@fils/utils/lib/TypeUtils.js"() {
+    }
+  });
+
+  // ../packages/ui/node_modules/@fils/utils/lib/main.js
+  var init_main3 = __esm({
+    "../packages/ui/node_modules/@fils/utils/lib/main.js"() {
+      init_Utils();
+      init_FileUtils();
+      init_TypeUtils();
+    }
+  });
+
+  // ../packages/ui/lib/partials/cssClasses.js
+  var CSS_UI;
+  var init_cssClasses = __esm({
+    "../packages/ui/lib/partials/cssClasses.js"() {
+      CSS_UI = {
+        baseClass: "_ui",
+        wrapper: "_ui-wrapper",
+        minimal: "_ui-minimal",
+        parent: "_ui-wrapper-has-parent",
+        resizer: "_ui-wrapper-resizer",
+        item: "_ui-item",
+        content: "_ui-item-content",
+        utility: {
+          hidden: "_ui--hidden",
+          grab: "_ui--grab",
+          active: "_ui--active",
+          loaded: "_ui--loaded"
+        },
+        row: {
+          baseClass: "_ui-row",
+          vertical: "_ui-row-vertical",
+          hasButton: "_ui-row-has-button",
+          custom: "_ui-row-custom"
+        },
+        button: {
+          baseClass: "_ui-button",
+          hasIcon: "_ui-button-has-icon",
+          icon: "_ui-button-icon",
+          happy: "_ui-button-happy",
+          warning: "_ui-button-warning",
+          danger: "_ui-button-danger"
+        },
+        section: {
+          baseClass: "_ui-section",
+          header: {
+            baseClass: "_ui-section-header",
+            hasIcon: "_ui-section-header-has-icon",
+            icon: "_ui-section-header-icon",
+            chevron: "_ui-section-header-chevron"
+          },
+          content: "_ui-section-content",
+          foldable: "_ui-section-foldable",
+          folded: "_ui-section-folded",
+          foldableElement: "_ui-section-foldable-element"
+        },
+        spacer: {
+          baseClass: "_ui-spacer",
+          hasLine: "_ui-spacer-has-line",
+          size: {
+            small: "_ui-spacer-small",
+            medium: "_ui-spacer-medium",
+            large: "_ui-spacer-large"
           }
-          return this._inputFocused || (this.$input.value = void 0 === this._decimals ? t2 : t2.toFixed(this._decimals)), this;
+        },
+        panel: {
+          baseClass: "_ui-panel"
+        },
+        select: {
+          panel: "_ui-panel-select",
+          optionNone: "_ui-panel-select-option-none",
+          option: "_ui-panel-select-option",
+          optionButton: "_ui-panel-select-option-button"
+        },
+        info: {
+          baseClass: "_ui-info",
+          text: "_ui-info-text"
         }
-        _initInput() {
-          this.$input = document.createElement("input"), this.$input.setAttribute("type", "number"), this.$input.setAttribute("step", "any"), this.$input.setAttribute("aria-labelledby", this.$name.id), this.$widget.appendChild(this.$input), this.$disable = this.$input;
-          const t2 = (t3) => {
-            const i3 = parseFloat(this.$input.value);
-            isNaN(i3) || (this._snapClampSetValue(i3 + t3), this.$input.value = this.getValue());
-          };
-          let i2, e2, s2, n2, l2, r2 = false;
-          const o2 = (t3) => {
-            if (r2) {
-              const s3 = t3.clientX - i2, n3 = t3.clientY - e2;
-              Math.abs(n3) > 5 ? (t3.preventDefault(), this.$input.blur(), r2 = false, this._setDraggingStyle(true, "vertical")) : Math.abs(s3) > 5 && a2();
+      };
+    }
+  });
+
+  // ../packages/ui-icons/lib/Icons.js
+  var uiDownarrowHlt, uiRemove, uiTriaDown;
+  var init_Icons = __esm({
+    "../packages/ui-icons/lib/Icons.js"() {
+      uiDownarrowHlt = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M5.995 7.49799C5.89507 7.49739 5.79725 7.52675 5.71416 7.58227C5.63108 7.6378 5.56653 7.71695 5.52886 7.80951C5.49119 7.90207 5.48212 8.0038 5.50282 8.10156C5.52352 8.19933 5.57305 8.28865 5.645 8.35799L9.645 12.358C9.69145 12.4046 9.74662 12.4415 9.80737 12.4667C9.86811 12.4919 9.93323 12.5049 9.999 12.5049C10.0648 12.5049 10.1299 12.4919 10.1906 12.4667C10.2514 12.4415 10.3066 12.4046 10.353 12.358L14.353 8.35799C14.4469 8.26424 14.4997 8.13703 14.4998 8.00435C14.4999 7.87167 14.4473 7.74438 14.3535 7.65049C14.2597 7.55661 14.1325 7.50381 13.9999 7.50372C13.8672 7.50362 13.7399 7.55624 13.646 7.64999L9.999 11.297L6.353 7.64999C6.30651 7.60203 6.25087 7.56387 6.18939 7.53776C6.1279 7.51165 6.0618 7.49813 5.995 7.49799Z" fill="currentColor"/>
+</svg>
+`;
+      uiRemove = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M13.9995 9.5C14.1322 9.5 14.2594 9.5527 14.3532 9.64652C14.447 9.74033 14.4998 9.86758 14.4998 10.0003C14.4998 10.1329 14.447 10.2602 14.3532 10.354C14.2594 10.4478 14.1322 10.5005 13.9995 10.5005H6C5.86732 10.5005 5.74007 10.4478 5.64626 10.354C5.55244 10.2602 5.49975 10.1329 5.49975 10.0003C5.49975 9.86758 5.55244 9.74033 5.64626 9.64652C5.74007 9.5527 5.86732 9.5 6 9.5H13.9995Z" fill="currentColor"/>
+</svg>
+`;
+      uiTriaDown = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M6 7.505C6 7.227 6.22 7 6.5 7H13.5C13.5917 6.99977 13.6817 7.02476 13.7602 7.07224C13.8386 7.11972 13.9025 7.18787 13.9448 7.26922C13.9872 7.35057 14.0063 7.44199 14.0002 7.53349C13.994 7.62499 13.9628 7.71304 13.91 7.788L10.41 12.788C10.3639 12.854 10.3026 12.9079 10.2312 12.9452C10.1598 12.9824 10.0805 13.0018 10 13.0018C9.91949 13.0018 9.84018 12.9824 9.7688 12.9452C9.69742 12.9079 9.63608 12.854 9.59 12.788L6.09 7.788C6.03186 7.70505 6.00046 7.6063 6 7.505Z" fill="currentColor"/>
+</svg>
+`;
+    }
+  });
+
+  // ../packages/ui-icons/lib/main.js
+  var init_main4 = __esm({
+    "../packages/ui-icons/lib/main.js"() {
+      init_Icons();
+    }
+  });
+
+  // ../packages/ui/lib/utils/dom.js
+  var RowTypes, dom, dom_default;
+  var init_dom = __esm({
+    "../packages/ui/lib/utils/dom.js"() {
+      init_main4();
+      init_main3();
+      init_cssClasses();
+      (function(RowTypes2) {
+        RowTypes2[RowTypes2["ui"] = 0] = "ui";
+        RowTypes2[RowTypes2["group"] = 1] = "group";
+        RowTypes2[RowTypes2["item"] = 2] = "item";
+        RowTypes2[RowTypes2["button"] = 3] = "button";
+        RowTypes2[RowTypes2["spacer"] = 4] = "spacer";
+        RowTypes2[RowTypes2["info"] = 5] = "info";
+        RowTypes2[RowTypes2["custom"] = 6] = "custom";
+      })(RowTypes || (RowTypes = {}));
+      dom = {
+        createButton: (title, icon) => {
+          const button = el("button");
+          button.classList.add(CSS_UI.button.baseClass);
+          const h3 = el("h3");
+          h3.innerText = title;
+          button.appendChild(h3);
+          if (icon) {
+            const iconWrapper = el("div");
+            iconWrapper.innerHTML = icon;
+            iconWrapper.classList.add(CSS_UI.button.icon);
+            button.classList.add(CSS_UI.button.hasIcon);
+            button.appendChild(iconWrapper);
+          }
+          return button;
+        },
+        createRow: ({ type, depth, title } = {
+          type: RowTypes.ui,
+          depth: 0
+        }) => {
+          let domEl = "div";
+          if (type === RowTypes.ui)
+            domEl = "div";
+          if (type === RowTypes.group)
+            domEl = "section";
+          if (type === RowTypes.item)
+            domEl = "fieldset";
+          if (type === RowTypes.button)
+            domEl = "fieldset";
+          if (type === RowTypes.spacer)
+            domEl = "div";
+          if (type === RowTypes.info)
+            domEl = "fieldset";
+          if (type === RowTypes.custom)
+            domEl = "fieldset";
+          const row = el(domEl);
+          row.setAttribute("ui-depth", `${depth}`);
+          if (type === RowTypes.ui) {
+            row.classList.add(CSS_UI.wrapper);
+          }
+          if (type === RowTypes.group) {
+            const titleTab = el("header");
+            dom.addIcon(titleTab);
+            const h3 = el("h3");
+            if (h3 && title) {
+              h3.innerText = title;
+              h3.title = title;
+              titleTab.appendChild(h3);
             }
-            if (!r2) {
-              const i3 = t3.clientY - s2;
-              l2 -= i3 * this._step * this._arrowKeyMultiplier(t3), n2 + l2 > this._max ? l2 = this._max - n2 : n2 + l2 < this._min && (l2 = this._min - n2), this._snapClampSetValue(n2 + l2);
+            row.appendChild(titleTab);
+            const contentWrapper = el("div", CSS_UI.section.content);
+            row.appendChild(contentWrapper);
+          }
+          if (type === RowTypes.item) {
+            if (title) {
+              const h4 = el("h4");
+              h4.innerText = title;
+              h4.title = title;
+              row.appendChild(h4);
             }
-            s2 = t3.clientY;
-          }, a2 = () => {
-            this._setDraggingStyle(false, "vertical"), this._callOnFinishChange(), window.removeEventListener("mousemove", o2), window.removeEventListener("mouseup", a2);
+            const contentWrapper = el("div", CSS_UI.content);
+            row.appendChild(contentWrapper);
+          }
+          if (type === RowTypes.button) {
+            if (title) {
+              const button = dom.createButton(title);
+              row.appendChild(button);
+              row.classList.add(CSS_UI.row.hasButton);
+            }
+          }
+          if (type === RowTypes.spacer) {
+            row.classList.add(CSS_UI.spacer.baseClass);
+          }
+          if (type === RowTypes.info) {
+            row.classList.add(CSS_UI.info.baseClass);
+          }
+          if (type === RowTypes.custom) {
+            row.classList.add(CSS_UI.row.custom);
+          }
+          return row;
+        },
+        addIcon: (header, icon) => {
+          const iconClass = CSS_UI.section.header.icon;
+          const iconWrapper = header.querySelector(`.${iconClass}`) ? header.querySelector(`.${iconClass}`) : el("div", iconClass);
+          if (isUndefined(icon)) {
+            iconWrapper.classList.add(CSS_UI.section.header.chevron);
+            icon = uiTriaDown;
+          } else {
+            iconWrapper.classList.remove(CSS_UI.section.header.chevron);
+          }
+          iconWrapper.innerHTML = icon;
+          header.prepend(iconWrapper);
+        }
+      };
+      dom_default = dom;
+    }
+  });
+
+  // ../packages/ui/lib/partials/EventsManager.js
+  var EventsManager;
+  var init_EventsManager = __esm({
+    "../packages/ui/lib/partials/EventsManager.js"() {
+      init_main3();
+      EventsManager = class {
+        constructor() {
+          this.subscribers = {};
+          this.listeners = [];
+        }
+        addEventListeners() {
+        }
+        removeEventListeners() {
+          while (this.listeners.length > 0) {
+            this.removeEventListener(this.listeners[0]);
+          }
+        }
+        addEventListener(event) {
+          if (this.listeners.indexOf(event) > -1)
+            return;
+          this.listeners.push(event);
+          event.target.addEventListener(event.type, event.callback);
+        }
+        removeEventListener(event) {
+          if (this.listeners.indexOf(event) === -1)
+            return;
+          this.listeners.splice(this.listeners.indexOf(event), 1);
+          event.target.removeEventListener(event.type, event.callback);
+        }
+        /**
+        * @typedef {'change'} EventType
+        * @typedef {'refresh'} EventType
+        *
+        * @description Available event types:
+        * - change: Triggered when the value of the item or one of its children changes.
+        * - refresh: Triggered right before the UI is refreshed.
+        *
+        * @param {EventType} eventType - The type of event to listen for.
+        * @param {Function} callback - The callback function to call when the event occurs.
+        * @returns {void}
+        */
+        on(event, callback) {
+          if (!this.subscribers[event]) {
+            this.subscribers[event] = [];
+            const completeEvent = event + "Complete";
+            this.subscribers[completeEvent] = [];
+            this.subscribers[event].debounced = debounce(() => {
+              this.emit(completeEvent);
+            }, 100);
+          }
+          this.subscribers[event].push(callback);
+        }
+        emit(event, target) {
+          if (this.subscribers[event]) {
+            this.subscribers[event].forEach((subscriber) => subscriber(target ? target : this));
+            if (this.subscribers[event].debounced) {
+              this.subscribers[event].debounced();
+            }
+          }
+        }
+      };
+    }
+  });
+
+  // ../packages/ui/lib/components/UIElement.js
+  var UIElement;
+  var init_UIElement = __esm({
+    "../packages/ui/lib/components/UIElement.js"() {
+      init_main3();
+      init_EventsManager();
+      init_dom();
+      UIElement = class extends EventsManager {
+        constructor(type, title) {
+          super();
+          this.type = type;
+          this.title = title || "";
+        }
+        init(depth = 0) {
+          this.depth = depth;
+          this.beforeCreate();
+          this.createDom();
+          this.createContent();
+          this.addEventListeners();
+          this.afterCreate();
+          this.preventPropagation();
+        }
+        preventPropagation() {
+          const preventPropagationEventDown = {
+            target: this.el,
+            type: "keydown",
+            callback: (e) => {
+              e.stopPropagation();
+              e.stopImmediatePropagation();
+            }
           };
-          this.$input.addEventListener("input", () => {
-            let t3 = parseFloat(this.$input.value);
-            isNaN(t3) || (this._stepExplicit && (t3 = this._snap(t3)), this.setValue(this._clamp(t3)));
-          }), this.$input.addEventListener("keydown", (i3) => {
-            "Enter" === i3.code && this.$input.blur(), "ArrowUp" === i3.code && (i3.preventDefault(), t2(this._step * this._arrowKeyMultiplier(i3))), "ArrowDown" === i3.code && (i3.preventDefault(), t2(this._step * this._arrowKeyMultiplier(i3) * -1));
-          }), this.$input.addEventListener("wheel", (i3) => {
-            this._inputFocused && (i3.preventDefault(), t2(this._step * this._normalizeMouseWheel(i3)));
-          }, { passive: false }), this.$input.addEventListener("mousedown", (t3) => {
-            i2 = t3.clientX, e2 = s2 = t3.clientY, r2 = true, n2 = this.getValue(), l2 = 0, window.addEventListener("mousemove", o2), window.addEventListener("mouseup", a2);
-          }), this.$input.addEventListener("focus", () => {
-            this._inputFocused = true;
-          }), this.$input.addEventListener("blur", () => {
-            this._inputFocused = false, this.updateDisplay(), this._callOnFinishChange();
+          this.addEventListener(preventPropagationEventDown);
+          const preventPropagationEventUp = {
+            target: this.el,
+            type: "keyup",
+            callback: (e) => {
+              e.stopPropagation();
+              e.stopImmediatePropagation();
+            }
+          };
+          this.addEventListener(preventPropagationEventUp);
+        }
+        /**
+        * Lifecycle
+        */
+        beforeCreate() {
+        }
+        afterCreate() {
+        }
+        // Create ROW
+        createDom() {
+          this.el = dom_default.createRow({
+            type: this.type,
+            depth: this.depth,
+            title: this.title
           });
         }
-        _initSlider() {
-          this._hasSlider = true, this.$slider = document.createElement("div"), this.$slider.classList.add("slider"), this.$fill = document.createElement("div"), this.$fill.classList.add("fill"), this.$slider.appendChild(this.$fill), this.$widget.insertBefore(this.$slider, this.$input), this.domElement.classList.add("hasSlider");
-          const t2 = (t3) => {
-            const i3 = this.$slider.getBoundingClientRect();
-            let e3 = (s3 = t3, n3 = i3.left, l3 = i3.right, r3 = this._min, o3 = this._max, (s3 - n3) / (l3 - n3) * (o3 - r3) + r3);
-            var s3, n3, l3, r3, o3;
-            this._snapClampSetValue(e3);
-          }, i2 = (i3) => {
-            t2(i3.clientX);
-          }, e2 = () => {
-            this._callOnFinishChange(), this._setDraggingStyle(false), window.removeEventListener("mousemove", i2), window.removeEventListener("mouseup", e2);
-          };
-          let s2, n2, l2 = false;
-          const r2 = (i3) => {
-            i3.preventDefault(), this._setDraggingStyle(true), t2(i3.touches[0].clientX), l2 = false;
-          }, o2 = (i3) => {
-            if (l2) {
-              const t3 = i3.touches[0].clientX - s2, e3 = i3.touches[0].clientY - n2;
-              Math.abs(t3) > Math.abs(e3) ? r2(i3) : (window.removeEventListener("touchmove", o2), window.removeEventListener("touchend", a2));
-            } else
-              i3.preventDefault(), t2(i3.touches[0].clientX);
-          }, a2 = () => {
-            this._callOnFinishChange(), this._setDraggingStyle(false), window.removeEventListener("touchmove", o2), window.removeEventListener("touchend", a2);
-          }, h2 = this._callOnFinishChange.bind(this);
-          let d2;
-          this.$slider.addEventListener("mousedown", (s3) => {
-            this._setDraggingStyle(true), t2(s3.clientX), window.addEventListener("mousemove", i2), window.addEventListener("mouseup", e2);
-          }), this.$slider.addEventListener("touchstart", (t3) => {
-            t3.touches.length > 1 || (this._hasScrollBar ? (s2 = t3.touches[0].clientX, n2 = t3.touches[0].clientY, l2 = true) : r2(t3), window.addEventListener("touchmove", o2, { passive: false }), window.addEventListener("touchend", a2));
-          }, { passive: false }), this.$slider.addEventListener("wheel", (t3) => {
-            if (Math.abs(t3.deltaX) < Math.abs(t3.deltaY) && this._hasScrollBar)
-              return;
-            t3.preventDefault();
-            const i3 = this._normalizeMouseWheel(t3) * this._step;
-            this._snapClampSetValue(this.getValue() + i3), this.$input.value = this.getValue(), clearTimeout(d2), d2 = setTimeout(h2, 400);
-          }, { passive: false });
+        parentFold() {
+          this.close();
         }
-        _setDraggingStyle(t2, i2 = "horizontal") {
-          this.$slider && this.$slider.classList.toggle("active", t2), document.body.classList.toggle("lil-gui-dragging", t2), document.body.classList.toggle("lil-gui-" + i2, t2);
-        }
-        _getImplicitStep() {
-          return this._hasMin && this._hasMax ? (this._max - this._min) / 1e3 : 0.1;
-        }
-        _onUpdateMinMax() {
-          !this._hasSlider && this._hasMin && this._hasMax && (this._stepExplicit || this.step(this._getImplicitStep(), false), this._initSlider(), this.updateDisplay());
-        }
-        _normalizeMouseWheel(t2) {
-          let { deltaX: i2, deltaY: e2 } = t2;
-          Math.floor(t2.deltaY) !== t2.deltaY && t2.wheelDelta && (i2 = 0, e2 = -t2.wheelDelta / 120, e2 *= this._stepExplicit ? 1 : 10);
-          return i2 + -e2;
-        }
-        _arrowKeyMultiplier(t2) {
-          let i2 = this._stepExplicit ? 1 : 10;
-          return t2.shiftKey ? i2 *= 10 : t2.altKey && (i2 /= 10), i2;
-        }
-        _snap(t2) {
-          const i2 = Math.round(t2 / this._step) * this._step;
-          return parseFloat(i2.toPrecision(15));
-        }
-        _clamp(t2) {
-          return t2 < this._min && (t2 = this._min), t2 > this._max && (t2 = this._max), t2;
-        }
-        _snapClampSetValue(t2) {
-          this.setValue(this._clamp(this._snap(t2)));
-        }
-        get _hasScrollBar() {
-          const t2 = this.parent.root.$children;
-          return t2.scrollHeight > t2.clientHeight;
-        }
-        get _hasMin() {
-          return void 0 !== this._min;
-        }
-        get _hasMax() {
-          return void 0 !== this._max;
-        }
-      };
-      c = class extends t {
-        constructor(t2, i2, e2, s2) {
-          super(t2, i2, e2, "option"), this.$select = document.createElement("select"), this.$select.setAttribute("aria-labelledby", this.$name.id), this.$display = document.createElement("div"), this.$display.classList.add("display"), this._values = Array.isArray(s2) ? s2 : Object.values(s2), this._names = Array.isArray(s2) ? s2 : Object.keys(s2), this._names.forEach((t3) => {
-            const i3 = document.createElement("option");
-            i3.innerHTML = t3, this.$select.appendChild(i3);
-          }), this.$select.addEventListener("change", () => {
-            this.setValue(this._values[this.$select.selectedIndex]), this._callOnFinishChange();
-          }), this.$select.addEventListener("focus", () => {
-            this.$display.classList.add("focus");
-          }), this.$select.addEventListener("blur", () => {
-            this.$display.classList.remove("focus");
-          }), this.$widget.appendChild(this.$select), this.$widget.appendChild(this.$display), this.$disable = this.$select, this.updateDisplay();
-        }
-        updateDisplay() {
-          const t2 = this.getValue(), i2 = this._values.indexOf(t2);
-          return this.$select.selectedIndex = i2, this.$display.innerHTML = -1 === i2 ? t2 : this._names[i2], this;
-        }
-      };
-      u = class extends t {
-        constructor(t2, i2, e2) {
-          super(t2, i2, e2, "string"), this.$input = document.createElement("input"), this.$input.setAttribute("type", "text"), this.$input.setAttribute("aria-labelledby", this.$name.id), this.$input.addEventListener("input", () => {
-            this.setValue(this.$input.value);
-          }), this.$input.addEventListener("keydown", (t3) => {
-            "Enter" === t3.code && this.$input.blur();
-          }), this.$input.addEventListener("blur", () => {
-            this._callOnFinishChange();
-          }), this.$widget.appendChild(this.$input), this.$disable = this.$input, this.updateDisplay();
-        }
-        updateDisplay() {
-          return this.$input.value = this.getValue(), this;
-        }
-      };
-      p = false;
-      g = class {
-        constructor({ parent: t2, autoPlace: i2 = void 0 === t2, container: e2, width: s2, title: n2 = "Controls", injectStyles: l2 = true, touchStyles: r2 = true } = {}) {
-          if (this.parent = t2, this.root = t2 ? t2.root : this, this.children = [], this.controllers = [], this.folders = [], this._closed = false, this._hidden = false, this.domElement = document.createElement("div"), this.domElement.classList.add("lil-gui"), this.$title = document.createElement("div"), this.$title.classList.add("title"), this.$title.setAttribute("role", "button"), this.$title.setAttribute("aria-expanded", true), this.$title.setAttribute("tabindex", 0), this.$title.addEventListener("click", () => this.openAnimated(this._closed)), this.$title.addEventListener("keydown", (t3) => {
-            "Enter" !== t3.code && "Space" !== t3.code || (t3.preventDefault(), this.$title.click());
-          }), this.$title.addEventListener("touchstart", () => {
-          }, { passive: true }), this.$children = document.createElement("div"), this.$children.classList.add("children"), this.domElement.appendChild(this.$title), this.domElement.appendChild(this.$children), this.title(n2), r2 && this.domElement.classList.add("allow-touch-styles"), this.parent)
-            return this.parent.children.push(this), this.parent.folders.push(this), void this.parent.$children.appendChild(this.domElement);
-          this.domElement.classList.add("root"), !p && l2 && (!function(t3) {
-            const i3 = document.createElement("style");
-            i3.innerHTML = t3;
-            const e3 = document.querySelector("head link[rel=stylesheet], head style");
-            e3 ? document.head.insertBefore(i3, e3) : document.head.appendChild(i3);
-          }('.lil-gui{--background-color:#1f1f1f;--text-color:#ebebeb;--title-background-color:#111;--title-text-color:#ebebeb;--widget-color:#424242;--hover-color:#4f4f4f;--focus-color:#595959;--number-color:#2cc9ff;--string-color:#a2db3c;--font-size:11px;--input-font-size:11px;--font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;--font-family-mono:Menlo,Monaco,Consolas,"Droid Sans Mono",monospace;--padding:4px;--spacing:4px;--widget-height:20px;--name-width:45%;--slider-knob-width:2px;--slider-input-width:27%;--color-input-width:27%;--slider-input-min-width:45px;--color-input-min-width:45px;--folder-indent:7px;--widget-padding:0 0 0 3px;--widget-border-radius:2px;--checkbox-size:calc(var(--widget-height)*0.75);--scrollbar-width:5px;background-color:var(--background-color);color:var(--text-color);font-family:var(--font-family);font-size:var(--font-size);font-style:normal;font-weight:400;line-height:1;text-align:left;touch-action:manipulation;user-select:none;-webkit-user-select:none}.lil-gui,.lil-gui *{box-sizing:border-box;margin:0;padding:0}.lil-gui.root{display:flex;flex-direction:column;width:var(--width,245px)}.lil-gui.root>.title{background:var(--title-background-color);color:var(--title-text-color)}.lil-gui.root>.children{overflow-x:hidden;overflow-y:auto}.lil-gui.root>.children::-webkit-scrollbar{background:var(--background-color);height:var(--scrollbar-width);width:var(--scrollbar-width)}.lil-gui.root>.children::-webkit-scrollbar-thumb{background:var(--focus-color);border-radius:var(--scrollbar-width)}.lil-gui.force-touch-styles{--widget-height:28px;--padding:6px;--spacing:6px;--font-size:13px;--input-font-size:16px;--folder-indent:10px;--scrollbar-width:7px;--slider-input-min-width:50px;--color-input-min-width:65px}.lil-gui.autoPlace{max-height:100%;position:fixed;right:15px;top:0;z-index:1001}.lil-gui .controller{align-items:center;display:flex;margin:var(--spacing) 0;padding:0 var(--padding)}.lil-gui .controller.disabled{opacity:.5}.lil-gui .controller.disabled,.lil-gui .controller.disabled *{pointer-events:none!important}.lil-gui .controller>.name{flex-shrink:0;line-height:var(--widget-height);min-width:var(--name-width);padding-right:var(--spacing);white-space:pre}.lil-gui .controller .widget{align-items:center;display:flex;min-height:var(--widget-height);position:relative;width:100%}.lil-gui .controller.string input{color:var(--string-color)}.lil-gui .controller.boolean .widget{cursor:pointer}.lil-gui .controller.color .display{border-radius:var(--widget-border-radius);height:var(--widget-height);position:relative;width:100%}.lil-gui .controller.color input[type=color]{cursor:pointer;height:100%;opacity:0;width:100%}.lil-gui .controller.color input[type=text]{flex-shrink:0;font-family:var(--font-family-mono);margin-left:var(--spacing);min-width:var(--color-input-min-width);width:var(--color-input-width)}.lil-gui .controller.option select{max-width:100%;opacity:0;position:absolute;width:100%}.lil-gui .controller.option .display{background:var(--widget-color);border-radius:var(--widget-border-radius);height:var(--widget-height);line-height:var(--widget-height);max-width:100%;overflow:hidden;padding-left:.55em;padding-right:1.75em;pointer-events:none;position:relative;word-break:break-all}.lil-gui .controller.option .display.active{background:var(--focus-color)}.lil-gui .controller.option .display:after{bottom:0;content:"\u2195";font-family:lil-gui;padding-right:.375em;position:absolute;right:0;top:0}.lil-gui .controller.option .widget,.lil-gui .controller.option select{cursor:pointer}.lil-gui .controller.number input{color:var(--number-color)}.lil-gui .controller.number.hasSlider input{flex-shrink:0;margin-left:var(--spacing);min-width:var(--slider-input-min-width);width:var(--slider-input-width)}.lil-gui .controller.number .slider{background-color:var(--widget-color);border-radius:var(--widget-border-radius);cursor:ew-resize;height:var(--widget-height);overflow:hidden;padding-right:var(--slider-knob-width);touch-action:pan-y;width:100%}.lil-gui .controller.number .slider.active{background-color:var(--focus-color)}.lil-gui .controller.number .slider.active .fill{opacity:.95}.lil-gui .controller.number .fill{border-right:var(--slider-knob-width) solid var(--number-color);box-sizing:content-box;height:100%}.lil-gui-dragging .lil-gui{--hover-color:var(--widget-color)}.lil-gui-dragging *{cursor:ew-resize!important}.lil-gui-dragging.lil-gui-vertical *{cursor:ns-resize!important}.lil-gui .title{--title-height:calc(var(--widget-height) + var(--spacing)*1.25);-webkit-tap-highlight-color:transparent;text-decoration-skip:objects;cursor:pointer;font-weight:600;height:var(--title-height);line-height:calc(var(--title-height) - 4px);outline:none;padding:0 var(--padding)}.lil-gui .title:before{content:"\u25BE";display:inline-block;font-family:lil-gui;padding-right:2px}.lil-gui .title:active{background:var(--title-background-color);opacity:.75}.lil-gui.root>.title:focus{text-decoration:none!important}.lil-gui.closed>.title:before{content:"\u25B8"}.lil-gui.closed>.children{opacity:0;transform:translateY(-7px)}.lil-gui.closed:not(.transition)>.children{display:none}.lil-gui.transition>.children{overflow:hidden;pointer-events:none;transition-duration:.3s;transition-property:height,opacity,transform;transition-timing-function:cubic-bezier(.2,.6,.35,1)}.lil-gui .children:empty:before{content:"Empty";display:block;font-style:italic;height:var(--widget-height);line-height:var(--widget-height);margin:var(--spacing) 0;opacity:.5;padding:0 var(--padding)}.lil-gui.root>.children>.lil-gui>.title{border-width:0;border-bottom:1px solid var(--widget-color);border-left:0 solid var(--widget-color);border-right:0 solid var(--widget-color);border-top:1px solid var(--widget-color);transition:border-color .3s}.lil-gui.root>.children>.lil-gui.closed>.title{border-bottom-color:transparent}.lil-gui+.controller{border-top:1px solid var(--widget-color);margin-top:0;padding-top:var(--spacing)}.lil-gui .lil-gui .lil-gui>.title{border:none}.lil-gui .lil-gui .lil-gui>.children{border:none;border-left:2px solid var(--widget-color);margin-left:var(--folder-indent)}.lil-gui .lil-gui .controller{border:none}.lil-gui input{-webkit-tap-highlight-color:transparent;background:var(--widget-color);border:0;border-radius:var(--widget-border-radius);color:var(--text-color);font-family:var(--font-family);font-size:var(--input-font-size);height:var(--widget-height);outline:none;width:100%}.lil-gui input:disabled{opacity:1}.lil-gui input[type=number],.lil-gui input[type=text]{padding:var(--widget-padding)}.lil-gui input[type=number]:focus,.lil-gui input[type=text]:focus{background:var(--focus-color)}.lil-gui input::-webkit-inner-spin-button,.lil-gui input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}.lil-gui input[type=number]{-moz-appearance:textfield}.lil-gui input[type=checkbox]{appearance:none;-webkit-appearance:none;border-radius:var(--widget-border-radius);cursor:pointer;height:var(--checkbox-size);text-align:center;width:var(--checkbox-size)}.lil-gui input[type=checkbox]:checked:before{content:"\u2713";font-family:lil-gui;font-size:var(--checkbox-size);line-height:var(--checkbox-size)}.lil-gui button{-webkit-tap-highlight-color:transparent;background:var(--widget-color);border:1px solid var(--widget-color);border-radius:var(--widget-border-radius);color:var(--text-color);cursor:pointer;font-family:var(--font-family);font-size:var(--font-size);height:var(--widget-height);line-height:calc(var(--widget-height) - 4px);outline:none;text-align:center;text-transform:none;width:100%}.lil-gui button:active{background:var(--focus-color)}@font-face{font-family:lil-gui;src:url("data:application/font-woff;charset=utf-8;base64,d09GRgABAAAAAAUsAAsAAAAACJwAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABHU1VCAAABCAAAAH4AAADAImwmYE9TLzIAAAGIAAAAPwAAAGBKqH5SY21hcAAAAcgAAAD0AAACrukyyJBnbHlmAAACvAAAAF8AAACEIZpWH2hlYWQAAAMcAAAAJwAAADZfcj2zaGhlYQAAA0QAAAAYAAAAJAC5AHhobXR4AAADXAAAABAAAABMAZAAAGxvY2EAAANsAAAAFAAAACgCEgIybWF4cAAAA4AAAAAeAAAAIAEfABJuYW1lAAADoAAAASIAAAIK9SUU/XBvc3QAAATEAAAAZgAAAJCTcMc2eJxVjbEOgjAURU+hFRBK1dGRL+ALnAiToyMLEzFpnPz/eAshwSa97517c/MwwJmeB9kwPl+0cf5+uGPZXsqPu4nvZabcSZldZ6kfyWnomFY/eScKqZNWupKJO6kXN3K9uCVoL7iInPr1X5baXs3tjuMqCtzEuagm/AAlzQgPAAB4nGNgYRBlnMDAysDAYM/gBiT5oLQBAwuDJAMDEwMrMwNWEJDmmsJwgCFeXZghBcjlZMgFCzOiKOIFAB71Bb8AeJy1kjFuwkAQRZ+DwRAwBtNQRUGKQ8OdKCAWUhAgKLhIuAsVSpWz5Bbkj3dEgYiUIszqWdpZe+Z7/wB1oCYmIoboiwiLT2WjKl/jscrHfGg/pKdMkyklC5Zs2LEfHYpjcRoPzme9MWWmk3dWbK9ObkWkikOetJ554fWyoEsmdSlt+uR0pCJR34b6t/TVg1SY3sYvdf8vuiKrpyaDXDISiegp17p7579Gp3p++y7HPAiY9pmTibljrr85qSidtlg4+l25GLCaS8e6rRxNBmsnERunKbaOObRz7N72ju5vdAjYpBXHgJylOAVsMseDAPEP8LYoUHicY2BiAAEfhiAGJgZWBgZ7RnFRdnVJELCQlBSRlATJMoLV2DK4glSYs6ubq5vbKrJLSbGrgEmovDuDJVhe3VzcXFwNLCOILB/C4IuQ1xTn5FPilBTj5FPmBAB4WwoqAHicY2BkYGAA4sk1sR/j+W2+MnAzpDBgAyEMQUCSg4EJxAEAwUgFHgB4nGNgZGBgSGFggJMhDIwMqEAYAByHATJ4nGNgAIIUNEwmAABl3AGReJxjYAACIQYlBiMGJ3wQAEcQBEV4nGNgZGBgEGZgY2BiAAEQyQWEDAz/wXwGAAsPATIAAHicXdBNSsNAHAXwl35iA0UQXYnMShfS9GPZA7T7LgIu03SSpkwzYTIt1BN4Ak/gKTyAeCxfw39jZkjymzcvAwmAW/wgwHUEGDb36+jQQ3GXGot79L24jxCP4gHzF/EIr4jEIe7wxhOC3g2TMYy4Q7+Lu/SHuEd/ivt4wJd4wPxbPEKMX3GI5+DJFGaSn4qNzk8mcbKSR6xdXdhSzaOZJGtdapd4vVPbi6rP+cL7TGXOHtXKll4bY1Xl7EGnPtp7Xy2n00zyKLVHfkHBa4IcJ2oD3cgggWvt/V/FbDrUlEUJhTn/0azVWbNTNr0Ens8de1tceK9xZmfB1CPjOmPH4kitmvOubcNpmVTN3oFJyjzCvnmrwhJTzqzVj9jiSX911FjeAAB4nG3HMRKCMBBA0f0giiKi4DU8k0V2GWbIZDOh4PoWWvq6J5V8If9NVNQcaDhyouXMhY4rPTcG7jwYmXhKq8Wz+p762aNaeYXom2n3m2dLTVgsrCgFJ7OTmIkYbwIbC6vIB7WmFfAAAA==") format("woff")}@media (pointer:coarse){.lil-gui.allow-touch-styles{--widget-height:28px;--padding:6px;--spacing:6px;--font-size:13px;--input-font-size:16px;--folder-indent:10px;--scrollbar-width:7px;--slider-input-min-width:50px;--color-input-min-width:65px}}@media (hover:hover){.lil-gui .controller.color .display:hover:before{border:1px solid #fff9;border-radius:var(--widget-border-radius);bottom:0;content:" ";display:block;left:0;position:absolute;right:0;top:0}.lil-gui .controller.option .display.focus{background:var(--focus-color)}.lil-gui .controller.option .widget:hover .display{background:var(--hover-color)}.lil-gui .controller.number .slider:hover{background-color:var(--hover-color)}body:not(.lil-gui-dragging) .lil-gui .title:hover{background:var(--title-background-color);opacity:.85}.lil-gui .title:focus{text-decoration:underline var(--focus-color)}.lil-gui input:hover{background:var(--hover-color)}.lil-gui input:active{background:var(--focus-color)}.lil-gui input[type=checkbox]:focus{box-shadow:inset 0 0 0 1px var(--focus-color)}.lil-gui button:hover{background:var(--hover-color);border-color:var(--hover-color)}.lil-gui button:focus{border-color:var(--focus-color)}}'), p = true), e2 ? e2.appendChild(this.domElement) : i2 && (this.domElement.classList.add("autoPlace"), document.body.appendChild(this.domElement)), s2 && this.domElement.style.setProperty("--width", s2 + "px"), this.domElement.addEventListener("keydown", (t3) => t3.stopPropagation()), this.domElement.addEventListener("keyup", (t3) => t3.stopPropagation());
-        }
-        add(t2, e2, s2, n2, l2) {
-          if (Object(s2) === s2)
-            return new c(this, t2, e2, s2);
-          const r2 = t2[e2];
-          switch (typeof r2) {
-            case "number":
-              return new d(this, t2, e2, s2, n2, l2);
-            case "boolean":
-              return new i(this, t2, e2);
-            case "string":
-              return new u(this, t2, e2);
-            case "function":
-              return new h(this, t2, e2);
-          }
-          console.error("gui.add failed\n	property:", e2, "\n	object:", t2, "\n	value:", r2);
-        }
-        addColor(t2, i2, e2 = 1) {
-          return new a(this, t2, i2, e2);
-        }
-        addFolder(t2) {
-          return new g({ parent: this, title: t2 });
-        }
-        load(t2, i2 = true) {
-          return t2.controllers && this.controllers.forEach((i3) => {
-            i3 instanceof h || i3._name in t2.controllers && i3.load(t2.controllers[i3._name]);
-          }), i2 && t2.folders && this.folders.forEach((i3) => {
-            i3._title in t2.folders && i3.load(t2.folders[i3._title]);
-          }), this;
-        }
-        save(t2 = true) {
-          const i2 = { controllers: {}, folders: {} };
-          return this.controllers.forEach((t3) => {
-            if (!(t3 instanceof h)) {
-              if (t3._name in i2.controllers)
-                throw new Error(`Cannot save GUI with duplicate property "${t3._name}"`);
-              i2.controllers[t3._name] = t3.save();
-            }
-          }), t2 && this.folders.forEach((t3) => {
-            if (t3._title in i2.folders)
-              throw new Error(`Cannot save GUI with duplicate folder "${t3._title}"`);
-            i2.folders[t3._title] = t3.save();
-          }), i2;
-        }
-        open(t2 = true) {
-          return this._closed = !t2, this.$title.setAttribute("aria-expanded", !this._closed), this.domElement.classList.toggle("closed", this._closed), this;
-        }
-        close() {
-          return this.open(false);
-        }
-        show(t2 = true) {
-          return this._hidden = !t2, this.domElement.style.display = this._hidden ? "none" : "", this;
-        }
-        hide() {
-          return this.show(false);
-        }
-        openAnimated(t2 = true) {
-          return this._closed = !t2, this.$title.setAttribute("aria-expanded", !this._closed), requestAnimationFrame(() => {
-            const i2 = this.$children.clientHeight;
-            this.$children.style.height = i2 + "px", this.domElement.classList.add("transition");
-            const e2 = (t3) => {
-              t3.target === this.$children && (this.$children.style.height = "", this.domElement.classList.remove("transition"), this.$children.removeEventListener("transitionend", e2));
-            };
-            this.$children.addEventListener("transitionend", e2);
-            const s2 = t2 ? this.$children.scrollHeight : 0;
-            this.domElement.classList.toggle("closed", !t2), requestAnimationFrame(() => {
-              this.$children.style.height = s2 + "px";
-            });
-          }), this;
-        }
-        title(t2) {
-          return this._title = t2, this.$title.innerHTML = t2, this;
-        }
-        reset(t2 = true) {
-          return (t2 ? this.controllersRecursive() : this.controllers).forEach((t3) => t3.reset()), this;
-        }
-        onChange(t2) {
-          return this._onChange = t2, this;
-        }
-        _callOnChange(t2) {
-          this.parent && this.parent._callOnChange(t2), void 0 !== this._onChange && this._onChange.call(this, { object: t2.object, property: t2.property, value: t2.getValue(), controller: t2 });
-        }
-        onFinishChange(t2) {
-          return this._onFinishChange = t2, this;
-        }
-        _callOnFinishChange(t2) {
-          this.parent && this.parent._callOnFinishChange(t2), void 0 !== this._onFinishChange && this._onFinishChange.call(this, { object: t2.object, property: t2.property, value: t2.getValue(), controller: t2 });
+        // Populate ROW
+        createContent() {
         }
         destroy() {
-          this.parent && (this.parent.children.splice(this.parent.children.indexOf(this), 1), this.parent.folders.splice(this.parent.folders.indexOf(this), 1)), this.domElement.parentElement && this.domElement.parentElement.removeChild(this.domElement), Array.from(this.children).forEach((t2) => t2.destroy());
+          var _a;
+          this.removeEventListeners();
+          (_a = this.panel) === null || _a === void 0 ? void 0 : _a.destroy();
+          remove(this.el);
         }
-        controllersRecursive() {
-          let t2 = Array.from(this.controllers);
-          return this.folders.forEach((i2) => {
-            t2 = t2.concat(i2.controllersRecursive());
-          }), t2;
+        resize() {
         }
-        foldersRecursive() {
-          let t2 = Array.from(this.folders);
-          return this.folders.forEach((i2) => {
-            t2 = t2.concat(i2.foldersRecursive());
-          }), t2;
+        /**
+        * A method to refresh the item and all its children values.
+        * Use this method when you change the value of an item outside of the UI to keep it in sync.
+        */
+        refresh() {
+          var _a;
+          (_a = this.panel) === null || _a === void 0 ? void 0 : _a.refresh();
+        }
+        close() {
+        }
+        open() {
         }
       };
+    }
+  });
+
+  // ../packages/ui/lib/components/items/Item.js
+  var Item;
+  var init_Item = __esm({
+    "../packages/ui/lib/components/items/Item.js"() {
+      init_main3();
+      init_cssClasses();
+      init_dom();
+      init_UIElement();
+      Item = class extends UIElement {
+        constructor(params) {
+          var _a, _b;
+          const title = ((_a = params.params) === null || _a === void 0 ? void 0 : _a.title) || params.key.charAt(0).toUpperCase() + params.key.slice(1);
+          super(RowTypes.item, title);
+          this.view = "";
+          this._refreshing = false;
+          this.params = params.params;
+          this.view = ((_b = this.params) === null || _b === void 0 ? void 0 : _b.view) || "";
+          this.object = params.object;
+          this.key = params.key;
+        }
+        init(depth = 0) {
+          super.init(depth);
+          this._refreshing = true;
+          this.setValue(this.object[this.key]);
+          this._refreshing = false;
+        }
+        setValue(value) {
+          this.value = value;
+          if (isObject(this.object[this.key])) {
+            for (const key in this.object[this.key]) {
+              if (isUndefined(this.value) || isNull(this.value))
+                continue;
+              if (isUndefined(this.value[key]))
+                continue;
+              else
+                this.object[this.key][key] = this.value[key];
+            }
+          } else
+            this.object[this.key] = this.value;
+          if (this.value !== void 0 && !this._refreshing) {
+            this.emit("change");
+            this.emit("__childrenChange");
+          }
+          this.refreshDom();
+        }
+        /**
+         * Dom
+         */
+        createDom() {
+          super.createDom();
+          this.content = this.el.querySelector(`.${CSS_UI.content}`);
+          this.el.classList.add(`${CSS_UI.baseClass}-${this.view}`);
+        }
+        refreshDom() {
+        }
+        refresh() {
+          super.refresh();
+          this.emit("refresh");
+          this._refreshing = true;
+          this.setValue(this.object[this.key]);
+          this._refreshing = false;
+        }
+      };
+    }
+  });
+
+  // ../packages/ui/lib/components/items/customItems/BooleanItem.js
+  var c, BooleanItem;
+  var init_BooleanItem = __esm({
+    "../packages/ui/lib/components/items/customItems/BooleanItem.js"() {
+      init_main3();
+      init_cssClasses();
+      init_Item();
+      c = {
+        type: "boolean",
+        input: "_ui-toggle"
+      };
+      BooleanItem = class extends Item {
+        addEventListeners() {
+          const clickEvent = {
+            target: this.el,
+            type: "click",
+            callback: (e) => {
+              this.setValue(!this.value);
+            }
+          };
+          this.addEventListener(clickEvent);
+        }
+        createContent() {
+          const wrapper = el("div", c.input);
+          const thumb = el("div");
+          wrapper.appendChild(thumb);
+          this.content.appendChild(wrapper);
+        }
+        refreshDom() {
+          this.el.classList.toggle(CSS_UI.utility.active, this.value);
+          super.refreshDom();
+        }
+      };
+    }
+  });
+
+  // ../packages/ui/lib/components/items/customItems/NumberItem.js
+  var c2, NumberItem;
+  var init_NumberItem = __esm({
+    "../packages/ui/lib/components/items/customItems/NumberItem.js"() {
+      init_main3();
+      init_main4();
+      init_cssClasses();
+      init_Item();
+      c2 = {
+        type: "number",
+        input: "_ui-number-input",
+        buttons: "_ui-number-buttons",
+        btnIncrease: "_ui-number-btn-increase",
+        btnDecrease: "_ui-number-btn-decrease"
+      };
+      NumberItem = class extends Item {
+        constructor() {
+          super(...arguments);
+          this.inputElements = [];
+          this.max = null;
+          this.min = null;
+          this.step = 0.01;
+          this.originalDataType = "number";
+          this.isIncreasing = false;
+          this.isDecreasing = false;
+          this.limitNumber = (value) => {
+            let tmp = value;
+            if (this.max)
+              tmp = Math.min(tmp, this.max);
+            if (this.min)
+              tmp = Math.max(tmp, this.min);
+            const decimals = this.getDecimals();
+            tmp = parseFloat(tmp.toFixed(decimals));
+            return tmp;
+          };
+        }
+        getDecimals() {
+          const decimals = this.step.toString().split(".")[1];
+          return decimals ? decimals.length : 0;
+        }
+        addEventListeners() {
+          for (const inputElement of this.inputElements) {
+            const change = {
+              target: inputElement.input,
+              type: "change",
+              callback: (e) => {
+                let val = inputElement.input.valueAsNumber;
+                val = isNaN(val) ? 0 : val;
+                inputElement.value = val;
+                this.setValue();
+              }
+            };
+            this.addEventListener(change);
+            const clickIncrease = {
+              target: inputElement.buttonIncrease,
+              type: "click",
+              callback: (e) => {
+                inputElement.value += this.step;
+                this.setValue();
+              }
+            };
+            this.addEventListener(clickIncrease);
+            const clickDecrease = {
+              target: inputElement.buttonDecrease,
+              type: "click",
+              callback: (e) => {
+                inputElement.value -= this.step;
+                this.setValue();
+              }
+            };
+            this.addEventListener(clickDecrease);
+          }
+        }
+        setValue(_value) {
+          if (_value) {
+            this.originalDataType = getType(_value);
+            super.setValue(_value);
+            return;
+          }
+          const valueForOutput = this.convertArrayToOriginal();
+          super.setValue(valueForOutput);
+        }
+        refreshDom() {
+          const values = this.convertOriginalToArray();
+          for (let i = 0; i < this.inputElements.length; i++) {
+            this.inputElements[i].value = values[i];
+            this.inputElements[i].input.valueAsNumber = this.limitNumber(values[i]);
+          }
+        }
+        createInputs(value) {
+          this.inputElements = [];
+          if (isNumber(value))
+            this.inputElements.push(this.createInput(value));
+          else if (isArray(value)) {
+            for (const item of value) {
+              this.inputElements.push(this.createInput(item));
+            }
+          } else if (isObject(value)) {
+            for (const key in value) {
+              if (!isNumber(value[key]))
+                continue;
+              const item = this.createInput(value[key]);
+              item.placeholder = key;
+              this.inputElements.push(item);
+            }
+          }
+        }
+        createInput(value) {
+          const inputElement = {
+            value,
+            placeholder: "Value",
+            wrapper: null,
+            input: null,
+            buttonIncrease: null,
+            buttonDecrease: null
+          };
+          this.createInputContent(inputElement);
+          return inputElement;
+        }
+        createInputContent(inputElement) {
+          inputElement.wrapper = el("div", c2.input);
+          inputElement.input = el("input");
+          ;
+          inputElement.input.type = "number";
+          inputElement.input.setAttribute("tabindex", "1");
+          inputElement.input.placeholder = inputElement.placeholder;
+          inputElement.input.classList.add(CSS_UI.item);
+          if (this.min)
+            inputElement.input.min = this.min.toString();
+          if (this.max)
+            inputElement.input.max = this.max.toString();
+          if (this.step)
+            inputElement.input.step = this.step.toString();
+          inputElement.wrapper.appendChild(inputElement.input);
+          const btns = el("div", c2.buttons);
+          inputElement.buttonIncrease = el("button", c2.btnIncrease);
+          inputElement.buttonIncrease.setAttribute("tabindex", "-1");
+          inputElement.buttonIncrease.innerHTML = uiDownarrowHlt;
+          inputElement.buttonDecrease = el("button", c2.btnDecrease);
+          inputElement.buttonIncrease.setAttribute("tabindex", "-1");
+          inputElement.buttonDecrease.innerHTML = uiDownarrowHlt;
+          btns.appendChild(inputElement.buttonIncrease);
+          btns.appendChild(inputElement.buttonDecrease);
+          inputElement.wrapper.appendChild(btns);
+          if (this.inputElements.length > 2) {
+            inputElement.buttonIncrease.classList.add(`.${CSS_UI.utility.hidden}`);
+            inputElement.buttonDecrease.classList.add(`.${CSS_UI.utility.hidden}`);
+          }
+          this.content.appendChild(inputElement.wrapper);
+        }
+        createContent() {
+          this.max = this.params.max ? this.params.max : null;
+          this.min = this.params.min ? this.params.min : null;
+          this.step = this.params.step ? this.params.step : this.step;
+          this.createInputs(this.object[this.key]);
+        }
+        convertOriginalToArray() {
+          switch (this.originalDataType) {
+            case "number":
+              return [this.object[this.key]];
+            case "array":
+              return this.object[this.key];
+            case "object":
+              const values = [];
+              for (const key in this.object[this.key]) {
+                if (!isNumber(this.object[this.key][key]))
+                  continue;
+                values.push(this.object[this.key][key]);
+              }
+              return values;
+          }
+        }
+        convertArrayToOriginal() {
+          let inputsValue = [];
+          for (const inputElement of this.inputElements)
+            inputsValue.push(inputElement.value);
+          let valueForOutput = null;
+          if (this.originalDataType === "number")
+            valueForOutput = inputsValue[0];
+          else if (this.originalDataType === "array")
+            valueForOutput = inputsValue;
+          else if (this.originalDataType === "object") {
+            valueForOutput = {};
+            let i = 0;
+            for (const key in this.object[this.key]) {
+              if (!isNumber(this.object[this.key][key]))
+                continue;
+              valueForOutput[key] = inputsValue[i];
+              i++;
+            }
+          }
+          return valueForOutput;
+        }
+      };
+    }
+  });
+
+  // ../packages/ui/lib/components/items/customItems/StringItem.js
+  var StringItem;
+  var init_StringItem = __esm({
+    "../packages/ui/lib/components/items/customItems/StringItem.js"() {
+      init_main3();
+      init_main7();
+      init_Item();
+      StringItem = class extends Item {
+        constructor() {
+          super(...arguments);
+          this.input = el("input");
+        }
+        addEventListeners() {
+          const change = {
+            target: this.input,
+            type: "change",
+            callback: () => {
+              this.setValue(this.input.value);
+            }
+          };
+          this.addEventListener(change);
+        }
+        createContent() {
+          this.input = el("input");
+          this.input.setAttribute("tabindex", "1");
+          this.input.placeholder = "String";
+          this.input.type = "text";
+          this.input.classList.add(CSS_UI.item);
+          this.content.appendChild(this.input);
+        }
+        setValue(value) {
+          if (isNull(value) || isUndefined(value)) {
+            value = "String";
+          }
+          super.setValue(value);
+        }
+        refreshDom() {
+          this.input.value = this.value;
+          super.refreshDom();
+        }
+        destroy() {
+          remove(this.input);
+          super.destroy();
+        }
+      };
+    }
+  });
+
+  // ../packages/color/lib/utils.js
+  function componentToHex(c7) {
+    const hex = c7.toString(16);
+    return hex.length === 1 ? "0" + hex : hex;
+  }
+  function rgbToHex(color) {
+    return "#" + componentToHex(color.r) + componentToHex(color.g) + componentToHex(color.b);
+  }
+  function hexToRgb(hex) {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : { r: 0, g: 0, b: 0 };
+  }
+  function rgbToHsb(color) {
+    const r = color.r / 255;
+    const g = color.g / 255;
+    const b = color.b / 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h = 0, s = 0, v = max;
+    const d = max - min;
+    s = max === 0 ? 0 : d / max;
+    if (max === min) {
+      h = 0;
+    } else {
+      switch (max) {
+        case r:
+          h = (g - b) / d + (g < b ? 6 : 0);
+          break;
+        case g:
+          h = (b - r) / d + 2;
+          break;
+        case b:
+          h = (r - g) / d + 4;
+          break;
+      }
+      h /= 6;
+    }
+    return { h: h * 360, s: s * 100, b: v * 100 };
+  }
+  function hsbToRgb(color) {
+    let h = color.h, s = color.s, b = color.b;
+    s /= 100;
+    b /= 100;
+    const k = (n) => (n + h / 60) % 6;
+    const f = (n) => b * (1 - s * Math.max(0, Math.min(k(n), 4 - k(n), 1)));
+    return {
+      r: Math.round(255 * f(5)),
+      g: Math.round(255 * f(3)),
+      b: Math.round(255 * f(1))
+    };
+  }
+  function hsbToHex(color) {
+    const rgb = hsbToRgb(color);
+    return rgbToHex(rgb);
+  }
+  function fixHex(color) {
+    let fixedColor = color;
+    if (fixedColor.substring(0, 1) !== "#") {
+      fixedColor = "#" + fixedColor;
+    }
+    fixedColor = fixedColor.toUpperCase();
+    fixedColor = fixedColor.substring(0, 7);
+    if (fixedColor.length === 4) {
+      fixedColor = "#" + fixedColor[1] + fixedColor[1] + fixedColor[2] + fixedColor[2] + fixedColor[3] + fixedColor[3];
+    }
+    while (fixedColor.length < 7) {
+      fixedColor += "F";
+    }
+    fixedColor = fixedColor.replace(/[^A-F0-9]/g, (c7) => {
+      switch (c7) {
+        case "#":
+          return "#";
+        case "G":
+        case "H":
+        case "I":
+        case "J":
+        case "K":
+        case "L":
+        case "M":
+        case "N":
+        case "O":
+        case "P":
+        case "Q":
+        case "R":
+        case "S":
+        case "T":
+        case "U":
+        case "V":
+        case "W":
+        case "X":
+        case "Y":
+        case "Z":
+          return "F";
+        default:
+          return "0";
+      }
+    });
+    return fixedColor;
+  }
+  var init_utils = __esm({
+    "../packages/color/lib/utils.js"() {
+    }
+  });
+
+  // ../packages/color/lib/canvas-utils.js
+  function drawColorPickerBar(canvas, x, y, width, height) {
+    const _x = x !== void 0 ? x : 0;
+    const _y = y !== void 0 ? y : 0;
+    const w = width !== void 0 ? width : canvas.width;
+    const h = height !== void 0 ? height : canvas.height;
+    const ctx = canvas.getContext("2d");
+    for (let i = 0; i < w; i++) {
+      const dx = _x + i;
+      const angle = 360 * i / w;
+      ctx.fillStyle = `hsl(${angle}, 100%, 50%)`;
+      ctx.fillRect(dx, _y, 1, h);
+    }
+  }
+  function drawColorPickerSL(canvas, angle, x, y, width, height) {
+    const _x = x !== void 0 ? x : 0;
+    const _y = y !== void 0 ? y : 0;
+    const w = width !== void 0 ? width : canvas.width;
+    const h = height !== void 0 ? height : canvas.height;
+    const ctx = canvas.getContext("2d");
+    const sw = w / 100;
+    const sh = h / 100;
+    for (let i = 0; i <= 100; i++) {
+      for (let j = 0; j <= 100; j++) {
+        const hex = hsbToHex({
+          h: angle,
+          s: j,
+          b: i
+        });
+        ctx.fillStyle = hex;
+        ctx.fillRect(_x + w * j / 100, _y + h - h * i / 100, sw, sh);
+      }
+    }
+  }
+  var init_canvas_utils = __esm({
+    "../packages/color/lib/canvas-utils.js"() {
+      init_utils();
+    }
+  });
+
+  // ../packages/color/lib/main.js
+  var init_main5 = __esm({
+    "../packages/color/lib/main.js"() {
+      init_utils();
+      init_canvas_utils();
+    }
+  });
+
+  // ../packages/ui/node_modules/@fils/math/lib/Random.js
+  var import_mersenne2;
+  var init_Random2 = __esm({
+    "../packages/ui/node_modules/@fils/math/lib/Random.js"() {
+      import_mersenne2 = __toESM(require_mersenne());
+    }
+  });
+
+  // ../packages/ui/node_modules/@fils/math/lib/MathUtils.js
+  var MathUtils2;
+  var init_MathUtils2 = __esm({
+    "../packages/ui/node_modules/@fils/math/lib/MathUtils.js"() {
+      MathUtils2 = class {
+        static clamp(v, min, max) {
+          return Math.min(max, Math.max(min, v));
+        }
+        static lerp(v1, v2, alpha) {
+          return v1 + (v2 - v1) * alpha;
+        }
+        static mix(v1, v2, alpha) {
+          return MathUtils2.lerp(v1, v2, alpha);
+        }
+        static smoothstep(min, max, val) {
+          if (val < min)
+            return 0;
+          if (val > max)
+            return 1;
+          return (val - min) / (max - min);
+        }
+        static step(thrsh, val) {
+          return val < thrsh ? 0 : 1;
+        }
+        static map(x, a, b, c7, d) {
+          return (x - a) * (d - c7) / (b - a) + c7;
+        }
+        static fract(n) {
+          return n % 1;
+        }
+      };
+    }
+  });
+
+  // ../packages/ui/node_modules/@fils/math/lib/Vector.js
+  var init_Vector2 = __esm({
+    "../packages/ui/node_modules/@fils/math/lib/Vector.js"() {
+      init_MathUtils2();
+    }
+  });
+
+  // ../packages/ui/node_modules/@fils/math/lib/main.js
+  var init_main6 = __esm({
+    "../packages/ui/node_modules/@fils/math/lib/main.js"() {
+      init_Random2();
+      init_MathUtils2();
+      init_Vector2();
+    }
+  });
+
+  // ../packages/ui/lib/components/Panel.js
+  var c3, Panel;
+  var init_Panel = __esm({
+    "../packages/ui/lib/components/Panel.js"() {
+      init_main3();
+      init_cssClasses();
+      init_main7();
+      c3 = {
+        left: "_ui-panel-left",
+        right: "_ui-panel-right",
+        dropdown: "_ui-panel-dropdown"
+      };
+      Panel = class extends EventsManager {
+        constructor(parent, dropdownFrom) {
+          super();
+          this.created = false;
+          this.spacing = 0;
+          this.parent = parent;
+          this.dropdownFrom = dropdownFrom ? dropdownFrom : null;
+          this.spacing = 3;
+        }
+        addEventListeners() {
+          const event = {
+            type: "keydown",
+            target: window,
+            callback: (e) => {
+              if (!this.created)
+                return;
+              if (e.key === "Escape") {
+                this.parent.close();
+              }
+            }
+          };
+          this.addEventListener(event);
+        }
+        createPanelContent() {
+        }
+        positionPanel() {
+          const panelRect = this.el.getBoundingClientRect();
+          const uiRect = this.uiWrapper.getBoundingClientRect();
+          if (!isNull(this.dropdownFrom)) {
+            this.el.classList.add(c3.dropdown);
+            const dropdownFromRect = this.dropdownFrom.getBoundingClientRect();
+            const top2 = dropdownFromRect.top + dropdownFromRect.height - uiRect.top;
+            const left = dropdownFromRect.left - uiRect.left;
+            this.el.style.top = `${top2 + this.spacing}px`;
+            this.el.style.left = `${left}px`;
+            this.el.style.width = `${dropdownFromRect.width}px`;
+            return;
+          }
+          const parentRect = this.parent.el.getBoundingClientRect();
+          const top = Math.max(parentRect.top - uiRect.top - panelRect.height * 0.5, 0);
+          this.el.style.top = `${top}px`;
+          if (uiRect.left > window.innerWidth * 0.5) {
+            this.el.classList.add(c3.left);
+            this.el.style.left = `-${uiRect.width + this.spacing}px`;
+          } else {
+            this.el.classList.add(c3.right);
+            this.el.style.right = `-${uiRect.width + this.spacing}px`;
+          }
+        }
+        create() {
+          this.uiWrapper = this.parent.el.closest(`.${CSS_UI.wrapper}`);
+          const parentZIndex = getComputedStyle(this.uiWrapper).getPropertyValue("z-index");
+          this.uiWrapper.style.zIndex = `${parseInt(parentZIndex) + 1}`;
+          if (this.created)
+            return;
+          this.created = true;
+          this.el = el("div", CSS_UI.panel.baseClass, this.uiWrapper);
+          this.createPanelContent();
+          this.positionPanel();
+          const parentDomStyle = getComputedStyle(this.parent.el.closest("section"));
+          const bg0 = parentDomStyle.getPropertyValue("--section-bg-0");
+          const bg1 = parentDomStyle.getPropertyValue("--section-bg-1");
+          this.el.style.setProperty("--section-bg-0", bg0);
+          this.el.style.setProperty("--section-bg-1", bg1);
+          this.el.classList.add(CSS_UI.utility.loaded);
+          setTimeout(() => this.el.classList.add(CSS_UI.utility.active), 10);
+          this.addEventListeners();
+        }
+        destroy() {
+          if (!this.created)
+            return;
+          this.created = false;
+          this.removeEventListeners();
+          this.uiWrapper.style.zIndex = ``;
+          remove(this.el);
+        }
+        onChange() {
+        }
+        refresh() {
+          if (!this.created)
+            return;
+          this.destroy();
+          this.create();
+        }
+      };
+    }
+  });
+
+  // ../packages/ui/lib/components/items/customItems/ColorItem.js
+  var c4, ColorPanel, ColorItem;
+  var init_ColorItem = __esm({
+    "../packages/ui/lib/components/items/customItems/ColorItem.js"() {
+      init_main5();
+      init_main6();
+      init_main3();
+      init_main7();
+      init_Panel();
+      init_Item();
+      c4 = {
+        type: "color",
+        input: "_ui-color-input",
+        box: "_ui-color-box",
+        view: "_ui-color-view",
+        info: "_ui-color-info",
+        canvas: "_ui-color-canvas",
+        target: "_ui-color-target",
+        dragger: "_ui-color-dragger"
+      };
+      ColorPanel = class extends Panel {
+        constructor() {
+          super(...arguments);
+          this.view = el("div");
+          this.info = el("div");
+          this.canvas1 = el("canvas");
+          this.canvas2 = el("canvas");
+          this.tmpPosition = { x: 0, y: 0 };
+          this.position = { x: 0, y: 0 };
+          this.tmpX = 0;
+          this.x = 0;
+          this.width = 0;
+          this.color = { h: 0, s: 0, b: 0 };
+          this.target = el("div");
+          this.dragger = el("div");
+          this.dragging1 = false;
+          this.dragging2 = false;
+          this.needsUpdate = false;
+        }
+        createPanelContent() {
+          this.el.classList.add(`${CSS_UI.panel.baseClass}-${this.parent.view}`);
+          this.view = el("div", c4.view, this.el);
+          this.info = el("div", c4.info, this.el);
+          this.target = el("div", c4.target, this.view);
+          this.dragger = el("div", c4.dragger, this.info);
+          this.canvas1 = el("canvas", c4.canvas, this.view);
+          this.canvas2 = el("canvas", c4.canvas, this.info);
+          this.canvas1.width = this.canvas1.height = 200;
+          this.canvas2.width = 200;
+          this.canvas2.height = 20;
+          setTimeout(() => this.reverseUpdate(), 10);
+          const raf = () => {
+            if (!this.created)
+              return;
+            this.width = this.view.getBoundingClientRect().width;
+            this.position.x = MathUtils2.lerp(this.position.x, this.tmpPosition.x, 0.9);
+            this.position.y = MathUtils2.lerp(this.position.y, this.tmpPosition.y, 0.9);
+            this.x = MathUtils2.lerp(this.x, this.tmpX, 0.9);
+            if (this.dragging1)
+              this.updateCanvas1();
+            if (this.dragging2)
+              this.updateCanvas2();
+            requestAnimationFrame(raf);
+          };
+          raf();
+        }
+        create() {
+          super.create();
+          setTimeout(() => this.reverseUpdate(), 10);
+        }
+        addEventListeners() {
+          const c1Mousedown = {
+            target: this.canvas1,
+            type: "mousedown",
+            callback: (e) => {
+              this.dragging1 = true;
+            }
+          };
+          this.addEventListener(c1Mousedown);
+          const c2Mousedown = {
+            target: this.canvas2,
+            type: "mousedown",
+            callback: (e) => {
+              this.dragging2 = true;
+            }
+          };
+          this.addEventListener(c2Mousedown);
+          const mousemove = {
+            target: window,
+            type: "mousemove",
+            callback: (e) => {
+              if (!this.created)
+                return;
+              if (!this.dragging1 && !this.dragging2)
+                return;
+              this.tmpPosition = { x: e.pageX, y: e.pageY };
+              this.tmpX = e.pageX;
+              this.needsUpdate = true;
+            }
+          };
+          this.addEventListener(mousemove);
+          const mouseup = {
+            target: window,
+            type: "mouseup",
+            callback: (e) => {
+              var _a;
+              if (!this.created)
+                return;
+              this.dragging1 = false;
+              this.dragging2 = false;
+              if (this.needsUpdate)
+                this.parent.setValue(hsbToHex(this.color));
+              const target = e.target;
+              if ((_a = this.el) === null || _a === void 0 ? void 0 : _a.contains(target))
+                return;
+              if (this.parent.el.contains(target))
+                return;
+              this.destroy();
+            }
+          };
+          this.addEventListener(mouseup);
+        }
+        reverseUpdate() {
+          this.color = rgbToHsb(hexToRgb(this.parent.value));
+          let x = 0;
+          let y = 0;
+          x = this.color.s * this.width / 100;
+          y = this.width - this.color.b * this.width / 100;
+          this.target.style.left = `${x}px`;
+          this.target.style.top = `${y}px`;
+          x = this.color.h * this.width / 360;
+          this.dragger.style.left = `${x}px`;
+          drawColorPickerSL(this.canvas1, this.color.h);
+          drawColorPickerBar(this.canvas2);
+        }
+        update() {
+          drawColorPickerSL(this.canvas1, this.color.h);
+          drawColorPickerBar(this.canvas2);
+          this.parent.visualUpdate(hsbToHex(this.color));
+        }
+        updateCanvas1() {
+          const r = this.canvas1.getBoundingClientRect();
+          const x = Math.min(Math.max(this.position.x - r.left, 0), this.width);
+          const y = Math.min(Math.max(this.position.y - r.top, 0), this.width);
+          this.color.s = Math.round(100 * x / this.width);
+          this.color.b = 100 - Math.round(100 * y / this.width);
+          this.target.style.left = `${MathUtils2.map(x, 0, this.width, 0, 100)}%`;
+          this.target.style.top = `${MathUtils2.map(y, 0, this.width, 0, 100)}%`;
+          this.update();
+        }
+        updateCanvas2() {
+          const r = this.canvas2.getBoundingClientRect();
+          const x = Math.min(Math.max(this.x - r.left, 1), this.width - 1);
+          this.color.h = 360 * x / this.width;
+          this.dragger.style.left = `${x}px`;
+          this.update();
+        }
+      };
+      ColorItem = class extends Item {
+        constructor() {
+          super(...arguments);
+          this.input = el("input");
+          this.colorBox = el("div");
+        }
+        afterCreate() {
+          this.panel = new ColorPanel(this, this.content);
+        }
+        open() {
+          this.panel.create();
+        }
+        close() {
+          this.panel.destroy();
+        }
+        addEventListeners() {
+          const inputChangeEvent = {
+            target: this.input,
+            type: "change",
+            callback: (e) => {
+              this.setValue(this.input.value);
+            }
+          };
+          const colorBoxClick = {
+            target: this.colorBox,
+            type: "click",
+            callback: (e) => {
+              if (!this.panel.created)
+                this.open();
+              else
+                this.close();
+            }
+          };
+          const windowKeydownEvent = {
+            target: window,
+            type: "keydown",
+            callback: (e) => {
+              if (e.key === "Enter") {
+                this.setValue(this.input.value);
+                this.input.blur();
+              }
+            }
+          };
+          this.addEventListener(inputChangeEvent);
+          this.addEventListener(colorBoxClick);
+          this.addEventListener(windowKeydownEvent);
+        }
+        createContent() {
+          this.colorBox = el("div");
+          this.colorBox.classList.add(c4.box);
+          this.content.appendChild(this.colorBox);
+          this.input = el("input");
+          this.input.setAttribute("tabindex", "1");
+          this.input.type = "text";
+          this.input.classList.add(c4.input);
+          this.input.classList.add(CSS_UI.item);
+          this.content.appendChild(this.input);
+        }
+        setValue(value) {
+          if (value.startsWith("0x")) {
+            value = value.replace("0x", "#");
+          }
+          if (isNull(value) || isUndefined(value) || value === "") {
+            value = "#FFFFFF";
+          }
+          value = fixHex(value);
+          super.setValue(value);
+        }
+        visualUpdate(value) {
+          const valueUpper = value.toUpperCase();
+          this.colorBox.style.setProperty("--active-color", valueUpper);
+          this.input.value = valueUpper;
+        }
+        refreshDom() {
+          this.colorBox.style.setProperty("--active-color", this.value);
+          this.input.value = this.value;
+        }
+      };
+    }
+  });
+
+  // ../packages/ui/lib/components/items/customItems/RangeItem.js
+  var c5, RangeItem;
+  var init_RangeItem = __esm({
+    "../packages/ui/lib/components/items/customItems/RangeItem.js"() {
+      init_main6();
+      init_main3();
+      init_cssClasses();
+      init_Item();
+      c5 = {
+        type: "range",
+        input: "_ui-range-input",
+        track: "_ui-range-track",
+        overExpose: "_ui-range-overexpose",
+        overExposeMin: "_ui-range-overexpose-min",
+        overExposeMax: "_ui-range-overexpose-max",
+        thumb: "_ui-range-thumb"
+      };
+      RangeItem = class extends Item {
+        constructor() {
+          super(...arguments);
+          this.max = 0;
+          this.min = 1;
+          this.step = 0.01;
+          this.limitNumber = (value) => {
+            if (this.max)
+              value = Math.min(value, this.max);
+            if (this.min)
+              value = Math.max(value, this.min);
+            const tmp = (Math.round(value * 100) / 100).toFixed(this.getDecimals());
+            return parseFloat(tmp);
+          };
+        }
+        getDecimals() {
+          const decimals = this.step.toString().split(".")[1];
+          return decimals ? decimals.length : 0;
+        }
+        getStringDecimals(value) {
+          return (Math.round(value * 100) / 100).toFixed(this.getDecimals());
+        }
+        addEventListeners() {
+          const inputChange = {
+            target: this.input,
+            type: "change",
+            callback: (e) => {
+              this.setValue(this.input.valueAsNumber);
+            }
+          };
+          this.addEventListener(inputChange);
+          let dragging = false;
+          let x = 0;
+          let originalValue = 0;
+          const mouseDown = (target, newX) => {
+            const t = target;
+            if (t != this.thumb)
+              return;
+            dragging = true;
+            this.thumb.classList.add(CSS_UI.utility.grab);
+            x = newX;
+            const { width } = this.range.getBoundingClientRect();
+            originalValue = MathUtils2.map(this.mappedValue, 0, 1, 0, width);
+          };
+          const mouseMove = (newX) => {
+            if (!dragging)
+              return;
+            const movementDistance = originalValue + (newX - x);
+            const { width } = this.range.getBoundingClientRect();
+            const newValueMapped = MathUtils2.clamp(MathUtils2.map(movementDistance, 0, width, 0, 1), 0, 1);
+            const newValue = MathUtils2.map(newValueMapped, 0, 1, this.min, this.max);
+            this.setValue(newValue);
+          };
+          const mouseClick = (e) => {
+            const t = e.target;
+            if (t === this.thumb)
+              return;
+            const { left, width } = this.range.getBoundingClientRect();
+            const newPosition = e.clientX - left;
+            const newValueMapped = MathUtils2.clamp(MathUtils2.map(newPosition, 0, width, 0, 1), 0, 1);
+            const newValue = MathUtils2.map(newValueMapped, 0, 1, this.min, this.max);
+            this.setValue(newValue);
+          };
+          const reset = () => {
+            if (!dragging)
+              return;
+            dragging = false;
+            x = 0;
+            this.thumb.classList.remove(CSS_UI.utility.grab);
+          };
+          const rangeClick = {
+            target: this.range,
+            type: "click",
+            callback: (e) => mouseClick(e)
+          };
+          this.addEventListener(rangeClick);
+          const rangeMouseDown = {
+            target: this.range,
+            type: "mousedown",
+            callback: (e) => mouseDown(e.target, e.clientX)
+          };
+          this.addEventListener(rangeMouseDown);
+          const rangeTouchStart = {
+            target: this.range,
+            type: "touchstart",
+            callback: (e) => mouseDown(e.target, e.touches[0].clientX)
+          };
+          this.addEventListener(rangeTouchStart);
+          const windowMouseMove = {
+            target: window,
+            type: "mousemove",
+            callback: (e) => mouseMove(e.clientX)
+          };
+          this.addEventListener(windowMouseMove);
+          const windowTouchMove = {
+            target: window,
+            type: "touchmove",
+            callback: (e) => mouseMove(e.touches[0].clientX)
+          };
+          this.addEventListener(windowTouchMove);
+          const windowMouseUp = {
+            target: window,
+            type: "mouseup",
+            callback: (e) => reset()
+          };
+          this.addEventListener(windowMouseUp);
+          const windowTouchEnd = {
+            target: window,
+            type: "touchend",
+            callback: (e) => reset()
+          };
+          this.addEventListener(windowTouchEnd);
+        }
+        get mappedValue() {
+          return MathUtils2.clamp(MathUtils2.map(this.value, this.min, this.max, 0, 1), 0, 1);
+        }
+        createContent() {
+          this.max = this.params.max ? this.params.max : this.max;
+          this.min = this.params.min ? this.params.min : this.min;
+          this.step = this.params.step ? this.params.step : this.step;
+          this.content.innerHTML = `
+			<div class="${c5.input}">
+				<div class="${c5.track}"></div>
+				<div class="${c5.overExpose} ${c5.overExposeMin}"></div>
+				<div class="${c5.overExpose} ${c5.overExposeMax}"></div>
+				<div class="${c5.thumb}"></div>
+			</div>
+		`;
+          this.input = el("input");
+          this.input.type = "number";
+          this.input.setAttribute("tabindex", "1");
+          this.input.placeholder = "Value";
+          this.input.classList.add(CSS_UI.item);
+          if (this.min)
+            this.input.setAttribute("min", this.min.toString());
+          if (this.max)
+            this.input.setAttribute("max", this.max.toString());
+          if (this.step)
+            this.input.setAttribute("step", this.step.toString());
+          this.content.appendChild(this.input);
+          this.range = this.content.querySelector(`.${c5.input}`);
+          this.thumb = this.content.querySelector(`.${c5.thumb}`);
+          this.setUpOverExpose();
+        }
+        setUpOverExpose() {
+          const overExpose = this.params.overExpose || [0, 0];
+          let limits = [0, 0];
+          if (!isArray(overExpose))
+            limits = [overExpose, overExpose];
+          else
+            limits = overExpose;
+          this.min = this.params.min ? this.params.min - limits[0] : limits[0];
+          this.max = this.params.max ? this.params.max + limits[1] : limits[1];
+          const overExposeEls = this.content.querySelectorAll(`.${c5.overExpose}`);
+          const distance = Math.abs(this.min - this.max);
+          const left = MathUtils2.map(limits[0], 0, distance, 0, 1);
+          const right = MathUtils2.map(limits[1], 0, distance, 0, 1);
+          overExposeEls[0].style.setProperty("--size", `${left}`);
+          overExposeEls[1].style.setProperty("--size", `${right}`);
+        }
+        updateRange() {
+          this.range.style.setProperty("--value", `${this.mappedValue}`);
+        }
+        updateInput() {
+          this.input.value = this.getStringDecimals(this.value);
+        }
+        setValue(value) {
+          value = this.limitNumber(value);
+          super.setValue(value);
+        }
+        refreshDom() {
+          this.updateInput();
+          this.updateRange();
+          super.refreshDom();
+        }
+        destroy() {
+          remove(this.input);
+          remove(this.range);
+          super.destroy();
+        }
+      };
+    }
+  });
+
+  // ../packages/ui/lib/components/items/customItems/SelectItem.js
+  var c6, SelectPanel, SelectItem;
+  var init_SelectItem = __esm({
+    "../packages/ui/lib/components/items/customItems/SelectItem.js"() {
+      init_main4();
+      init_main3();
+      init_cssClasses();
+      init_Panel();
+      init_Item();
+      c6 = {
+        type: "select",
+        input: "_ui-select-input",
+        label: "_ui-select-label",
+        open: "_ui-select-open",
+        search: "_ui-panel-select-search",
+        searchInput: "_ui-panel-select-search-input"
+      };
+      SelectPanel = class extends Panel {
+        constructor() {
+          super(...arguments);
+          this.enableSearch = false;
+          this.search = el("div");
+          this.searchInput = el("input");
+          this.optionNone = el("div");
+          this.options = [];
+        }
+        sortOptions() {
+          const parentContent = this.parent.params.options;
+          this.options = Object.keys(parentContent).map((key) => {
+            const div = el("div", CSS_UI.select.option);
+            const p = el("p");
+            p.innerHTML = key;
+            div.appendChild(p);
+            this.el.appendChild(div);
+            const value = parentContent[key];
+            if (this.parent.value === value)
+              div.classList.add(CSS_UI.utility.active);
+            const click = {
+              target: div,
+              type: "click",
+              callback: (e) => {
+                this.parent.setValue(value);
+                this.parent.close();
+              }
+            };
+            this.addEventListener(click);
+            return {
+              key,
+              value,
+              dom: div
+            };
+          });
+        }
+        createPanelContent() {
+          if (this.enableSearch)
+            this.createSearch();
+          this.sortOptions();
+          this.el.classList.add(CSS_UI.select.panel);
+          this.optionNone = el("div", CSS_UI.select.optionNone);
+          const p = el("p");
+          p.innerHTML = "No options found";
+          this.optionNone.appendChild(p);
+          this.el.appendChild(this.optionNone);
+          if (this.options.length > 0)
+            this.optionNone.classList.add(CSS_UI.utility.hidden);
+          setTimeout(() => this.searchInput.focus(), 10);
+        }
+        searchOptions() {
+          const search = this.searchInput.value.toLowerCase();
+          this.optionNone.classList.remove(CSS_UI.utility.hidden);
+          this.options.map((option) => {
+            if (option.key.toLowerCase().indexOf(search) >= 0 || String(option.value).toLowerCase().indexOf(search) >= 0 || search === "") {
+              option.dom.classList.remove(CSS_UI.utility.hidden);
+              this.optionNone.classList.add(CSS_UI.utility.hidden);
+            } else {
+              option.dom.classList.add(CSS_UI.utility.hidden);
+            }
+          });
+        }
+        createSearch() {
+          this.search = el("div", c6.search, this.el);
+          this.search.classList.add(CSS_UI.select.optionButton);
+          this.searchInput = el("input", c6.searchInput);
+          this.searchInput.setAttribute("tabindex", "1");
+          this.searchInput.placeholder = "Search";
+          this.searchInput.type = "text";
+          this.search.appendChild(this.searchInput);
+          this.el.appendChild(this.search);
+          const input = {
+            target: this.searchInput,
+            type: "input",
+            callback: (e) => {
+              this.searchOptions();
+            }
+          };
+          this.addEventListener(input);
+        }
+      };
+      SelectItem = class extends Item {
+        constructor() {
+          super(...arguments);
+          this.options = {};
+          this.input = el("div");
+          this.label = el("div");
+          this.activeOption = el("div");
+        }
+        afterCreate() {
+          this.panel = new SelectPanel(this, this.content);
+        }
+        addEventListeners() {
+          const click = {
+            target: this.input,
+            type: "click",
+            callback: () => {
+              if (!this.panel.created)
+                this.open();
+              else
+                this.close();
+            }
+          };
+          this.addEventListener(click);
+        }
+        open() {
+          this.panel.create();
+          this.el.classList.add(c6.open);
+        }
+        close() {
+          this.el.classList.remove(c6.open);
+          this.panel.destroy();
+        }
+        createContent() {
+          this.input = el("div", c6.input, this.content);
+          this.input.classList.add(CSS_UI.item);
+          this.input.innerHTML = uiDownarrowHlt;
+          this.label = el("p", c6.label, this.input);
+        }
+        setValue(value) {
+          function findKeyByValue(obj, value2) {
+            for (let key in obj) {
+              if (obj[key] === value2) {
+                return key;
+              }
+            }
+            return null;
+          }
+          const label = findKeyByValue(this.params.options, value);
+          this.label.innerHTML = isNull(value) || isUndefined(value) ? "Select..." : label;
+          super.setValue(value);
+        }
+      };
+    }
+  });
+
+  // ../packages/ui/lib/components/items/customItems/UploadItem.js
+  var UploadItem;
+  var init_UploadItem = __esm({
+    "../packages/ui/lib/components/items/customItems/UploadItem.js"() {
+      init_main3();
+      init_main4();
+      init_cssClasses();
+      init_dom();
+      init_Item();
+      UploadItem = class extends Item {
+        constructor() {
+          super(...arguments);
+          this.buttonTitle = "";
+          this.uploadButton = el("div");
+          this.removeUploadButton = el("div");
+          this.input = el("input");
+        }
+        addEventListeners() {
+          const click = {
+            target: this.uploadButton,
+            type: "click",
+            callback: () => {
+              this.input.click();
+            }
+          };
+          this.addEventListener(click);
+          const change = {
+            target: this.input,
+            type: "change",
+            callback: () => {
+              const file = this.input && this.input.files && this.input.files[0] ? this.input.files[0] : null;
+              if (!file)
+                return;
+              this.removeUploadButton.querySelector("h3").innerText = file.name;
+              this.removeUploadButton.classList.remove(`${CSS_UI.utility.hidden}`);
+              this.uploadButton.classList.add(`${CSS_UI.utility.hidden}`);
+              this.setValue(file);
+            }
+          };
+          this.addEventListener(change);
+          const removeClick = {
+            target: this.removeUploadButton,
+            type: "click",
+            callback: (e) => {
+              this.removeUploadButton.classList.add(`${CSS_UI.utility.hidden}`);
+              this.uploadButton.classList.remove(`${CSS_UI.utility.hidden}`);
+              this.setValue(null);
+            }
+          };
+          this.addEventListener(removeClick);
+        }
+        destroy() {
+          remove(this.input);
+          remove(this.uploadButton);
+          remove(this.removeUploadButton);
+          super.destroy();
+        }
+        createContent() {
+          this.buttonTitle = this.params.text ? this.params.text : this.title;
+          this.uploadButton = dom_default.createButton(this.buttonTitle, this.params.icon);
+          this.uploadButton.setAttribute("tabindex", "1");
+          this.uploadButton.classList.add(CSS_UI.item);
+          this.content.appendChild(this.uploadButton);
+          this.removeUploadButton = dom_default.createButton("", uiRemove);
+          this.removeUploadButton.classList.add(CSS_UI.utility.hidden);
+          this.removeUploadButton.classList.add(CSS_UI.item);
+          this.content.appendChild(this.removeUploadButton);
+          this.el.classList.add(CSS_UI.row.vertical);
+          this.input = document.createElement("input");
+          this.input.type = "file";
+          this.input.style.display = "none";
+          if (this.params.accept)
+            this.input.setAttribute("accept", this.params.accept);
+          this.input.classList.add(CSS_UI.item);
+          this.content.appendChild(this.input);
+        }
+      };
+    }
+  });
+
+  // ../packages/ui/lib/partials/AvailableItems.js
+  var AvailableItems, ItemRegister, AvailableItems_default;
+  var init_AvailableItems = __esm({
+    "../packages/ui/lib/partials/AvailableItems.js"() {
+      AvailableItems = {
+        items: []
+      };
+      ItemRegister = (registerOptions) => {
+        const createItem = (createParams) => {
+          return new registerOptions.item(createParams);
+        };
+        AvailableItems.items.push({
+          view: registerOptions.view,
+          create: createItem
+        });
+      };
+      AvailableItems_default = AvailableItems;
+    }
+  });
+
+  // ../packages/ui/lib/partials/RegisterBaseItems.js
+  var RegisterBaseComponents;
+  var init_RegisterBaseItems = __esm({
+    "../packages/ui/lib/partials/RegisterBaseItems.js"() {
+      init_BooleanItem();
+      init_NumberItem();
+      init_StringItem();
+      init_ColorItem();
+      init_RangeItem();
+      init_SelectItem();
+      init_UploadItem();
+      init_AvailableItems();
+      RegisterBaseComponents = () => {
+        ItemRegister({
+          view: "boolean",
+          item: BooleanItem
+        });
+        ItemRegister({
+          view: "string",
+          item: StringItem
+        });
+        ItemRegister({
+          view: "number",
+          item: NumberItem
+        });
+        ItemRegister({
+          view: "range",
+          item: RangeItem
+        });
+        ItemRegister({
+          view: "select",
+          item: SelectItem
+        });
+        ItemRegister({
+          view: "upload",
+          item: UploadItem
+        });
+        ItemRegister({
+          view: "color",
+          item: ColorItem
+        });
+      };
+    }
+  });
+
+  // ../packages/ui/lib/styles.js
+  var CSS;
+  var init_styles = __esm({
+    "../packages/ui/lib/styles.js"() {
+      CSS = `@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjXr8AIxsdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjXr8AIVsdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjXr8AIJsdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0370-03FF}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjXr8AI5sdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+1EA0-1EF9,U+20AB}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjXr8AI9sdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjXr8AIFsdP3pBms.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYXgKVElMYYaJe8bpLHnCwDKhdzeFaxOedfTDw.woff2) format("woff2");unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYXgKVElMYYaJe8bpLHnCwDKhdXeFaxOedfTDw.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYXgKVElMYYaJe8bpLHnCwDKhdLeFaxOedfTDw.woff2) format("woff2");unicode-range:U+0370-03FF}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYXgKVElMYYaJe8bpLHnCwDKhd7eFaxOedfTDw.woff2) format("woff2");unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+1EA0-1EF9,U+20AB}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYXgKVElMYYaJe8bpLHnCwDKhd_eFaxOedfTDw.woff2) format("woff2");unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYXgKVElMYYaJe8bpLHnCwDKhdHeFaxOedc.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjWr7AIxsdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjWr7AIVsdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjWr7AIJsdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0370-03FF}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjWr7AI5sdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+1EA0-1EF9,U+20AB}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjWr7AI9sdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjWr7AIFsdP3pBms.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}:root{--ui-index:998;--ui-panels-index:999;--radius-0:4px;--radius-1:8px;--padding:0.2rem 0.4rem;--spacer:0.25rem;--duration:.3s;--timing:cubic-bezier(.6, 0, .4, 1);--accent-color:#2871C7;--happy-color:#49db6e;--warning-color:#ae7d15;--danger-color:#8f0000;--bg-0:#303030;--bg-1:#191919;--white:#FFF;--color-0:#CCCCCC;--color-1:#999999;--color-2:#7b7b7b}._ui-panel,._ui-panel *,._ui-wrapper,._ui-wrapper *{box-sizing:border-box}._ui-panel fieldset,._ui-wrapper fieldset{min-inline-size:unset}._ui-panel button,._ui-panel input,._ui-panel select,._ui-panel textarea,._ui-wrapper button,._ui-wrapper input,._ui-wrapper select,._ui-wrapper textarea{padding:0;margin:0;border:none;color:inherit;background-color:transparent;border-radius:0;font:inherit;text-align:inherit;text-transform:inherit;letter-spacing:inherit}._ui-panel a,._ui-panel h1,._ui-panel h2,._ui-panel h3,._ui-panel h4,._ui-panel h5,._ui-panel h6,._ui-panel p,._ui-wrapper a,._ui-wrapper h1,._ui-wrapper h2,._ui-wrapper h3,._ui-wrapper h4,._ui-wrapper h5,._ui-wrapper h6,._ui-wrapper p{margin:0;font:inherit}._ui-panel input[type=number],._ui-wrapper input[type=number]{-moz-appearance:textfield}._ui-panel input[type=number]::-webkit-inner-spin-button,._ui-panel input[type=number]::-webkit-outer-spin-button,._ui-wrapper input[type=number]::-webkit-inner-spin-button,._ui-wrapper input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}._ui-panel,._ui-wrapper{font-family:"IBM Plex Sans",sans-serif;font-size:12px;color:var(--color-1);font-weight:400}._ui-panel header,._ui-wrapper header{font-weight:700}._ui-panel [ui-depth="0"]>header,._ui-wrapper [ui-depth="0"]>header{color:var(--color-0)}._ui-panel fieldset h4,._ui-panel fieldset p,._ui-wrapper fieldset h4,._ui-wrapper fieldset p{color:var(--color-2)}._ui-wrapper{z-index:var(--ui-index);--wrapper-width:300px;position:fixed;top:5px;right:5px;width:var(--wrapper-width);min-width:300px}._ui-wrapper ::selection{background:var(--white);color:var(--accent-color)}._ui-wrapper ._ui--hidden{display:none!important;pointer-events:none}._ui-wrapper ._ui-item{width:100%;min-height:2rem;padding:var(--padding);text-align:left;background-color:var(--section-bg-1);border:1px solid var(--section-bg-1);border-radius:var(--radius-0);display:flex;align-items:center;cursor:pointer}._ui-wrapper ._ui-item:focus{border-color:var(--accent-color)}._ui-wrapper._ui-wrapper-has-parent{position:relative;top:unset;right:unset;width:100%}._ui-wrapper ._ui-wrapper-resizer{position:absolute;width:4px;height:calc(100% - 4px);top:4px;left:0;cursor:ew-resize;z-index:1}._ui-wrapper._ui-minimal section[ui-depth="0"]>header{display:none}._ui-wrapper section{--section-bg-0:var(--bg-1);--section-bg-1:var(--bg-0);position:relative;width:100%;height:auto;overflow:hidden;border-radius:var(--radius-1);background-color:var(--section-bg-0)}._ui-wrapper section[ui-depth="0"],._ui-wrapper section[ui-depth="10"],._ui-wrapper section[ui-depth="2"],._ui-wrapper section[ui-depth="4"],._ui-wrapper section[ui-depth="6"],._ui-wrapper section[ui-depth="8"]{--section-bg-0:var(--bg-0);--section-bg-1:var(--bg-1)}._ui-wrapper section:not([ui-depth="0"]){margin-top:var(--spacer)}._ui-wrapper section ._ui-section-content{padding:0 var(--spacer) var(--spacer) var(--spacer);position:relative;float:left;display:flex;flex-direction:column;width:100%}._ui-wrapper section ._ui-section-content fieldset:first-of-type{margin-top:.5rem}._ui-wrapper section ._ui-section-content fieldset:last-child{margin-bottom:.5rem}._ui-wrapper ._ui-section-foldable{transition-duration:var(--duration);transition-timing-function:var(--timing);overflow:hidden}._ui-wrapper ._ui-section-foldable>header{cursor:pointer}._ui-wrapper ._ui-section-foldable ._ui-section-foldable-element{overflow:hidden;transition-duration:inherit;transition-timing-function:inherit;transition-property:height}._ui-wrapper ._ui-section-foldable ._ui-section-header-icon{transition:transform var(--duration) var(--timing)}._ui-wrapper ._ui-section-foldable ._ui-section-foldable-element ._ui-section-header-icon{transform:rotate(0);width:20px;transform-origin:50%}._ui-wrapper ._ui-section-foldable._ui-section-folded>._ui-section-foldable-element{height:0!important}._ui-wrapper ._ui-section-foldable._ui-section-folded>header ._ui-section-header-chevron{transform:rotate(-90deg)}._ui-wrapper header{position:relative;width:100%;height:40px;display:flex;justify-content:flex-start;align-items:center;padding:var(--padding);user-select:none}._ui-wrapper header ._ui-section-header-icon{width:auto;max-width:20px;height:1em;display:flex;justify-content:center;align-items:center;margin-right:5px}._ui-wrapper header h3{margin:0}._ui-wrapper section:not(._ui-section-foldable)>header>._ui-section-header-chevron{margin-right:.2em}._ui-wrapper section:not(._ui-section-foldable)>header>._ui-section-header-chevron svg{display:none}._ui-wrapper fieldset{width:calc(100% - .5rem);margin:var(--spacer) var(--spacer) 0 var(--spacer);padding:0;position:relative;border:none;display:flex;justify-content:space-between;align-items:center}._ui-wrapper fieldset h4{width:33.33%;max-width:200px;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;padding-right:5px;flex-grow:0;flex-shrink:0;user-select:none}._ui-wrapper fieldset ._ui-item-content{width:66.66%;display:flex;justify-content:flex-end;flex-grow:1;flex-shrink:0;position:relative;float:left}._ui-wrapper fieldset._ui-row-vertical{flex-direction:column;align-items:flex-start}._ui-wrapper fieldset._ui-row-vertical>h4{padding:.5rem 0}._ui-wrapper fieldset._ui-row-vertical>div{width:100%}._ui-wrapper ._ui-button._ui-item{--button-accent:var(--accent-color);padding:.2rem .7rem;justify-content:center;border:1px solid var(--section-bg-1);transition:var(--duration) var(--timing);margin-top:var(--animation-space);user-select:none}._ui-wrapper ._ui-button._ui-item._ui-button-happy{--button-accent:var(--happy-color)}._ui-wrapper ._ui-button._ui-item._ui-button-warning{--button-accent:var(--warning-color)}._ui-wrapper ._ui-button._ui-item._ui-button-danger{--button-accent:var(--danger-color)}._ui-wrapper ._ui-button._ui-item:hover{border:1px solid var(--button-accent)}._ui-wrapper ._ui-button._ui-item._ui--active{background-color:var(--button-accent);border:1px solid var(--button-accent);color:var(--white);transition:0s}._ui-wrapper ._ui-button._ui-item h3{text-overflow:ellipsis;overflow:hidden}._ui-wrapper ._ui-button-has-icon._ui-item{justify-content:space-between}._ui-wrapper ._ui-button-has-icon._ui-item ._ui-button-icon{display:flex;justify-content:center;align-items:center}._ui-wrapper ._ui-button-has-icon._ui-item ._ui-button-icon svg{width:20px}._ui-wrapper ._ui-spacer{width:100%;display:block;margin-bottom:calc(-1 * var(--spacer))}._ui-wrapper ._ui-spacer._ui-spacer-small{padding:10px 0}._ui-wrapper ._ui-spacer._ui-spacer-medium{padding:15px 0}._ui-wrapper ._ui-spacer._ui-spacer-large{padding:20px 0}._ui-wrapper ._ui-spacer._ui-spacer-has-line:before{content:"";display:block;width:calc(100% - .25rem);margin:0 auto;height:1px;background:var(--section-bg-1)}._ui-wrapper ._ui-info{display:flex;flex-direction:column;width:100%;margin:var(--spacer) 0 0;padding:.75rem var(--spacer);align-items:flex-start}._ui-wrapper ._ui-info p{line-height:1.3em}._ui-wrapper ._ui-info p:not(:first-of-type){margin-top:var(--spacer)}._ui-wrapper ._ui-info:after,._ui-wrapper ._ui-info:before{content:"";position:absolute;left:var(--spacer);width:calc(100% - 2 * var(--spacer));height:1px;background-color:var(--section-bg-1)}._ui-wrapper ._ui-info:before{top:0}._ui-wrapper ._ui-info:after{bottom:0}._ui-wrapper ._ui-boolean{cursor:pointer}._ui-wrapper ._ui-boolean ._ui-toggle{width:40px;height:25px;border-radius:15px;background-color:var(--section-bg-1);position:relative;float:left;transition:var(--duration) var(--timing);display:flex;justify-content:center;align-items:center}._ui-wrapper ._ui-boolean ._ui-toggle div{width:25px;height:25px;border-radius:100%;background-color:var(--white);transform:translate3d(-8px,0,0);transition:inherit}._ui-wrapper ._ui-boolean._ui--active ._ui-toggle{background-color:var(--accent-color)}._ui-wrapper ._ui-boolean._ui--active ._ui-toggle div{transform:translate3d(8px,0,0)}._ui-wrapper ._ui-number ._ui-number-input{flex-grow:1;position:relative;float:left}._ui-wrapper ._ui-number ._ui-number-input:not(:last-of-type){margin:0 var(--spacer) 0 0}._ui-wrapper ._ui-number ._ui-number-buttons{position:absolute;top:0;right:0;height:100%;width:auto;display:flex;flex-direction:column;align-items:center;user-select:none}._ui-wrapper ._ui-number ._ui-number-buttons button{padding:0;display:flex;justify-content:flex-start;align-items:center;height:50%;width:20px;cursor:pointer;user-select:none}._ui-wrapper ._ui-number ._ui-number-buttons button:active{color:var(--white);transition:0s}._ui-wrapper ._ui-number ._ui-number-buttons svg{user-select:none;width:20px}._ui-wrapper ._ui-number ._ui-number-buttons ._ui-number-btn-increase svg{transform:rotate(180deg);transform-origin:center}._ui-wrapper ._ui-range ._ui-range-input{position:relative;float:left;width:calc(65% - 12px);cursor:pointer;margin:0 12px 0 0}._ui-wrapper ._ui-range ._ui-range-input *{pointer-events:none}._ui-wrapper ._ui-range ._ui-range-overexpose,._ui-wrapper ._ui-range ._ui-range-track{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);height:2px;background-color:var(--color-0);width:100%}._ui-wrapper ._ui-range ._ui-range-overexpose{background-color:var(--color-2);transform:translate(0,-50%);left:unset;width:calc(var(--size) * 100%)}._ui-wrapper ._ui-range ._ui-range-overexpose._ui-range-overexpose-min{left:0}._ui-wrapper ._ui-range ._ui-range-overexpose._ui-range-overexpose-max{right:0}._ui-wrapper ._ui-range ._ui-range-thumb{position:absolute;top:50%;left:calc(var(--value) * 100%);transform:translate(-50%,-50%);width:20px;height:20px;border-radius:50%;background-color:var(--white);cursor:grab;pointer-events:all;transition:background-color var(--duration) var(--timing)}._ui-wrapper ._ui-range ._ui-range-thumb._ui--grab{background-color:rgba(var(--white),.2)}._ui-wrapper ._ui-range ._ui-range-thumb::after,._ui-wrapper ._ui-range ._ui-range-thumb::before{content:"";position:absolute;height:8px;width:2px;background-color:var(--white);left:50%;transform:translate(-50%,0)}._ui-wrapper ._ui-range ._ui-range-thumb::after{top:0}._ui-wrapper ._ui-range ._ui-range-thumb::before{bottom:0}._ui-wrapper ._ui-range ._ui-item{width:calc(35% - var(--spacer))}._ui-wrapper ._ui-select{position:relative;float:left}._ui-wrapper ._ui-select ._ui-item._ui-select-input *{pointer-events:none}._ui-wrapper ._ui-select ._ui-item._ui-select-input svg{width:20px;position:absolute;right:11px;top:50%;transition:all var(--duration) var(--timing);transform:translateY(-50%) rotate(0)}._ui-wrapper ._ui-select._ui-select-open ._ui-select-input svg{color:var(--white);transform:translateY(-50%) rotate(90deg)}._ui-wrapper ._ui-color div{justify-content:flex-end;align-items:center}._ui-wrapper ._ui-color ._ui-item{max-width:70px}._ui-wrapper ._ui-color ._ui-color-box{width:calc(2rem - 5px);height:calc(2rem - 5px);margin-right:10px;border-radius:var(--radius-0);flex-shrink:0;flex-grow:0;cursor:pointer;background-color:var(--active-color);border:1px solid var(--color-1)}._ui-wrapper ._ui-panel{z-index:var(--ui-panels-index);position:absolute;height:auto;border-radius:var(--radius-0);width:100%;top:100%;opacity:0}._ui-wrapper ._ui-panel._ui--loaded{transition-property:opacity;transition-duration:var(--duration);transition-timing-function:var(--timing)}._ui-wrapper ._ui-panel._ui--active{opacity:1}._ui-wrapper ._ui-panel._ui-panel-dropdown{height:auto;max-height:300px;overflow-y:auto}._ui-wrapper ._ui-panel._ui-panel-left,._ui-wrapper ._ui-panel._ui-panel-right{width:300px;height:auto}._ui-wrapper ._ui-panel-select{background-color:var(--section-bg-1);border:1px solid var(--section-bg-0)}._ui-wrapper ._ui-panel-select-button,._ui-wrapper ._ui-panel-select-option,._ui-wrapper ._ui-panel-select-option-none,._ui-wrapper ._ui-panel-select-search{padding:.6rem;background-color:var(--section-bg-1);cursor:pointer}._ui-wrapper ._ui-panel-select-option{text-align:left;border-radius:var(--radius-0);display:flex;justify-content:flex-start;align-items:center;min-height:40px}._ui-wrapper ._ui-panel-select-option._ui--active{border:1px solid var(--accent-color)}._ui-wrapper ._ui-panel-select-option:hover{background-color:var(--accent-color)}._ui-wrapper ._ui-panel-select-option:hover p{color:var(--white)}._ui-wrapper ._ui-panel-select-option-button{position:sticky;top:0;border-bottom:2px solid var(--section-bg-0)}._ui-wrapper ._ui-panel-select-option-button svg{margin-right:5px}._ui-wrapper ._ui-panel-color{display:flex;justify-content:center;align-items:center;flex-direction:column}._ui-wrapper ._ui-panel-color ._ui-color-info,._ui-wrapper ._ui-panel-color ._ui-color-view{width:100%;height:100%;position:relative}._ui-wrapper ._ui-panel-color canvas{width:100%;height:auto;display:block}._ui-wrapper ._ui-color-target{position:absolute;transform:translate3d(-50%,-50%,0);border:2px solid var(--white);border-radius:100%;width:10px;height:10px;pointer-events:none;mix-blend-mode:exclusion}._ui-wrapper ._ui-color-dragger{position:absolute;width:3px;border-radius:5px;height:calc(100% - 8px);background:#fff;top:50%;left:50%;transform:translate3d(-50%,-50%,0);pointer-events:none}`;
+    }
+  });
+
+  // ../packages/ui/lib/utils/css.js
+  var injected, css, UIInjectCSS;
+  var init_css = __esm({
+    "../packages/ui/lib/utils/css.js"() {
+      init_styles();
+      injected = false;
+      css = {
+        inject: (css2) => {
+          if (injected)
+            return;
+          injected = true;
+          const style2 = document.createElement("style");
+          style2.innerHTML = css2;
+          document.head.appendChild(style2);
+        }
+      };
+      UIInjectCSS = () => {
+        css.inject(CSS);
+      };
+    }
+  });
+
+  // ../packages/ui/lib/init.js
+  var initialized, InitUI;
+  var init_init = __esm({
+    "../packages/ui/lib/init.js"() {
+      init_RegisterBaseItems();
+      init_css();
+      initialized = false;
+      InitUI = () => {
+        if (initialized)
+          return;
+        RegisterBaseComponents();
+        UIInjectCSS();
+      };
+    }
+  });
+
+  // ../packages/ui/lib/partials/ItemFactory.js
+  var compareArrays, ItemFactory, getItemByValue;
+  var init_ItemFactory = __esm({
+    "../packages/ui/lib/partials/ItemFactory.js"() {
+      init_main3();
+      init_AvailableItems();
+      compareArrays = (a, b) => {
+        for (const item of b) {
+          if (a.indexOf(item) === -1) {
+            return false;
+          }
+        }
+        return true;
+      };
+      ItemFactory = ({ object, key, params = {} }) => {
+        if (!object)
+          throw new Error("ItemFactory - object is required");
+        if (!key)
+          throw new Error("ItemFactory - key is required");
+        if (params && params.view) {
+          const item2 = AvailableItems_default.items.find((item3) => item3.view === params.view);
+          if (!item2)
+            throw new Error("ItemFactory - unknown view");
+          return item2.create({ object, key, params });
+        }
+        const item = getItemByValue(object[key], params);
+        if (item) {
+          params.view = item.view;
+          return item.create({ object, key, params });
+        }
+      };
+      getItemByValue = (value, params) => {
+        if (!isUndefined(params.options))
+          return AvailableItems_default.items.find((item) => item.view === "select");
+        if (isObject(value)) {
+          let keys = Object.keys(value);
+          keys = keys.map((key) => key.toLowerCase());
+          const c1 = ["r", "g", "b"];
+          const c22 = ["h", "s", "b"];
+          const c32 = ["h", "s", "l"];
+          if (compareArrays(keys, c1) || compareArrays(keys, c22) || compareArrays(keys, c32))
+            return AvailableItems_default.items.find((item) => item.view === "color");
+          const n1 = ["x", "y"];
+          const n2 = ["x", "y", "z"];
+          const n3 = ["_x", "_y", "_z"];
+          const n4 = ["x", "y", "z", "w"];
+          if (compareArrays(keys, n1) || compareArrays(keys, n2) || compareArrays(keys, n3) || compareArrays(keys, n4))
+            return AvailableItems_default.items.find((item) => item.view === "number");
+        }
+        if (isNumber(value)) {
+          if (params) {
+            if (params.min || params.max || params.step)
+              return AvailableItems_default.items.find((item) => item.view === "range");
+          }
+          return AvailableItems_default.items.find((item) => item.view === "number");
+        }
+        if (isString(value)) {
+          if (value.substring(0, 1) === "#")
+            return AvailableItems_default.items.find((item) => item.view === "color");
+          if (value.substring(0, 2) === "0x")
+            return AvailableItems_default.items.find((item) => item.view === "color");
+          return AvailableItems_default.items.find((item) => item.view === "string");
+        }
+        if (isBoolean(value))
+          return AvailableItems_default.items.find((item) => item.view === "boolean");
+        return void 0;
+      };
+    }
+  });
+
+  // ../packages/ui/lib/components/Button.js
+  var Button;
+  var init_Button = __esm({
+    "../packages/ui/lib/components/Button.js"() {
+      init_main7();
+      init_dom();
+      init_UIElement();
+      Button = class extends UIElement {
+        constructor(title = "Button", clickCallback, type) {
+          super(RowTypes.button, title);
+          this.view = "button";
+          this.buttonType = type;
+          this.clickCallback = clickCallback;
+        }
+        createDom() {
+          super.createDom();
+          this.button = this.el.querySelector("button");
+          this.button.classList.add(CSS_UI.item);
+          if (this.buttonType === "happy")
+            this.button.classList.add(CSS_UI.button.happy);
+          if (this.buttonType === "warning")
+            this.button.classList.add(CSS_UI.button.warning);
+          if (this.buttonType === "danger")
+            this.button.classList.add(CSS_UI.button.danger);
+        }
+        addEventListeners() {
+          const clickEvent = {
+            target: this.button,
+            type: "click",
+            callback: () => {
+              this.button.classList.add(CSS_UI.utility.active);
+              setTimeout(() => {
+                this.button.classList.remove(CSS_UI.utility.active);
+              }, 50);
+              this.clickCallback();
+              this.emit("click");
+              this.emit("__childrenChange");
+            }
+          };
+          this.addEventListener(clickEvent);
+        }
+        /**
+        * @typedef {'click'} ButtonEventType
+        *
+        * @description Available event types:
+        * - click: Triggered when the button is clicked.
+        *
+        * @param {ButtonEventType} eventType - The type of event to listen for.
+        * @param {Function} callback - The callback function to call when the event occurs.
+        * @returns {void}
+        */
+        on(event, callback) {
+          super.on(event, callback);
+        }
+      };
+    }
+  });
+
+  // ../packages/ui/lib/components/Info.js
+  var Info;
+  var init_Info = __esm({
+    "../packages/ui/lib/components/Info.js"() {
+      init_main3();
+      init_main7();
+      init_dom();
+      init_UIElement();
+      Info = class extends UIElement {
+        constructor(depth, params) {
+          super(RowTypes.info);
+          this.params = params;
+          this.init(depth);
+        }
+        createContent() {
+          const texts = this.params.text;
+          if (isArray(texts)) {
+            for (let i = 0; i < this.params.text.length; i++)
+              this.createText(this.params.text[i]);
+          } else
+            this.createText(this.params.text);
+        }
+        createText(text) {
+          const p = el("p", CSS_UI.info.text, this.el);
+          p.innerText = text;
+        }
+      };
+    }
+  });
+
+  // ../packages/ui/lib/components/Spacer.js
+  var Spacer;
+  var init_Spacer = __esm({
+    "../packages/ui/lib/components/Spacer.js"() {
+      init_cssClasses();
+      init_dom();
+      init_UIElement();
+      Spacer = class extends UIElement {
+        constructor(depth, { size = "medium", line = true }) {
+          super(RowTypes.spacer);
+          this.type = RowTypes.spacer;
+          this.init(depth);
+          if (line)
+            this.el.classList.add(CSS_UI.spacer.hasLine);
+          this.el.classList.add(CSS_UI.spacer.size[size.toLowerCase()]);
+        }
+      };
+    }
+  });
+
+  // ../packages/ui/lib/components/Group.js
+  var Group;
+  var init_Group = __esm({
+    "../packages/ui/lib/components/Group.js"() {
+      init_main3();
+      init_cssClasses();
+      init_ItemFactory();
+      init_dom();
+      init_Button();
+      init_Info();
+      init_Spacer();
+      init_UIElement();
+      Group = class extends UIElement {
+        constructor({ title, folded = false, foldable = true }) {
+          super(RowTypes.group, title);
+          this.children = [];
+          this.height = 0;
+          this.folded = foldable ? folded : true;
+          this.foldable = foldable;
+        }
+        createDom() {
+          super.createDom();
+          this.content = this.el.querySelector(`.${CSS_UI.section.content}`);
+        }
+        addEventListeners() {
+          if (!this.foldable)
+            return;
+          this.foldWrapper = el("div", CSS_UI.section.foldableElement, this.el);
+          this.foldWrapper.appendChild(this.content);
+          this.el.classList.add(CSS_UI.section.foldable);
+          const header = this.el.querySelector("header");
+          const clickEvent = {
+            target: header,
+            type: "click",
+            callback: () => {
+              this.foldToggle();
+            }
+          };
+          this.addEventListener(clickEvent);
+          this.folded = !this.folded;
+          this.foldToggle();
+        }
+        foldToggle() {
+          if (!this.foldable)
+            return;
+          this.folded = !this.folded;
+          const h = this.content.getBoundingClientRect().height;
+          this.foldWrapper.style.height = `${h}px`;
+          if (this.timer)
+            clearTimeout(this.timer);
+          setTimeout(() => {
+            if (this.folded)
+              this.el.classList.add(CSS_UI.section.folded);
+            else
+              this.el.classList.remove(CSS_UI.section.folded);
+          }, 5);
+          if (!this.folded) {
+            const d = parseFloat(getComputedStyle(this.foldWrapper).transitionDuration) * 1e3;
+            this.timer = setTimeout(() => {
+              this.foldWrapper.style.height = `auto`;
+            }, d);
+          }
+          this.emit("fold");
+        }
+        /**
+         * Creates a button with the specified title.
+         *
+         * @param {string} title - The title to display on the button.
+         * @default 'Button'
+         * @param {Function} clickCallback - The callback to call when the button is clicked.
+         * @default () => {}
+         * @param {string} type - The type of the button. Can be 'normal', 'happy', 'warning' or 'danger'.
+         * @default 'normal'
+         * @event click
+         * @returns {Button} The newly created button element.
+         */
+        addButton(title = "Button", clickCallback = () => {
+        }, type = "normal") {
+          const button = new Button(title, clickCallback, type);
+          if (button) {
+            button.init(this.depth + 1);
+            this.content.appendChild(button.el);
+            button.on("__childrenChange", () => {
+              this.change(button);
+            });
+            this.on("fold", () => {
+              button.parentFold();
+            });
+            this.on("resize", () => {
+              button.resize();
+            });
+            this.children.push(button);
+          }
+          return button;
+        }
+        /**
+        * Creates a new group, adds it to the parent and returns it.
+        *
+        * @param {title} title - Group tab title
+        * @param {folded} folded - Is the group folded or not
+        * @param {foldable} foldable - Is the group foldable or not
+        * @returns {Group} The newly created group element.
+        */
+        addGroup(params) {
+          const group = new Group(params);
+          if (group) {
+            group.on("__childrenChange", (target) => {
+              this.change(target);
+            });
+            group.on("__childrenChangeComplete", (target) => {
+              this.changeComplete(target);
+            });
+            this.on("fold", () => {
+              group.parentFold();
+            });
+            this.on("resize", () => {
+              group.resize();
+            });
+            group.init(this.depth + 1);
+            this.content.appendChild(group.el);
+            this.children.push(group);
+          }
+          return group;
+        }
+        /**
+         * Adds a spacer element to the page.
+         *
+         * @param {SpacerOptions} [options] - The options for the spacer.
+         * @property {boolean} [line=true] - If true, the spacer will have a line. Default is true.
+         * @property {'large'|'medium'|'small'} [size='medium'] - The size of the spacer. Default is 'medium'.
+         * @returns {void}
+         * @example
+         *
+         * // Adds a spacer with default options
+         * addSpacer();
+         *
+         * // Adds a spacer with a line and a size of 'large'
+         * addSpacer({ line: true, size: 'large' });
+         */
+        addSpacer(params = {}) {
+          const spacer = new Spacer(this.depth + 1, params);
+          if (spacer && spacer.el)
+            this.content.appendChild(spacer.el);
+        }
+        /**
+        * Adds an info element to the parent and returns it.
+        *
+        * @param {text} text - Info text. String or Array of strings.
+        */
+        addInfo(text) {
+          const info = new Info(this.depth + 1, { text });
+          if (info && info.el)
+            this.content.appendChild(info.el);
+        }
+        /**
+         * Adds an item element to the parent and returns it.
+         *
+         * @param {title} title - Item title.
+         * @param {view} view - Force item view. If not specified, it will be automatically detected.
+         * @returns {Item} The newly created item element.
+         */
+        add(object, key, params) {
+          return this.addItem(object, key, params);
+        }
+        /**
+        * Adds an item element to the parent and returns it.
+        *
+        * @param {title} title - Item title.
+        * @param {view} view - Force item view. If not specified, it will be automatically detected.
+        * @returns {Item} The newly created item element.
+        */
+        addItem(object, key, params) {
+          const createItemParams = { object, key, params };
+          const item = ItemFactory(createItemParams);
+          if (item) {
+            item.on("__childrenChange", () => {
+              this.change(item);
+            });
+            item.on("__childrenChangeComplete", () => {
+              this.changeComplete(item);
+            });
+            this.on("fold", () => {
+              item.parentFold();
+            });
+            this.on("resize", () => {
+              item.resize();
+            });
+            item.init(this.depth + 1);
+            this.content.appendChild(item.el);
+            this.children.push(item);
+          }
+          return item;
+        }
+        addCustomUIElement(element, params) {
+          const customElement = new element(params);
+          if (customElement) {
+            customElement.on("__childrenChange", () => {
+              this.change(customElement);
+            });
+            customElement.on("__childrenChangeComplete", () => {
+              this.changeComplete(customElement);
+            });
+            this.on("fold", () => {
+              customElement.parentFold();
+            });
+            this.on("resize", () => {
+              customElement.resize();
+            });
+            customElement.init(this.depth + 1);
+            this.content.appendChild(customElement.el);
+            this.children.push(customElement);
+          }
+          return customElement;
+        }
+        parentFold() {
+          this.emit("fold");
+        }
+        change(target) {
+          this.emit("change", target);
+          this.emit("__childrenChange", target);
+        }
+        changeComplete(target) {
+          this.emit("__childrenChangeComplete", target);
+        }
+        resize() {
+          this.emit("resize");
+        }
+        refresh() {
+          super.refresh();
+          this.emit("refresh");
+          for (let child of this.children) {
+            child.refresh();
+          }
+        }
+      };
+    }
+  });
+
+  // ../packages/ui/lib/components/UI.js
+  var UI;
+  var init_UI = __esm({
+    "../packages/ui/lib/components/UI.js"() {
+      init_main3();
+      init_main7();
+      init_cssClasses();
+      init_dom();
+      init_Group();
+      InitUI();
+      UI = class extends Group {
+        constructor({ resizable = true, parentElement, icon, width, minimal = false } = {}) {
+          super(Object.assign({}, arguments[0]));
+          this.wrapper = el("div");
+          this.resizable = parentElement ? false : resizable;
+          this.resizable = minimal ? false : resizable;
+          this.minimal = minimal;
+          this.init(0);
+          this.addIcon(icon);
+          this.appendTo(parentElement);
+          if (width) {
+            this.wrapper.style.setProperty("--wrapper-width", `${width}px`);
+          }
+        }
+        appendTo(parentElement) {
+          if (parentElement) {
+            this.wrapper.classList.add(CSS_UI.parent);
+            parentElement.appendChild(this.wrapper);
+          } else {
+            document.body.appendChild(this.wrapper);
+          }
+        }
+        addIcon(icon) {
+          if (!icon)
+            return;
+          dom_default.addIcon(this.el.querySelector("header"), icon);
+        }
+        createDom() {
+          this.wrapper = dom_default.createRow({
+            type: RowTypes.ui,
+            depth: this.depth
+          });
+          super.createDom();
+          if (this.minimal) {
+            this.wrapper.classList.add(CSS_UI.minimal);
+          }
+          this.wrapper.appendChild(this.el);
+        }
+        addEventListeners() {
+          super.addEventListeners();
+          if (!this.resizable)
+            return;
+          const resizer = el("div", CSS_UI.resizer);
+          this.wrapper.appendChild(resizer);
+          const resize = (w, x2) => {
+            if (x2 < 0 && w + x2 < 300)
+              return;
+            this.wrapper.style.setProperty("--wrapper-width", `${w + x2}px`);
+            this.emit("resize");
+          };
+          let dragging = false;
+          let x = 0;
+          let distance = 0;
+          let width = 0;
+          const mouseDownEvent = {
+            target: resizer,
+            type: "mousedown",
+            callback: (e) => {
+              dragging = true;
+              x = e.clientX;
+              width = this.wrapper.getBoundingClientRect().width;
+            }
+          };
+          const mouseMoveEvent = {
+            target: resizer,
+            type: "mousemove",
+            callback: (e) => {
+              if (!dragging)
+                return;
+              e.preventDefault();
+              distance = x - e.clientX;
+              resize(width, distance);
+            }
+          };
+          const mouseUpEvent = {
+            target: resizer,
+            type: "mouseup",
+            callback: (e) => {
+              if (!dragging)
+                return;
+              e.preventDefault();
+              dragging = false;
+            }
+          };
+          this.addEventListener(mouseDownEvent);
+          this.addEventListener(mouseMoveEvent);
+          this.addEventListener(mouseUpEvent);
+        }
+        /**
+        * @typedef {'resize'| EventType } UIEventType
+        *
+        * @description Available event types:
+        * - change: Triggered when the value of the item or one of its children changes.
+        * - resize: Triggered when the UI is resized.
+        *
+        * @param {UIEventType} eventType - The type of event to listen for.
+        * @param {Function} callback - The callback function to call when the event occurs.
+        * @returns {void}
+        */
+        on(event, callback) {
+          super.on(event, callback);
+        }
+        change(target) {
+          super.change(target);
+        }
+        destroy() {
+          super.destroy();
+          remove(this.wrapper);
+        }
+      };
+    }
+  });
+
+  // ../packages/ui/lib/components/CustomUIElement.js
+  var init_CustomUIElement = __esm({
+    "../packages/ui/lib/components/CustomUIElement.js"() {
+      init_main7();
+      init_UIElement();
+    }
+  });
+
+  // ../packages/ui/lib/components/items/ItemParameters.js
+  var init_ItemParameters = __esm({
+    "../packages/ui/lib/components/items/ItemParameters.js"() {
+    }
+  });
+
+  // ../packages/ui/lib/main.js
+  var init_main7 = __esm({
+    "../packages/ui/lib/main.js"() {
+      init_init();
+      init_UI();
+      init_Button();
+      init_Group();
+      init_Panel();
+      init_Spacer();
+      init_UIElement();
+      init_CustomUIElement();
+      init_Item();
+      init_ItemParameters();
+      init_BooleanItem();
+      init_ColorItem();
+      init_NumberItem();
+      init_SelectItem();
+      init_RangeItem();
+      init_StringItem();
+      init_UploadItem();
+      init_cssClasses();
+      init_EventsManager();
+      init_ItemFactory();
+      init_RegisterBaseItems();
+      init_AvailableItems();
+      init_css();
+      init_dom();
     }
   });
 
@@ -1132,12 +3187,10 @@
     "src/scroller/js/App.ts"() {
       init_main2();
       init_stats_module();
-      init_lil_gui_module_min();
+      init_main7();
       App = class {
         constructor() {
           this.scroller = new Scroller();
-          this.scroller.direction = 0;
-          this.scroller.ease = 0.05;
           this.cssVariablesElements = document.querySelectorAll("[css-var]");
           const stats = stats_module_default();
           stats.showPanel(0);
@@ -1149,30 +3202,37 @@
             requestAnimationFrame(animate);
           };
           animate();
-          const gui = new g();
-          gui.domElement.style.pointerEvents = "all";
+          const gui = new UI();
           gui.add(
             this.scroller,
             "direction",
-            { Top: 0, Bottom: 1, Left: 2, Right: 3 }
+            {
+              options: { Top: 0, Bottom: 1, Left: 2, Right: 3 }
+            }
           );
           gui.add(
             this.scroller,
             "ease",
-            1e-3,
-            0.99
+            {
+              min: 1e-3,
+              max: 0.99,
+              step: 1e-3
+            }
           );
+          gui.addButton("Refresh", () => {
+            this.scroller.refresh();
+          });
         }
         update() {
           this.scroller.update();
           const section = this.scroller.sections.find((x) => x.id === "css-var-section");
-          for (let i2 = 0, len = this.cssVariablesElements.length; i2 < len; i2++) {
-            const el = this.cssVariablesElements[i2];
-            const type = el.getAttribute("css-var");
+          for (let i = 0, len = this.cssVariablesElements.length; i < len; i++) {
+            const el2 = this.cssVariablesElements[i];
+            const type = el2.getAttribute("css-var");
             if (type === "delta")
-              el.innerText = `${this.scroller.delta.toFixed(5)}`;
+              el2.innerText = `${this.scroller.delta.toFixed(5)}`;
             if (type === "progress" && section)
-              el.innerText = `${section.progress.toFixed(5)}`;
+              el2.innerText = `${section.progress.toFixed(5)}`;
           }
         }
       };
@@ -1183,15 +3243,4 @@
   var { App: App2 } = (init_App(), __toCommonJS(App_exports));
   var _App = new App2();
 })();
-/*! Bundled license information:
-
-three/examples/jsm/libs/lil-gui.module.min.js:
-  (**
-   * lil-gui
-   * https://lil-gui.georgealways.com
-   * @version 0.17.0
-   * @author George Michael Brower
-   * @license MIT
-   *)
-*/
 //# sourceMappingURL=main.js.map

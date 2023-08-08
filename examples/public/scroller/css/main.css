@@ -1,24 +1,24 @@
-[template=scroller] h1,
-[template=scroller] h2,
-[template=scroller] h3 {
+[template=scroller] [fil-scroller] h1,
+[template=scroller] [fil-scroller] h2,
+[template=scroller] [fil-scroller] h3 {
   font-weight: 900;
 }
-[template=scroller] p {
+[template=scroller] [fil-scroller] p {
   font-weight: 300;
 }
-[template=scroller] h1 {
+[template=scroller] [fil-scroller] h1 {
   font-size: 10vw;
 }
-[template=scroller] h2 {
+[template=scroller] [fil-scroller] h2 {
   font-size: 8vw;
 }
-[template=scroller] h3 {
+[template=scroller] [fil-scroller] h3 {
   font-size: 6vw;
 }
-[template=scroller] p {
+[template=scroller] [fil-scroller] p {
   font-size: max(30px, 2vw);
 }
-[template=scroller] section {
+[template=scroller] [fil-scroller] section {
   width: 100%;
   height: 100vh;
   display: flex;
@@ -28,24 +28,39 @@
   text-align: center;
   padding: 3vw;
 }
-[template=scroller] .section-0 {
+[template=scroller] [fil-scroller] .section-0 {
   opacity: 0;
 }
-[template=scroller] .section-0.fil-scroller-visible {
+[template=scroller] [fil-scroller] .section-0.fil-scroller__visible {
   opacity: 1;
   transition: opacity 0.5s 0.5s ease-in-out;
 }
-[template=scroller] .section-1 a {
+[template=scroller] [fil-scroller] .section-1 a {
   border: 1px solid black;
   padding: 3vw;
   transition: all 0.4s ease-in-out;
 }
-[template=scroller] .section-1 a:hover {
+[template=scroller] [fil-scroller] .section-1 a:hover {
   background-color: black;
   color: white;
 }
-[template=scroller] .section-3 h2,
-[template=scroller] .section-3 p {
+[template=scroller] [fil-scroller] .section-2-2 {
+  height: 200vh;
+  border: 1px solid green;
+  display: inline-block;
+}
+[template=scroller] [fil-scroller] .section-2-2 div {
+  height: auto;
+  position: sticky;
+  top: 0;
+}
+[template=scroller] [fil-scroller] .section-3 h2,
+[template=scroller] [fil-scroller] .section-3 p {
   transform: rotateZ(calc(-1 * var(--fil-scroller-delta) * 20deg));
   will-change: transform;
+}
+
+._ui-wrapper,
+._ui-wrapper * {
+  pointer-events: all;
 }

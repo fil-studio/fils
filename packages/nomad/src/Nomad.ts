@@ -43,7 +43,7 @@ export class Nomad {
 		if(!this.wrapper) {
 			console.warn("Nomad can't work without warpper element.");
 			return;
-		}		
+		}
 
 		this.links = [];
 
@@ -60,14 +60,18 @@ export class Nomad {
 		if(!newPageClass) newPageClass = new Page(newPage);
 		this.createRoute(template, newPageClass);
 
+		this.route.page.transitionIn(() => {});
+
+
+
 	}
 
 	// Routes handler
 	createRoute(template: string, page:Page, href: string = window.location.href){
 
-		const location = this.utils.getLocation(href);		
+		const location = this.utils.getLocation(href);
 
-		const exists = this.routes.find(x => x.id === location.pathname);				
+		const exists = this.routes.find(x => x.id === location.pathname);
 
 		this.route = exists !== undefined ? exists : {
 			id: location.pathname,
@@ -75,11 +79,11 @@ export class Nomad {
 			page,
 			location,
 		}
-				
+
 		if(exists === undefined) {
 			this.routes.push(this.route);
 		}
-		
+
 	}
 
 	// Events
@@ -115,7 +119,7 @@ export class Nomad {
 	}
 
 	// Lifecycle
-	lifeCycle(href){		
+	lifeCycle(href){
 
 		if(this.inProgress) {
 			this.route.page.kill();
@@ -130,7 +134,7 @@ export class Nomad {
 			this.fetch(href).then((html) => {
 
 				this.addContent(href, html).then(() => {
-					
+
 					this.afterFetch();
 
 				})
@@ -171,7 +175,7 @@ export class Nomad {
 		this.createRoute(template, newPageClass, href);
 		this.route.page.dom = newPage;
 		this.route.page.isActive = true;
-		if(!this.route.page.isLoaded) {			
+		if(!this.route.page.isLoaded) {
 			await new Promise((resolve) => {
 				this.route.page.load(resolve);
 			})
@@ -181,11 +185,11 @@ export class Nomad {
 		// Update page title
 		const title = content.querySelector('title').textContent;
 		document.documentElement.querySelector('title').textContent = title;
-		if(!this.isPopstate) window.history.pushState(this.route.location, title, this.route.location.href); 
+		if(!this.isPopstate) window.history.pushState(this.route.location, title, this.route.location.href);
 		this.addLinksListener();
 
 		// HTML Swap
-		const oldPage = this.wrapper.querySelector('[template]') as HTMLElement;		
+		const oldPage = this.wrapper.querySelector('[template]') as HTMLElement;
 		oldPage?.remove();
 		this.wrapper.appendChild(newPage);
 
@@ -206,7 +210,7 @@ export class Nomad {
 			headers: { 'X-Requested-With': 'Nomad' },
 			credentials: 'same-origin'
 		});
-		
+
 		if (response.status >= 200 && response.status < 300) {
 			return response.text();
 		}
@@ -217,7 +221,7 @@ export class Nomad {
 
 	}
 
-	afterFetch(){		
+	afterFetch(){
 
 		this.inProgress = false;
 		this.isPopstate = false;

@@ -1,4 +1,4 @@
-[template="scroller"] {
+[template="scroller"] [fil-scroller] {
 	h1,
 	h2,
 	h3 {
@@ -41,7 +41,7 @@
 
 		opacity: 0;
 
-		&.fil-scroller-visible {
+		&.fil-scroller__visible {
 			opacity: 1;
 			transition: opacity 0.5s 0.5s ease-in-out;
 		}
@@ -61,6 +61,18 @@
 		}
 	}
 
+	.section-2-2 {
+		height: 200vh;
+		border: 1px solid green;
+		display: inline-block;
+
+		div {
+			height: auto;
+			position: sticky;
+			top: 0;
+		}
+	}
+
 	.section-3 {
 
 		h2,
@@ -70,4 +82,9 @@
 			will-change: transform;
 		}
 	}
+}
+
+._ui-wrapper,
+._ui-wrapper * {
+	pointer-events: all;
 }

@@ -1,7 +1,7 @@
 
 import { Scroller } from '@fils/scroller';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
-import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
+import { UI } from '@fils/ui';
 
 
 export class App {
@@ -11,8 +11,8 @@ export class App {
 	constructor() {
 
 		this.scroller = new Scroller();
-		this.scroller.direction = 0;
-		this.scroller.ease = 0.05;
+		// this.scroller.direction = 0;
+		// this.scroller.ease = 0.05;
 
 		this.cssVariablesElements = document.querySelectorAll('[css-var]');
 
@@ -28,19 +28,28 @@ export class App {
 		}
 		animate();
 
-		const gui = new GUI();
-		gui.domElement.style.pointerEvents = 'all';
+		const gui = new UI();
 		gui.add(
 			this.scroller,
 			'direction',
-			{ Top: 0, Bottom: 1, Left: 2, Right: 3}
+			{
+				options: { Top: 0, Bottom: 1, Left: 2, Right: 3 }
+			}
 		);
 
 		gui.add(
 			this.scroller,
 			'ease',
-			0.001, 0.99
+			{
+				min: 0.001,
+				max: 0.99,
+				step: 0.001
+			}
 		)
+
+		gui.addButton('Refresh', () => {
+			this.scroller.refresh();
+		})
 
 	}
 

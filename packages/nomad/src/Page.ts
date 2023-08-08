@@ -2,31 +2,32 @@
 
 export class Page {
 	id: string = '';
-	
+
 	isActive: boolean = false;
 	isLoaded: boolean = false;
-	
+
 	dom:HTMLElement;
 
 	constructor(dom:HTMLElement){
 		this.dom = dom;
+
 		this.create();
 		this.addEventListeners();
 	}
 
-	addEventListeners(){};
+	addEventListeners(){}
 
-	create(){}
-	dispose(){}
+	create(){
+	}
+	dispose(){
+	}
 
 	async load(resolve){
 		resolve();
 	}
-	loaded(){
-		console.log('Loaded!');
-	}
+	loaded(){}
 
-	async transitionIn(resolve){	
+	async transitionIn(resolve){
 		resolve();
 	}
 	async transitionOut(resolve){
