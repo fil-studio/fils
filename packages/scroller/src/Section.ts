@@ -113,19 +113,6 @@ export class Section {
 			}
 		}
 
-		/* if(this.sticky) {
-			console.log(py + this.threshold[0], py + this.threshold[1]);
-			switch (this.direction) {
-				case D.TOP:
-					if(py + this.threshold[1] > window.innerHeight && py + this.threshold[0] < -window.innerHeight) {
-						py = -this.threshold[0] - window.innerHeight;
-						console.log('sticky');
-						
-					}
-					break;
-			}
-		} */
-
 		this.dom.style.transform = `translate3d(${px.toFixed(5)}px, ${py.toFixed(5)}px, 0)`;
 	}
 
