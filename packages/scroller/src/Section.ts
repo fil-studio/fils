@@ -1,6 +1,13 @@
 import { MathUtils } from "@fils/math";
 import { D } from "./Scroller";
 
+export interface ScrollerSectionListener {
+	onAnimationIn?();
+	onAnimationOut?();
+	onBeforeRestore?(resizing:boolean);
+	onAfterRestore?(resizing:boolean);
+}
+
 export class Section {
 	id: string;
 	dom: HTMLElement;
@@ -22,20 +29,16 @@ export class Section {
 	visible: boolean = true;
 	disabled: boolean = false;
 
-	in:Function;
-	out:Function;
+	protected listeners:ScrollerSectionListener[] = [];
 
 	sticky:HTMLElement[] = [];
 
 
-	constructor(id: string, dom: HTMLElement, direction: D, animationIn:Function = ()=>{}, animationOut:Function = ()=>{}){
+	constructor(id: string, dom: HTMLElement, direction: D){
 
 		this.id = id;
 		this.dom = dom;
 		this.direction = direction;
-
-		this.in = animationIn;
-		this.out = animationOut;
 
 		const s = dom.querySelectorAll('[fil-scroller-sticky]');
 
@@ -46,17 +49,39 @@ export class Section {
 		
 	}
 
-	restore(){
+	addSectionListener(lis:ScrollerSectionListener) {
+		if(this.listeners.indexOf(lis) > -1) return;
+		this.listeners.push(lis);
+	}
+
+	removeSectionListener(lis:ScrollerSectionListener) {
+		this.listeners.splice(
+			this.listeners.indexOf(lis),
+			1
+		);
+	}
+
+	restore(resizing:boolean=false){
+		for(const lis of this.listeners) {
+			lis?.onBeforeRestore(resizing);
+		}
 		this.dom.style.transform = 'none';
 		this.visible = true;
 		this.rect = this.dom.getBoundingClientRect();
+		for(const lis of this.listeners) {
+			lis?.onAfterRestore(resizing);
+		}
 	}
 
 	animationIn(){
-		this.in(this);
+		for(const lis of this.listeners) {
+			lis?.onAnimationIn();
+		}
 	}
 	animationOut(){
-		this.out(this);
+		for(const lis of this.listeners) {
+			lis?.onAnimationOut();
+		}
 	}
 
 	get threshold(){

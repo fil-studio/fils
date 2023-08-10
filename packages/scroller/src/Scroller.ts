@@ -100,7 +100,7 @@ export class Scroller {
 
 	private _direction: D = D.TOP;
 
-	sections:Array<Section> = [];
+	sections:Section[] = [];
 
 	private loaded: boolean = false;
 	// private paused: boolean = false;
@@ -118,11 +118,7 @@ export class Scroller {
 
 	pointerElements:NodeListOf<HTMLElement>;
 
-	in:Function;
-	out:Function;
-
-	constructor(animationsIn:Function=(section:Section)=>{}, animationOut:Function=(section:Section)=>{}){
-
+	constructor(){
 		this.html.scroller = document.querySelector('[fil-scroller]');
 
 		if(!this.html.scroller){
@@ -133,10 +129,6 @@ export class Scroller {
 		this.addStyles();
 		this.refresh();
 		this.addEventListeners();
-
-		this.in = animationsIn;
-		this.out = animationOut;
-
 	}
 
 	// Disable - enable
@@ -197,30 +189,30 @@ export class Scroller {
 		for(let i = 0, len = sections.length; i<len; i++){
 			const _section = sections[i];
 			const id = _section.getAttribute('fil-scroller-section') ? _section.getAttribute('fil-scroller-section') : `section-${i}`;
-			const section = new Section(id, _section, this.direction, this.in, this.out);
+			const section = new Section(id, _section, this.direction);
 			this.sections.push(section);
 		}
 	}
 
-	restore(){
+	restore(resizing:boolean=false){
 		this.w.w = window.innerWidth;
 		this.w.h = window.innerHeight;
 		for(const section of this.sections) {
 			section.w = this.w;
-			section.restore();
+			section.restore(resizing);
 		}
 	}
 
-	onResize(){
+	contentChanged() {
 		this.restore();
+		this.update();
+	}
+
+	resize(){
+		this.restore(true);
 	}
 
 	addEventListeners(){
-
-		window.addEventListener('resize', () => {
-			this.onResize();
-		})
-
 		let timeout;
 		const disableScroll = (e) => {
 			if(timeout) clearTimeout(timeout);

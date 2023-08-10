@@ -52,6 +52,10 @@ export class App {
 			this.scroller.refresh();
 		})
 
+		window.addEventListener('resize', () => {
+			this.scroller.resize();
+		})
+
 	}
 
 	update() {

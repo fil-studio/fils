@@ -233,9 +233,7 @@
       init_main();
       init_Scroller();
       Section = class {
-        constructor(id, dom2, direction, animationIn = () => {
-        }, animationOut = () => {
-        }) {
+        constructor(id, dom2, direction) {
           this.w = {
             w: 0,
             h: 0
@@ -245,27 +243,44 @@
           this.delta = 0;
           this.visible = true;
           this.disabled = false;
+          this.listeners = [];
           this.sticky = [];
           this.id = id;
           this.dom = dom2;
           this.direction = direction;
-          this.in = animationIn;
-          this.out = animationOut;
           const s = dom2.querySelectorAll("[fil-scroller-sticky]");
           s.forEach((value) => {
             this.sticky.push(value);
           });
         }
-        restore() {
+        addSectionListener(lis) {
+          if (this.listeners.indexOf(lis) > -1)
+            return;
+          this.listeners.push(lis);
+        }
+        removeSectionListener(lis) {
+          this.listeners.splice(this.listeners.indexOf(lis), 1);
+        }
+        restore(resizing = false) {
+          for (const lis of this.listeners) {
+            lis === null || lis === void 0 ? void 0 : lis.onBeforeRestore(resizing);
+          }
           this.dom.style.transform = "none";
           this.visible = true;
           this.rect = this.dom.getBoundingClientRect();
+          for (const lis of this.listeners) {
+            lis === null || lis === void 0 ? void 0 : lis.onAfterRestore(resizing);
+          }
         }
         animationIn() {
-          this.in(this);
+          for (const lis of this.listeners) {
+            lis === null || lis === void 0 ? void 0 : lis.onAnimationIn();
+          }
         }
         animationOut() {
-          this.out(this);
+          for (const lis of this.listeners) {
+            lis === null || lis === void 0 ? void 0 : lis.onAnimationOut();
+          }
         }
         get threshold() {
           if (this.direction === D.TOP || this.direction === D.BOTTOM)
@@ -419,9 +434,7 @@
 	}
 `;
       Scroller = class {
-        constructor(animationsIn = (section) => {
-        }, animationOut = (section) => {
-        }) {
+        constructor() {
           this.html = {
             scroller: null,
             holder: null,
@@ -451,8 +464,6 @@
           this.addStyles();
           this.refresh();
           this.addEventListeners();
-          this.in = animationsIn;
-          this.out = animationOut;
         }
         // Disable - enable
         disable() {
@@ -505,25 +516,27 @@
           for (let i = 0, len = sections.length; i < len; i++) {
             const _section = sections[i];
             const id = _section.getAttribute("fil-scroller-section") ? _section.getAttribute("fil-scroller-section") : `section-${i}`;
-            const section = new Section(id, _section, this.direction, this.in, this.out);
+            const section = new Section(id, _section, this.direction);
             this.sections.push(section);
           }
         }
-        restore() {
+        restore(resizing = false) {
           this.w.w = window.innerWidth;
           this.w.h = window.innerHeight;
           for (const section of this.sections) {
             section.w = this.w;
-            section.restore();
+            section.restore(resizing);
           }
         }
-        onResize() {
+        contentChanged() {
           this.restore();
+          this.update();
+        }
+        resize() {
+          console.log("resize");
+          this.restore(true);
         }
         addEventListeners() {
-          window.addEventListener("resize", () => {
-            this.onResize();
-          });
           let timeout;
           const disableScroll = (e) => {
             if (timeout)
@@ -3247,6 +3260,9 @@
           );
           gui.addButton("Refresh", () => {
             this.scroller.refresh();
+          });
+          window.addEventListener("resize", () => {
+            this.scroller.resize();
           });
         }
         update() {
