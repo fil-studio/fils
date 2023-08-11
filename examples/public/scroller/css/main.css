@@ -46,7 +46,6 @@
 }
 [template=scroller] [fil-scroller] .section-2-2 {
   height: 500vh;
-  border: 1px solid green;
   display: inline-block;
 }
 [template=scroller] [fil-scroller] .section-2-2 div {
