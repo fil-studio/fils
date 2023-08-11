@@ -370,6 +370,13 @@
         D2[D2["RIGHT"] = 3] = "RIGHT";
       })(D || (D = {}));
       style = `
+	[fil-scroller-content] * {
+		pointer-events: none;
+	}
+	[fil-scroller-parent] [fil-scroller-pointer] {
+		pointer-events: all;
+	}
+
 	[fil-scroller-parent],
 	[fil-scroller-parent] body {
 		overscroll-behavior: none;
@@ -408,20 +415,10 @@
 		will-change: transform;
 		pointer-events: none;
 	}
-	[fil-scroller-content] * {
-		pointer-events: none;
-	}
-	[fil-scroller-parent]:not(.fil-scroller__scrolling) [fil-scroller-pointer] {
-		pointer-events: all;
-	}
-
-	// [fil-scroller-parent].fil-scroller__scrolling [fil-scroller-content] [fil-scroller-pointer] {
-	// 	pointer-events: none;
-	// }
 
 	[fil-scroller-section]{
 		opacity: 0;
-		visibility: hidden;cd ..
+		visibility: hidden;
 		will-change: transform;
 	}
 	[fil-scroller-section].fil-scroller__visible {
@@ -536,21 +533,12 @@
         resize() {
           this.restore(true);
         }
+        updateExternal(delta) {
+          this.html.scroller.scrollTop += delta;
+        }
         addEventListeners() {
-          let timeout;
-          const disableScroll = (e) => {
-            if (timeout)
-              clearTimeout(timeout);
-            document.documentElement.classList.add("fil-scroller__scrolling");
-            timeout = setTimeout(() => {
-              document.documentElement.classList.remove("fil-scroller__scrolling");
-            }, 20);
-          };
-          window.addEventListener("wheel", (e) => {
-            disableScroll(e);
-          });
-          window.addEventListener("touchmove", (e) => {
-            disableScroll(e);
+          this.html.container.addEventListener("wheel", (e) => {
+            this.updateExternal(e.deltaY);
           });
         }
         refresh(forceTop = true) {
