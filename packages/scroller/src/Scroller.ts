@@ -82,6 +82,13 @@ const style = `
 	}
 `;
 
+const touchWheel = {
+	delta: 0,
+	startY: 0,
+	amp: 10,
+	startDrag: 0
+}
+
 export class Scroller {
 	html:html = {
 		scroller: null,
@@ -219,6 +226,29 @@ export class Scroller {
 	addEventListeners(){
 		this.html.container.addEventListener('wheel', (e) => {
 			this.updateExternal(e.deltaY);
+		})
+
+		this.html.container.addEventListener('touchstart', (e) => {
+			const e1 = e.touches[0];
+			touchWheel.startY = e1.clientY;
+			touchWheel.startDrag = performance.now();
+		})
+
+		this.html.container.addEventListener('touchend', (e) => {
+			if(performance.now() - touchWheel.startDrag < 1000) {
+				console.log('SWIIIIPEEEE');
+				this.updateExternal(-touchWheel.delta * 25);
+			}
+
+			touchWheel.delta = 0;
+		})
+
+		this.html.container.addEventListener('touchmove', (e) => {
+			const e1 = e.touches[0];
+			touchWheel.delta = e1.clientY - touchWheel.startY;
+			touchWheel.startY = e1.clientY;
+
+			this.updateExternal(-touchWheel.delta);
 		})
 	}
 

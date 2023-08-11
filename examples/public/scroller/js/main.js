@@ -315,6 +315,7 @@
             let tY, sY;
             switch (this.direction) {
               case D.TOP:
+                0;
                 tY = 1 - MathUtils.smoothstep(-this.threshold[1] + wH, -this.threshold[0] - wH, py);
                 sY = tY * (this.threshold[1] - this.threshold[0] - 2 * wH);
                 s.style.transform = `translateY(${sY.toFixed(5)}px)`;
@@ -358,7 +359,7 @@
   });
 
   // ../packages/scroller/lib/Scroller.js
-  var D, style, Scroller;
+  var D, style, touchWheel, Scroller;
   var init_Scroller = __esm({
     "../packages/scroller/lib/Scroller.js"() {
       init_main();
@@ -430,6 +431,12 @@
 		position: relative;
 	}
 `;
+      touchWheel = {
+        delta: 0,
+        startY: 0,
+        amp: 10,
+        startDrag: 0
+      };
       Scroller = class {
         constructor() {
           this.html = {
@@ -539,6 +546,24 @@
         addEventListeners() {
           this.html.container.addEventListener("wheel", (e) => {
             this.updateExternal(e.deltaY);
+          });
+          this.html.container.addEventListener("touchstart", (e) => {
+            const e1 = e.touches[0];
+            touchWheel.startY = e1.clientY;
+            touchWheel.startDrag = performance.now();
+          });
+          this.html.container.addEventListener("touchend", (e) => {
+            if (performance.now() - touchWheel.startDrag < 1e3) {
+              console.log("SWIIIIPEEEE");
+              this.updateExternal(-touchWheel.delta * 25);
+            }
+            touchWheel.delta = 0;
+          });
+          this.html.container.addEventListener("touchmove", (e) => {
+            const e1 = e.touches[0];
+            touchWheel.delta = e1.clientY - touchWheel.startY;
+            touchWheel.startY = e1.clientY;
+            this.updateExternal(-touchWheel.delta);
           });
         }
         refresh(forceTop = true) {
@@ -3242,7 +3267,7 @@
             "ease",
             {
               min: 1e-3,
-              max: 0.99,
+              max: 1,
               step: 1e-3
             }
           );

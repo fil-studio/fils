@@ -119,7 +119,7 @@ export class Section {
 		for(const s of this.sticky) {
 			let tY, sY;
 			switch(this.direction) {
-				case D.TOP:
+				case D.TOP:0
 					// console.log(-this.threshold[1]+ wH, -this.threshold[0]-wH, py);
 					tY = 1 - MathUtils.smoothstep(-this.threshold[1]+ wH, -this.threshold[0]-wH, py);
 					sY = tY * (this.threshold[1] - this.threshold[0] - 2*wH);

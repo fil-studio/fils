@@ -43,7 +43,7 @@ export class App {
 			'ease',
 			{
 				min: 0.001,
-				max: 0.99,
+				max: 1,
 				step: 0.001
 			}
 		)
