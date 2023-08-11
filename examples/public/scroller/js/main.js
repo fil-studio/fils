@@ -411,17 +411,17 @@
 	[fil-scroller-content] * {
 		pointer-events: none;
 	}
-	[fil-scroller-parent]:not(.scroller__scrolling) [fil-scroller-content] [fil-scroller-pointer] {
+	[fil-scroller-parent]:not(.fil-scroller__scrolling) [fil-scroller-pointer] {
 		pointer-events: all;
 	}
 
-	[fil-scroller-parent].scroller__scrolling [fil-scroller-content] [fil-scroller-pointer] {
-		pointer-events: none;
-	}
+	// [fil-scroller-parent].fil-scroller__scrolling [fil-scroller-content] [fil-scroller-pointer] {
+	// 	pointer-events: none;
+	// }
 
 	[fil-scroller-section]{
 		opacity: 0;
-		visibility: hidden;
+		visibility: hidden;cd ..
 		will-change: transform;
 	}
 	[fil-scroller-section].fil-scroller__visible {
