@@ -62,11 +62,11 @@ const style = `
 	[fil-scroller-content] * {
 		pointer-events: none;
 	}
-	[fil-scroller-content] [fil-scroller-pointer] {
+	[fil-scroller-parent]:not(.scroller__scrolling) [fil-scroller-content] [fil-scroller-pointer] {
 		pointer-events: all;
 	}
 
-	.scroller__scrolling [fil-scroller-content] [fil-scroller-pointer] {
+	[fil-scroller-parent].scroller__scrolling [fil-scroller-content] [fil-scroller-pointer] {
 		pointer-events: none;
 	}
 
@@ -201,6 +201,9 @@ export class Scroller {
 			section.w = this.w;
 			section.restore(resizing);
 		}
+
+		this.pointerElements = this.html.scroller.querySelectorAll('[fil-scroller-pointer]');
+
 	}
 
 	contentChanged() {
@@ -214,6 +217,7 @@ export class Scroller {
 
 	addEventListeners(){
 		let timeout;
+
 		const disableScroll = (e) => {
 			if(timeout) clearTimeout(timeout);
 			document.documentElement.classList.add('fil-scroller__scrolling')

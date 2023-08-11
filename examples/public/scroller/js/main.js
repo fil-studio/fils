@@ -411,11 +411,11 @@
 	[fil-scroller-content] * {
 		pointer-events: none;
 	}
-	[fil-scroller-content] [fil-scroller-pointer] {
+	[fil-scroller-parent]:not(.scroller__scrolling) [fil-scroller-content] [fil-scroller-pointer] {
 		pointer-events: all;
 	}
 
-	.scroller__scrolling [fil-scroller-content] [fil-scroller-pointer] {
+	[fil-scroller-parent].scroller__scrolling [fil-scroller-content] [fil-scroller-pointer] {
 		pointer-events: none;
 	}
 
@@ -527,13 +527,13 @@
             section.w = this.w;
             section.restore(resizing);
           }
+          this.pointerElements = this.html.scroller.querySelectorAll("[fil-scroller-pointer]");
         }
         contentChanged() {
           this.restore();
           this.update();
         }
         resize() {
-          console.log("resize");
           this.restore(true);
         }
         addEventListeners() {
