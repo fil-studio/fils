@@ -4,11 +4,15 @@ import { Location, Utils } from "./utils";
 
 const linkRule = 'a:not([target]):not([href^=\\#]):not([fil-nomad-ignore])';
 
-interface Route {
+export interface NomadRoute {
 	id: string,
 	template: string,
 	page: Page,
 	location: Location
+}
+
+export interface NomadRouteListener {
+	onRouteChanged(route:NomadRoute):void;
 }
 
 export class Nomad {
@@ -17,13 +21,15 @@ export class Nomad {
 	isPopstate:boolean;
 	inProgress:boolean;
 
-	routes:Array<Route>;
-	route: Route;
+	routes:Array<NomadRoute>;
+	route: NomadRoute;
 
 	wrapper:HTMLElement;
 	links:Array<HTMLLinkElement>;
 
 	createPage: Function;
+
+	private listeners:NomadRouteListener[] = [];
 
 	constructor(createPage:Function = (template: string, dom: HTMLElement): Page => { return null; }){
 
@@ -56,33 +62,57 @@ export class Nomad {
 		// Create initial route
 		const newPage = this.wrapper.querySelector('[template]') as HTMLElement;
 		const template = newPage.getAttribute('template');
-		let newPageClass = this.createPage(template, newPage);
-		if(!newPageClass) newPageClass = new Page(newPage);
-		this.createRoute(template, newPageClass);
+		// let newPageClass = this.createPage(template, newPage);
+		// if(!newPageClass) newPageClass = new Page(newPage);
+		this.createRoute(template, newPage);
 
 		this.route.page.transitionIn(() => {});
 
+	}
 
+	addRouteListener(lis:NomadRouteListener) {
+		if(this.listeners.indexOf(lis) > -1) return;
+		this.listeners.push(lis);
+	}
 
+	removeRouteListener(lis:NomadRouteListener) {
+		this.listeners.splice(this.listeners.indexOf(lis), 1);
+	}
+
+	onRouteChanged() {
+		for (const lis of this.listeners) {
+			lis.onRouteChanged(this.route);
+		}
 	}
 
 	// Routes handler
-	createRoute(template: string, page:Page, href: string = window.location.href){
+	createRoute(template: string, dom:HTMLElement, href: string = window.location.href){
 
 		const location = this.utils.getLocation(href);
 
 		const exists = this.routes.find(x => x.id === location.pathname);
 
-		this.route = exists !== undefined ? exists : {
+		this.route = exists || {
 			id: location.pathname,
 			template,
-			page,
+			page: this.createPage(template, dom) || new Page(dom),
 			location,
 		}
 
 		if(exists === undefined) {
 			this.routes.push(this.route);
 		}
+
+		/* this.route = {
+			id: location.pathname,
+			template,
+			page,
+			location,
+		 }*/
+
+		// this.routes.push(this.route);
+
+		this.onRouteChanged();
 
 	}
 
@@ -169,10 +199,10 @@ export class Nomad {
 		const newPage = content.querySelector('[template]') as HTMLElement;
 		const template = newPage.getAttribute('template');
 
-		let newPageClass = this.createPage(template, newPage);
-		newPageClass = newPageClass ? newPageClass : new Page(newPage);
+		/* let newPageClass = this.createPage(template, newPage);
+		newPageClass = newPageClass ? newPageClass : new Page(newPage); */
 
-		this.createRoute(template, newPageClass, href);
+		this.createRoute(template, newPage, href);
 		this.route.page.dom = newPage;
 		this.route.page.isActive = true;
 		if(!this.route.page.isLoaded) {
