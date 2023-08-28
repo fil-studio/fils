@@ -238,10 +238,11 @@
             w: 0,
             h: 0
           };
+          this.progress = 0;
           this.direction = D.LEFT;
           this.scroll = 0;
           this.delta = 0;
-          this.visible = true;
+          this.visible = false;
           this.disabled = false;
           this.listeners = [];
           this.sticky = [];
@@ -266,7 +267,8 @@
             lis === null || lis === void 0 ? void 0 : lis.onBeforeRestore(resizing);
           }
           this.dom.style.transform = "none";
-          this.visible = true;
+          this.visible = false;
+          this.progress = 0;
           this.rect = this.dom.getBoundingClientRect();
           for (const lis of this.listeners) {
             lis === null || lis === void 0 ? void 0 : lis.onAfterRestore(resizing);
@@ -310,6 +312,7 @@
           if (this.disabled)
             return;
           let px = this.position.x, py = this.position.y;
+          this.dom.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${px.toFixed(3)},${py.toFixed(3)},0,1)`;
           const wH = window.innerHeight;
           for (const s of this.sticky) {
             let tY, sY;
@@ -318,12 +321,12 @@
                 0;
                 tY = 1 - MathUtils.smoothstep(-this.threshold[1] + wH, -this.threshold[0] - wH, py);
                 sY = tY * (this.threshold[1] - this.threshold[0] - 2 * wH);
-                s.style.transform = `translateY(${sY.toFixed(5)}px)`;
+                s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(3)},0,1)`;
                 break;
               case D.BOTTOM:
                 tY = 1 - MathUtils.smoothstep(-this.threshold[1] + wH, -this.threshold[0] - wH, py);
                 sY = tY * (this.threshold[1] - this.threshold[0] - 2 * wH);
-                s.style.transform = `translateY(${sY.toFixed(5)}px)`;
+                s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(3)},0,1)`;
                 break;
               case D.LEFT:
                 break;
@@ -331,17 +334,17 @@
                 break;
             }
           }
-          this.dom.style.transform = `translate3d(${px.toFixed(5)}px, ${py.toFixed(5)}px, 0)`;
         }
         update() {
           if (this.scroll >= this.threshold[0] && this.scroll <= this.threshold[1]) {
-            if (!this.visible)
+            if (!this.visible) {
               this.animationIn();
-            this.visible = true;
-            this.dom.classList.add("fil-scroller__visible");
-            this.dom.style.setProperty("--fil-scroller-delta", `${this.delta.toFixed(5)}`);
-            this.progress = MathUtils.map(this.scroll, this.threshold[0], this.threshold[1], 0, 1);
-            this.dom.style.setProperty("--fil-scroller-progress", `${this.progress.toFixed(5)}`);
+              this.dom.classList.add("fil-scroller__visible");
+              this.visible = true;
+            }
+            this.dom.style.setProperty("--fil-scroller-delta", `${this.delta.toFixed(3)}`);
+            this.progress = MathUtils.smoothstep(this.threshold[0], this.threshold[1], this.scroll);
+            this.dom.style.setProperty("--fil-scroller-progress", `${this.progress.toFixed(3)}`);
             this.updateTransform();
             return;
           }
@@ -554,7 +557,6 @@
           });
           this.html.container.addEventListener("touchend", (e) => {
             if (performance.now() - touchWheel.startDrag < 1e3) {
-              console.log("SWIIIIPEEEE");
               this.updateExternal(-touchWheel.delta * 25);
             }
             touchWheel.delta = 0;
@@ -3257,13 +3259,6 @@
           const gui = new UI();
           gui.add(
             this.scroller,
-            "direction",
-            {
-              options: { Top: 0, Bottom: 1, Left: 2, Right: 3 }
-            }
-          );
-          gui.add(
-            this.scroller,
             "ease",
             {
               min: 1e-3,
@@ -3281,13 +3276,15 @@
         update() {
           this.scroller.update();
           const section = this.scroller.sections.find((x) => x.id === "css-var-section");
+          if (!section)
+            return;
           for (let i = 0, len = this.cssVariablesElements.length; i < len; i++) {
             const el2 = this.cssVariablesElements[i];
             const type = el2.getAttribute("css-var");
             if (type === "delta")
-              el2.innerText = `${this.scroller.delta.toFixed(5)}`;
+              el2.innerText = `${this.scroller.delta.toFixed(3)}`;
             if (type === "progress" && section)
-              el2.innerText = `${section.progress.toFixed(5)}`;
+              el2.innerText = `${section.progress.toFixed(3)}`;
           }
         }
       };

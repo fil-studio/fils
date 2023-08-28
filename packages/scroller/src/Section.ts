@@ -20,13 +20,13 @@ export class Section {
 		h: 0
 	};
 
-	progress: number;
+	progress: number = 0;
 	direction: D = D.LEFT;
 
 	scroll: number = 0;
 	delta: number = 0;
 
-	visible: boolean = true;
+	visible: boolean = false;
 	disabled: boolean = false;
 
 	protected listeners:ScrollerSectionListener[] = [];
@@ -66,7 +66,8 @@ export class Section {
 			lis?.onBeforeRestore(resizing);
 		}
 		this.dom.style.transform = 'none';
-		this.visible = true;
+		this.visible = false;
+		this.progress = 0;
 		this.rect = this.dom.getBoundingClientRect();
 		for(const lis of this.listeners) {
 			lis?.onAfterRestore(resizing);
@@ -113,6 +114,7 @@ export class Section {
 	updateTransform(){
 		if(this.disabled) return;
 		let px = this.position.x, py = this.position.y;
+		this.dom.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${px.toFixed(3)},${py.toFixed(3)},0,1)`;
 
 		const wH = window.innerHeight;
 
@@ -120,38 +122,33 @@ export class Section {
 			let tY, sY;
 			switch(this.direction) {
 				case D.TOP:0
-					// console.log(-this.threshold[1]+ wH, -this.threshold[0]-wH, py);
 					tY = 1 - MathUtils.smoothstep(-this.threshold[1]+ wH, -this.threshold[0]-wH, py);
 					sY = tY * (this.threshold[1] - this.threshold[0] - 2*wH);
-					s.style.transform = `translateY(${sY.toFixed(5)}px)`;
+					s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(3)},0,1)`;
 					break;
 				case D.BOTTOM:
 					// console.log(-this.threshold[1]+ wH, -this.threshold[0]-wH, py);
 					tY = 1 - MathUtils.smoothstep(-this.threshold[1]+ wH, -this.threshold[0]-wH, py);
 					sY = tY * (this.threshold[1] - this.threshold[0] - 2*wH);
-					s.style.transform = `translateY(${sY.toFixed(5)}px)`;
-					break;
-				case D.LEFT:
-					break;
-				case D.RIGHT:
+					s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(3)},0,1)`;
 					break;
 			}
 		}
-
-		this.dom.style.transform = `translate3d(${px.toFixed(5)}px, ${py.toFixed(5)}px, 0)`;
 	}
 
 	update(){
 
 		if(this.scroll >= this.threshold[0] && this.scroll <= this.threshold[1] ) {
 
-			if(!this.visible) this.animationIn();
-
-			this.visible = true;
-			this.dom.classList.add('fil-scroller__visible')
-			this.dom.style.setProperty('--fil-scroller-delta', `${this.delta.toFixed(5)}`);
-			this.progress = MathUtils.map(this.scroll, this.threshold[0], this.threshold[1], 0, 1);
-			this.dom.style.setProperty('--fil-scroller-progress', `${this.progress.toFixed(5)}`);
+			if(!this.visible) {
+				this.animationIn();
+				this.dom.classList.add('fil-scroller__visible');
+				this.visible = true;
+			}
+			
+			this.dom.style.setProperty('--fil-scroller-delta', `${this.delta.toFixed(3)}`);
+			this.progress = MathUtils.smoothstep(this.threshold[0], this.threshold[1], this.scroll);
+			this.dom.style.setProperty('--fil-scroller-progress', `${this.progress.toFixed(3)}`);
 
 			this.updateTransform();
 

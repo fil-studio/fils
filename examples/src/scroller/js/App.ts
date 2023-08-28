@@ -30,13 +30,13 @@ export class App {
 		animate();
 
 		const gui = new UI();
-		gui.add(
+		/* gui.add(
 			this.scroller,
 			'direction',
 			{
 				options: { Top: 0, Bottom: 1, Left: 2, Right: 3 }
 			}
-		);
+		); */
 
 		gui.add(
 			this.scroller,
@@ -62,11 +62,13 @@ export class App {
 		this.scroller.update();
 
 		const section = this.scroller.sections.find(x => x.id === 'css-var-section');
+		if(!section) return;
+
 		for (let i = 0, len = this.cssVariablesElements.length; i < len; i++) {
 			const el = this.cssVariablesElements[i];
 			const type = el.getAttribute('css-var');
-			if(type === 'delta') el.innerText = `${this.scroller.delta.toFixed(5)}`;
-			if(type === 'progress' && section) el.innerText = `${section.progress.toFixed(5)}`;
+			if(type === 'delta') el.innerText = `${this.scroller.delta.toFixed(3)}`;
+			if(type === 'progress' && section) el.innerText = `${section.progress.toFixed(3)}`;
 		}
 	}
 }

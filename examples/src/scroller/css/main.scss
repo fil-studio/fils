@@ -78,7 +78,6 @@
 		h2,
 		p {
 			transform: rotateZ(calc(-1 * var(--fil-scroller-delta) * 20deg));
-
 			will-change: transform;
 		}
 	}

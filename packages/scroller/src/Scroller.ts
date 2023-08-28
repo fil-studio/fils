@@ -236,7 +236,7 @@ export class Scroller {
 
 		this.html.container.addEventListener('touchend', (e) => {
 			if(performance.now() - touchWheel.startDrag < 1000) {
-				console.log('SWIIIIPEEEE');
+				// console.log('SWIIIIPEEEE');
 				this.updateExternal(-touchWheel.delta * 25);
 			}
 
