@@ -117,7 +117,7 @@ export class Scroller {
 
 		if(this.useNative) {
 			console.log('Using Native Scroll');
-			this.container.style.overflow = 'auto';
+			this.container.style.overflowY = 'auto';
 		}
 
 		this.addStyles();
