@@ -1,2 +1,4 @@
 const { App } = require("./App");
-const _App = new App();
+window.onload = () => {
+    const _App = new App();
+}

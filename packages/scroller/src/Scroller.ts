@@ -6,13 +6,6 @@ interface position {
 	target: number
 }
 
-interface html {
-	scroller: HTMLElement,
-	holder: HTMLElement,
-	container: HTMLElement,
-	content: HTMLElement
-}
-
 export enum D {
 	TOP,
 	BOTTOM,
@@ -21,64 +14,33 @@ export enum D {
 }
 
 const style = `
-	[fil-scroller-content] * {
-		pointer-events: none;
-	}
-	[fil-scroller-parent] [fil-scroller-pointer] {
-		pointer-events: all;
-	}
-
-	[fil-scroller-parent],
-	[fil-scroller-parent] body {
+	html {
 		overscroll-behavior: none;
-		height: 100vh;
-		width: 100%;
-		top: 0;
-		left: 0;
-		overflow: hidden;
-		position: fixed;
-		pointer-events: none;
 	}
 	[fil-scroller]{
-		position: relative;
-		width: 100%;
-		height: 100vh;
-		pointer-events: all;
-		overflow-y: scroll;
-		-webkit-overflow-scrolling: touch;
-	}
-	[fil-scroller-holder] {
-		pointer-events: none;
-	}
-	[fil-scroller-container]{
-		position: fixed;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		left: 0;
 		overflow: hidden;
-		pointer-events: none;
+		width: 100vw;
+		height: 100vh;
+		position: fixed;
 	}
-	[fil-scroller-content] {
-		position: relative;
-		width: 100%;
-		height: auto;
-		will-change: transform;
-		pointer-events: none;
-	}
-
 	[fil-scroller-section]{
 		opacity: 0;
 		visibility: hidden;
-		will-change: transform;
+		will-change: auto;
+	}
+	[fil-scroller-sticky]{
+		position: sticky;
 	}
 	[fil-scroller-section].fil-scroller__visible {
 		opacity: 1;
 		visibility: visible;
+		will-change: transform, scroll-position;
 	}
-
 	[fil-scroller="disabled"] [fil-scroller-container] {
 		position: relative;
+	}
+	[fil-scroller-section].fil-scroller__visible [fil-scroller-sticky] {
+		will-change: transform;
 	}
 `;
 
@@ -89,13 +51,17 @@ const touchWheel = {
 	startDrag: 0
 }
 
+export type FilScrollerParameters = {
+	useNative?:boolean;
+	easing?:number;
+	direction?:D;
+}
+
+const DEFAULT_EASING = 0.16;
+
 export class Scroller {
-	html:html = {
-		scroller: null,
-		holder: null,
-		container: null,
-		content: null,
-	};
+	container:HTMLDivElement;
+	content:HTMLDivElement;
 
 	position:position = {
 		current: 0,
@@ -111,7 +77,7 @@ export class Scroller {
 	private disabled: boolean = false;
 
 	distance: number = 0;
-	private _ease: number = 0.16;
+	private _ease: number;
 
 	delta: number = 0;
 
@@ -120,14 +86,38 @@ export class Scroller {
 		h: 0
 	};
 
+	edges:number[] = [0,0];
+
 	pointerElements:NodeListOf<HTMLElement>;
 
-	constructor(){
-		this.html.scroller = document.querySelector('[fil-scroller]');
+	private useNative:boolean = false;
 
-		if(!this.html.scroller){
+	constructor(params?:FilScrollerParameters){
+		this.container = document.querySelector('[fil-scroller]') as HTMLDivElement;
+		this.content = this.container.querySelector('[fil-scroller-content]') as HTMLDivElement;
+
+		if(!this.container){
 			console.warn('Fil Scroller - No `[fil-scroller]` element');
 			return;
+		}
+
+		this.ease = params?.easing || DEFAULT_EASING;
+		this.useNative = params?.useNative === true;
+		this._direction = params?.direction || D.TOP;
+
+		if(this.useNative) {
+			if(this._direction !== D.TOP) {
+				console.warn('Native scrolling supports only D.TOP vertical direction! Forcing D.TOP...');
+				this._direction = D.TOP;
+			}
+			this.ease = 1; // force no easing
+		}
+
+		console.log(this.ease);
+
+		if(this.useNative) {
+			console.log('Using Native Scroll');
+			this.container.style.overflow = 'auto';
 		}
 
 		this.addStyles();
@@ -140,19 +130,24 @@ export class Scroller {
 		if(this.disabled) return;
 		this.disabled = true;
 		for(const section of this.sections) section.disabled = this.disabled;
-		this.html.scroller.setAttribute('fil-scroller', 'disabled');
+		this.container.setAttribute('fil-scroller', 'disabled');
 	}
 	enable(){
 		if(!this.disabled) return;
 		this.disabled = false;
 		for(const section of this.sections) section.disabled = this.disabled;
-		this.html.scroller.setAttribute('fil-scroller', '');
+		this.container.setAttribute('fil-scroller', '');
 	}
 
 	set direction(val: D | number){
-		if(val > D.RIGHT) val = 0;
-		this._direction = val;
+		if(this.useNative && val !== D.TOP) {
+			console.warn('Native scrolling supports only D.TOP vertical direction! Forcing D.TOP...');
+			this._direction = D.TOP;
+		} else {
+			this._direction = MathUtils.clamp(val, 0, 3);
+		}
 		for(const section of this.sections) section.direction = this.direction;
+		this.restore();
 	}
 	get direction(){
 		return this._direction;
@@ -175,27 +170,20 @@ export class Scroller {
 
 	}
 
-	addHTML(){
-
-		const dom = this.html.scroller;
-		this.html.holder = dom.querySelector('[fil-scroller-holder]');
-		this.html.container = dom.querySelector('[fil-scroller-container]');
-		this.html.content = dom.querySelector('[fil-scroller-content]');
-
-		this.pointerElements = dom.querySelectorAll('[fil-scroller-pointer]');
-
-	}
-
 	addSections(){
 
-		const sections:NodeListOf<HTMLElement> = this.html.content.querySelectorAll('[fil-scroller-section]');
+		const sections:NodeListOf<HTMLElement> = this.container.querySelectorAll('[fil-scroller-section]');
 
 		for(let i = 0, len = sections.length; i<len; i++){
 			const _section = sections[i];
 			const id = _section.getAttribute('fil-scroller-section') ? _section.getAttribute('fil-scroller-section') : `section-${i}`;
-			const section = new Section(id, _section, this.direction);
+			const section = new Section(id, _section, this.direction, this.useNative);
 			this.sections.push(section);
 		}
+	}
+
+	isHorizontal() {
+		return this.direction === D.LEFT || this.direction === D.RIGHT;
 	}
 
 	restore(resizing:boolean=false){
@@ -206,8 +194,17 @@ export class Scroller {
 			section.restore(resizing);
 		}
 
-		this.pointerElements = this.html.scroller.querySelectorAll('[fil-scroller-pointer]');
+		this.updateSections();
 
+		// this.pointerElements = this.html.scroller.querySelectorAll('[fil-scroller-pointer]');
+
+		let w = 0;
+		for(let section of this.sections) {
+			section.widthOffset = w;
+			w += section.sticky.length ? section.rect.height : window.innerWidth;
+		}
+
+		this.updateCheckHeight();
 	}
 
 	contentChanged() {
@@ -220,35 +217,43 @@ export class Scroller {
 	}
 
 	updateExternal(delta:number){
-		this.html.scroller.scrollTop += delta;
+		this.position.target = MathUtils.clamp(this.position.target+delta, this.edges[0], this.edges[1]);
 	}
 
 	addEventListeners(){
-		this.html.container.addEventListener('wheel', (e) => {
+		if(this.useNative) return;
+
+		this.container.addEventListener('wheel', (e) => {
 			this.updateExternal(e.deltaY);
 		})
 
-		this.html.container.addEventListener('touchstart', (e) => {
+		this.container.addEventListener('touchstart', (e) => {
+
 			const e1 = e.touches[0];
 			touchWheel.startY = e1.clientY;
 			touchWheel.startDrag = performance.now();
+		}, {
+			passive: false
 		})
 
-		this.html.container.addEventListener('touchend', (e) => {
+		this.container.addEventListener('touchend', (e) => {
 			if(performance.now() - touchWheel.startDrag < 1000) {
-				// console.log('SWIIIIPEEEE');
 				this.updateExternal(-touchWheel.delta * 25);
 			}
 
 			touchWheel.delta = 0;
+		}, {
+			passive: false
 		})
 
-		this.html.container.addEventListener('touchmove', (e) => {
+		this.container.addEventListener('touchmove', (e) => {
 			const e1 = e.touches[0];
 			touchWheel.delta = e1.clientY - touchWheel.startY;
 			touchWheel.startY = e1.clientY;
 
 			this.updateExternal(-touchWheel.delta);
+		}, {
+			passive: false
 		})
 	}
 
@@ -257,10 +262,11 @@ export class Scroller {
 		this.loaded = false;
 
 		if(forceTop){
-			this.html.scroller.scrollTop = 0;
+			// this.html.scroller.scrollTop = 0;
+			this.position.current = 0;
 		}
-		this.position.current = this.html.scroller.scrollTop;
-		this.position.target = this.html.scroller.scrollTop;
+		// this.position.current = this.html.scroller.scrollTop;
+		this.position.target = this.position.current;
 
 		this.sections = [];
 
@@ -269,8 +275,6 @@ export class Scroller {
 	}
 
 	create(){
-
-		this.addHTML();
 
 		this.addSections();
 
@@ -285,27 +289,32 @@ export class Scroller {
 	}
 
 	updateTarget(){
-		this.position.target = this.html.scroller.scrollTop;
-		// this.html.scroller.scrollTop = this.position.current;
+		if(this.useNative) {
+			this.position.target = this.container.scrollTop;
+		}
 	}
 
 	updateCheckHeight(){
 		this.distance = 0;
 
-		const vertical = this.direction === D.TOP || this.direction === D.BOTTOM;
+		const vertical = !this.isHorizontal();
 
 		for(let i = 0, len = this.sections.length; i < len; i++) {
-			if(vertical) this.distance += this.sections[i].rect.height;
-			else this.distance += this.sections[i].rect.width;
+			const section = this.sections[i];
+			if(vertical) this.distance += section.rect.height;
+			else this.distance += section.sticky.length ? section.rect.height : section.rect.width;
 		}
 
 		// If horizontal the difference between height and width must be taken care of.
-		if(!vertical) this.distance += this.w.h - this.w.w;
+		const dw = this.w.h - this.w.w;
+		if(!vertical) this.distance += dw;
 
-		this.html.holder.style.height = `${this.distance}px`;
+		this.content.style.height = `${this.distance}px`;
+
+		this.edges[1] = vertical ? this.distance - this.w.h : this.distance - this.w.w - dw;
 	}
 
-	updateScrollValues(){
+	updateScrollValues() {
 
 		const previous = this.position.current;
 
@@ -319,6 +328,10 @@ export class Scroller {
 				this.ease
 			);
 
+			if(Math.abs(this.position.target-this.position.current) < 1) {
+				this.position.current = this.position.target;
+			}
+
 		}
 
 		const newDelta = (this.position.current - previous) * 0.01;
@@ -328,13 +341,10 @@ export class Scroller {
 	updateSections(){
 
 		const scroll = this.position.current;
-		let w = 0;
-
 		for(let i = 0, len = this.sections.length; i < len; i++) {
 			const section = this.sections[i];
 			section.scroll = scroll;
 			section.delta = this.delta;
-			section.widthOffset = w;
 			section.update();
 		}
 
@@ -343,12 +353,14 @@ export class Scroller {
 	update(){
 		if(!this.loaded) return;
 
+		// console.log(this.position.current);
+
 		this.updateTarget();
-
-		this.updateCheckHeight();
-
 		this.updateScrollValues();
 
-		this.updateSections();
+		if(Math.abs(this.delta) > .01) {
+			this.updateSections();
+		}
+		
 	}
 }

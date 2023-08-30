@@ -1,9 +1,9 @@
 
-// import { Scroller } from '../../../../packages/scroller/src/Scroller';
+// import { D, Scroller } from '../../../../packages/scroller/src/Scroller';
 import { Scroller } from '@fils/scroller';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { UI } from '@fils/ui';
-
+import { isMobile } from "@fils/utils";
 
 export class App {
 	scroller:Scroller;
@@ -11,10 +11,12 @@ export class App {
 	cssVariablesElements: NodeListOf<HTMLElement>;
 	constructor() {
 
-		this.scroller = new Scroller();
-		// this.scroller.direction = 0;
-		// this.scroller.ease = 0.05;
-
+		this.scroller = new Scroller({
+			useNative: isMobile(),
+			easing: .1,
+			// direction: D.LEFT
+		});
+		
 		this.cssVariablesElements = document.querySelectorAll('[css-var]');
 
 		const stats = new Stats();
@@ -30,13 +32,13 @@ export class App {
 		animate();
 
 		const gui = new UI();
-		/* gui.add(
+		gui.add(
 			this.scroller,
 			'direction',
 			{
 				options: { Top: 0, Bottom: 1, Left: 2, Right: 3 }
 			}
-		); */
+		);
 
 		gui.add(
 			this.scroller,

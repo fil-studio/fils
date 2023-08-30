@@ -45,12 +45,11 @@
   color: white;
 }
 [template=scroller] [fil-scroller] .section-2-2 {
-  height: 500vh;
+  height: 200vh;
   display: inline-block;
 }
 [template=scroller] [fil-scroller] .section-2-2 div {
   height: auto;
-  position: sticky;
   top: 0;
 }
 [template=scroller] [fil-scroller] .section-3 h2,
@@ -63,3 +62,14 @@
 ._ui-wrapper * {
   pointer-events: all;
 }
+
+html {
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100vw;
+  width: 100dvw;
+}
+
+/* body {
+	overscroll-behavior: none;
+} */

@@ -227,32 +227,58 @@
   });
 
   // ../packages/scroller/lib/Section.js
-  var Section;
+  var PRECISION, Section;
   var init_Section = __esm({
     "../packages/scroller/lib/Section.js"() {
       init_main();
       init_Scroller();
+      PRECISION = 5;
       Section = class {
-        constructor(id, dom2, direction) {
+        constructor(id, dom2, direction, useNative) {
           this.w = {
             w: 0,
             h: 0
           };
           this.progress = 0;
-          this.direction = D.LEFT;
+          this._direction = D.LEFT;
+          this.threshold = [];
           this.scroll = 0;
           this.delta = 0;
           this.visible = false;
           this.disabled = false;
           this.listeners = [];
           this.sticky = [];
+          this.nativeScrolling = false;
           this.id = id;
           this.dom = dom2;
-          this.direction = direction;
+          this._direction = direction;
+          this.nativeScrolling = useNative === true;
           const s = dom2.querySelectorAll("[fil-scroller-sticky]");
           s.forEach((value) => {
             this.sticky.push(value);
           });
+        }
+        set direction(value) {
+          if (this._direction === value)
+            return;
+          this._direction = value;
+        }
+        get direction() {
+          return this._direction;
+        }
+        calculateDims() {
+          this.rect = this.dom.getBoundingClientRect();
+          if (this.direction === D.TOP || this.direction === D.BOTTOM) {
+            this.threshold = [
+              this.rect.top - this.w.h,
+              this.rect.top + this.rect.height
+            ];
+          } else {
+            this.threshold = [
+              this.widthOffset - this.w.w,
+              this.widthOffset + this.rect.width
+            ];
+          }
         }
         addSectionListener(lis) {
           if (this.listeners.indexOf(lis) > -1)
@@ -266,10 +292,10 @@
           for (const lis of this.listeners) {
             lis === null || lis === void 0 ? void 0 : lis.onBeforeRestore(resizing);
           }
-          this.dom.style.transform = "none";
+          this.dom.style.transform = "";
           this.visible = false;
           this.progress = 0;
-          this.rect = this.dom.getBoundingClientRect();
+          this.calculateDims();
           for (const lis of this.listeners) {
             lis === null || lis === void 0 ? void 0 : lis.onAfterRestore(resizing);
           }
@@ -283,18 +309,6 @@
           for (const lis of this.listeners) {
             lis === null || lis === void 0 ? void 0 : lis.onAnimationOut();
           }
-        }
-        get threshold() {
-          if (this.direction === D.TOP || this.direction === D.BOTTOM)
-            return [
-              this.rect.top - this.w.h,
-              this.rect.top + this.rect.height
-            ];
-          if (this.direction === D.LEFT || this.direction === D.RIGHT)
-            return [
-              this.widthOffset - this.w.w,
-              this.widthOffset + this.rect.width
-            ];
         }
         get position() {
           if (!this.visible)
@@ -311,9 +325,12 @@
         updateTransform() {
           if (this.disabled)
             return;
+          if (this.nativeScrolling) {
+            return;
+          }
+          const wH = this.w.h;
+          const wW = this.w.w;
           let px = this.position.x, py = this.position.y;
-          this.dom.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${px.toFixed(3)},${py.toFixed(3)},0,1)`;
-          const wH = window.innerHeight;
           for (const s of this.sticky) {
             let tY, sY;
             switch (this.direction) {
@@ -321,40 +338,55 @@
                 0;
                 tY = 1 - MathUtils.smoothstep(-this.threshold[1] + wH, -this.threshold[0] - wH, py);
                 sY = tY * (this.threshold[1] - this.threshold[0] - 2 * wH);
-                s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(3)},0,1)`;
+                s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(PRECISION)},0,1)`;
                 break;
               case D.BOTTOM:
                 tY = 1 - MathUtils.smoothstep(-this.threshold[1] + wH, -this.threshold[0] - wH, py);
                 sY = tY * (this.threshold[1] - this.threshold[0] - 2 * wH);
-                s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(3)},0,1)`;
+                s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(PRECISION)},0,1)`;
                 break;
               case D.LEFT:
-                break;
-              case D.RIGHT:
+                tY = 1 - MathUtils.smoothstep(-this.threshold[1] + wW, -this.threshold[0] - wW, px);
+                console.log(tY);
+                sY = tY * (this.threshold[1] - this.threshold[0] - 2 * wW);
+                s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${sY.toFixed(PRECISION)},0,0,1)`;
                 break;
             }
           }
+          this.dom.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${px.toFixed(PRECISION)},${py.toFixed(PRECISION)},0,1)`;
+        }
+        show() {
+          if (this.visible)
+            return;
+          this.animationIn();
+          this.dom.classList.add("fil-scroller__visible");
+          this.visible = true;
+        }
+        hide() {
+          if (!this.visible)
+            return;
+          this.animationOut();
+          this.visible = false;
+          this.progress = 0;
+          this.delta = 0;
+          this.dom.classList.remove("fil-scroller__visible");
+          this.dom.style.setProperty("--fil-scroller-delta", "0");
+          this.dom.style.setProperty("--fil-scroller-progress", "0");
         }
         update() {
-          if (this.scroll >= this.threshold[0] && this.scroll <= this.threshold[1]) {
+          if (this.scroll > this.threshold[0] && this.scroll < this.threshold[1]) {
             if (!this.visible) {
-              this.animationIn();
-              this.dom.classList.add("fil-scroller__visible");
-              this.visible = true;
+              this.show();
             }
-            this.dom.style.setProperty("--fil-scroller-delta", `${this.delta.toFixed(3)}`);
+            this.dom.style.setProperty("--fil-scroller-delta", `${this.delta.toFixed(PRECISION)}`);
             this.progress = MathUtils.smoothstep(this.threshold[0], this.threshold[1], this.scroll);
-            this.dom.style.setProperty("--fil-scroller-progress", `${this.progress.toFixed(3)}`);
+            this.dom.style.setProperty("--fil-scroller-progress", `${this.progress.toFixed(PRECISION)}`);
             this.updateTransform();
             return;
           }
           if (!this.visible)
             return;
-          this.animationOut();
-          this.visible = false;
-          this.dom.classList.remove("fil-scroller__visible");
-          this.dom.style.setProperty("--fil-scroller-delta", "0");
-          this.progress = 0;
+          this.hide();
           this.updateTransform();
         }
       };
@@ -362,7 +394,7 @@
   });
 
   // ../packages/scroller/lib/Scroller.js
-  var D, style, touchWheel, Scroller;
+  var D, style, touchWheel, DEFAULT_EASING, Scroller;
   var init_Scroller = __esm({
     "../packages/scroller/lib/Scroller.js"() {
       init_main();
@@ -374,64 +406,33 @@
         D2[D2["RIGHT"] = 3] = "RIGHT";
       })(D || (D = {}));
       style = `
-	[fil-scroller-content] * {
-		pointer-events: none;
-	}
-	[fil-scroller-parent] [fil-scroller-pointer] {
-		pointer-events: all;
-	}
-
-	[fil-scroller-parent],
-	[fil-scroller-parent] body {
+	html {
 		overscroll-behavior: none;
-		height: 100vh;
-		width: 100%;
-		top: 0;
-		left: 0;
-		overflow: hidden;
-		position: fixed;
-		pointer-events: none;
 	}
 	[fil-scroller]{
-		position: relative;
-		width: 100%;
-		height: 100vh;
-		pointer-events: all;
-		overflow-y: scroll;
-		-webkit-overflow-scrolling: touch;
-	}
-	[fil-scroller-holder] {
-		pointer-events: none;
-	}
-	[fil-scroller-container]{
-		position: fixed;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		left: 0;
 		overflow: hidden;
-		pointer-events: none;
+		width: 100vw;
+		height: 100vh;
+		position: fixed;
 	}
-	[fil-scroller-content] {
-		position: relative;
-		width: 100%;
-		height: auto;
-		will-change: transform;
-		pointer-events: none;
-	}
-
 	[fil-scroller-section]{
 		opacity: 0;
 		visibility: hidden;
-		will-change: transform;
+		will-change: auto;
+	}
+	[fil-scroller-sticky]{
+		position: sticky;
 	}
 	[fil-scroller-section].fil-scroller__visible {
 		opacity: 1;
 		visibility: visible;
+		will-change: transform, scroll-position;
 	}
-
 	[fil-scroller="disabled"] [fil-scroller-container] {
 		position: relative;
+	}
+	[fil-scroller-section].fil-scroller__visible [fil-scroller-sticky] {
+		will-change: transform;
 	}
 `;
       touchWheel = {
@@ -440,14 +441,9 @@
         amp: 10,
         startDrag: 0
       };
+      DEFAULT_EASING = 0.16;
       Scroller = class {
-        constructor() {
-          this.html = {
-            scroller: null,
-            holder: null,
-            container: null,
-            content: null
-          };
+        constructor(params) {
           this.position = {
             current: 0,
             target: 0
@@ -457,16 +453,33 @@
           this.loaded = false;
           this.disabled = false;
           this.distance = 0;
-          this._ease = 0.16;
           this.delta = 0;
           this.w = {
             w: 0,
             h: 0
           };
-          this.html.scroller = document.querySelector("[fil-scroller]");
-          if (!this.html.scroller) {
+          this.edges = [0, 0];
+          this.useNative = false;
+          this.container = document.querySelector("[fil-scroller]");
+          this.content = this.container.querySelector("[fil-scroller-content]");
+          if (!this.container) {
             console.warn("Fil Scroller - No `[fil-scroller]` element");
             return;
+          }
+          this.ease = (params === null || params === void 0 ? void 0 : params.easing) || DEFAULT_EASING;
+          this.useNative = (params === null || params === void 0 ? void 0 : params.useNative) === true;
+          this._direction = (params === null || params === void 0 ? void 0 : params.direction) || D.TOP;
+          if (this.useNative) {
+            if (this._direction !== D.TOP) {
+              console.warn("Native scrolling supports only D.TOP vertical direction! Forcing D.TOP...");
+              this._direction = D.TOP;
+            }
+            this.ease = 1;
+          }
+          console.log(this.ease);
+          if (this.useNative) {
+            console.log("Using Native Scroll");
+            this.container.style.overflow = "auto";
           }
           this.addStyles();
           this.refresh();
@@ -479,7 +492,7 @@
           this.disabled = true;
           for (const section of this.sections)
             section.disabled = this.disabled;
-          this.html.scroller.setAttribute("fil-scroller", "disabled");
+          this.container.setAttribute("fil-scroller", "disabled");
         }
         enable() {
           if (!this.disabled)
@@ -487,14 +500,18 @@
           this.disabled = false;
           for (const section of this.sections)
             section.disabled = this.disabled;
-          this.html.scroller.setAttribute("fil-scroller", "");
+          this.container.setAttribute("fil-scroller", "");
         }
         set direction(val) {
-          if (val > D.RIGHT)
-            val = 0;
-          this._direction = val;
+          if (this.useNative && val !== D.TOP) {
+            console.warn("Native scrolling supports only D.TOP vertical direction! Forcing D.TOP...");
+            this._direction = D.TOP;
+          } else {
+            this._direction = MathUtils.clamp(val, 0, 3);
+          }
           for (const section of this.sections)
             section.direction = this.direction;
+          this.restore();
         }
         get direction() {
           return this._direction;
@@ -511,21 +528,17 @@
           _styles.textContent = style;
           document.head.append(_styles);
         }
-        addHTML() {
-          const dom2 = this.html.scroller;
-          this.html.holder = dom2.querySelector("[fil-scroller-holder]");
-          this.html.container = dom2.querySelector("[fil-scroller-container]");
-          this.html.content = dom2.querySelector("[fil-scroller-content]");
-          this.pointerElements = dom2.querySelectorAll("[fil-scroller-pointer]");
-        }
         addSections() {
-          const sections = this.html.content.querySelectorAll("[fil-scroller-section]");
+          const sections = this.container.querySelectorAll("[fil-scroller-section]");
           for (let i = 0, len = sections.length; i < len; i++) {
             const _section = sections[i];
             const id = _section.getAttribute("fil-scroller-section") ? _section.getAttribute("fil-scroller-section") : `section-${i}`;
-            const section = new Section(id, _section, this.direction);
+            const section = new Section(id, _section, this.direction, this.useNative);
             this.sections.push(section);
           }
+        }
+        isHorizontal() {
+          return this.direction === D.LEFT || this.direction === D.RIGHT;
         }
         restore(resizing = false) {
           this.w.w = window.innerWidth;
@@ -534,7 +547,13 @@
             section.w = this.w;
             section.restore(resizing);
           }
-          this.pointerElements = this.html.scroller.querySelectorAll("[fil-scroller-pointer]");
+          this.updateSections();
+          let w = 0;
+          for (let section of this.sections) {
+            section.widthOffset = w;
+            w += section.sticky.length ? section.rect.height : window.innerWidth;
+          }
+          this.updateCheckHeight();
         }
         contentChanged() {
           this.restore();
@@ -544,42 +563,48 @@
           this.restore(true);
         }
         updateExternal(delta) {
-          this.html.scroller.scrollTop += delta;
+          this.position.target = MathUtils.clamp(this.position.target + delta, this.edges[0], this.edges[1]);
         }
         addEventListeners() {
-          this.html.container.addEventListener("wheel", (e) => {
+          if (this.useNative)
+            return;
+          this.container.addEventListener("wheel", (e) => {
             this.updateExternal(e.deltaY);
           });
-          this.html.container.addEventListener("touchstart", (e) => {
+          this.container.addEventListener("touchstart", (e) => {
             const e1 = e.touches[0];
             touchWheel.startY = e1.clientY;
             touchWheel.startDrag = performance.now();
+          }, {
+            passive: false
           });
-          this.html.container.addEventListener("touchend", (e) => {
+          this.container.addEventListener("touchend", (e) => {
             if (performance.now() - touchWheel.startDrag < 1e3) {
               this.updateExternal(-touchWheel.delta * 25);
             }
             touchWheel.delta = 0;
+          }, {
+            passive: false
           });
-          this.html.container.addEventListener("touchmove", (e) => {
+          this.container.addEventListener("touchmove", (e) => {
             const e1 = e.touches[0];
             touchWheel.delta = e1.clientY - touchWheel.startY;
             touchWheel.startY = e1.clientY;
             this.updateExternal(-touchWheel.delta);
+          }, {
+            passive: false
           });
         }
         refresh(forceTop = true) {
           this.loaded = false;
           if (forceTop) {
-            this.html.scroller.scrollTop = 0;
+            this.position.current = 0;
           }
-          this.position.current = this.html.scroller.scrollTop;
-          this.position.target = this.html.scroller.scrollTop;
+          this.position.target = this.position.current;
           this.sections = [];
           this.create();
         }
         create() {
-          this.addHTML();
           this.addSections();
           this.restore();
           if ("scrollRestoration" in history)
@@ -588,20 +613,25 @@
           this.loaded = true;
         }
         updateTarget() {
-          this.position.target = this.html.scroller.scrollTop;
+          if (this.useNative) {
+            this.position.target = this.container.scrollTop;
+          }
         }
         updateCheckHeight() {
           this.distance = 0;
-          const vertical = this.direction === D.TOP || this.direction === D.BOTTOM;
+          const vertical = !this.isHorizontal();
           for (let i = 0, len = this.sections.length; i < len; i++) {
+            const section = this.sections[i];
             if (vertical)
-              this.distance += this.sections[i].rect.height;
+              this.distance += section.rect.height;
             else
-              this.distance += this.sections[i].rect.width;
+              this.distance += section.sticky.length ? section.rect.height : section.rect.width;
           }
+          const dw = this.w.h - this.w.w;
           if (!vertical)
-            this.distance += this.w.h - this.w.w;
-          this.html.holder.style.height = `${this.distance}px`;
+            this.distance += dw;
+          this.content.style.height = `${this.distance}px`;
+          this.edges[1] = vertical ? this.distance - this.w.h : this.distance - this.w.w - dw;
         }
         updateScrollValues() {
           const previous = this.position.current;
@@ -609,18 +639,19 @@
             this.position.current = this.position.target;
           } else {
             this.position.current = MathUtils.lerp(this.position.current, this.position.target, this.ease);
+            if (Math.abs(this.position.target - this.position.current) < 1) {
+              this.position.current = this.position.target;
+            }
           }
           const newDelta = (this.position.current - previous) * 0.01;
           this.delta = MathUtils.clamp(MathUtils.lerp(this.delta, newDelta, 0.1), -1, 1);
         }
         updateSections() {
           const scroll = this.position.current;
-          let w = 0;
           for (let i = 0, len = this.sections.length; i < len; i++) {
             const section = this.sections[i];
             section.scroll = scroll;
             section.delta = this.delta;
-            section.widthOffset = w;
             section.update();
           }
         }
@@ -628,9 +659,10 @@
           if (!this.loaded)
             return;
           this.updateTarget();
-          this.updateCheckHeight();
           this.updateScrollValues();
-          this.updateSections();
+          if (Math.abs(this.delta) > 0.01) {
+            this.updateSections();
+          }
         }
       };
     }
@@ -3231,6 +3263,41 @@
     }
   });
 
+  // ../packages/utils/lib/Utils.js
+  function isMobile() {
+    var check = false;
+    (function(a) {
+      if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4)))
+        check = true;
+    })(navigator.userAgent || navigator.vendor);
+    return check;
+  }
+  var init_Utils2 = __esm({
+    "../packages/utils/lib/Utils.js"() {
+    }
+  });
+
+  // ../packages/utils/lib/FileUtils.js
+  var init_FileUtils2 = __esm({
+    "../packages/utils/lib/FileUtils.js"() {
+    }
+  });
+
+  // ../packages/utils/lib/TypeUtils.js
+  var init_TypeUtils2 = __esm({
+    "../packages/utils/lib/TypeUtils.js"() {
+    }
+  });
+
+  // ../packages/utils/lib/main.js
+  var init_main8 = __esm({
+    "../packages/utils/lib/main.js"() {
+      init_Utils2();
+      init_FileUtils2();
+      init_TypeUtils2();
+    }
+  });
+
   // src/scroller/js/App.ts
   var App_exports = {};
   __export(App_exports, {
@@ -3242,9 +3309,14 @@
       init_main2();
       init_stats_module();
       init_main7();
+      init_main8();
       App = class {
         constructor() {
-          this.scroller = new Scroller();
+          this.scroller = new Scroller({
+            useNative: isMobile(),
+            easing: 0.1
+            // direction: D.LEFT
+          });
           this.cssVariablesElements = document.querySelectorAll("[css-var]");
           const stats = new stats_module_default();
           stats.showPanel(0);
@@ -3257,6 +3329,13 @@
           };
           animate();
           const gui = new UI();
+          gui.add(
+            this.scroller,
+            "direction",
+            {
+              options: { Top: 0, Bottom: 1, Left: 2, Right: 3 }
+            }
+          );
           gui.add(
             this.scroller,
             "ease",
@@ -3293,6 +3372,8 @@
 
   // src/scroller/js/main.js
   var { App: App2 } = (init_App(), __toCommonJS(App_exports));
-  var _App = new App2();
+  window.onload = () => {
+    const _App = new App2();
+  };
 })();
 //# sourceMappingURL=main.js.map

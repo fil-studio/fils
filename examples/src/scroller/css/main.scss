@@ -62,13 +62,13 @@
 	}
 
 	.section-2-2 {
-		height: 500vh;
+		height: 200vh;
 		// border: 1px solid green;
 		display: inline-block;
 
 		div {
 			height: auto;
-			position: sticky;
+			// position: sticky;
 			top: 0;
 		}
 	}
@@ -87,3 +87,15 @@
 ._ui-wrapper * {
 	pointer-events: all;
 }
+
+html {
+	min-height: 100vh;
+	min-height: 100dvh;
+	width: 100vw;
+	width: 100dvw;
+	// overflow: hidden;
+}
+
+/* body {
+	overscroll-behavior: none;
+} */

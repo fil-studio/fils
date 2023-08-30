@@ -8,6 +8,8 @@ export interface ScrollerSectionListener {
 	onAfterRestore?(resizing:boolean);
 }
 
+const PRECISION = 5;
+
 export class Section {
 	id: string;
 	dom: HTMLElement;
@@ -21,7 +23,8 @@ export class Section {
 	};
 
 	progress: number = 0;
-	direction: D = D.LEFT;
+	protected _direction: D = D.LEFT;
+	threshold:number[] = [];
 
 	scroll: number = 0;
 	delta: number = 0;
@@ -33,12 +36,16 @@ export class Section {
 
 	sticky:HTMLElement[] = [];
 
+	nativeScrolling:boolean = false;
 
-	constructor(id: string, dom: HTMLElement, direction: D){
+
+	constructor(id: string, dom: HTMLElement, direction: D, useNative?:boolean){
 
 		this.id = id;
 		this.dom = dom;
-		this.direction = direction;
+		this._direction = direction;
+
+		this.nativeScrolling = useNative === true;
 
 		const s = dom.querySelectorAll('[fil-scroller-sticky]');
 
@@ -47,6 +54,33 @@ export class Section {
 		})
 		// console.log(this.sticky);
 		
+	}
+
+	set direction(value:D) {
+		if(this._direction === value) return;
+		this._direction = value;
+		
+	}
+
+	get direction():D {
+		return this._direction;
+	}
+
+	calculateDims() {
+		this.rect = this.dom.getBoundingClientRect();
+		// VERTICAL SCROLL THRESHOLDS
+		if(this.direction === D.TOP || this.direction === D.BOTTOM) {
+			this.threshold = [
+				this.rect.top - this.w.h,
+				this.rect.top + this.rect.height
+			];
+		} else {
+			this.threshold = [
+				this.widthOffset - this.w.w,
+				this.widthOffset + this.rect.width
+			];
+		}
+
 	}
 
 	addSectionListener(lis:ScrollerSectionListener) {
@@ -65,10 +99,10 @@ export class Section {
 		for(const lis of this.listeners) {
 			lis?.onBeforeRestore(resizing);
 		}
-		this.dom.style.transform = 'none';
+		this.dom.style.transform = '';
 		this.visible = false;
 		this.progress = 0;
-		this.rect = this.dom.getBoundingClientRect();
+		this.calculateDims();
 		for(const lis of this.listeners) {
 			lis?.onAfterRestore(resizing);
 		}
@@ -85,22 +119,6 @@ export class Section {
 		}
 	}
 
-	get threshold(){
-
-		// VERTICAL SCROLL THRESHOLDS
-		if(this.direction === D.TOP || this.direction === D.BOTTOM) return [
-			this.rect.top - this.w.h,
-			this.rect.top + this.rect.height
-		];
-
-		// HORIZONTAL SCROLL THRESHOLDS
-		if(this.direction === D.LEFT || this.direction === D.RIGHT) return [
-			this.widthOffset - this.w.w,
-			this.widthOffset + this.rect.width
-		]
-
-	}
-
 	get position() {
 
 		if(!this.visible) return {x: 0, y: -this.w.h};
@@ -113,10 +131,12 @@ export class Section {
 
 	updateTransform(){
 		if(this.disabled) return;
+		if(this.nativeScrolling) {
+			return;
+		}
+		const wH = this.w.h;
+		const wW = this.w.w;
 		let px = this.position.x, py = this.position.y;
-		this.dom.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${px.toFixed(3)},${py.toFixed(3)},0,1)`;
-
-		const wH = window.innerHeight;
 
 		for(const s of this.sticky) {
 			let tY, sY;
@@ -124,31 +144,57 @@ export class Section {
 				case D.TOP:0
 					tY = 1 - MathUtils.smoothstep(-this.threshold[1]+ wH, -this.threshold[0]-wH, py);
 					sY = tY * (this.threshold[1] - this.threshold[0] - 2*wH);
-					s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(3)},0,1)`;
+					s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(PRECISION)},0,1)`;
 					break;
 				case D.BOTTOM:
 					// console.log(-this.threshold[1]+ wH, -this.threshold[0]-wH, py);
 					tY = 1 - MathUtils.smoothstep(-this.threshold[1]+ wH, -this.threshold[0]-wH, py);
 					sY = tY * (this.threshold[1] - this.threshold[0] - 2*wH);
-					s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(3)},0,1)`;
+					s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(PRECISION)},0,1)`;
+					break;
+				case D.LEFT:
+					tY = 1 - MathUtils.smoothstep(-this.threshold[1]+ wW, -this.threshold[0]-wW, px);
+					console.log(tY);
+					
+					sY = tY * (this.threshold[1] - this.threshold[0] - 2*wW);
+					s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${sY.toFixed(PRECISION)},0,0,1)`;
 					break;
 			}
 		}
+		this.dom.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${px.toFixed(PRECISION)},${py.toFixed(PRECISION)},0,1)`;
+	}
+
+	protected show() {
+		if(this.visible) return;
+		
+		this.animationIn();
+		this.dom.classList.add('fil-scroller__visible');
+		this.visible = true;
+	}
+
+	protected hide() {
+		if(!this.visible) return;
+
+		this.animationOut();
+		this.visible = false;
+		this.progress = 0;
+		this.delta = 0;
+		this.dom.classList.remove('fil-scroller__visible');
+		this.dom.style.setProperty('--fil-scroller-delta', '0');
+		this.dom.style.setProperty('--fil-scroller-progress', '0');
 	}
 
 	update(){
 
-		if(this.scroll >= this.threshold[0] && this.scroll <= this.threshold[1] ) {
+		if(this.scroll > this.threshold[0] && this.scroll < this.threshold[1] ) {
 
 			if(!this.visible) {
-				this.animationIn();
-				this.dom.classList.add('fil-scroller__visible');
-				this.visible = true;
+				this.show();
 			}
 			
-			this.dom.style.setProperty('--fil-scroller-delta', `${this.delta.toFixed(3)}`);
+			this.dom.style.setProperty('--fil-scroller-delta', `${this.delta.toFixed(PRECISION)}`);
 			this.progress = MathUtils.smoothstep(this.threshold[0], this.threshold[1], this.scroll);
-			this.dom.style.setProperty('--fil-scroller-progress', `${this.progress.toFixed(3)}`);
+			this.dom.style.setProperty('--fil-scroller-progress', `${this.progress.toFixed(PRECISION)}`);
 
 			this.updateTransform();
 
@@ -158,12 +204,7 @@ export class Section {
 
 		if(!this.visible) return;
 
-		this.animationOut();
-
-		this.visible = false;
-		this.dom.classList.remove('fil-scroller__visible');
-		this.dom.style.setProperty('--fil-scroller-delta', '0');
-		this.progress = 0;
+		this.hide();
 
 		this.updateTransform();
 	}
