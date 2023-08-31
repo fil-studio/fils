@@ -70,6 +70,15 @@ html {
   width: 100dvw;
 }
 
-/* body {
-	overscroll-behavior: none;
+/* 
+ * Virtual Scroll Bar customisation
+ */
+/* [fil-virtual-scroller] {
+	transition: opacity 800ms ease-out, background-color 600ms ease-out, transform 300ms ease-out;
+	transform-origin: center right;
+}
+
+[fil-virtual-scroller]:hover {
+	background-color: rgba(0,0,0,.15);
+	transform: scaleX(1.2);
 } */

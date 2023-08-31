@@ -393,19 +393,98 @@
     }
   });
 
+  // ../packages/scroller/lib/VirtualScrollBar.js
+  var style, TIMEOUT, tid, VirtualScrollBar;
+  var init_VirtualScrollBar = __esm({
+    "../packages/scroller/lib/VirtualScrollBar.js"() {
+      init_main();
+      style = `
+[fil-virtual-scroller] {
+    position: fixed;
+    top: 0;
+    right: 0px;
+    height: 100vh;
+    height: 100dvh;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 600ms ease-out;
+}
+[fil-virtual-scroller] div {
+    border-radius: 4px;
+    width: 50%;
+    background-color: rgba(0,0,0,.5);
+    position: absolute;
+    left: 50%;
+}
+`;
+      TIMEOUT = 1500;
+      VirtualScrollBar = class {
+        constructor(contentHeight, scrollBarWidth = 8) {
+          this.enabled = false;
+          this._progress = 0;
+          this.dom = document.createElement("div");
+          this.dom.setAttribute("fil-virtual-scroller", "");
+          this.dom.style.width = `${scrollBarWidth * 2}px`;
+          this.bar = document.createElement("div");
+          this.bar.style.borderRadius = `${scrollBarWidth / 2}px`;
+          this.dom.appendChild(this.bar);
+          const _styles = document.createElement("style");
+          _styles.textContent = style;
+          document.head.append(_styles);
+          document.body.appendChild(this.dom);
+        }
+        set contentHeight(height) {
+          const dh = height - window.innerHeight;
+          if (dh < 0) {
+            this.enabled = false;
+            this.dom.style.display = "none";
+          }
+          const sdh = 1 - MathUtils.smoothstep(100, 1e3, dh);
+          const h = MathUtils.lerp(100, window.innerHeight / 2, sdh);
+          this.height = Math.round(h);
+          this.bar.style.height = `${this.height}px`;
+        }
+        show(blockTimeout = false) {
+          this.dom.style.opacity = `1`;
+          if (blockTimeout)
+            return;
+          this.hide();
+        }
+        hide() {
+          window.clearTimeout(tid);
+          tid = window.setTimeout(() => {
+            this.dom.style.opacity = `0`;
+          }, TIMEOUT);
+        }
+        set progress(value) {
+          if (value === this._progress)
+            return;
+          this._progress = value;
+          this.updatePosition();
+          this.show();
+        }
+        updatePosition() {
+          const t = MathUtils.lerp(0, window.innerHeight - this.height, this._progress);
+          this.bar.style.transform = `translateX(-50%) translateY(${t}px)`;
+        }
+      };
+    }
+  });
+
   // ../packages/scroller/lib/Scroller.js
-  var D, style, touchWheel, DEFAULT_EASING, Scroller;
+  var D, style2, touchWheel, DEFAULT_EASING, Scroller;
   var init_Scroller = __esm({
     "../packages/scroller/lib/Scroller.js"() {
       init_main();
       init_Section();
-      (function(D2) {
-        D2[D2["TOP"] = 0] = "TOP";
-        D2[D2["BOTTOM"] = 1] = "BOTTOM";
-        D2[D2["LEFT"] = 2] = "LEFT";
-        D2[D2["RIGHT"] = 3] = "RIGHT";
+      init_VirtualScrollBar();
+      (function(D3) {
+        D3[D3["TOP"] = 0] = "TOP";
+        D3[D3["BOTTOM"] = 1] = "BOTTOM";
+        D3[D3["LEFT"] = 2] = "LEFT";
+        D3[D3["RIGHT"] = 3] = "RIGHT";
       })(D || (D = {}));
-      style = `
+      style2 = `
 	html {
 		overscroll-behavior: none;
 	}
@@ -476,10 +555,11 @@
             }
             this.ease = 1;
           }
-          console.log(this.ease);
           if (this.useNative) {
             console.log("Using Native Scroll");
-            this.container.style.overflow = "auto";
+            this.container.style.overflowY = "auto";
+          } else if (params === null || params === void 0 ? void 0 : params.showVirtualScrollBar) {
+            this.virtualScrollBar = (params === null || params === void 0 ? void 0 : params.customScrollBar) || new VirtualScrollBar(0);
           }
           this.addStyles();
           this.refresh();
@@ -525,7 +605,7 @@
         addStyles() {
           document.documentElement.setAttribute("fil-scroller-parent", "");
           const _styles = document.createElement("style");
-          _styles.textContent = style;
+          _styles.textContent = style2;
           document.head.append(_styles);
         }
         addSections() {
@@ -599,6 +679,9 @@
           this.loaded = false;
           if (forceTop) {
             this.position.current = 0;
+            if (this.useNative) {
+              this.container.scrollTop = 0;
+            }
           }
           this.position.target = this.position.current;
           this.sections = [];
@@ -631,6 +714,9 @@
           if (!vertical)
             this.distance += dw;
           this.content.style.height = `${this.distance}px`;
+          if (!this.useNative && this.virtualScrollBar) {
+            this.virtualScrollBar.contentHeight = this.distance;
+          }
           this.edges[1] = vertical ? this.distance - this.w.h : this.distance - this.w.w - dw;
         }
         updateScrollValues() {
@@ -642,6 +728,9 @@
             if (Math.abs(this.position.target - this.position.current) < 1) {
               this.position.current = this.position.target;
             }
+          }
+          if (!this.useNative && this.virtualScrollBar) {
+            this.virtualScrollBar.progress = this.position.current / this.edges[1];
           }
           const newDelta = (this.position.current - previous) * 0.01;
           this.delta = MathUtils.clamp(MathUtils.lerp(this.delta, newDelta, 0.1), -1, 1);
@@ -672,6 +761,7 @@
   var init_main2 = __esm({
     "../packages/scroller/lib/main.js"() {
       init_Scroller();
+      init_VirtualScrollBar();
       init_Section();
     }
   });
@@ -2653,9 +2743,9 @@
           if (injected)
             return;
           injected = true;
-          const style2 = document.createElement("style");
-          style2.innerHTML = css2;
-          document.head.appendChild(style2);
+          const style3 = document.createElement("style");
+          style3.innerHTML = css2;
+          document.head.appendChild(style3);
         }
       };
       UIInjectCSS = () => {
@@ -3314,7 +3404,8 @@
         constructor() {
           this.scroller = new Scroller({
             useNative: isMobile(),
-            easing: 0.1
+            easing: 0.1,
+            showVirtualScrollBar: true
             // direction: D.LEFT
           });
           this.cssVariablesElements = document.querySelectorAll("[css-var]");

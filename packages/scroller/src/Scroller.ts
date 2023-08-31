@@ -1,5 +1,6 @@
 import { MathUtils } from "@fils/math";
 import { Section } from "./Section";
+import { VirtualScrollBar } from "./VirtualScrollBar";
 
 interface position {
 	current: number,
@@ -55,6 +56,8 @@ export type FilScrollerParameters = {
 	useNative?:boolean;
 	easing?:number;
 	direction?:D;
+	showVirtualScrollBar?:boolean;
+	customScrollBar?:VirtualScrollBar;
 }
 
 const DEFAULT_EASING = 0.16;
@@ -62,6 +65,7 @@ const DEFAULT_EASING = 0.16;
 export class Scroller {
 	container:HTMLDivElement;
 	content:HTMLDivElement;
+	virtualScrollBar:VirtualScrollBar;
 
 	position:position = {
 		current: 0,
@@ -88,8 +92,6 @@ export class Scroller {
 
 	edges:number[] = [0,0];
 
-	pointerElements:NodeListOf<HTMLElement>;
-
 	private useNative:boolean = false;
 
 	constructor(params?:FilScrollerParameters){
@@ -113,11 +115,11 @@ export class Scroller {
 			this.ease = 1; // force no easing
 		}
 
-		console.log(this.ease);
-
 		if(this.useNative) {
 			console.log('Using Native Scroll');
 			this.container.style.overflowY = 'auto';
+		} else if(params?.showVirtualScrollBar){
+			this.virtualScrollBar = params?.customScrollBar || new VirtualScrollBar(0);
 		}
 
 		this.addStyles();
@@ -196,8 +198,6 @@ export class Scroller {
 
 		this.updateSections();
 
-		// this.pointerElements = this.html.scroller.querySelectorAll('[fil-scroller-pointer]');
-
 		let w = 0;
 		for(let section of this.sections) {
 			section.widthOffset = w;
@@ -258,24 +258,22 @@ export class Scroller {
 	}
 
 	refresh(forceTop:boolean = true) {
-
 		this.loaded = false;
 
 		if(forceTop){
-			// this.html.scroller.scrollTop = 0;
 			this.position.current = 0;
+			if(this.useNative) {
+				this.container.scrollTop = 0;
+			}
 		}
-		// this.position.current = this.html.scroller.scrollTop;
 		this.position.target = this.position.current;
 
 		this.sections = [];
 
 		this.create();
-
 	}
 
 	create(){
-
 		this.addSections();
 
 		this.restore();
@@ -285,7 +283,6 @@ export class Scroller {
 		console.log('Fil Scroller - Loaded');
 
 		this.loaded = true;
-
 	}
 
 	updateTarget(){
@@ -310,6 +307,9 @@ export class Scroller {
 		if(!vertical) this.distance += dw;
 
 		this.content.style.height = `${this.distance}px`;
+		if(!this.useNative && this.virtualScrollBar) {
+			this.virtualScrollBar.contentHeight = this.distance;
+		}
 
 		this.edges[1] = vertical ? this.distance - this.w.h : this.distance - this.w.w - dw;
 	}
@@ -332,6 +332,10 @@ export class Scroller {
 				this.position.current = this.position.target;
 			}
 
+		}
+
+		if(!this.useNative && this.virtualScrollBar) {
+			this.virtualScrollBar.progress = this.position.current / this.edges[1];
 		}
 
 		const newDelta = (this.position.current - previous) * 0.01;
