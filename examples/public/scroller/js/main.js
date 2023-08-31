@@ -438,6 +438,9 @@
           if (dh < 0) {
             this.enabled = false;
             this.dom.style.display = "none";
+            return;
+          } else {
+            this.dom.style.display = "block";
           }
           const sdh = 1 - MathUtils.smoothstep(100, 1e3, dh);
           const h = MathUtils.lerp(100, window.innerHeight / 2, sdh);
