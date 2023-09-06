@@ -43,6 +43,9 @@ const style = `
 	[fil-scroller-section].fil-scroller__visible [fil-scroller-sticky] {
 		will-change: transform;
 	}
+	[fil-virtual-scroller] {
+		pointer-events: none;
+	}
 `;
 
 const touchWheel = {
@@ -228,7 +231,6 @@ export class Scroller {
 		})
 
 		this.container.addEventListener('touchstart', (e) => {
-
 			const e1 = e.touches[0];
 			touchWheel.startY = e1.clientY;
 			touchWheel.startDrag = performance.now();
@@ -247,6 +249,7 @@ export class Scroller {
 		})
 
 		this.container.addEventListener('touchmove', (e) => {
+			e.preventDefault();
 			const e1 = e.touches[0];
 			touchWheel.delta = e1.clientY - touchWheel.startY;
 			touchWheel.startY = e1.clientY;
@@ -269,13 +272,17 @@ export class Scroller {
 		this.position.target = this.position.current;
 
 		this.sections = [];
-
 		this.create();
+
+		// Fix a weird bug in horizontal scrolling
+		// by forcing restore once more (To-Do: Look at it!!)
+		if(this.isHorizontal()) {
+			this.restore();
+		}
 	}
 
 	create(){
 		this.addSections();
-
 		this.restore();
 
 		if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
@@ -362,9 +369,50 @@ export class Scroller {
 		this.updateTarget();
 		this.updateScrollValues();
 
-		if(Math.abs(this.delta) > .01) {
+		if(Math.abs(this.delta) > .001) {
 			this.updateSections();
 		}
 		
+	}
+
+	/**
+	 * Scrolls to a given section
+	 * @param k index of section to scroll to
+	 * @returns 
+	 */
+	scrollToSection(k:number) {
+		if(k<0 || k>this.sections.length-1) {
+			return console.warn('Section Out of bounds!');
+		}
+
+		const sec = this.sections[k];
+
+		if(this.useNative) {
+			// NOTE: If you are in native mode you might just
+			// want to animate using gsap or raf lerp instead
+			this.container.scrollTop = sec.rect.top;
+		} else {
+			if(!this.isHorizontal()) {
+				this.position.target = sec.rect.top;
+			} else {
+				this.position.target = sec.widthOffset;
+			}
+		}
+	}
+
+	/**
+	 * Scrolls to next section
+	 * @param section Section from where you are scrolling from
+	 */
+	scrollToNextSection(section:Section) {
+		this.scrollToSection(this.sections.indexOf(section)+1);
+	}
+
+	/**
+	 * Scrolls to previous section
+	 * @param section Section from where you are scrolling from
+	 */
+	scrollToPrevSection(section:Section) {
+		this.scrollToSection(this.sections.indexOf(section)-1);
 	}
 }
