@@ -400,6 +400,7 @@
       init_main();
       style = `
 [fil-virtual-scroller] {
+    pointer-events: none;
     position: fixed;
     top: 0;
     right: 0px;
@@ -568,6 +569,9 @@
           this.refresh();
           this.addEventListeners();
         }
+        get enabled() {
+          return !this.disabled;
+        }
         // Disable - enable
         disable() {
           if (this.disabled)
@@ -576,6 +580,9 @@
           for (const section of this.sections)
             section.disabled = this.disabled;
           this.container.setAttribute("fil-scroller", "disabled");
+          if (this.virtualScrollBar) {
+            this.virtualScrollBar.dom.style.display = "none";
+          }
         }
         enable() {
           if (!this.disabled)
@@ -584,6 +591,9 @@
           for (const section of this.sections)
             section.disabled = this.disabled;
           this.container.setAttribute("fil-scroller", "");
+          if (this.virtualScrollBar) {
+            this.virtualScrollBar.dom.style.display = "block";
+          }
         }
         set direction(val) {
           if (this.useNative && val !== D.TOP) {
@@ -652,9 +662,13 @@
           if (this.useNative)
             return;
           this.container.addEventListener("wheel", (e) => {
+            if (this.disabled)
+              return;
             this.updateExternal(e.deltaY);
           });
           this.container.addEventListener("touchstart", (e) => {
+            if (this.disabled)
+              return;
             const e1 = e.touches[0];
             touchWheel.startY = e1.clientY;
             touchWheel.startDrag = performance.now();
@@ -662,6 +676,8 @@
             passive: false
           });
           this.container.addEventListener("touchend", (e) => {
+            if (this.disabled)
+              return;
             if (performance.now() - touchWheel.startDrag < 1e3) {
               this.updateExternal(-touchWheel.delta * 25);
             }
@@ -670,6 +686,9 @@
             passive: false
           });
           this.container.addEventListener("touchmove", (e) => {
+            if (this.disabled)
+              return;
+            e.preventDefault();
             const e1 = e.touches[0];
             touchWheel.delta = e1.clientY - touchWheel.startY;
             touchWheel.startY = e1.clientY;
@@ -689,6 +708,9 @@
           this.position.target = this.position.current;
           this.sections = [];
           this.create();
+          if (this.isHorizontal()) {
+            this.restore();
+          }
         }
         create() {
           this.addSections();
@@ -752,9 +774,43 @@
             return;
           this.updateTarget();
           this.updateScrollValues();
-          if (Math.abs(this.delta) > 0.01) {
+          if (Math.abs(this.delta) > 1e-3) {
             this.updateSections();
           }
+        }
+        /**
+         * Scrolls to a given section
+         * @param k index of section to scroll to
+         * @returns
+         */
+        scrollToSection(k) {
+          if (k < 0 || k > this.sections.length - 1) {
+            return console.warn("Section Out of bounds!");
+          }
+          const sec = this.sections[k];
+          if (this.useNative) {
+            this.container.scrollTop = sec.rect.top;
+          } else {
+            if (!this.isHorizontal()) {
+              this.position.target = sec.rect.top;
+            } else {
+              this.position.target = sec.widthOffset;
+            }
+          }
+        }
+        /**
+         * Scrolls to next section
+         * @param section Section from where you are scrolling from
+         */
+        scrollToNextSection(section) {
+          this.scrollToSection(this.sections.indexOf(section) + 1);
+        }
+        /**
+         * Scrolls to previous section
+         * @param section Section from where you are scrolling from
+         */
+        scrollToPrevSection(section) {
+          this.scrollToSection(this.sections.indexOf(section) - 1);
         }
       };
     }
@@ -3441,6 +3497,12 @@
           );
           gui.addButton("Scroll to last", () => {
             this.scroller.scrollToSection(this.scroller.sections.length - 1);
+          });
+          gui.addButton("Disable/Enable", () => {
+            if (this.scroller.enabled)
+              this.scroller.disable();
+            else
+              this.scroller.enable();
           });
           gui.addButton("Refresh", () => {
             this.scroller.refresh();

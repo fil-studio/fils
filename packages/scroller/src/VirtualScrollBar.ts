@@ -2,6 +2,7 @@ import { MathUtils } from "@fils/math";
 
 const style = `
 [fil-virtual-scroller] {
+    pointer-events: none;
     position: fixed;
     top: 0;
     right: 0px;

@@ -55,6 +55,11 @@ export class App {
 			this.scroller.scrollToSection(this.scroller.sections.length-1);
 		})
 
+		gui.addButton('Disable/Enable', () => {
+			if(this.scroller.enabled) this.scroller.disable();
+			else this.scroller.enable();
+		})
+
 		gui.addButton('Refresh', () => {
 			this.scroller.refresh();
 		})

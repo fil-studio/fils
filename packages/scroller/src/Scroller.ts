@@ -43,9 +43,6 @@ const style = `
 	[fil-scroller-section].fil-scroller__visible [fil-scroller-sticky] {
 		will-change: transform;
 	}
-	[fil-virtual-scroller] {
-		pointer-events: none;
-	}
 `;
 
 const touchWheel = {
@@ -130,18 +127,28 @@ export class Scroller {
 		this.addEventListeners();
 	}
 
+	get enabled(): boolean {
+		return !this.disabled;
+	}
+
 	// Disable - enable
 	disable(){
 		if(this.disabled) return;
 		this.disabled = true;
 		for(const section of this.sections) section.disabled = this.disabled;
 		this.container.setAttribute('fil-scroller', 'disabled');
+		if(this.virtualScrollBar) {
+			this.virtualScrollBar.dom.style.display = 'none';
+		}
 	}
 	enable(){
 		if(!this.disabled) return;
 		this.disabled = false;
 		for(const section of this.sections) section.disabled = this.disabled;
 		this.container.setAttribute('fil-scroller', '');
+		if(this.virtualScrollBar) {
+			this.virtualScrollBar.dom.style.display = 'block';
+		}
 	}
 
 	set direction(val: D | number){
@@ -227,10 +234,12 @@ export class Scroller {
 		if(this.useNative) return;
 
 		this.container.addEventListener('wheel', (e) => {
+			if(this.disabled) return;
 			this.updateExternal(e.deltaY);
 		})
 
 		this.container.addEventListener('touchstart', (e) => {
+			if(this.disabled) return;
 			const e1 = e.touches[0];
 			touchWheel.startY = e1.clientY;
 			touchWheel.startDrag = performance.now();
@@ -239,6 +248,7 @@ export class Scroller {
 		})
 
 		this.container.addEventListener('touchend', (e) => {
+			if(this.disabled) return;
 			if(performance.now() - touchWheel.startDrag < 1000) {
 				this.updateExternal(-touchWheel.delta * 25);
 			}
@@ -249,6 +259,7 @@ export class Scroller {
 		})
 
 		this.container.addEventListener('touchmove', (e) => {
+			if(this.disabled) return;
 			e.preventDefault();
 			const e1 = e.touches[0];
 			touchWheel.delta = e1.clientY - touchWheel.startY;
