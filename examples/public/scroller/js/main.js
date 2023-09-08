@@ -527,6 +527,10 @@
       DEFAULT_EASING = 0.16;
       Scroller = class {
         constructor(params) {
+          this.force = {
+            touch: 1,
+            wheel: 1
+          };
           this.position = {
             current: 0,
             target: 0
@@ -552,6 +556,10 @@
           this.ease = (params === null || params === void 0 ? void 0 : params.easing) || DEFAULT_EASING;
           this.useNative = (params === null || params === void 0 ? void 0 : params.useNative) === true;
           this._direction = (params === null || params === void 0 ? void 0 : params.direction) || D.TOP;
+          if (params.touchForce)
+            this.force.touch = params.touchForce;
+          if (params.wheelForce)
+            this.force.wheel = params.wheelForce;
           if (this.useNative) {
             if (this._direction !== D.TOP) {
               console.warn("Native scrolling supports only D.TOP vertical direction! Forcing D.TOP...");
@@ -664,7 +672,7 @@
           this.container.addEventListener("wheel", (e) => {
             if (this.disabled)
               return;
-            this.updateExternal(e.deltaY);
+            this.updateExternal(e.deltaY * this.force.wheel);
           });
           this.container.addEventListener("touchstart", (e) => {
             if (this.disabled)
@@ -678,8 +686,8 @@
           this.container.addEventListener("touchend", (e) => {
             if (this.disabled)
               return;
-            if (performance.now() - touchWheel.startDrag < 1e3) {
-              this.updateExternal(-touchWheel.delta * 25);
+            if (performance.now() - touchWheel.startDrag < 100) {
+              this.updateExternal(-touchWheel.delta * 10 * this.force.touch);
             }
             touchWheel.delta = 0;
           }, {
@@ -692,7 +700,7 @@
             const e1 = e.touches[0];
             touchWheel.delta = e1.clientY - touchWheel.startY;
             touchWheel.startY = e1.clientY;
-            this.updateExternal(-touchWheel.delta);
+            this.updateExternal(-touchWheel.delta * this.force.touch);
           }, {
             passive: false
           });
@@ -3464,7 +3472,9 @@
           this.scroller = new Scroller({
             useNative: isMobile(),
             easing: 0.1,
-            showVirtualScrollBar: true
+            showVirtualScrollBar: true,
+            touchForce: 2,
+            wheelForce: 1
             // direction: D.LEFT
           });
           this.cssVariablesElements = document.querySelectorAll("[css-var]");

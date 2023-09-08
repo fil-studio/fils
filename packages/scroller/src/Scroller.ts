@@ -58,6 +58,8 @@ export type FilScrollerParameters = {
 	direction?:D;
 	showVirtualScrollBar?:boolean;
 	customScrollBar?:VirtualScrollBar;
+	touchForce?:number;
+	wheelForce?:number;
 }
 
 const DEFAULT_EASING = 0.16;
@@ -66,6 +68,11 @@ export class Scroller {
 	container:HTMLDivElement;
 	content:HTMLDivElement;
 	virtualScrollBar:VirtualScrollBar;
+
+	force = {
+		touch: 1,
+		wheel: 1
+	}
 
 	position:position = {
 		current: 0,
@@ -106,6 +113,9 @@ export class Scroller {
 		this.ease = params?.easing || DEFAULT_EASING;
 		this.useNative = params?.useNative === true;
 		this._direction = params?.direction || D.TOP;
+
+		if(params.touchForce) this.force.touch = params.touchForce;
+		if(params.wheelForce) this.force.wheel = params.wheelForce;
 
 		if(this.useNative) {
 			if(this._direction !== D.TOP) {
@@ -235,7 +245,7 @@ export class Scroller {
 
 		this.container.addEventListener('wheel', (e) => {
 			if(this.disabled) return;
-			this.updateExternal(e.deltaY);
+			this.updateExternal(e.deltaY * this.force.wheel);
 		})
 
 		this.container.addEventListener('touchstart', (e) => {
@@ -249,8 +259,8 @@ export class Scroller {
 
 		this.container.addEventListener('touchend', (e) => {
 			if(this.disabled) return;
-			if(performance.now() - touchWheel.startDrag < 1000) {
-				this.updateExternal(-touchWheel.delta * 25);
+			if(performance.now() - touchWheel.startDrag < 100) {
+				this.updateExternal(-touchWheel.delta * 10 * this.force.touch);
 			}
 
 			touchWheel.delta = 0;
@@ -265,7 +275,7 @@ export class Scroller {
 			touchWheel.delta = e1.clientY - touchWheel.startY;
 			touchWheel.startY = e1.clientY;
 
-			this.updateExternal(-touchWheel.delta);
+			this.updateExternal(-touchWheel.delta * this.force.touch);
 		}, {
 			passive: false
 		})

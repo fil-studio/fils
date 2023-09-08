@@ -14,7 +14,9 @@ export class App {
 		this.scroller = new Scroller({
 			useNative: isMobile(),
 			easing: .1,
-			showVirtualScrollBar: true
+			showVirtualScrollBar: true,
+			touchForce: 2,
+			wheelForce: 1
 			// direction: D.LEFT
 		});
 		
