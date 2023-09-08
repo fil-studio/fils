@@ -412,12 +412,15 @@ export class Scroller {
 		if(this.useNative) {
 			// NOTE: If you are in native mode you might just
 			// want to animate using gsap or raf lerp instead
-			this.container.scrollTop = sec.rect.top;
+			const top = Math.min(sec.rect.top, this.distance-this.w.h);
+			this.container.scrollTop = top;
 		} else {
 			if(!this.isHorizontal()) {
-				this.position.target = sec.rect.top;
+				const top = Math.min(sec.rect.top, this.distance-this.w.h);
+				this.position.target = top;
 			} else {
-				this.position.target = sec.widthOffset;
+				const l = Math.min(sec.widthOffset, this.distance);
+				this.position.target = l;
 			}
 		}
 	}

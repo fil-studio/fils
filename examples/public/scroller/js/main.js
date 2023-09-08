@@ -226,10 +226,10 @@
     }
   });
 
-  // ../packages/scroller/lib/Section.js
+  // ../packages/scroller/src/Section.ts
   var PRECISION, Section;
   var init_Section = __esm({
-    "../packages/scroller/lib/Section.js"() {
+    "../packages/scroller/src/Section.ts"() {
       init_main();
       init_Scroller();
       PRECISION = 5;
@@ -240,7 +240,7 @@
             h: 0
           };
           this.progress = 0;
-          this._direction = D.LEFT;
+          this._direction = 2 /* LEFT */;
           this.threshold = [];
           this.scroll = 0;
           this.delta = 0;
@@ -268,7 +268,7 @@
         }
         calculateDims() {
           this.rect = this.dom.getBoundingClientRect();
-          if (this.direction === D.TOP || this.direction === D.BOTTOM) {
+          if (this.direction === 0 /* TOP */ || this.direction === 1 /* BOTTOM */) {
             this.threshold = [
               this.rect.top - this.w.h,
               this.rect.top + this.rect.height
@@ -286,40 +286,43 @@
           this.listeners.push(lis);
         }
         removeSectionListener(lis) {
-          this.listeners.splice(this.listeners.indexOf(lis), 1);
+          this.listeners.splice(
+            this.listeners.indexOf(lis),
+            1
+          );
         }
         restore(resizing = false) {
           for (const lis of this.listeners) {
-            lis === null || lis === void 0 ? void 0 : lis.onBeforeRestore(resizing);
+            lis == null ? void 0 : lis.onBeforeRestore(resizing);
           }
           this.dom.style.transform = "";
           this.visible = false;
           this.progress = 0;
           this.calculateDims();
           for (const lis of this.listeners) {
-            lis === null || lis === void 0 ? void 0 : lis.onAfterRestore(resizing);
+            lis == null ? void 0 : lis.onAfterRestore(resizing);
           }
         }
         animationIn() {
           for (const lis of this.listeners) {
-            lis === null || lis === void 0 ? void 0 : lis.onAnimationIn();
+            lis == null ? void 0 : lis.onAnimationIn();
           }
         }
         animationOut() {
           for (const lis of this.listeners) {
-            lis === null || lis === void 0 ? void 0 : lis.onAnimationOut();
+            lis == null ? void 0 : lis.onAnimationOut();
           }
         }
         get position() {
           if (!this.visible)
             return { x: 0, y: -this.w.h };
-          if (this.direction === D.TOP)
+          if (this.direction === 0 /* TOP */)
             return { x: 0, y: -this.scroll };
-          if (this.direction === D.BOTTOM)
+          if (this.direction === 1 /* BOTTOM */)
             return { x: 0, y: this.scroll + (this.w.h - this.rect.height) - this.rect.top * 2 };
-          if (this.direction === D.LEFT)
+          if (this.direction === 2 /* LEFT */)
             return { x: this.widthOffset - this.scroll, y: -this.rect.top };
-          if (this.direction === D.RIGHT)
+          if (this.direction === 3 /* RIGHT */)
             return { x: this.scroll + (this.w.w - this.rect.width) - this.widthOffset, y: -this.rect.top };
         }
         updateTransform() {
@@ -334,18 +337,18 @@
           for (const s of this.sticky) {
             let tY, sY;
             switch (this.direction) {
-              case D.TOP:
+              case 0 /* TOP */:
                 0;
                 tY = 1 - MathUtils.smoothstep(-this.threshold[1] + wH, -this.threshold[0] - wH, py);
                 sY = tY * (this.threshold[1] - this.threshold[0] - 2 * wH);
                 s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(PRECISION)},0,1)`;
                 break;
-              case D.BOTTOM:
+              case 1 /* BOTTOM */:
                 tY = 1 - MathUtils.smoothstep(-this.threshold[1] + wH, -this.threshold[0] - wH, py);
                 sY = tY * (this.threshold[1] - this.threshold[0] - 2 * wH);
                 s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(PRECISION)},0,1)`;
                 break;
-              case D.LEFT:
+              case 2 /* LEFT */:
                 tY = 1 - MathUtils.smoothstep(-this.threshold[1] + wW, -this.threshold[0] - wW, px);
                 console.log(tY);
                 sY = tY * (this.threshold[1] - this.threshold[0] - 2 * wW);
@@ -393,10 +396,10 @@
     }
   });
 
-  // ../packages/scroller/lib/VirtualScrollBar.js
+  // ../packages/scroller/src/VirtualScrollBar.ts
   var style, TIMEOUT, tid, VirtualScrollBar;
   var init_VirtualScrollBar = __esm({
-    "../packages/scroller/lib/VirtualScrollBar.js"() {
+    "../packages/scroller/src/VirtualScrollBar.ts"() {
       init_main();
       style = `
 [fil-virtual-scroller] {
@@ -475,19 +478,13 @@
     }
   });
 
-  // ../packages/scroller/lib/Scroller.js
-  var D, style2, touchWheel, DEFAULT_EASING, Scroller;
+  // ../packages/scroller/src/Scroller.ts
+  var style2, touchWheel, DEFAULT_EASING, Scroller;
   var init_Scroller = __esm({
-    "../packages/scroller/lib/Scroller.js"() {
+    "../packages/scroller/src/Scroller.ts"() {
       init_main();
       init_Section();
       init_VirtualScrollBar();
-      (function(D3) {
-        D3[D3["TOP"] = 0] = "TOP";
-        D3[D3["BOTTOM"] = 1] = "BOTTOM";
-        D3[D3["LEFT"] = 2] = "LEFT";
-        D3[D3["RIGHT"] = 3] = "RIGHT";
-      })(D || (D = {}));
       style2 = `
 	html {
 		overscroll-behavior: none;
@@ -505,6 +502,7 @@
 	}
 	[fil-scroller-sticky]{
 		position: sticky;
+		top: 0;
 	}
 	[fil-scroller-section].fil-scroller__visible {
 		opacity: 1;
@@ -535,9 +533,10 @@
             current: 0,
             target: 0
           };
-          this._direction = D.TOP;
+          this._direction = 0 /* TOP */;
           this.sections = [];
           this.loaded = false;
+          // private paused: boolean = false;
           this.disabled = false;
           this.distance = 0;
           this.delta = 0;
@@ -553,25 +552,25 @@
             console.warn("Fil Scroller - No `[fil-scroller]` element");
             return;
           }
-          this.ease = (params === null || params === void 0 ? void 0 : params.easing) || DEFAULT_EASING;
-          this.useNative = (params === null || params === void 0 ? void 0 : params.useNative) === true;
-          this._direction = (params === null || params === void 0 ? void 0 : params.direction) || D.TOP;
+          this.ease = (params == null ? void 0 : params.easing) || DEFAULT_EASING;
+          this.useNative = (params == null ? void 0 : params.useNative) === true;
+          this._direction = (params == null ? void 0 : params.direction) || 0 /* TOP */;
           if (params.touchForce)
             this.force.touch = params.touchForce;
           if (params.wheelForce)
             this.force.wheel = params.wheelForce;
           if (this.useNative) {
-            if (this._direction !== D.TOP) {
+            if (this._direction !== 0 /* TOP */) {
               console.warn("Native scrolling supports only D.TOP vertical direction! Forcing D.TOP...");
-              this._direction = D.TOP;
+              this._direction = 0 /* TOP */;
             }
             this.ease = 1;
           }
           if (this.useNative) {
             console.log("Using Native Scroll");
             this.container.style.overflowY = "auto";
-          } else if (params === null || params === void 0 ? void 0 : params.showVirtualScrollBar) {
-            this.virtualScrollBar = (params === null || params === void 0 ? void 0 : params.customScrollBar) || new VirtualScrollBar(0);
+          } else if (params == null ? void 0 : params.showVirtualScrollBar) {
+            this.virtualScrollBar = (params == null ? void 0 : params.customScrollBar) || new VirtualScrollBar(0);
           }
           this.addStyles();
           this.refresh();
@@ -604,9 +603,9 @@
           }
         }
         set direction(val) {
-          if (this.useNative && val !== D.TOP) {
+          if (this.useNative && val !== 0 /* TOP */) {
             console.warn("Native scrolling supports only D.TOP vertical direction! Forcing D.TOP...");
-            this._direction = D.TOP;
+            this._direction = 0 /* TOP */;
           } else {
             this._direction = MathUtils.clamp(val, 0, 3);
           }
@@ -639,7 +638,7 @@
           }
         }
         isHorizontal() {
-          return this.direction === D.LEFT || this.direction === D.RIGHT;
+          return this.direction === 2 /* LEFT */ || this.direction === 3 /* RIGHT */;
         }
         restore(resizing = false) {
           this.w.w = window.innerWidth;
@@ -757,7 +756,11 @@
           if (this.disabled) {
             this.position.current = this.position.target;
           } else {
-            this.position.current = MathUtils.lerp(this.position.current, this.position.target, this.ease);
+            this.position.current = MathUtils.lerp(
+              this.position.current,
+              this.position.target,
+              this.ease
+            );
             if (Math.abs(this.position.target - this.position.current) < 1) {
               this.position.current = this.position.target;
             }
@@ -789,7 +792,7 @@
         /**
          * Scrolls to a given section
          * @param k index of section to scroll to
-         * @returns
+         * @returns 
          */
         scrollToSection(k) {
           if (k < 0 || k > this.sections.length - 1) {
@@ -797,12 +800,15 @@
           }
           const sec = this.sections[k];
           if (this.useNative) {
-            this.container.scrollTop = sec.rect.top;
+            const top = Math.min(sec.rect.top, this.distance - this.w.h);
+            this.container.scrollTop = top;
           } else {
             if (!this.isHorizontal()) {
-              this.position.target = sec.rect.top;
+              const top = Math.min(sec.rect.top, this.distance - this.w.h);
+              this.position.target = top;
             } else {
-              this.position.target = sec.widthOffset;
+              const l = Math.min(sec.widthOffset, this.distance);
+              this.position.target = l;
             }
           }
         }
@@ -821,15 +827,6 @@
           this.scrollToSection(this.sections.indexOf(section) - 1);
         }
       };
-    }
-  });
-
-  // ../packages/scroller/lib/main.js
-  var init_main2 = __esm({
-    "../packages/scroller/lib/main.js"() {
-      init_Scroller();
-      init_VirtualScrollBar();
-      init_Section();
     }
   });
 
@@ -1023,7 +1020,7 @@
   });
 
   // ../packages/ui/node_modules/@fils/utils/lib/main.js
-  var init_main3 = __esm({
+  var init_main2 = __esm({
     "../packages/ui/node_modules/@fils/utils/lib/main.js"() {
       init_Utils();
       init_FileUtils();
@@ -1122,7 +1119,7 @@
   });
 
   // ../packages/ui-icons/lib/main.js
-  var init_main4 = __esm({
+  var init_main3 = __esm({
     "../packages/ui-icons/lib/main.js"() {
       init_Icons();
     }
@@ -1132,8 +1129,8 @@
   var RowTypes, dom, dom_default;
   var init_dom = __esm({
     "../packages/ui/lib/utils/dom.js"() {
-      init_main4();
       init_main3();
+      init_main2();
       init_cssClasses();
       (function(RowTypes2) {
         RowTypes2[RowTypes2["ui"] = 0] = "ui";
@@ -1246,7 +1243,7 @@
   var EventsManager;
   var init_EventsManager = __esm({
     "../packages/ui/lib/partials/EventsManager.js"() {
-      init_main3();
+      init_main2();
       EventsManager = class {
         constructor() {
           this.subscribers = {};
@@ -1310,7 +1307,7 @@
   var UIElement;
   var init_UIElement = __esm({
     "../packages/ui/lib/components/UIElement.js"() {
-      init_main3();
+      init_main2();
       init_EventsManager();
       init_dom();
       UIElement = class extends EventsManager {
@@ -1397,7 +1394,7 @@
   var Item;
   var init_Item = __esm({
     "../packages/ui/lib/components/items/Item.js"() {
-      init_main3();
+      init_main2();
       init_cssClasses();
       init_dom();
       init_UIElement();
@@ -1463,7 +1460,7 @@
   var c, BooleanItem;
   var init_BooleanItem = __esm({
     "../packages/ui/lib/components/items/customItems/BooleanItem.js"() {
-      init_main3();
+      init_main2();
       init_cssClasses();
       init_Item();
       c = {
@@ -1499,8 +1496,8 @@
   var c2, NumberItem;
   var init_NumberItem = __esm({
     "../packages/ui/lib/components/items/customItems/NumberItem.js"() {
+      init_main2();
       init_main3();
-      init_main4();
       init_cssClasses();
       init_Item();
       c2 = {
@@ -1696,8 +1693,8 @@
   var StringItem;
   var init_StringItem = __esm({
     "../packages/ui/lib/components/items/customItems/StringItem.js"() {
-      init_main3();
-      init_main7();
+      init_main2();
+      init_main6();
       init_Item();
       StringItem = class extends Item {
         constructor() {
@@ -1888,7 +1885,7 @@
   });
 
   // ../packages/color/lib/main.js
-  var init_main5 = __esm({
+  var init_main4 = __esm({
     "../packages/color/lib/main.js"() {
       init_utils();
       init_canvas_utils();
@@ -1945,7 +1942,7 @@
   });
 
   // ../packages/ui/node_modules/@fils/math/lib/main.js
-  var init_main6 = __esm({
+  var init_main5 = __esm({
     "../packages/ui/node_modules/@fils/math/lib/main.js"() {
       init_Random2();
       init_MathUtils2();
@@ -1957,9 +1954,9 @@
   var c3, Panel;
   var init_Panel = __esm({
     "../packages/ui/lib/components/Panel.js"() {
-      init_main3();
+      init_main2();
       init_cssClasses();
-      init_main7();
+      init_main6();
       c3 = {
         left: "_ui-panel-left",
         right: "_ui-panel-right",
@@ -2057,10 +2054,10 @@
   var c4, ColorPanel, ColorItem;
   var init_ColorItem = __esm({
     "../packages/ui/lib/components/items/customItems/ColorItem.js"() {
+      init_main4();
       init_main5();
+      init_main2();
       init_main6();
-      init_main3();
-      init_main7();
       init_Panel();
       init_Item();
       c4 = {
@@ -2296,8 +2293,8 @@
   var c5, RangeItem;
   var init_RangeItem = __esm({
     "../packages/ui/lib/components/items/customItems/RangeItem.js"() {
-      init_main6();
-      init_main3();
+      init_main5();
+      init_main2();
       init_cssClasses();
       init_Item();
       c5 = {
@@ -2497,8 +2494,8 @@
   var c6, SelectPanel, SelectItem;
   var init_SelectItem = __esm({
     "../packages/ui/lib/components/items/customItems/SelectItem.js"() {
-      init_main4();
       init_main3();
+      init_main2();
       init_cssClasses();
       init_Panel();
       init_Item();
@@ -2650,8 +2647,8 @@
   var UploadItem;
   var init_UploadItem = __esm({
     "../packages/ui/lib/components/items/customItems/UploadItem.js"() {
+      init_main2();
       init_main3();
-      init_main4();
       init_cssClasses();
       init_dom();
       init_Item();
@@ -2841,7 +2838,7 @@
   var compareArrays, ItemFactory, getItemByValue;
   var init_ItemFactory = __esm({
     "../packages/ui/lib/partials/ItemFactory.js"() {
-      init_main3();
+      init_main2();
       init_AvailableItems();
       compareArrays = (a, b) => {
         for (const item of b) {
@@ -2911,7 +2908,7 @@
   var Button;
   var init_Button = __esm({
     "../packages/ui/lib/components/Button.js"() {
-      init_main7();
+      init_main6();
       init_dom();
       init_UIElement();
       Button = class extends UIElement {
@@ -2969,8 +2966,8 @@
   var Info;
   var init_Info = __esm({
     "../packages/ui/lib/components/Info.js"() {
-      init_main3();
-      init_main7();
+      init_main2();
+      init_main6();
       init_dom();
       init_UIElement();
       Info = class extends UIElement {
@@ -3019,7 +3016,7 @@
   var Group;
   var init_Group = __esm({
     "../packages/ui/lib/components/Group.js"() {
-      init_main3();
+      init_main2();
       init_cssClasses();
       init_ItemFactory();
       init_dom();
@@ -3257,8 +3254,8 @@
   var UI;
   var init_UI = __esm({
     "../packages/ui/lib/components/UI.js"() {
-      init_main3();
-      init_main7();
+      init_main2();
+      init_main6();
       init_cssClasses();
       init_dom();
       init_Group();
@@ -3379,7 +3376,7 @@
   // ../packages/ui/lib/components/CustomUIElement.js
   var init_CustomUIElement = __esm({
     "../packages/ui/lib/components/CustomUIElement.js"() {
-      init_main7();
+      init_main6();
       init_UIElement();
     }
   });
@@ -3391,7 +3388,7 @@
   });
 
   // ../packages/ui/lib/main.js
-  var init_main7 = __esm({
+  var init_main6 = __esm({
     "../packages/ui/lib/main.js"() {
       init_init();
       init_UI();
@@ -3447,7 +3444,7 @@
   });
 
   // ../packages/utils/lib/main.js
-  var init_main8 = __esm({
+  var init_main7 = __esm({
     "../packages/utils/lib/main.js"() {
       init_Utils2();
       init_FileUtils2();
@@ -3463,10 +3460,10 @@
   var App;
   var init_App = __esm({
     "src/scroller/js/App.ts"() {
-      init_main2();
+      init_Scroller();
       init_stats_module();
+      init_main6();
       init_main7();
-      init_main8();
       App = class {
         constructor() {
           this.scroller = new Scroller({
@@ -3507,6 +3504,9 @@
           );
           gui.addButton("Scroll to last", () => {
             this.scroller.scrollToSection(this.scroller.sections.length - 1);
+          });
+          gui.addButton("Scroll to top", () => {
+            this.scroller.scrollToSection(0);
           });
           gui.addButton("Disable/Enable", () => {
             if (this.scroller.enabled)
