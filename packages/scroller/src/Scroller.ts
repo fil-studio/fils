@@ -31,6 +31,7 @@ const style = `
 	}
 	[fil-scroller-sticky]{
 		position: sticky;
+		top: 0;
 	}
 	[fil-scroller-section].fil-scroller__visible {
 		opacity: 1;
