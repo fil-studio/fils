@@ -1,12 +1,14 @@
 
-import { D, Scroller } from '../../../../packages/scroller/src/Scroller';
-// import { D, Scroller } from '@fils/scroller';
+// import { D, Scroller, ContentSection } from '../../../../packages/scroller/src/main';
+import { D, Scroller, ContentSection } from '@fils/scroller';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { UI } from '@fils/ui';
 import { isMobile } from "@fils/utils";
+import { CustomContentSection } from './CustomContentSection';
 
 export class App {
 	scroller:Scroller;
+	sections:ContentSection[] = [];
 
 	cssVariablesElements: NodeListOf<HTMLElement>;
 	constructor() {
@@ -19,6 +21,12 @@ export class App {
 			wheelForce: 1
 			// direction: D.LEFT
 		});
+
+		const s = new CustomContentSection(
+			document.querySelector('.section-4') as HTMLElement,
+			this.scroller
+		);
+		this.sections.push(s);
 		
 		this.cssVariablesElements = document.querySelectorAll('[css-var]');
 
@@ -87,6 +95,10 @@ export class App {
 			const type = el.getAttribute('css-var');
 			if(type === 'delta') el.innerText = `${this.scroller.delta.toFixed(3)}`;
 			if(type === 'progress' && section) el.innerText = `${section.progress.toFixed(3)}`;
+		}
+
+		for (const s of this.sections) {
+			s.update(performance.now() * .001); // add your timer clock here when needed
 		}
 	}
 }
