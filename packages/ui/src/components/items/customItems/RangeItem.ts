@@ -28,22 +28,35 @@ export class RangeItem extends Item {
 	min: number = 1;
 	step: number = 0.01;
 
+	private _decimals:number;
+
 	getDecimals(): number {
+		if(this._decimals) return this._decimals
 		const decimals = this.step.toString().split('.')[1];
+		this._decimals = decimals.length | 0;
 		return decimals ? decimals.length : 0;
 	}
 
+	getRounding(): number {
+		const d = this.getDecimals();
+		const D = Math.pow(10, d);
+
+		return D;
+	}
+
 	getStringDecimals(value:number): string {
-		return (Math.round(value * 100) / 100).toFixed(this.getDecimals());
+		const D = this.getRounding();
+		return (Math.round(value * D) / D).toFixed(this.getDecimals());
 	}
 
 	limitNumber = (value: number): number => {
+		const D = this.getRounding();
 
 		if (this.max) value = Math.min(value, this.max);
 		if (this.min) value = Math.max(value, this.min);
 
 		// Round to decimals
-		const tmp = (Math.round(value * 100) / 100).toFixed(this.getDecimals());
+		const tmp = (Math.round(value * D) / D).toFixed(this.getDecimals());
 
 		return parseFloat(tmp);
 	}

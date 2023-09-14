@@ -172,8 +172,8 @@ export class ColorPanel extends Panel<ColorItem> {
 
 		drawColorPickerSL(this.canvas1, this.color.h);
 		drawColorPickerBar(this.canvas2);
-
-		this.parent.visualUpdate(hsbToHex(this.color))
+		this.parent.setValue(hsbToHex(this.color));
+		// this.parent.visualUpdate(hsbToHex(this.color))
 
 	}
 
