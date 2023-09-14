@@ -142,6 +142,18 @@ export class ColorPanel extends Panel<ColorItem> {
 		}
 		this.addEventListener(mouseup);
 
+		const keydown:UIEventListener = {
+			target: window,
+			type: 'keydown',
+			callback: (e:KeyboardEvent) => {
+				if(!this.created) return;
+				if(e.key === "Escape") {
+					this.destroy();
+				}
+			}
+		}
+		this.addEventListener(keydown);
+
 	}
 
 	reverseUpdate(){
