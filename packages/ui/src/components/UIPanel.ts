@@ -11,13 +11,13 @@ const c = {
 
 export interface HasPanel {
 	el:HTMLElement;
-	panel: Panel<UIElement>;
+	panel: UIPanel<UIElement>;
 	close(): void;
 	open(): void;
 	refresh(): void
 }
 
-export class Panel<T extends UIElement> extends EventsManager {
+export class UIPanel<T extends UIElement> extends EventsManager {
 	el: HTMLElement;
 	dropdownFrom!: HTMLElement;
 
@@ -59,7 +59,6 @@ export class Panel<T extends UIElement> extends EventsManager {
 
 		const panelRect = this.el.getBoundingClientRect();
 		const uiRect = this.uiWrapper.getBoundingClientRect();
-
 
 		// Panel is droppdown
 		if(!isNull(this.dropdownFrom)){

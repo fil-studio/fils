@@ -1,12 +1,12 @@
 import { remove } from "@fils/utils";
 import { EventsManager, UIEventListener } from "../partials/EventsManager";
 import dom, { RowTypes } from "../utils/dom";
-import { HasPanel, Panel } from "./Panel";
+import { HasPanel, UIPanel } from "./UIPanel";
 
 export class UIElement extends EventsManager implements HasPanel {
 	protected depth: number;
 
-	panel: Panel<UIElement>;
+	panel: UIPanel<UIElement>;
 
 	el: HTMLElement;
 

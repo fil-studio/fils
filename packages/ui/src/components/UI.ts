@@ -3,9 +3,9 @@ import { el, remove } from '@fils/utils';
 import { EventsManager, InitUI, UIEventListener } from '../main';
 import { CSS_UI } from '../partials/cssClasses';
 import dom, { RowTypes } from '../utils/dom';
-import { Group, GroupParams } from './Group';
+import { UIGroup, UIGroupParams } from './UIGroup';
 
-export interface UIParams extends GroupParams {
+export interface UIParams extends UIGroupParams {
 	parentElement?: HTMLElement;
 	resizable?: boolean;
 	icon?: string;
@@ -16,7 +16,7 @@ export interface UIParams extends GroupParams {
 InitUI();
 
 
-export class UI extends Group {
+export class UI extends UIGroup {
 	wrapper: HTMLElement = el('div');
 
 	minimal: boolean;

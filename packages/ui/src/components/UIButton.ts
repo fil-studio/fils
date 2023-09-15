@@ -4,7 +4,7 @@ import { UIElement } from "./UIElement";
 
 
 
-export class Button extends UIElement {
+export class UIButton extends UIElement {
 	button!: HTMLButtonElement;
 	clickCallback: Function;
 

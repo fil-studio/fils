@@ -3,18 +3,18 @@ import { RowTypes } from "../utils/dom";
 import { UIElement } from "./UIElement";
 
 
-export interface SpacerParams {
+export interface UISpacerParams {
 	size?: string;
 	line?: boolean;
 }
 
-export class Spacer extends UIElement  {
+export class UISpacer extends UIElement  {
 	type: RowTypes = RowTypes.spacer;
 
 	constructor(depth:number, {
 		size = 'medium',
 		line = true,
-	}: SpacerParams) {
+	}: UISpacerParams) {
 		super(RowTypes.spacer);
 
 		this.init(depth)

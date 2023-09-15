@@ -1,10 +1,10 @@
 export * from './init';
 
 export * from './components/UI';
-export * from './components/Button';
-export * from './components/Group';
-export * from './components/Panel';
-export * from './components/Spacer';
+export * from './components/UIButton';
+export * from './components/UIGroup';
+export * from './components/UIPanel';
+export * from './components/UISpacer';
 export * from './components/UIElement';
 export * from './components/CustomUIElement';
 

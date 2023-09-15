@@ -2,7 +2,7 @@ import { drawColorPickerBar, drawColorPickerSL, fixHex, hexToRgb, HSBColor, hsbT
 import { MathUtils } from '@fils/math';
 import { el, isNull, isUndefined } from "@fils/utils";
 import { CSS_UI, UIEventListener } from '../../../main';
-import { Panel } from "../../Panel";
+import { UIPanel } from "../../UIPanel";
 import { Item } from "../Item";
 
 const c = {
@@ -19,7 +19,7 @@ const c = {
 };
 
 type Position = { x: number, y: number };
-export class ColorPanel extends Panel<ColorItem> {
+export class ColorPanel extends UIPanel<ColorItem> {
 
 	parent: ColorItem;
 

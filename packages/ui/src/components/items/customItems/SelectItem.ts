@@ -1,7 +1,7 @@
 import { uiDownarrowHlt } from '@fils/ui-icons';
 import { el, isNull, isUndefined } from '@fils/utils';
 import { CSS_UI } from '../../../partials/cssClasses';
-import { Panel} from '../../Panel';
+import { UIPanel} from '../../UIPanel';
 import { Item } from '../Item';
 import { SelectItemParameters } from '../ItemParameters';
 import { UIEventListener } from '../../../main';
@@ -15,7 +15,7 @@ const c = {
 	search: '_ui-panel-select-search',
 	searchInput: '_ui-panel-select-search-input',
 };
-export class SelectPanel extends Panel<SelectItem> {
+export class SelectPanel extends UIPanel<SelectItem> {
 	parent: SelectItem;
 
 	enableSearch: boolean = false;

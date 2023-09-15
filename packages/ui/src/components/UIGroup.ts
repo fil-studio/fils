@@ -4,22 +4,22 @@ import { CSS_UI } from "../partials/cssClasses";
 import { EventsManager, UIEventListener } from "../partials/EventsManager";
 import { CreateItemParams, ItemFactory } from "../partials/ItemFactory";
 import { RowTypes } from "../utils/dom";
-import { Button } from "./Button";
+import { UIButton } from "./UIButton";
 import { Info, InfoParams } from "./Info";
 import { Item } from "./items/Item";
 import { ItemParameters } from "./items/ItemParameters";
-import { Spacer, SpacerParams } from "./Spacer";
+import { UISpacer, UISpacerParams } from "./UISpacer";
 import { UIElement } from "./UIElement";
 
-export interface GroupParams {
-	parent?: Group | UI;
+export interface UIGroupParams {
+	parent?: UIGroup | UI;
 	title?: string;
 
 	folded?: boolean;
 	foldable?: boolean;
 }
-export class Group extends UIElement {
-	protected children: Array<Group | Item | Button | UIElement > = [];
+export class UIGroup extends UIElement {
+	protected children: Array<UIGroup | Item | UIButton | UIElement > = [];
 
 	folded: boolean;
 	foldable: boolean;
@@ -33,7 +33,7 @@ export class Group extends UIElement {
 		title,
 		folded = false,
 		foldable = true,
-	}: GroupParams) {
+	}: UIGroupParams) {
 		super(RowTypes.group, title);
 
 		// Is it folded or not? If it's not foldable, it's not folded
@@ -105,7 +105,7 @@ export class Group extends UIElement {
 	 * Creates a button with the specified title.
 	 *
 	 * @param {string} title - The title to display on the button.
-	 * @default 'Button'
+	 * @default 'UIButton'
 	 * @param {Function} clickCallback - The callback to call when the button is clicked.
 	 * @default () => {}
 	 * @param {string} type - The type of the button. Can be 'normal', 'happy', 'warning' or 'danger'.
@@ -113,8 +113,8 @@ export class Group extends UIElement {
 	 * @event click
 	 * @returns {Button} The newly created button element.
 	 */
-	addButton(title:string = 'Button', clickCallback:Function = () => {}, type:string = 'normal'): Button{
-		const button = new Button(title as string, clickCallback as Function, type);
+	addButton(title:string = 'Button', clickCallback:Function = () => {}, type:string = 'normal'): UIButton{
+		const button = new UIButton(title as string, clickCallback as Function, type);
 
 		if (button) {
 			button.init(this.depth + 1);
@@ -145,8 +145,8 @@ export class Group extends UIElement {
 	* @param {foldable} foldable - Is the group foldable or not
 	* @returns {Group} The newly created group element.
 	*/
-	addGroup(params: GroupParams): Group {
-		const group = new Group(params);
+	addGroup(params: UIGroupParams): UIGroup {
+		const group = new UIGroup(params);
 
 		if (group) {
 
@@ -188,8 +188,8 @@ export class Group extends UIElement {
 	 * // Adds a spacer with a line and a size of 'large'
 	 * addSpacer({ line: true, size: 'large' });
 	 */
-	addSpacer(params:SpacerParams = {}) {
-		const spacer = new Spacer(this.depth + 1, params);
+	addSpacer(params:UISpacerParams = {}) {
+		const spacer = new UISpacer(this.depth + 1, params);
 		if(spacer && spacer.el) this.content.appendChild(spacer.el);
 	}
 

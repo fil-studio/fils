@@ -3107,10 +3107,10 @@
     }
   });
 
-  // ../packages/ui/lib/components/Group.js
-  var Group;
-  var init_Group = __esm({
-    "../packages/ui/lib/components/Group.js"() {
+  // ../packages/ui/lib/components/UIGroup.js
+  var UIGroup;
+  var init_UIGroup = __esm({
+    "../packages/ui/lib/components/UIGroup.js"() {
       init_main3();
       init_cssClasses();
       init_ItemFactory();
@@ -3119,7 +3119,7 @@
       init_Info();
       init_Spacer();
       init_UIElement();
-      Group = class extends UIElement {
+      UIGroup = class extends UIElement {
         constructor({ title, folded = false, foldable = true }) {
           super(RowTypes.group, title);
           this.children = [];
@@ -3211,7 +3211,7 @@
         * @returns {Group} The newly created group element.
         */
         addGroup(params) {
-          const group = new Group(params);
+          const group = new UIGroup(params);
           if (group) {
             group.on("__childrenChange", (target) => {
               this.change(target);
@@ -3353,9 +3353,9 @@
       init_main7();
       init_cssClasses();
       init_dom();
-      init_Group();
+      init_UIGroup();
       InitUI();
-      UI = class extends Group {
+      UI = class extends UIGroup {
         constructor({ resizable = true, parentElement, icon, width, minimal = false } = {}) {
           super(Object.assign({}, arguments[0]));
           this.wrapper = el("div");
@@ -3488,7 +3488,7 @@
       init_init();
       init_UI();
       init_Button();
-      init_Group();
+      init_UIGroup();
       init_Panel();
       init_Spacer();
       init_UIElement();
