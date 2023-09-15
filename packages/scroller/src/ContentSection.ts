@@ -1,7 +1,7 @@
 import { Scroller } from "./Scroller";
 import { ScrollerSectionListener, Section } from "./Section";
 
-export class ContentSection implements ScrollerSectionListener {
+export abstract class ContentSection implements ScrollerSectionListener {
     dom:HTMLElement;
     section:Section
 

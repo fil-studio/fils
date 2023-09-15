@@ -74,6 +74,12 @@ export class Section {
 				this.rect.top - this.w.h,
 				this.rect.top + this.rect.height
 			];
+			if(this.nativeScrolling) {
+				this.threshold[0] += this.scroll;
+				this.threshold[1] += this.scroll;
+			}
+			// console.log(this.threshold);
+			
 		} else {
 			this.threshold = [
 				this.widthOffset - this.w.w,
