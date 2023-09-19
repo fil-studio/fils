@@ -33,8 +33,8 @@ export class RangeItem extends Item {
 	getDecimals(): number {
 		if(this._decimals) return this._decimals
 		const decimals = this.step.toString().split('.')[1];
-		this._decimals = decimals.length | 0;
-		return decimals ? decimals.length : 0;
+		this._decimals = decimals && decimals.length ? decimals.length : 0;
+		return this._decimals;
 	}
 
 	getRounding(): number {
