@@ -24,6 +24,11 @@ const style = `
 		height: 100vh;
 		position: fixed;
 	}
+	[fil-scroller][fil-scroller-native]{
+		position: relative;
+		height: auto;
+		overflow: unset;
+	}
 	[fil-scroller-section]{
 		opacity: 0;
 		visibility: hidden;
@@ -41,6 +46,12 @@ const style = `
 	[fil-scroller="disabled"] [fil-scroller-container] {
 		position: relative;
 	}
+
+	.fil-scroller-disabled,
+	.fil-scroller-disabled body {
+		overflow: hidden !important;
+	}
+
 	[fil-scroller-section].fil-scroller__visible [fil-scroller-sticky] {
 		will-change: transform;
 	}
@@ -103,7 +114,7 @@ export class Scroller {
 
 	edges:number[] = [0,0];
 
-	private useNative:boolean = false;
+	useNative:boolean = false;
 
 	constructor(params?:FilScrollerParameters){
 		if(params.customContainer) {
@@ -128,16 +139,15 @@ export class Scroller {
 		if(params.wheelForce) this.force.wheel = params.wheelForce;
 
 		if(this.useNative) {
-			if(this._direction !== D.TOP) {
+			console.log('Using Native Scroll');
+			document.querySelector('[fil-scroller]').setAttribute('fil-scroller-native', '');
+
+			if (this._direction !== D.TOP) {
 				console.warn('Native scrolling supports only D.TOP vertical direction! Forcing D.TOP...');
 				this._direction = D.TOP;
 			}
 			this.ease = 1; // force no easing
-		}
 
-		if(this.useNative) {
-			console.log('Using Native Scroll');
-			this.container.style.overflowY = 'auto';
 		} else if(params?.showVirtualScrollBar){
 			this.virtualScrollBar = params?.customScrollBar || new VirtualScrollBar(0);
 		}
@@ -156,7 +166,9 @@ export class Scroller {
 		if(this.disabled) return;
 		this.disabled = true;
 		for(const section of this.sections) section.disabled = this.disabled;
-		this.container.setAttribute('fil-scroller', 'disabled');
+		const b = document.body;
+		if(this.container != b) this.container.setAttribute('fil-scroller', 'disabled');
+		else document.documentElement.classList.add('fil-scroller-disabled');
 		if(this.virtualScrollBar) {
 			this.virtualScrollBar.dom.style.display = 'none';
 		}
@@ -165,7 +177,10 @@ export class Scroller {
 		if(!this.disabled) return;
 		this.disabled = false;
 		for(const section of this.sections) section.disabled = this.disabled;
-		this.container.setAttribute('fil-scroller', '');
+
+		const b = document.body;
+		if (this.container != b) this.container.setAttribute('fil-scroller', '');
+		else document.documentElement.classList.remove('fil-scroller-disabled');
 		if(this.virtualScrollBar) {
 			this.virtualScrollBar.dom.style.display = 'block';
 		}
@@ -220,7 +235,7 @@ export class Scroller {
 
 	restore(resizing:boolean=false){
 		const ww = window.innerWidth;
-		const wh = this.useNative ? window.outerHeight : window.innerHeight;
+		const wh = window.innerHeight; // this.useNative ? window.outerHeight : window.innerHeight;
 		// if(this.w.w === ww && this.w.h === wh) return;
 		// console.log('resize');
 		this.w.w = ww;
@@ -407,13 +422,13 @@ export class Scroller {
 		if(Math.abs(this.delta) > .001) {
 			this.updateSections();
 		}
-		
+
 	}
 
 	/**
 	 * Scrolls to a given section
 	 * @param k index of section to scroll to
-	 * @returns 
+	 * @returns
 	 */
 	scrollToSection(k:number) {
 		if(k<0 || k>this.sections.length-1) {
