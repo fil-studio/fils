@@ -226,10 +226,10 @@
     }
   });
 
-  // ../packages/scroller/lib/Section.js
+  // ../packages/scroller/src/Section.ts
   var PRECISION, Section;
   var init_Section = __esm({
-    "../packages/scroller/lib/Section.js"() {
+    "../packages/scroller/src/Section.ts"() {
       init_main();
       init_Scroller();
       PRECISION = 5;
@@ -240,7 +240,7 @@
             h: 0
           };
           this.progress = 0;
-          this._direction = D.LEFT;
+          this._direction = 2 /* LEFT */;
           this.threshold = [];
           this.scroll = 0;
           this.delta = 0;
@@ -268,7 +268,7 @@
         }
         calculateDims() {
           this.rect = this.dom.getBoundingClientRect();
-          if (this.direction === D.TOP || this.direction === D.BOTTOM) {
+          if (this.direction === 0 /* TOP */ || this.direction === 1 /* BOTTOM */) {
             this.threshold = [
               this.rect.top - this.w.h,
               this.rect.top + this.rect.height
@@ -290,40 +290,43 @@
           this.listeners.push(lis);
         }
         removeSectionListener(lis) {
-          this.listeners.splice(this.listeners.indexOf(lis), 1);
+          this.listeners.splice(
+            this.listeners.indexOf(lis),
+            1
+          );
         }
         restore(resizing = false) {
           for (const lis of this.listeners) {
-            lis === null || lis === void 0 ? void 0 : lis.onBeforeRestore(resizing);
+            lis == null ? void 0 : lis.onBeforeRestore(resizing);
           }
           this.dom.style.transform = "";
           this.visible = false;
           this.progress = 0;
           this.calculateDims();
           for (const lis of this.listeners) {
-            lis === null || lis === void 0 ? void 0 : lis.onAfterRestore(resizing);
+            lis == null ? void 0 : lis.onAfterRestore(resizing);
           }
         }
         animationIn() {
           for (const lis of this.listeners) {
-            lis === null || lis === void 0 ? void 0 : lis.onAnimationIn();
+            lis == null ? void 0 : lis.onAnimationIn();
           }
         }
         animationOut() {
           for (const lis of this.listeners) {
-            lis === null || lis === void 0 ? void 0 : lis.onAnimationOut();
+            lis == null ? void 0 : lis.onAnimationOut();
           }
         }
         get position() {
           if (!this.visible)
             return { x: 0, y: -this.w.h };
-          if (this.direction === D.TOP)
+          if (this.direction === 0 /* TOP */)
             return { x: 0, y: -this.scroll };
-          if (this.direction === D.BOTTOM)
+          if (this.direction === 1 /* BOTTOM */)
             return { x: 0, y: this.scroll + (this.w.h - this.rect.height) - this.rect.top * 2 };
-          if (this.direction === D.LEFT)
+          if (this.direction === 2 /* LEFT */)
             return { x: this.widthOffset - this.scroll, y: -this.rect.top };
-          if (this.direction === D.RIGHT)
+          if (this.direction === 3 /* RIGHT */)
             return { x: this.scroll + (this.w.w - this.rect.width) - this.widthOffset, y: -this.rect.top };
         }
         updateTransform() {
@@ -338,18 +341,18 @@
           for (const s of this.sticky) {
             let tY, sY;
             switch (this.direction) {
-              case D.TOP:
+              case 0 /* TOP */:
                 0;
                 tY = 1 - MathUtils.smoothstep(-this.threshold[1] + wH, -this.threshold[0] - wH, py);
                 sY = tY * (this.threshold[1] - this.threshold[0] - 2 * wH);
                 s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(PRECISION)},0,1)`;
                 break;
-              case D.BOTTOM:
+              case 1 /* BOTTOM */:
                 tY = 1 - MathUtils.smoothstep(-this.threshold[1] + wH, -this.threshold[0] - wH, py);
                 sY = tY * (this.threshold[1] - this.threshold[0] - 2 * wH);
                 s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(PRECISION)},0,1)`;
                 break;
-              case D.LEFT:
+              case 2 /* LEFT */:
                 tY = 1 - MathUtils.smoothstep(-this.threshold[1] + wW, -this.threshold[0] - wW, px);
                 console.log(tY);
                 sY = tY * (this.threshold[1] - this.threshold[0] - 2 * wW);
@@ -397,10 +400,10 @@
     }
   });
 
-  // ../packages/scroller/lib/VirtualScrollBar.js
+  // ../packages/scroller/src/VirtualScrollBar.ts
   var style, TIMEOUT, tid, VirtualScrollBar;
   var init_VirtualScrollBar = __esm({
-    "../packages/scroller/lib/VirtualScrollBar.js"() {
+    "../packages/scroller/src/VirtualScrollBar.ts"() {
       init_main();
       style = `
 [fil-virtual-scroller] {
@@ -479,19 +482,13 @@
     }
   });
 
-  // ../packages/scroller/lib/Scroller.js
-  var D, style2, touchWheel, DEFAULT_EASING, Scroller;
+  // ../packages/scroller/src/Scroller.ts
+  var style2, touchWheel, DEFAULT_EASING, Scroller;
   var init_Scroller = __esm({
-    "../packages/scroller/lib/Scroller.js"() {
+    "../packages/scroller/src/Scroller.ts"() {
       init_main();
       init_Section();
       init_VirtualScrollBar();
-      (function(D3) {
-        D3[D3["TOP"] = 0] = "TOP";
-        D3[D3["BOTTOM"] = 1] = "BOTTOM";
-        D3[D3["LEFT"] = 2] = "LEFT";
-        D3[D3["RIGHT"] = 3] = "RIGHT";
-      })(D || (D = {}));
       style2 = `
 	html {
 		overscroll-behavior: none;
@@ -532,6 +529,7 @@
       DEFAULT_EASING = 0.16;
       Scroller = class {
         constructor(params) {
+          this.isBody = false;
           this.force = {
             touch: 1,
             wheel: 1
@@ -540,9 +538,10 @@
             current: 0,
             target: 0
           };
-          this._direction = D.TOP;
+          this._direction = 0 /* TOP */;
           this.sections = [];
           this.loaded = false;
+          // private paused: boolean = false;
           this.disabled = false;
           this.distance = 0;
           this.delta = 0;
@@ -552,31 +551,38 @@
           };
           this.edges = [0, 0];
           this.useNative = false;
-          this.container = document.querySelector("[fil-scroller]");
-          this.content = this.container.querySelector("[fil-scroller-content]");
+          if (params.customContainer) {
+            this.container = params.customContainer;
+          } else
+            this.container = document.querySelector("[fil-scroller]");
+          if (params.customContent) {
+            this.content = params.customContent;
+          } else
+            this.content = this.container.querySelector("[fil-scroller-content]");
+          this.isBody = this.container === document.body;
           if (!this.container) {
             console.warn("Fil Scroller - No `[fil-scroller]` element");
             return;
           }
-          this.ease = (params === null || params === void 0 ? void 0 : params.easing) || DEFAULT_EASING;
-          this.useNative = (params === null || params === void 0 ? void 0 : params.useNative) === true;
-          this._direction = (params === null || params === void 0 ? void 0 : params.direction) || D.TOP;
+          this.ease = (params == null ? void 0 : params.easing) || DEFAULT_EASING;
+          this.useNative = (params == null ? void 0 : params.useNative) === true;
+          this._direction = (params == null ? void 0 : params.direction) || 0 /* TOP */;
           if (params.touchForce)
             this.force.touch = params.touchForce;
           if (params.wheelForce)
             this.force.wheel = params.wheelForce;
           if (this.useNative) {
-            if (this._direction !== D.TOP) {
+            if (this._direction !== 0 /* TOP */) {
               console.warn("Native scrolling supports only D.TOP vertical direction! Forcing D.TOP...");
-              this._direction = D.TOP;
+              this._direction = 0 /* TOP */;
             }
             this.ease = 1;
           }
           if (this.useNative) {
             console.log("Using Native Scroll");
             this.container.style.overflowY = "auto";
-          } else if (params === null || params === void 0 ? void 0 : params.showVirtualScrollBar) {
-            this.virtualScrollBar = (params === null || params === void 0 ? void 0 : params.customScrollBar) || new VirtualScrollBar(0);
+          } else if (params == null ? void 0 : params.showVirtualScrollBar) {
+            this.virtualScrollBar = (params == null ? void 0 : params.customScrollBar) || new VirtualScrollBar(0);
           }
           this.addStyles();
           this.refresh();
@@ -609,9 +615,9 @@
           }
         }
         set direction(val) {
-          if (this.useNative && val !== D.TOP) {
+          if (this.useNative && val !== 0 /* TOP */) {
             console.warn("Native scrolling supports only D.TOP vertical direction! Forcing D.TOP...");
-            this._direction = D.TOP;
+            this._direction = 0 /* TOP */;
           } else {
             this._direction = MathUtils.clamp(val, 0, 3);
           }
@@ -644,7 +650,7 @@
           }
         }
         isHorizontal() {
-          return this.direction === D.LEFT || this.direction === D.RIGHT;
+          return this.direction === 2 /* LEFT */ || this.direction === 3 /* RIGHT */;
         }
         restore(resizing = false) {
           this.w.w = window.innerWidth;
@@ -735,7 +741,7 @@
         }
         updateTarget() {
           if (this.useNative) {
-            this.position.target = this.container.scrollTop;
+            this.position.target = this.isBody ? window.scrollY : this.container.scrollTop;
           }
         }
         updateCheckHeight() {
@@ -762,7 +768,11 @@
           if (this.disabled) {
             this.position.current = this.position.target;
           } else {
-            this.position.current = MathUtils.lerp(this.position.current, this.position.target, this.ease);
+            this.position.current = MathUtils.lerp(
+              this.position.current,
+              this.position.target,
+              this.ease
+            );
             if (Math.abs(this.position.target - this.position.current) < 1) {
               this.position.current = this.position.target;
             }
@@ -794,7 +804,7 @@
         /**
          * Scrolls to a given section
          * @param k index of section to scroll to
-         * @returns
+         * @returns 
          */
         scrollToSection(k) {
           if (k < 0 || k > this.sections.length - 1) {
@@ -832,70 +842,15 @@
     }
   });
 
-  // ../packages/scroller/lib/ContentSection.js
-  var ContentSection;
+  // ../packages/scroller/src/ContentSection.ts
   var init_ContentSection = __esm({
-    "../packages/scroller/lib/ContentSection.js"() {
-      ContentSection = class {
-        constructor(_dom, scroller) {
-          this.dom = _dom;
-          const sections = scroller === null || scroller === void 0 ? void 0 : scroller.sections;
-          if (sections) {
-            const s = sections.find((s2) => s2.dom === _dom);
-            if (s) {
-              s.addSectionListener(this);
-              this.section = s;
-            }
-          }
-          this.onInit();
-          this.addEventListeners();
-          if (this.section.visible)
-            this.onAnimationIn();
-        }
-        /**
-         * You must initialize all your stuff here
-         */
-        onInit() {
-        }
-        addEventListeners() {
-        }
-        /**
-         * Played when section's visibility change to visible
-         */
-        onAnimationIn() {
-        }
-        /**
-         * Played when section's visibility change to hidden
-         * Useful to reset things if you want to always animate
-         * things when showing up
-         */
-        onAnimationOut() {
-        }
-        /**
-         * Called on section before restore
-         * @param resizing whereas scroller is resizing or not
-         */
-        onBeforeRestore(resizing) {
-        }
-        /**
-         * Called on section after restore
-         * @param resizing whereas scroller is resizing or not
-         */
-        onAfterRestore(resizing) {
-        }
-        /**
-         * You must call this function in your own raf
-         * @param time animation time in seconds
-         */
-        update(time = 0) {
-        }
-      };
+    "../packages/scroller/src/ContentSection.ts"() {
     }
   });
 
-  // ../packages/scroller/lib/main.js
+  // ../packages/scroller/src/main.ts
   var init_main2 = __esm({
-    "../packages/scroller/lib/main.js"() {
+    "../packages/scroller/src/main.ts"() {
       init_Scroller();
       init_VirtualScrollBar();
       init_Section();
@@ -2023,10 +1978,10 @@
     }
   });
 
-  // ../packages/ui/lib/components/Panel.js
-  var c3, Panel;
-  var init_Panel = __esm({
-    "../packages/ui/lib/components/Panel.js"() {
+  // ../packages/ui/lib/components/UIPanel.js
+  var c3, UIPanel;
+  var init_UIPanel = __esm({
+    "../packages/ui/lib/components/UIPanel.js"() {
       init_main3();
       init_cssClasses();
       init_main7();
@@ -2035,7 +1990,7 @@
         right: "_ui-panel-right",
         dropdown: "_ui-panel-dropdown"
       };
-      Panel = class extends EventsManager {
+      UIPanel = class extends EventsManager {
         constructor(parent, dropdownFrom) {
           super();
           this.created = false;
@@ -2131,7 +2086,7 @@
       init_main6();
       init_main3();
       init_main7();
-      init_Panel();
+      init_UIPanel();
       init_Item();
       c4 = {
         type: "color",
@@ -2143,7 +2098,7 @@
         target: "_ui-color-target",
         dragger: "_ui-color-dragger"
       };
-      ColorPanel = class extends Panel {
+      ColorPanel = class extends UIPanel {
         constructor() {
           super(...arguments);
           this.view = el("div");
@@ -2398,12 +2353,12 @@
           this.min = 1;
           this.step = 0.01;
           this.limitNumber = (value) => {
-            const D3 = this.getRounding();
+            const D4 = this.getRounding();
             if (this.max)
               value = Math.min(value, this.max);
             if (this.min)
               value = Math.max(value, this.min);
-            const tmp = (Math.round(value * D3) / D3).toFixed(this.getDecimals());
+            const tmp = (Math.round(value * D4) / D4).toFixed(this.getDecimals());
             return parseFloat(tmp);
           };
         }
@@ -2411,17 +2366,17 @@
           if (this._decimals)
             return this._decimals;
           const decimals = this.step.toString().split(".")[1];
-          this._decimals = decimals.length | 0;
-          return decimals ? decimals.length : 0;
+          this._decimals = decimals && decimals.length ? decimals.length : 0;
+          return this._decimals;
         }
         getRounding() {
           const d = this.getDecimals();
-          const D3 = Math.pow(10, d);
-          return D3;
+          const D4 = Math.pow(10, d);
+          return D4;
         }
         getStringDecimals(value) {
-          const D3 = this.getRounding();
-          return (Math.round(value * D3) / D3).toFixed(this.getDecimals());
+          const D4 = this.getRounding();
+          return (Math.round(value * D4) / D4).toFixed(this.getDecimals());
         }
         addEventListeners() {
           const inputChange = {
@@ -2592,7 +2547,7 @@
       init_main4();
       init_main3();
       init_cssClasses();
-      init_Panel();
+      init_UIPanel();
       init_Item();
       c6 = {
         type: "select",
@@ -2602,7 +2557,7 @@
         search: "_ui-panel-select-search",
         searchInput: "_ui-panel-select-search-input"
       };
-      SelectPanel = class extends Panel {
+      SelectPanel = class extends UIPanel {
         constructor() {
           super(...arguments);
           this.enableSearch = false;
@@ -2999,14 +2954,14 @@
     }
   });
 
-  // ../packages/ui/lib/components/Button.js
-  var Button;
-  var init_Button = __esm({
-    "../packages/ui/lib/components/Button.js"() {
+  // ../packages/ui/lib/components/UIButton.js
+  var UIButton;
+  var init_UIButton = __esm({
+    "../packages/ui/lib/components/UIButton.js"() {
       init_main7();
       init_dom();
       init_UIElement();
-      Button = class extends UIElement {
+      UIButton = class extends UIElement {
         constructor(title = "Button", clickCallback, type) {
           super(RowTypes.button, title);
           this.view = "button";
@@ -3087,14 +3042,14 @@
     }
   });
 
-  // ../packages/ui/lib/components/Spacer.js
-  var Spacer;
-  var init_Spacer = __esm({
-    "../packages/ui/lib/components/Spacer.js"() {
+  // ../packages/ui/lib/components/UISpacer.js
+  var UISpacer;
+  var init_UISpacer = __esm({
+    "../packages/ui/lib/components/UISpacer.js"() {
       init_cssClasses();
       init_dom();
       init_UIElement();
-      Spacer = class extends UIElement {
+      UISpacer = class extends UIElement {
         constructor(depth, { size = "medium", line = true }) {
           super(RowTypes.spacer);
           this.type = RowTypes.spacer;
@@ -3115,9 +3070,9 @@
       init_cssClasses();
       init_ItemFactory();
       init_dom();
-      init_Button();
+      init_UIButton();
       init_Info();
-      init_Spacer();
+      init_UISpacer();
       init_UIElement();
       UIGroup = class extends UIElement {
         constructor({ title, folded = false, foldable = true }) {
@@ -3175,7 +3130,7 @@
          * Creates a button with the specified title.
          *
          * @param {string} title - The title to display on the button.
-         * @default 'Button'
+         * @default 'UIButton'
          * @param {Function} clickCallback - The callback to call when the button is clicked.
          * @default () => {}
          * @param {string} type - The type of the button. Can be 'normal', 'happy', 'warning' or 'danger'.
@@ -3185,7 +3140,7 @@
          */
         addButton(title = "Button", clickCallback = () => {
         }, type = "normal") {
-          const button = new Button(title, clickCallback, type);
+          const button = new UIButton(title, clickCallback, type);
           if (button) {
             button.init(this.depth + 1);
             this.content.appendChild(button.el);
@@ -3247,7 +3202,7 @@
          * addSpacer({ line: true, size: 'large' });
          */
         addSpacer(params = {}) {
-          const spacer = new Spacer(this.depth + 1, params);
+          const spacer = new UISpacer(this.depth + 1, params);
           if (spacer && spacer.el)
             this.content.appendChild(spacer.el);
         }
@@ -3487,10 +3442,10 @@
     "../packages/ui/lib/main.js"() {
       init_init();
       init_UI();
-      init_Button();
+      init_UIButton();
       init_UIGroup();
-      init_Panel();
-      init_Spacer();
+      init_UIPanel();
+      init_UISpacer();
       init_UIElement();
       init_CustomUIElement();
       init_Item();
@@ -3547,11 +3502,113 @@
     }
   });
 
+  // ../packages/scroller/lib/Section.js
+  var init_Section2 = __esm({
+    "../packages/scroller/lib/Section.js"() {
+      init_main();
+      init_Scroller2();
+    }
+  });
+
+  // ../packages/scroller/lib/VirtualScrollBar.js
+  var init_VirtualScrollBar2 = __esm({
+    "../packages/scroller/lib/VirtualScrollBar.js"() {
+      init_main();
+    }
+  });
+
+  // ../packages/scroller/lib/Scroller.js
+  var D2;
+  var init_Scroller2 = __esm({
+    "../packages/scroller/lib/Scroller.js"() {
+      init_main();
+      init_Section2();
+      init_VirtualScrollBar2();
+      (function(D4) {
+        D4[D4["TOP"] = 0] = "TOP";
+        D4[D4["BOTTOM"] = 1] = "BOTTOM";
+        D4[D4["LEFT"] = 2] = "LEFT";
+        D4[D4["RIGHT"] = 3] = "RIGHT";
+      })(D2 || (D2 = {}));
+    }
+  });
+
+  // ../packages/scroller/lib/ContentSection.js
+  var ContentSection;
+  var init_ContentSection2 = __esm({
+    "../packages/scroller/lib/ContentSection.js"() {
+      ContentSection = class {
+        constructor(_dom, scroller) {
+          this.dom = _dom;
+          const sections = scroller === null || scroller === void 0 ? void 0 : scroller.sections;
+          if (sections) {
+            const s = sections.find((s2) => s2.dom === _dom);
+            if (s) {
+              s.addSectionListener(this);
+              this.section = s;
+            }
+          }
+          this.onInit();
+          this.addEventListeners();
+          if (this.section.visible)
+            this.onAnimationIn();
+        }
+        /**
+         * You must initialize all your stuff here
+         */
+        onInit() {
+        }
+        addEventListeners() {
+        }
+        /**
+         * Played when section's visibility change to visible
+         */
+        onAnimationIn() {
+        }
+        /**
+         * Played when section's visibility change to hidden
+         * Useful to reset things if you want to always animate
+         * things when showing up
+         */
+        onAnimationOut() {
+        }
+        /**
+         * Called on section before restore
+         * @param resizing whereas scroller is resizing or not
+         */
+        onBeforeRestore(resizing) {
+        }
+        /**
+         * Called on section after restore
+         * @param resizing whereas scroller is resizing or not
+         */
+        onAfterRestore(resizing) {
+        }
+        /**
+         * You must call this function in your own raf
+         * @param time animation time in seconds
+         */
+        update(time = 0) {
+        }
+      };
+    }
+  });
+
+  // ../packages/scroller/lib/main.js
+  var init_main9 = __esm({
+    "../packages/scroller/lib/main.js"() {
+      init_Scroller2();
+      init_VirtualScrollBar2();
+      init_Section2();
+      init_ContentSection2();
+    }
+  });
+
   // src/scroller/js/CustomContentSection.ts
   var CustomContentSection;
   var init_CustomContentSection = __esm({
     "src/scroller/js/CustomContentSection.ts"() {
-      init_main2();
+      init_main9();
       CustomContentSection = class extends ContentSection {
         constructor(_dom, scroller) {
           super(_dom, scroller);
@@ -3596,14 +3653,23 @@
       App = class {
         constructor() {
           this.sections = [];
+          const useNative = isMobile();
           this.scroller = new Scroller({
-            useNative: isMobile(),
+            useNative,
             easing: 0.1,
             showVirtualScrollBar: true,
             touchForce: 2,
-            wheelForce: 1
+            wheelForce: 1,
+            customContainer: useNative ? document.body : void 0
             // direction: D.LEFT
           });
+          if (useNative) {
+            document.body.style.overflowX = "hidden";
+            const container = document.querySelector("[fil-scroller]");
+            container.style.overflow = "unset";
+            container.style.position = "relative";
+            container.style.height = "auto";
+          }
           const s = new CustomContentSection(
             document.querySelector(".section-4"),
             this.scroller

@@ -1,12 +1,12 @@
-#version 300 es
+// #version 300 es
 
 precision highp float;
 
-in vec3 position;
-in vec2 uv;
+// in vec3 position;
+// in vec2 uv;
 
-uniform mat4 projectionMatrix;
-uniform mat4 modelViewMatrix;
+// uniform mat4 projectionMatrix;
+// uniform mat4 modelViewMatrix;
 
 out vec2 vUv;
 

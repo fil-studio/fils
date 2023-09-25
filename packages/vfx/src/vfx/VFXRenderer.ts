@@ -24,13 +24,14 @@ import vert from '../glsl/vfx/comp.vert';
 import frag from '../glsl/vfx/comp.frag';
 import { RTUtils } from "@fils/gfx";
 
-const COMP = new RawShaderMaterial({
+const COMP = new ShaderMaterial({
     vertexShader: vert,
     fragmentShader: frag,
     uniforms: {
         tBackground: {value: null},
         tScene: {value: null},
         tGlow: {value: null},
+        glowStrength: {value: 1},
         renderBackground: {value: true},
         renderGlow: {value: true},
         renderScene: {value: true}
@@ -40,6 +41,7 @@ const COMP = new RawShaderMaterial({
 
 export type VFXCompSettings = {
     glowSettings?:BlurSettings;
+    glowStrength?:number;
     samples?:number;
     useDepth?:boolean;
     customFargment?:string;
@@ -78,12 +80,17 @@ export class VFXRenderer {
         });
 
 
-        this.sceneRT.texture[ 0 ].name = 'diffuse';
+        this.sceneRT.texture[ 0 ].name = 'scene';
         this.sceneRT.texture[ 1 ].name = 'glow';
 
         if(settings.useDepth) {
             this.sceneRT['depthTexture'] = new DepthTexture(w, h, FloatType);
             this.sceneRT['depthTexture'].format = DepthFormat;
+        }
+
+        if(settings.glowStrength !== undefined) {
+            console.log(`setting glow strength to`, settings.glowStrength);
+            this.shader.uniforms.glowStrength.value = settings.glowStrength;
         }
 
         const bs:BlurSettings = settings && settings.glowSettings ?
@@ -94,7 +101,7 @@ export class VFXRenderer {
 
         // custom shader injection
         if(settings.customFargment !== undefined) {
-            this.shader.vertexShader = settings.customFargment;
+            this.shader.fragmentShader = settings.customFargment;
             if(settings.customUniforms !== undefined) {
                 const u = settings.customUniforms;
                 for(const key in u) {

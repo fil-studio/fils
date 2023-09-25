@@ -61,14 +61,17 @@ export type FilScrollerParameters = {
 	customScrollBar?:VirtualScrollBar;
 	touchForce?:number;
 	wheelForce?:number;
+	customContainer?:HTMLElement;
+	customContent?:HTMLElement;
 }
 
 const DEFAULT_EASING = 0.16;
 
 export class Scroller {
-	container:HTMLDivElement;
-	content:HTMLDivElement;
+	container:HTMLElement;
+	content:HTMLElement;
 	virtualScrollBar:VirtualScrollBar;
+	isBody:boolean = false;
 
 	force = {
 		touch: 1,
@@ -103,8 +106,14 @@ export class Scroller {
 	private useNative:boolean = false;
 
 	constructor(params?:FilScrollerParameters){
-		this.container = document.querySelector('[fil-scroller]') as HTMLDivElement;
-		this.content = this.container.querySelector('[fil-scroller-content]') as HTMLDivElement;
+		if(params.customContainer) {
+			this.container = params.customContainer;
+		} else this.container = document.querySelector('[fil-scroller]') as HTMLElement;
+		if(params.customContent) {
+			this.content = params.customContent;
+		} else this.content = this.container.querySelector('[fil-scroller-content]') as HTMLElement;
+
+		this.isBody = this.container === document.body;
 
 		if(!this.container){
 			console.warn('Fil Scroller - No `[fil-scroller]` element');
@@ -316,7 +325,7 @@ export class Scroller {
 
 	updateTarget(){
 		if(this.useNative) {
-			this.position.target = this.container.scrollTop;
+			this.position.target = this.isBody ? window.scrollY : this.container.scrollTop;
 		}
 	}
 

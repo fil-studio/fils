@@ -1,4 +1,4 @@
-#version 300 es
+// #version 300 es
 
 precision highp float;
 
@@ -11,7 +11,9 @@ uniform bool renderBackground;
 uniform bool renderGlow;
 uniform bool renderScene;
 
-layout (location = 0) out vec4 pcColor;
+uniform float glowStrength;
+
+// layout (location = 0) out vec4 pcColor;
 
 void main () {
     vec4 bg = renderBackground ? texture(tBackground, vUv) : vec4(0.);
@@ -27,10 +29,10 @@ void main () {
     float bA = smoothstep(.9, 1., scene.a);
 
     scene = mix(bg, scene, bA);
-    scene.rgb = mix(scene.rgb, scene.rgb + glow.rgb, glow.a);
+    scene.rgb = mix(scene.rgb, scene.rgb + glow.rgb * glowStrength, glow.a);
     // scene = mix(bg, scene, scene.a * glow.a);
     
-    pcColor = scene;
+    pc_fragColor = scene;
     // gl_FragColor = vec4(scene.rgb, scene.a + glow.a);
     // gl_FragColor = glow;
     // gl_FragColor = scene;

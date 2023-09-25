@@ -25,6 +25,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  position: relative;
+  float: left;
   text-align: center;
   padding: 3vw;
 }

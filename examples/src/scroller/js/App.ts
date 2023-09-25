@@ -1,6 +1,6 @@
 
-// import { D, Scroller, ContentSection } from '../../../../packages/scroller/src/main';
-import { D, Scroller, ContentSection } from '@fils/scroller';
+import { D, Scroller, ContentSection } from '../../../../packages/scroller/src/main';
+// import { D, Scroller, ContentSection } from '@fils/scroller';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { UI } from '@fils/ui';
 import { isMobile } from "@fils/utils";
@@ -12,15 +12,27 @@ export class App {
 
 	cssVariablesElements: NodeListOf<HTMLElement>;
 	constructor() {
+		const useNative = isMobile();
 
 		this.scroller = new Scroller({
-			useNative: isMobile(),
+			useNative: useNative,
 			easing: .1,
 			showVirtualScrollBar: true,
 			touchForce: 2,
-			wheelForce: 1
+			wheelForce: 1,
+			customContainer: useNative ? document.body : undefined
 			// direction: D.LEFT
 		});
+
+		if(useNative) {
+			// rewrite styles
+			document.body.style.overflowX = 'hidden';
+			const container = document.querySelector('[fil-scroller]') as HTMLElement;
+			// console.log(container);
+			container.style.overflow = "unset";
+			container.style.position = "relative";
+			container.style.height = "auto";
+		}
 
 		const s = new CustomContentSection(
 			document.querySelector('.section-4') as HTMLElement,
