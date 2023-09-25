@@ -1,6 +1,6 @@
 
-import { D, Scroller, ContentSection } from '../../../../packages/scroller/src/main';
-// import { D, Scroller, ContentSection } from '@fils/scroller';
+// import { D, Scroller, ContentSection } from '../../../../packages/scroller/src/main';
+import { D, Scroller, ContentSection } from '@fils/scroller';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { UI } from '@fils/ui';
 import { isMobile } from "@fils/utils";
