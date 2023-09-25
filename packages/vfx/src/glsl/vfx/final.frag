@@ -5,6 +5,7 @@ uniform sampler2D tInput;
 
 uniform float chromatic_aberration;
 uniform bool enableCA;
+uniform bool radialCA;
 
 uniform float dither;
 uniform bool enableDithering;
@@ -45,10 +46,27 @@ vec4 ca (sampler2D tex, vec2 texCoord, float ca_amount) {
     return vec4(red_color.r, green_color.g, blue_color.b, 1.0);
 }
 
+vec4 caR(sampler2D tex, vec2 texCoord, float ca_amount) {
+    vec2 dir = 2.0 * texCoord - vec2( 1.0 );
+    float d = ca_amount * length( dir );
+    normalize( dir );
+    vec2 value = d * dir;
+
+    vec4 c1 = texture2D( tex, texCoord - value );
+    vec4 c2 = texture2D( tex, texCoord );
+    vec4 c3 = texture2D( tex, texCoord + value );
+
+    return vec4( c1.r, c2.g, c3.b, c1.a + c2.a + c3.a );
+}
+
 void main () {
     vec4 color;
     if(enableCA) {
-         color = ca(tInput, vUv, chromatic_aberration);
+         if(radialCA) {
+            color = caR(tInput, vUv, chromatic_aberration);
+         } else {
+            color = ca(tInput, vUv, chromatic_aberration);
+         }
     } else {
         color = texture2D(tInput, vUv);
     }

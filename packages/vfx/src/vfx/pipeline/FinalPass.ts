@@ -23,6 +23,9 @@ const SHADER = new RawShaderMaterial({
         enableCA: {
             value: true
         },
+        radialCA: {
+            value: false
+        },
         chromatic_aberration: {
             value: .001
         },
@@ -50,6 +53,7 @@ const SHADER = new RawShaderMaterial({
 export type FinalPassSettings = {
     caAmount?:number;
     enableCA?:boolean;
+    radialCA?:boolean;
     dither?:number;
     enableDithering?:boolean;
     vignette?:number;
@@ -72,6 +76,9 @@ export class FinalPass extends RenderPass {
             }
             if(params.enableCA !== undefined) {
                 SHADER.uniforms.enableCA.value = params.enableCA;
+            }
+            if(params.radialCA !== undefined) {
+                SHADER.uniforms.radialCA.value = params.radialCA;
             }
 
             if(params.dither !== undefined) {
