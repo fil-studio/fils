@@ -221,7 +221,7 @@ export class Scroller {
 	restore(resizing:boolean=false){
 		const ww = window.innerWidth;
 		const wh = this.useNative ? window.outerHeight : window.innerHeight;
-		if(this.w.w === ww && this.w.h === wh) return;
+		// if(this.w.w === ww && this.w.h === wh) return;
 		// console.log('resize');
 		this.w.w = ww;
 		this.w.h = wh;
