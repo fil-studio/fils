@@ -25,6 +25,9 @@ export class App {
 		});
 
 		if(useNative) {
+			var screenHeight = window.outerHeight;
+			console.log(screenHeight, window.innerHeight);
+			document.body.style.minHeight = `${window.outerHeight}px`;
 			// rewrite styles
 			document.body.style.overflowX = 'hidden';
 			const container = document.querySelector('[fil-scroller]') as HTMLElement;

@@ -655,8 +655,12 @@
           return this.direction === D.LEFT || this.direction === D.RIGHT;
         }
         restore(resizing = false) {
-          this.w.w = window.innerWidth;
-          this.w.h = window.innerHeight;
+          const ww = window.innerWidth;
+          const wh = this.useNative ? window.outerHeight : window.innerHeight;
+          if (this.w.w === ww && this.w.h === wh)
+            return;
+          this.w.w = ww;
+          this.w.h = wh;
           for (const section of this.sections) {
             section.w = this.w;
             section.restore(resizing);
@@ -3615,6 +3619,9 @@
             // direction: D.LEFT
           });
           if (useNative) {
+            var screenHeight = window.outerHeight;
+            console.log(screenHeight, window.innerHeight);
+            document.body.style.minHeight = `${window.outerHeight}px`;
             document.body.style.overflowX = "hidden";
             const container = document.querySelector("[fil-scroller]");
             container.style.overflow = "unset";
