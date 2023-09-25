@@ -216,12 +216,13 @@ export class Nomad {
 		const title = content.querySelector('title').textContent;
 		document.documentElement.querySelector('title').textContent = title;
 		if(!this.isPopstate) window.history.pushState(this.route.location, title, this.route.location.href);
-		this.addLinksListener();
 
 		// HTML Swap
 		const oldPage = this.wrapper.querySelector('[template]') as HTMLElement;
 		oldPage?.remove();
 		this.wrapper.appendChild(newPage);
+
+		this.addLinksListener();
 
 		// Wait transition IN
 		const promise = new Promise((resolve, reject) => {
