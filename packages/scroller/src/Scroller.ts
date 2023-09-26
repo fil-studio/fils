@@ -250,7 +250,7 @@ export class Scroller {
 		let w = 0;
 		for(let section of this.sections) {
 			section.widthOffset = w;
-			w += section.sticky.length ? section.rect.height : window.innerWidth;
+			w += section.sticky.length ? section.rect.height : section.rect.width;
 		}
 
 		this.updateCheckHeight();
