@@ -20,9 +20,9 @@ const style = `
 	}
 	[fil-scroller]{
 		overflow: hidden;
-		width: 100vw;
-		height: 100vh;
-		position: fixed;
+		width: 100%;
+		height: 100%;
+		position: absolute;
 	}
 	[fil-scroller][fil-scroller-native]{
 		position: relative;
@@ -272,12 +272,12 @@ export class Scroller {
 	addEventListeners(){
 		if(this.useNative) return;
 
-		this.container.addEventListener('wheel', (e) => {
+		window.addEventListener('wheel', (e) => {
 			if(this.disabled) return;
 			this.updateExternal(e.deltaY * this.force.wheel);
 		})
 
-		this.container.addEventListener('touchstart', (e) => {
+		window.addEventListener('touchstart', (e) => {
 			if(this.disabled) return;
 			const e1 = e.touches[0];
 			touchWheel.startY = e1.clientY;
@@ -286,7 +286,7 @@ export class Scroller {
 			passive: false
 		})
 
-		this.container.addEventListener('touchend', (e) => {
+		window.addEventListener('touchend', (e) => {
 			if(this.disabled) return;
 			if(performance.now() - touchWheel.startDrag < 100) {
 				this.updateExternal(-touchWheel.delta * 10 * this.force.touch);
@@ -297,7 +297,7 @@ export class Scroller {
 			passive: false
 		})
 
-		this.container.addEventListener('touchmove', (e) => {
+		window.addEventListener('touchmove', (e) => {
 			if(this.disabled) return;
 			e.preventDefault();
 			const e1 = e.touches[0];

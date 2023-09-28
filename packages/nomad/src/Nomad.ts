@@ -12,7 +12,8 @@ export interface NomadRoute {
 }
 
 export interface NomadRouteListener {
-	onRouteChanged(route:NomadRoute):void;
+	onRouteChanged?(route:NomadRoute):void;
+	onRouteChangedComplete?(route:NomadRoute):void
 }
 
 export class Nomad {
@@ -81,7 +82,12 @@ export class Nomad {
 
 	onRouteChanged() {
 		for (const lis of this.listeners) {
-			lis.onRouteChanged(this.route);
+			if (lis.onRouteChanged) lis.onRouteChanged(this.route);
+		}
+	}
+	onRouteChangedComplete() {
+		for (const lis of this.listeners) {
+			if (lis.onRouteChangedComplete) lis.onRouteChangedComplete(this.route);
 		}
 	}
 
@@ -103,16 +109,6 @@ export class Nomad {
 			this.routes.push(this.route);
 		}
 
-		/* this.route = {
-			id: location.pathname,
-			template,
-			page,
-			location,
-		 }*/
-
-		// this.routes.push(this.route);
-
-		this.onRouteChanged();
 
 	}
 
@@ -205,6 +201,7 @@ export class Nomad {
 		this.createRoute(template, newPage, href);
 		this.route.page.dom = newPage;
 		this.route.page.isActive = true;
+		this.onRouteChanged();
 		if(!this.route.page.isLoaded) {
 			await new Promise((resolve) => {
 				this.route.page.load(resolve);
@@ -227,6 +224,7 @@ export class Nomad {
 		// Wait transition IN
 		const promise = new Promise((resolve, reject) => {
 			this.route.page.transitionIn(resolve);
+			this.onRouteChangedComplete();
 		})
 
 		return await promise;
