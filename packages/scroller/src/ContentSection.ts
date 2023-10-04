@@ -7,10 +7,11 @@ export abstract class ContentSection implements ScrollerSectionListener {
 
     constructor(_dom:HTMLElement, scroller?:Scroller) {
         this.dom = _dom;
-        
+
         const sections = scroller?.sections;
+
         if(sections) {
-            const s = sections.find(s=>s.dom === _dom);
+            const s = sections.find(s=> s.dom === _dom);
             if(s) {
                 s.addSectionListener(this);
                 this.section = s;
@@ -34,7 +35,7 @@ export abstract class ContentSection implements ScrollerSectionListener {
      * Played when section's visibility change to visible
      */
     onAnimationIn() {
-        
+
     }
 
     /**
@@ -43,7 +44,7 @@ export abstract class ContentSection implements ScrollerSectionListener {
      * things when showing up
      */
     onAnimationOut() {
-        
+
     }
 
     /**
@@ -51,7 +52,7 @@ export abstract class ContentSection implements ScrollerSectionListener {
      * @param resizing whereas scroller is resizing or not
      */
     onBeforeRestore(resizing: boolean) {
-        
+
     }
 
     /**
@@ -59,7 +60,7 @@ export abstract class ContentSection implements ScrollerSectionListener {
      * @param resizing whereas scroller is resizing or not
      */
     onAfterRestore(resizing: boolean) {
-        
+
     }
 
     /**
@@ -67,6 +68,6 @@ export abstract class ContentSection implements ScrollerSectionListener {
      * @param time animation time in seconds
      */
     update(time:number=0) {
-        
+
     }
 }

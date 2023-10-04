@@ -22,12 +22,23 @@ export class Section {
 		h: 0
 	};
 
+	// From hidden - visible - hidden
 	progress: number = 0;
+	// From hidden - visible
+	// progressIn: number = 0;
+	// From visible - hidden
+	// progressOut: number = 0;
+
 	protected _direction: D = D.LEFT;
 	threshold:number[] = [];
 
 	scroll: number = 0;
 	delta: number = 0;
+
+	_position = {
+		x: 0,
+		y: 0
+	}
 
 	visible: boolean = false;
 	disabled: boolean = false;
@@ -53,13 +64,13 @@ export class Section {
 			this.sticky.push(value as HTMLElement);
 		})
 		// console.log(this.sticky);
-		
+
 	}
 
 	set direction(value:D) {
 		if(this._direction === value) return;
 		this._direction = value;
-		
+
 	}
 
 	get direction():D {
@@ -79,7 +90,7 @@ export class Section {
 				this.threshold[1] += this.scroll;
 			}
 			// console.log(this.threshold);
-			
+
 		} else {
 			this.threshold = [
 				this.widthOffset - this.w.w,
@@ -108,6 +119,8 @@ export class Section {
 		this.dom.style.transform = '';
 		this.visible = false;
 		this.progress = 0;
+		// this.progressIn = 0;
+		// this.progressOut = 0;
 		this.calculateDims();
 		for(const lis of this.listeners) {
 			lis?.onAfterRestore(resizing);
@@ -127,12 +140,28 @@ export class Section {
 
 	get position() {
 
-		if(!this.visible) return {x: 0, y: -this.w.h};
-		if(this.direction === D.TOP) return {x: 0, y: -this.scroll};
-		if(this.direction === D.BOTTOM) return {x: 0, y: this.scroll + (this.w.h - this.rect.height) - this.rect.top * 2};
-		if(this.direction === D.LEFT) return {x: this.widthOffset - this.scroll, y: -this.rect.top};
-		if(this.direction === D.RIGHT) return {x: this.scroll + (this.w.w - this.rect.width) - this.widthOffset, y: -this.rect.top};
+		if(!this.visible){
+			this._position.x = 0;
+			this._position.y = -this.w.h;
+		}
+		if(this.direction === D.TOP){
+			this._position.x = 0;
+			this._position.y = -this.scroll;
+		}
+		if(this.direction === D.BOTTOM){
+			this._position.x = 0;
+			this._position.y = this.scroll + (this.w.h - this.rect.height) - this.rect.top * 2;
+		}
+		if(this.direction === D.LEFT){
+			this._position.x = this.widthOffset - this.scroll;
+			this._position.y = -this.rect.top;
+		}
+		if(this.direction === D.RIGHT){
+			this._position.x = this.scroll + (this.w.w - this.rect.width) - this.widthOffset;
+			this._position.y = -this.rect.top;
+		}
 
+		return this._position;
 	}
 
 	updateTransform(){
@@ -147,8 +176,8 @@ export class Section {
 		for(const s of this.sticky) {
 			let tY, sY;
 			switch(this.direction) {
-				case D.TOP:0
-					tY = 1 - MathUtils.smoothstep(-this.threshold[1]+ wH, -this.threshold[0]-wH, py);
+				case D.TOP:
+					tY = 1 - MathUtils.smoothstep(-this.threshold[1] + wH, -this.threshold[0] - wH, py);
 					sY = tY * (this.threshold[1] - this.threshold[0] - 2*wH);
 					s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(PRECISION)},0,1)`;
 					break;
@@ -158,21 +187,25 @@ export class Section {
 					sY = tY * (this.threshold[1] - this.threshold[0] - 2*wH);
 					s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(PRECISION)},0,1)`;
 					break;
+				// case D.RIGHT:
+				// 	tY = 1 - MathUtils.smoothstep(-this.threshold[1]+ wW, -this.threshold[0]-wW, px);
+				// 	sY = tY * (this.threshold[1] - this.threshold[0] - 2*wW);
+				// 	s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${sY.toFixed(PRECISION)},0,0,1)`;
+				// 	break;
 				case D.LEFT:
 					tY = 1 - MathUtils.smoothstep(-this.threshold[1]+ wW, -this.threshold[0]-wW, px);
-					console.log(tY);
-					
 					sY = tY * (this.threshold[1] - this.threshold[0] - 2*wW);
 					s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${sY.toFixed(PRECISION)},0,0,1)`;
 					break;
 			}
 		}
+
 		this.dom.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${px.toFixed(PRECISION)},${py.toFixed(PRECISION)},0,1)`;
 	}
 
 	protected show() {
 		if(this.visible) return;
-		
+
 		this.animationIn();
 		this.dom.classList.add('fil-scroller__visible');
 		this.visible = true;
@@ -184,6 +217,8 @@ export class Section {
 		this.animationOut();
 		this.visible = false;
 		this.progress = 0;
+		// this.progressIn = 0;
+		// this.progressOut = 0;
 		this.delta = 0;
 		this.dom.classList.remove('fil-scroller__visible');
 		this.dom.style.setProperty('--fil-scroller-delta', '0');
@@ -197,9 +232,11 @@ export class Section {
 			if(!this.visible) {
 				this.show();
 			}
-			
+
 			this.dom.style.setProperty('--fil-scroller-delta', `${this.delta.toFixed(PRECISION)}`);
 			this.progress = MathUtils.smoothstep(this.threshold[0], this.threshold[1], this.scroll);
+			// this.progressIn = MathUtils.smoothstep(this.threshold[0], this.threshold[1] - this.w.w, this.scroll);
+			// this.progressOut = MathUtils.smoothstep(this.threshold[0], this.threshold[1], this.scroll);
 			this.dom.style.setProperty('--fil-scroller-progress', `${this.progress.toFixed(PRECISION)}`);
 
 			this.updateTransform();

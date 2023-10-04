@@ -74,6 +74,8 @@ export type FilScrollerParameters = {
 	wheelForce?:number;
 	customContainer?:HTMLElement;
 	customContent?:HTMLElement;
+	allowVerticalScrolling?:boolean;
+	allowHorizontalScrolling?:boolean;
 }
 
 const DEFAULT_EASING = 0.16;
@@ -83,6 +85,11 @@ export class Scroller {
 	content:HTMLElement;
 	virtualScrollBar:VirtualScrollBar;
 	isBody:boolean = false;
+
+	scrollDirection = {
+		vertical: true,
+		horizontal: false
+	}
 
 	force = {
 		touch: 1,
@@ -125,6 +132,10 @@ export class Scroller {
 		} else this.content = this.container.querySelector('[fil-scroller-content]') as HTMLElement;
 
 		this.isBody = this.container === document.body;
+
+		// Allow scroll events
+		this.scrollDirection.vertical = !(params.allowVerticalScrolling === false);
+		this.scrollDirection.horizontal = params.allowHorizontalScrolling === true;
 
 		if(!this.container){
 			console.warn('Fil Scroller - No `[fil-scroller]` element');
@@ -238,6 +249,7 @@ export class Scroller {
 		const wh = window.innerHeight; // this.useNative ? window.outerHeight : window.innerHeight;
 		// if(this.w.w === ww && this.w.h === wh) return;
 		// console.log('resize');
+
 		this.w.w = ww;
 		this.w.h = wh;
 		for(const section of this.sections) {
@@ -250,7 +262,7 @@ export class Scroller {
 		let w = 0;
 		for(let section of this.sections) {
 			section.widthOffset = w;
-			w += section.sticky.length ? section.rect.height : section.rect.width;
+			w += section.sticky.length ? section.rect.width : section.rect.width;
 		}
 
 		this.updateCheckHeight();
@@ -274,7 +286,16 @@ export class Scroller {
 
 		window.addEventListener('wheel', (e) => {
 			if(this.disabled) return;
-			this.updateExternal(e.deltaY * this.force.wheel);
+
+			let delta = e.deltaY;
+			if(this.scrollDirection.horizontal && this.scrollDirection.vertical){
+				const d = Math.abs(e.deltaX) > Math.abs(e.deltaY);
+				delta = d ? e.deltaX : e.deltaY;
+			} else if(this.scrollDirection.horizontal){
+				delta = e.deltaX;
+			}
+
+			this.updateExternal(delta * this.force.wheel);
 		})
 
 		window.addEventListener('touchstart', (e) => {
