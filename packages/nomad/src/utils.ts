@@ -19,17 +19,18 @@ export class Utils {
 
 		for(const link of links){
 			link.classList.remove('nomad__active-link')
+			link.classList.remove('nomad__parent-link')
 
 			if(!link.hasAttribute('href')) continue;
 
 			const href = link.getAttribute('href');
 			const location = this.getLocation(href);
-			
+
 			if( location.pathname === pathname  ) link.classList.add('nomad__active-link')
 			else if( location.pathname != pathname &&  pathname.includes(location.pathname) ) link.classList.add('nomad__parent-link')
-			
+
 		}
-		
+
 	}
 
 	addSlash(url){
@@ -79,7 +80,7 @@ export class Utils {
 
 	getLocation(slug) {
 
-		const url = slug.includes(window.location.origin) ? slug : `${window.location.origin}${slug}`;		
+		const url = slug.includes(window.location.origin) ? slug : `${window.location.origin}${slug}`;
 
 		const location : Location = {
 			href: url,
@@ -89,7 +90,7 @@ export class Utils {
 			pathname: this.getPathname(url),
 			protocol: this.getProtocol(url)
 		}
-		
+
 		return location;
 	}
 
