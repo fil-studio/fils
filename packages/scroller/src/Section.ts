@@ -117,7 +117,10 @@ export class Section {
 			lis?.onBeforeRestore(resizing);
 		}
 		this.dom.style.transform = '';
-		this.visible = false;
+
+		this.visible = true;
+		this.hide();
+
 		this.progress = 0;
 		// this.progressIn = 0;
 		// this.progressOut = 0;
