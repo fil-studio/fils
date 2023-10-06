@@ -27,7 +27,7 @@ export class Utils {
 			const location = this.getLocation(href);
 
 			if( location.pathname === pathname  ) link.classList.add('nomad__active-link')
-			else if( location.pathname != pathname &&  pathname.includes(location.pathname) ) link.classList.add('nomad__parent-link')
+			else if( location.pathname != pathname && pathname.includes(location.pathname) ) link.classList.add('nomad__parent-link')
 
 		}
 

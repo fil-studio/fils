@@ -83,6 +83,8 @@ const DEFAULT_EASING = 0.16;
 export class Scroller {
 	container:HTMLElement;
 	content:HTMLElement;
+
+	sectionsWrapper: HTMLElement;
 	virtualScrollBar:VirtualScrollBar;
 	isBody:boolean = false;
 
@@ -140,6 +142,12 @@ export class Scroller {
 		if(!this.container){
 			console.warn('Fil Scroller - No `[fil-scroller]` element');
 			return;
+		}
+
+		this.sectionsWrapper = this.container.querySelector('[fil-scroller-sections-wrapper]');
+		if (!this.sectionsWrapper) {
+			console.log(`Fil Scroller - No '[fil-scroller-sections-wrapper]' element, using ${this.content}`);
+			this.sectionsWrapper = this.content;
 		}
 
 		this.ease = params?.easing || DEFAULT_EASING;
@@ -230,7 +238,8 @@ export class Scroller {
 
 	addSections(){
 
-		const sections:NodeListOf<HTMLElement> = this.container.querySelectorAll('[fil-scroller-section]');
+		// Get only first level child sections
+		const sections:NodeListOf<HTMLElement> = this.sectionsWrapper.querySelectorAll(':scope > [fil-scroller-section]');
 
 		for(let i = 0, len = sections.length; i<len; i++){
 			const _section = sections[i];
