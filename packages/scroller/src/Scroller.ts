@@ -146,7 +146,7 @@ export class Scroller {
 
 		this.sectionsWrapper = this.container.querySelector('[fil-scroller-sections-wrapper]');
 		if (!this.sectionsWrapper) {
-			console.log(`Fil Scroller - No '[fil-scroller-sections-wrapper]' element, using ${this.content}`);
+			console.log(`Fil Scroller - No '[fil-scroller-sections-wrapper]' element, using [fil-scroller-content] as wrapper`);
 			this.sectionsWrapper = this.content;
 		}
 
@@ -287,7 +287,14 @@ export class Scroller {
 	}
 
 	updateExternal(delta:number){
-		this.position.target = MathUtils.clamp(this.position.target+delta, this.edges[0], this.edges[1]);
+		if(this.position.target <= this.edges[0] && delta > 0) {
+			this.position.target = this.edges[0];
+		}
+		if(this.position.target >= this.edges[1] && delta < 0) {
+			this.position.target = this.edges[1];
+		}
+
+		this.position.target = this.position.target+delta;
 	}
 
 	addEventListeners(){
@@ -424,6 +431,8 @@ export class Scroller {
 		if(!this.useNative && this.virtualScrollBar) {
 			this.virtualScrollBar.progress = this.position.current / this.edges[1];
 		}
+
+		this.position.current = MathUtils.clamp(this.position.current, this.edges[0], this.edges[1]);
 
 		const newDelta = (this.position.current - previous) * 0.01;
 		this.delta = MathUtils.clamp(MathUtils.lerp(this.delta, newDelta, 0.1), -1, 1)
