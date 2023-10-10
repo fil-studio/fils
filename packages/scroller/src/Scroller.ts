@@ -254,6 +254,7 @@ export class Scroller {
 	}
 
 	restore(resizing:boolean=false){
+		// To-Do: size should be based on container's size
 		const ww = window.innerWidth;
 		const wh = window.innerHeight; // this.useNative ? window.outerHeight : window.innerHeight;
 		// if(this.w.w === ww && this.w.h === wh) return;
