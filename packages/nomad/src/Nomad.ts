@@ -148,7 +148,6 @@ export class Nomad {
 	lifeCycle(href){
 
 		if(this.inProgress) {
-			this.route.page.kill();
 			this.route.page.dispose();
 			this.route.page.dom.remove();
 		}

@@ -33,6 +33,4 @@ export class Page {
 	async transitionOut(resolve){
 		resolve();
 	}
-
-	kill(){}
 }
