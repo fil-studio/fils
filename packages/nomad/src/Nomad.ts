@@ -145,7 +145,10 @@ export class Nomad {
 	}
 
 	// Lifecycle
-	lifeCycle(href){
+	goTo(href){
+		this.lifeCycle(href);
+	}
+	lifeCycle(href, preLoadedHTML:string = null){
 
 		if(this.inProgress) {
 			this.route.page.dispose();
@@ -156,16 +159,22 @@ export class Nomad {
 
 		this.beforeFetch().then(() => {
 
-			this.fetch(href).then((html) => {
-
-				this.addContent(href, html).then(() => {
-
-					this.afterFetch();
-
+			// Default behaviour without preloaded HTML
+			if (!preLoadedHTML){
+				this.fetch(href).then((html) => {
+					if(html){
+						this.addContent(href, html).then(() => {
+							this.afterFetch();
+						})
+					}
 				})
 
-			})
-
+			// If HTML is preloaded just pass it
+			} else {
+				this.addContent(href, preLoadedHTML).then(() => {
+					this.afterFetch();
+				})
+			}
 		})
 
 	}
@@ -244,8 +253,10 @@ export class Nomad {
 		}
 
 		// Force reload if response fails
-		window.location.href = href;
-		return;
+		// window.location.href = href;
+		console.log('Fil Nomad - Fetch failed');
+
+		return false;
 
 	}
 
