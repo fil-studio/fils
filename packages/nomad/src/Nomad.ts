@@ -232,8 +232,6 @@ export class Nomad {
 
 		// HTML Swap
 		if(replace){
-			console.log('REPLACE');
-
 			const oldPage = this.wrapper.querySelector('[template]') as HTMLElement;
 			oldPage?.remove();
 			this.wrapper.appendChild(newPage);
