@@ -17,13 +17,12 @@ export abstract class ContentSection implements ScrollerSectionListener {
                 this.section = s;
             }
         }
-        
+
     }
 
     /**
      * Init function. Must be called by your child classes
      */
-
     protected init() {
         this.onInit();
         this.addEventListeners();
@@ -75,6 +74,13 @@ export abstract class ContentSection implements ScrollerSectionListener {
      * @param time animation time in seconds
      */
     update(time:number=0) {
+
+    }
+
+    /**
+     * Dispose events
+     */
+    dispose(){
 
     }
 }

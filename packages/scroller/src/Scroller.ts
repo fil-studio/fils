@@ -110,6 +110,7 @@ export class Scroller {
 	private loaded: boolean = false;
 	// private paused: boolean = false;
 	private disabled: boolean = false;
+	private blocked: boolean = false;
 
 	distance: number = 0;
 	private _ease: number;
@@ -203,6 +204,15 @@ export class Scroller {
 		if(this.virtualScrollBar) {
 			this.virtualScrollBar.dom.style.display = 'block';
 		}
+	}
+	// Block - Unblock
+	block(){
+		if(this.blocked) return;
+		this.blocked = true;
+	}
+	unblock(){
+		if (!this.blocked) return;
+		this.blocked = false;
 	}
 
 	set direction(val: D | number){
@@ -303,6 +313,7 @@ export class Scroller {
 
 		window.addEventListener('wheel', (e) => {
 			if(this.disabled) return;
+			if(this.blocked) return;
 
 			let delta = e.deltaY;
 			if(this.scrollDirection.horizontal && this.scrollDirection.vertical){
@@ -316,7 +327,9 @@ export class Scroller {
 		})
 
 		window.addEventListener('touchstart', (e) => {
-			if(this.disabled) return;
+			if (this.disabled) return;
+			if (this.blocked) return;
+
 			const e1 = e.touches[0];
 			touchWheel.startY = e1.clientY;
 			touchWheel.startDrag = performance.now();
@@ -325,7 +338,9 @@ export class Scroller {
 		})
 
 		window.addEventListener('touchend', (e) => {
-			if(this.disabled) return;
+			if (this.disabled) return;
+			if (this.blocked) return;
+
 			if(performance.now() - touchWheel.startDrag < 100) {
 				this.updateExternal(-touchWheel.delta * 10 * this.force.touch);
 			}
@@ -336,7 +351,9 @@ export class Scroller {
 		})
 
 		window.addEventListener('touchmove', (e) => {
-			if(this.disabled) return;
+			if (this.disabled) return;
+			if (this.blocked) return;
+
 			e.preventDefault();
 			const e1 = e.touches[0];
 			touchWheel.delta = e1.clientY - touchWheel.startY;

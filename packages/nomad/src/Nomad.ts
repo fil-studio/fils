@@ -16,6 +16,7 @@ export interface NomadRouteListener {
 	onRouteChangedComplete?(route:NomadRoute):void
 }
 
+
 export class Nomad {
 	utils: Utils;
 
@@ -145,10 +146,20 @@ export class Nomad {
 	}
 
 	// Lifecycle
-	lifeCycle(href){
+	/**
+	 * @description Trigger location change
+	 * @param {string} href - The new location URL.
+	 * @param {string} preloadedHTML - If the HTML has been preloaded add it here and this one will be used instead of a fetch.
+	 * @param {boolean} replace - Whether to replace the current URL in the browser history or not.
+	 *   If true the user will be responsible for everything. Nomad will only handle page title and template.
+	 *   By default, this is set to false.
+	 */
+	goTo(href, preloadedHTML:string = null, replace:boolean = true){
+		this.lifeCycle(href, preloadedHTML);
+	}
+	lifeCycle(href, preloadedHTML: string = null, replace: boolean = true){
 
 		if(this.inProgress) {
-			this.route.page.kill();
 			this.route.page.dispose();
 			this.route.page.dom.remove();
 		}
@@ -157,16 +168,22 @@ export class Nomad {
 
 		this.beforeFetch().then(() => {
 
-			this.fetch(href).then((html) => {
-
-				this.addContent(href, html).then(() => {
-
-					this.afterFetch();
-
+			// Default behaviour without preloaded HTML
+			if (preloadedHTML === null || !replace){
+				this.fetch(href).then((html) => {
+					if(html){
+						this.addContent(href, html).then(() => {
+							this.afterFetch();
+						})
+					}
 				})
 
-			})
-
+			// If HTML is preloaded just pass it
+			} else {
+				this.addContent(href, preloadedHTML, replace).then(() => {
+					this.afterFetch();
+				})
+			}
 		})
 
 	}
@@ -181,7 +198,7 @@ export class Nomad {
 
 	}
 
-	async addContent(href: string, html: string){
+	async addContent(href: string, html: string, replace:boolean = true){
 
 		// Dispose old page
 		this.route.page.dispose();
@@ -191,13 +208,12 @@ export class Nomad {
 		const content = el('div');
 		content.innerHTML = html;
 
+
 		// Create new Page & Route
 		const newPage = content.querySelector('[template]') as HTMLElement;
 		const template = newPage.getAttribute('template');
 
-		/* let newPageClass = this.createPage(template, newPage);
-		newPageClass = newPageClass ? newPageClass : new Page(newPage); */
-
+		// Create route
 		this.createRoute(template, newPage, href);
 		this.route.page.dom = newPage;
 		this.route.page.isActive = true;
@@ -215,9 +231,11 @@ export class Nomad {
 		if(!this.isPopstate) window.history.pushState(this.route.location, title, this.route.location.href);
 
 		// HTML Swap
-		const oldPage = this.wrapper.querySelector('[template]') as HTMLElement;
-		oldPage?.remove();
-		this.wrapper.appendChild(newPage);
+		if(replace){
+			const oldPage = this.wrapper.querySelector('[template]') as HTMLElement;
+			oldPage?.remove();
+			this.wrapper.appendChild(newPage);
+		}
 
 		this.addLinksListener();
 
@@ -245,8 +263,10 @@ export class Nomad {
 		}
 
 		// Force reload if response fails
-		window.location.href = href;
-		return;
+		// window.location.href = href;
+		console.log('Fil Nomad - Fetch failed');
+
+		return false;
 
 	}
 
