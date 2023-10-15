@@ -150,4 +150,10 @@ export class BlurPass extends RenderPass{
 	get target():WebGLRenderTarget {
 		return this.read;
 	}
+
+	dispose () {
+		this.read.dispose();
+		this.write.dispose();
+		this.shader.dispose();
+	}
 }

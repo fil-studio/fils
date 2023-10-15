@@ -20,4 +20,6 @@ export class RenderPass {
 	setSize(width:number, height:number) {
 		
 	}
+
+	dispose() {}
 }

@@ -1,6 +1,6 @@
 {
 	"name": "@fils/vfx",
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"description": "Web VFX Package written in TypeScript",
 	"module": "lib/main.js",
 	"main": "lib/main.js",

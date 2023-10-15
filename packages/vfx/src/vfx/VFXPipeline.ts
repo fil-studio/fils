@@ -2,19 +2,6 @@ import { DepthFormat, DepthTexture, FloatType, Mesh, OrthographicCamera, Perspec
 import { RenderPass } from "./pipeline/RenderPass";
 import { VFXRenderer } from "./VFXRenderer";
 
-import frag from '../glsl/fbo.frag';
-import vert from '../glsl/fbo.vert';
-
-const TO_SCREEN = new RawShaderMaterial({
-	vertexShader: vert,
-	fragmentShader: frag,
-	uniforms: {
-		tInput: {
-			value: null
-		}
-	}
-});
-
 export type VFXPipelineSettings = {
     samples?:number; // useful for MSAA when using WebGLRenderer
     useDepth?:boolean;
@@ -202,5 +189,11 @@ export class VFXPipeline {
                 this.firstPass = false;
             }
         }
+    }
+
+    dispose() {
+        this.front.dispose();
+        this.back.dispose();
+        this.sceneRT.dispose();
     }
 }

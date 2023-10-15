@@ -174,4 +174,11 @@ export class VFXRenderer {
 
         this.rnd.setRenderTarget(null);
     }
+
+    dispose () {
+        this.sceneRT.dispose();
+        this.bgRT.dispose();
+        this.glow.dispose();
+        this.shader.dispose();
+    }
 }
