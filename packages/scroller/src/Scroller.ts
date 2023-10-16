@@ -471,14 +471,16 @@ export class Scroller {
 	update(){
 		if(!this.loaded) return;
 
-		// console.log(this.position.current);
-
 		this.updateTarget();
 		this.updateScrollValues();
 
 		if(Math.abs(this.delta) > .001) {
 			this.updateSections();
 		}
+
+		// Update container classes
+		this.container.classList.toggle('fil-scroller__top', this.position.current <= this.edges[0] + 0.5);
+		this.container.classList.toggle('fil-scroller__bottom', this.position.current >= this.edges[1] - 0.5);
 
 	}
 
