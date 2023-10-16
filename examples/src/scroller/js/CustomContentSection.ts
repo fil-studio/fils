@@ -1,4 +1,5 @@
 import { ContentSection, Scroller } from "@fils/scroller";
+// import { ContentSection, Scroller } from "../../../../packages/scroller/src/main";
 
 /**
  * Silly example you can do this purely in CSS!
@@ -12,9 +13,17 @@ export class CustomContentSection extends ContentSection {
     }
 
     onInit(): void {
+        console.log('INIT');
+        
         this.dom.style.opacity = '0';
         this.dom.style.transition = 'opacity 0s ease-out';
         this.h2 = this.dom.querySelector('h2') as HTMLElement;
+    }
+
+    addEventListeners(): void {
+        /* this.h2.addEventListener('click', (event) => {
+            console.log(this.h2);
+        }); */
     }
 
     onAnimationIn(): void {

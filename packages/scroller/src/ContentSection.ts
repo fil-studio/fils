@@ -18,12 +18,13 @@ export abstract class ContentSection implements ScrollerSectionListener {
             }
         }
 
+        this.init();
     }
 
     /**
      * Init function. Must be called by your child classes
      */
-    protected init() {
+    private init() {
         this.onInit();
         this.addEventListeners();
 
