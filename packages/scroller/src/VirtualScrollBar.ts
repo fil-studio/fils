@@ -38,7 +38,7 @@ export class VirtualScrollBar {
         this.dom = document.createElement('div');
         this.dom.setAttribute('fil-virtual-scroller', '');
         this.dom.style.width = `${scrollBarWidth*2}px`;
-        
+
         this.bar = document.createElement('div');
         this.bar.style.borderRadius = `${scrollBarWidth/2}px`;
         this.dom.appendChild(this.bar);
@@ -53,7 +53,7 @@ export class VirtualScrollBar {
 
     set contentHeight(height:number) {
         const dh = height - window.innerHeight;
-        
+
         if(dh <  0) {
             this.enabled = false;
             this.dom.style.display = 'none';
@@ -65,7 +65,7 @@ export class VirtualScrollBar {
         const sdh = 1 - MathUtils.smoothstep(100, 1000, dh);
         const h = MathUtils.lerp(100, window.innerHeight/2, sdh);
         this.height = Math.round(h);
-        
+
         this.bar.style.height = `${this.height}px`;
     }
 

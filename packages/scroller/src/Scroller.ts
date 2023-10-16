@@ -440,6 +440,22 @@ export class Scroller {
 				this.ease
 			);
 
+			// Position target overstep slowly go to edge
+			// if (this.position.target <= this.edges[0]) {
+			// 	this.position.target = MathUtils.lerp(
+			// 		this.position.target,
+			// 		this.edges[0],
+			// 		0.2
+			// 	);
+			// }
+			// if (this.position.target >= this.edges[1]) {
+			// 	this.position.target = MathUtils.lerp(
+			// 		this.position.target,
+			// 		this.edges[1],
+			// 		0.2
+			// 	);
+			// }
+
 			if(Math.abs(this.position.target-this.position.current) < 1) {
 				this.position.current = this.position.target;
 			}
@@ -447,7 +463,7 @@ export class Scroller {
 		}
 
 		if(!this.useNative && this.virtualScrollBar) {
-			this.virtualScrollBar.progress = this.position.current / this.edges[1];
+			this.virtualScrollBar.progress = MathUtils.clamp(this.position.current / this.edges[1], 0, 1);
 		}
 
 		this.position.current = MathUtils.clamp(this.position.current, this.edges[0], this.edges[1]);
