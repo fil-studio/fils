@@ -3,13 +3,13 @@ import { GLLayer } from "../gl/GLLayer";
 import { ThreeDomLayer, ThreeRenderParameters } from "./ThreeDOMLayer";
 
 export abstract class ThreeLayer extends GLLayer {
-    dom:ThreeDomLayer;
+    gl:ThreeDomLayer;
     camera:PerspectiveCamera|OrthographicCamera;
     scene:Scene;
     protected params:ThreeRenderParameters;
 
-    constructor(_dom:ThreeDomLayer) {
-        super(_dom);
+    constructor(_gl:ThreeDomLayer) {
+        super(_gl);
         this.scene = new Scene();
         this.params = {
             scene: this.scene,
@@ -35,7 +35,7 @@ export abstract class ThreeLayer extends GLLayer {
     
     render() {
         if(!this.active) return;
-        this.dom.render(this.params);
+        this.gl.render(this.params);
     }
 
 }

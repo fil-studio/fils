@@ -4,12 +4,12 @@ import { GLDOMLayer } from "./GLDOMLayer";
  * GL Layer: Rendering layer attached to a GL DOM Layer
  */
 export abstract class GLLayer {
-    dom:GLDOMLayer;
+    gl:GLDOMLayer;
     active:boolean = true;
 
-    constructor(_dom:GLDOMLayer) {
-        this.dom = _dom;
-        this.dom.registerLayer(this);
+    constructor(_gl:GLDOMLayer) {
+        this.gl = _gl;
+        this.gl.registerLayer(this);
     }
 
     /**
