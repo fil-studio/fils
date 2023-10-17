@@ -4,7 +4,7 @@ import { VirtualScrollBar } from "./VirtualScrollBar";
 
 interface position {
 	current: number,
-	target: number
+	target: number,
 }
 
 export enum D {
@@ -100,8 +100,10 @@ export class Scroller {
 
 	position:position = {
 		current: 0,
-		target: 0
+		target: 0,
 	};
+
+	overScrolling: boolean = false;
 
 	private _direction: D = D.TOP;
 
@@ -298,14 +300,8 @@ export class Scroller {
 	}
 
 	updateExternal(delta:number){
-		if(this.position.target <= this.edges[0] && delta > 0) {
-			this.position.target = this.edges[0];
-		}
-		if(this.position.target >= this.edges[1] && delta < 0) {
-			this.position.target = this.edges[1];
-		}
-
-		this.position.target = this.position.target+delta;
+		this.position.target = MathUtils.clamp(this.position.target + delta, this.edges[0], this.edges[1]);
+		this.updateOverScrolling(delta)
 	}
 
 	addEventListeners(){
@@ -468,6 +464,17 @@ export class Scroller {
 
 	}
 
+	updateOverScrolling(delta:number){
+		this.overScrolling = false;
+		if (this.position.current <= this.edges[0] && delta < 0) {
+			this.overScrolling = true;
+		}
+		if (this.position.current >= this.edges[1] && delta > 0) {
+			this.overScrolling = true;
+		}
+
+	}
+
 	update(){
 		if(!this.loaded) return;
 
@@ -481,6 +488,7 @@ export class Scroller {
 		// Update container classes
 		this.container.classList.toggle('fil-scroller__top', this.position.current <= this.edges[0] + 0.5);
 		this.container.classList.toggle('fil-scroller__bottom', this.position.current >= this.edges[1] - 0.5);
+
 
 	}
 
