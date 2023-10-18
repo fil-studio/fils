@@ -14,7 +14,7 @@ export interface ThreeRenderParameters extends GLRenderParameters {
 /**
  * ThreeJS DOM GL Layer interface
  */
-export class ThreeDomLayer extends GLDOMLayer {
+export class ThreeDOMLayer extends GLDOMLayer {
     renderer:WebGLRenderer;
     protected layers: ThreeLayer[];
 
@@ -28,6 +28,11 @@ export class ThreeDomLayer extends GLDOMLayer {
 
     resize(): void {
         super.resize();
+        this.renderer.setSize(this.rect.width, this.rect.height);
+    }
+
+    externalResize(width: number, height: number): void {
+        super.externalResize(width, height);
         this.renderer.setSize(this.rect.width, this.rect.height);
     }
 

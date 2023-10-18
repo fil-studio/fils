@@ -1,14 +1,14 @@
 import { OrthographicCamera, PerspectiveCamera, Scene } from "three";
 import { GLLayer } from "../gl/GLLayer";
-import { ThreeDomLayer, ThreeRenderParameters } from "./ThreeDOMLayer";
+import { ThreeDOMLayer, ThreeRenderParameters } from "./ThreeDOMLayer";
 
 export abstract class ThreeLayer extends GLLayer {
-    gl:ThreeDomLayer;
+    gl:ThreeDOMLayer;
     camera:PerspectiveCamera|OrthographicCamera;
     scene:Scene;
     protected params:ThreeRenderParameters;
 
-    constructor(_gl:ThreeDomLayer) {
+    constructor(_gl:ThreeDOMLayer) {
         super(_gl);
         this.scene = new Scene();
         this.params = {

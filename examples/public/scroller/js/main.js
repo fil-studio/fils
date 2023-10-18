@@ -574,6 +574,7 @@
           this.sections = [];
           this.loaded = false;
           this.disabled = false;
+          this.blocked = false;
           this.distance = 0;
           this.delta = 0;
           this.w = {
@@ -658,6 +659,17 @@
             this.virtualScrollBar.dom.style.display = "block";
           }
         }
+        // Block - Unblock
+        block() {
+          if (this.blocked)
+            return;
+          this.blocked = true;
+        }
+        unblock() {
+          if (!this.blocked)
+            return;
+          this.blocked = false;
+        }
         set direction(val) {
           if (this.useNative && val !== D.TOP) {
             console.warn("Native scrolling supports only D.TOP vertical direction! Forcing D.TOP...");
@@ -735,6 +747,8 @@
           window.addEventListener("wheel", (e) => {
             if (this.disabled)
               return;
+            if (this.blocked)
+              return;
             let delta = e.deltaY;
             if (this.scrollDirection.horizontal && this.scrollDirection.vertical) {
               const d = Math.abs(e.deltaX) > Math.abs(e.deltaY);
@@ -747,6 +761,8 @@
           window.addEventListener("touchstart", (e) => {
             if (this.disabled)
               return;
+            if (this.blocked)
+              return;
             const e1 = e.touches[0];
             touchWheel.startY = e1.clientY;
             touchWheel.startDrag = performance.now();
@@ -755,6 +771,8 @@
           });
           window.addEventListener("touchend", (e) => {
             if (this.disabled)
+              return;
+            if (this.blocked)
               return;
             if (performance.now() - touchWheel.startDrag < 100) {
               this.updateExternal(-touchWheel.delta * 10 * this.force.touch);
@@ -765,6 +783,8 @@
           });
           window.addEventListener("touchmove", (e) => {
             if (this.disabled)
+              return;
+            if (this.blocked)
               return;
             e.preventDefault();
             const e1 = e.touches[0];
@@ -913,6 +933,7 @@
               this.section = s;
             }
           }
+          this.init();
         }
         /**
          * Init function. Must be called by your child classes
@@ -959,6 +980,11 @@
          * @param time animation time in seconds
          */
         update(time = 0) {
+        }
+        /**
+         * Dispose events
+         */
+        dispose() {
         }
       };
     }

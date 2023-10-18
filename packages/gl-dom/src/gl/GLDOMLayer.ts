@@ -17,7 +17,7 @@ export abstract class GLDOMLayer {
     protected resizeObserver:ResizeObserver;
     protected timeoutId:number;
 
-    protected layers:GLLayer[] = [];
+    protected layers:GLLayer[];
 
     /**
      * GL DOM Layer class for handling WebGL Content
@@ -26,6 +26,8 @@ export abstract class GLDOMLayer {
     constructor(_dom:HTMLElement) {
         // console.log("Attaching GL Layer to", _dom);
         this.dom = _dom;
+
+        this.layers = [];
         
         this.resizeObserver = new ResizeObserver((entries) => {
             window.clearTimeout(this.timeoutId);
@@ -38,8 +40,23 @@ export abstract class GLDOMLayer {
         this.resizeObserver.observe(this.dom);
     }
 
-    resize() {
+    /**
+     * Standard internal resize
+     */
+    protected resize() {
         const rect = this.dom.getBoundingClientRect();
+        this.rect = rect;
+
+        for(const layer of this.layers) {
+            layer.setSize(rect.width, rect.height);
+        }
+    }
+
+    /**
+     * External resize: handled by user
+     */
+    externalResize(width:number, height:number) {
+        const rect = new DOMRect(0, 0, width, height);
         this.rect = rect;
 
         for(const layer of this.layers) {
@@ -69,8 +86,20 @@ export abstract class GLDOMLayer {
         this.layers.splice(this.layers.indexOf(layer), 1);
     }
 
-    dispose() {
+    /**
+     * Disconnect: Stops listening to dom element's
+     * resizing. Useful when is not matching its size
+     * You must use resizeExternal to resize the layer
+     */
+    disconnect() {
         this.resizeObserver.disconnect();
+    }
+
+    /**
+     * Dispose API
+     */
+    dispose() {
+        this.disconnect();
         for(const layer of this.layers) {
             layer.dispose();
         }
