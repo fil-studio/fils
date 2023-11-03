@@ -105,6 +105,7 @@ export class VFXPipeline {
         this.height = height;
         this.front.setSize(width, height);
         this.quad.scale.set(width, height, 1);
+        this.sceneRT.setSize(width, height);
 
         const w = width/2;
         const h = height/2;
