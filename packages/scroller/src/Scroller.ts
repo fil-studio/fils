@@ -505,7 +505,7 @@ export class Scroller {
 		this.position.target = _k;
 
 		if(this.useNative){
-			this.container.scrollTop = 0;
+			this.container.scrollTop = k;
 		}
 	}
 
