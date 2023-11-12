@@ -232,7 +232,7 @@ export class Section {
 	update(){
 
 		if(!this.visible){
-			const margin = 500;
+			const margin = this.w.w;
 			if (this.scroll + margin > this.threshold[0] && this.scroll + margin < this.threshold[1]) {
 				this.closeToVisible = true;
 			} else {
