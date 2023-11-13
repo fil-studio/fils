@@ -269,15 +269,20 @@ export class Scroller {
 
 	restore(resizing:boolean=false){
 		// To-Do: size should be based on container's size
-		const ww = window.innerWidth;
-		const wh = window.innerHeight; // this.useNative ? window.outerHeight : window.innerHeight;
+		// let ww = window.innerWidth;
+		// let wh = window.innerHeight; // this.useNative ? window.outerHeight : window.innerHeight;
 		// if(this.w.w === ww && this.w.h === wh) return;
+		// this.w.w = ww;
+		// this.w.h = wh;
 		// console.log('resize');
 
-		this.w.w = ww;
-		this.w.h = wh;
+		const containerRect = this.container.getBoundingClientRect();
+
+		this.w.w = containerRect.width;
+		this.w.h = containerRect.height;
+
 		for(const section of this.sections) {
-			section.dom.classList.remove('disabled');
+			// section.dom.classList.remove('disabled');
 			section.w = this.w;
 			section.restore(resizing);
 		}
