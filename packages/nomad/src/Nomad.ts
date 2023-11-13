@@ -12,6 +12,7 @@ export interface NomadRoute {
 }
 
 export interface NomadRouteListener {
+	onRouteChangeStart?(href:string):void
 	onRouteChanged?(route:NomadRoute):void;
 	onRouteChangedComplete?(route:NomadRoute):void
 }
@@ -81,6 +82,11 @@ export class Nomad {
 		this.listeners.splice(this.listeners.indexOf(lis), 1);
 	}
 
+	onRouteChangeStart(href:string) {
+		for (const lis of this.listeners) {
+			if (lis.onRouteChangeStart) lis.onRouteChangeStart(href);
+		}
+	}
 	onRouteChanged() {
 		for (const lis of this.listeners) {
 			if (lis.onRouteChanged) lis.onRouteChanged(this.route);
@@ -158,6 +164,8 @@ export class Nomad {
 		this.lifeCycle(href, preloadedHTML);
 	}
 	lifeCycle(href, preloadedHTML: string = null, replace: boolean = true){
+
+		this.onRouteChangeStart(href);
 
 		if(this.inProgress) {
 			this.route.page.dispose();

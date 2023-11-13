@@ -88,6 +88,8 @@ export class Scroller {
 	virtualScrollBar:VirtualScrollBar;
 	isBody:boolean = false;
 
+	progress: number = 0;
+
 	scrollDirection = {
 		vertical: true,
 		horizontal: false
@@ -492,6 +494,7 @@ export class Scroller {
 		this.container.classList.toggle('fil-scroller__top', this.position.current <= this.edges[0] + 0.5);
 		this.container.classList.toggle('fil-scroller__bottom', this.position.current >= this.edges[1] - 0.5);
 
+		this.progress = MathUtils.truncateDecimals(MathUtils.map(this.position.current, this.edges[0], this.edges[1], 0, 1), 3);
 
 	}
 
@@ -503,6 +506,10 @@ export class Scroller {
 	scrollTo(k:number){
 		const _k = MathUtils.clamp(k, this.edges[0], this.edges[1]);
 		this.position.target = _k;
+
+		if(this.useNative){
+			this.container.scrollTop = k;
+		}
 	}
 
 	/**

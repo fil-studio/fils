@@ -41,6 +41,7 @@ export class Section {
 	}
 
 	visible: boolean = false;
+	closeToVisible: boolean = false;
 	disabled: boolean = false;
 
 	protected listeners:ScrollerSectionListener[] = [];
@@ -234,6 +235,15 @@ export class Section {
 	}
 
 	update(){
+
+		if(!this.visible){
+			const margin = this.w.w;
+			if (this.scroll + margin > this.threshold[0] && this.scroll + margin < this.threshold[1]) {
+				this.closeToVisible = true;
+			} else {
+				this.closeToVisible = false;
+			}
+		}
 
 		if(this.scroll > this.threshold[0] && this.scroll < this.threshold[1] ) {
 
