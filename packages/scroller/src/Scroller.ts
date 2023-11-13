@@ -176,7 +176,7 @@ export class Scroller {
 
 		this.addStyles();
 		this.refresh();
-		this.addEventListeners();
+		this.addEventListeners(this.container);
 	}
 
 	get enabled(): boolean {
@@ -275,6 +275,7 @@ export class Scroller {
 		this.w.w = ww;
 		this.w.h = wh;
 		for(const section of this.sections) {
+			section.dom.classList.remove('disabled');
 			section.w = this.w;
 			section.restore(resizing);
 		}
@@ -304,10 +305,12 @@ export class Scroller {
 		this.updateOverScrolling(delta)
 	}
 
-	addEventListeners(){
+	addEventListeners(_target?:HTMLElement){
 		if(this.useNative) return;
 
-		window.addEventListener('wheel', (e) => {
+		const target = _target || window;
+
+		target.addEventListener('wheel', (e:WheelEvent) => {
 			if(this.disabled) return;
 			if(this.blocked) return;
 
@@ -322,7 +325,7 @@ export class Scroller {
 			this.updateExternal(delta * this.force.wheel);
 		})
 
-		window.addEventListener('touchstart', (e) => {
+		target.addEventListener('touchstart', (e:TouchEvent) => {
 			if (this.disabled) return;
 			if (this.blocked) return;
 
@@ -333,7 +336,7 @@ export class Scroller {
 			passive: false
 		})
 
-		window.addEventListener('touchend', (e) => {
+		target.addEventListener('touchend', (e:TouchEvent) => {
 			if (this.disabled) return;
 			if (this.blocked) return;
 
@@ -346,7 +349,7 @@ export class Scroller {
 			passive: false
 		})
 
-		window.addEventListener('touchmove', (e) => {
+		target.addEventListener('touchmove', (e:TouchEvent) => {
 			if (this.disabled) return;
 			if (this.blocked) return;
 

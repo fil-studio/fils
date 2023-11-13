@@ -117,9 +117,10 @@ export class Section {
 			lis?.onBeforeRestore(resizing);
 		}
 		this.dom.style.transform = '';
+		// this.dom.classList.remove('fil-scroller__disabled');
 
 		this.visible = true;
-		this.hide();
+		// this.hide();
 
 		this.progress = 0;
 		// this.progressIn = 0;
@@ -128,6 +129,8 @@ export class Section {
 		for(const lis of this.listeners) {
 			lis?.onAfterRestore(resizing);
 		}
+
+		this.hide();
 	}
 
 	animationIn(){
@@ -210,6 +213,7 @@ export class Section {
 		if(this.visible) return;
 
 		this.animationIn();
+		// this.dom.classList.remove('fil-scroller__disabled');
 		this.dom.classList.add('fil-scroller__visible');
 		this.visible = true;
 	}
@@ -224,6 +228,7 @@ export class Section {
 		// this.progressOut = 0;
 		this.delta = 0;
 		this.dom.classList.remove('fil-scroller__visible');
+		// this.dom.classList.add('fil-scroller__disabled');
 		this.dom.style.setProperty('--fil-scroller-delta', '0');
 		this.dom.style.setProperty('--fil-scroller-progress', '0');
 	}
