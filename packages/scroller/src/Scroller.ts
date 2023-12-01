@@ -464,9 +464,6 @@ export class Scroller {
 		const newDelta = (this.position.current - previous) * 0.01;
 		this.delta = MathUtils.clamp(MathUtils.lerp(this.delta, newDelta, 0.1), -1, 1);
 
-
-		console.log(this.loopAvailable);
-
 	}
 
 	// This will seameless restart the loop in both directions
@@ -532,7 +529,6 @@ export class Scroller {
 
 				const section = this.sections[i];
 				section.scroll = this.position.current - this.distance;
-
 				section.delta = this.delta;
 				section.update();
 				p += vertical ? section.rect.height : section.rect.width;
