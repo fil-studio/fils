@@ -65,6 +65,7 @@ const touchWheel = {
 }
 
 export type FilScrollerParameters = {
+	loop?:boolean;
 	useNative?:boolean;
 	easing?:number;
 	direction?:D;
@@ -127,6 +128,7 @@ export class Scroller {
 	};
 
 	edges:number[] = [0,0];
+	loop: boolean = false;
 
 	useNative:boolean = false;
 
@@ -134,9 +136,12 @@ export class Scroller {
 		if(params.customContainer) {
 			this.container = params.customContainer;
 		} else this.container = document.querySelector('[fil-scroller]') as HTMLElement;
+
 		if(params.customContent) {
 			this.content = params.customContent;
 		} else this.content = this.container.querySelector('[fil-scroller-content]') as HTMLElement;
+
+		if(params.loop) this.loop = params.loop;
 
 		this.isBody = this.container === document.body;
 
@@ -178,6 +183,7 @@ export class Scroller {
 
 		this.addStyles();
 		this.refresh();
+
 		this.addEventListeners(this.container);
 	}
 
@@ -268,13 +274,6 @@ export class Scroller {
 	}
 
 	restore(resizing:boolean=false){
-		// To-Do: size should be based on container's size
-		// let ww = window.innerWidth;
-		// let wh = window.innerHeight; // this.useNative ? window.outerHeight : window.innerHeight;
-		// if(this.w.w === ww && this.w.h === wh) return;
-		// this.w.w = ww;
-		// this.w.h = wh;
-		// console.log('resize');
 
 		const containerRect = this.container.getBoundingClientRect();
 
@@ -308,8 +307,13 @@ export class Scroller {
 	}
 
 	updateExternal(delta:number){
-		this.position.target = MathUtils.clamp(this.position.target + delta, this.edges[0], this.edges[1]);
-		this.updateOverScrolling(delta)
+
+		if(!this.loop){
+			this.position.target = MathUtils.clamp(this.position.target + delta, this.edges[0], this.edges[1]);
+		} else {
+			this.position.target += delta;
+		}
+
 	}
 
 	addEventListeners(_target?:HTMLElement){
@@ -318,6 +322,7 @@ export class Scroller {
 		const target = _target || window;
 
 		target.addEventListener('wheel', (e:WheelEvent) => {
+
 			if(this.disabled) return;
 			if(this.blocked) return;
 
@@ -421,15 +426,19 @@ export class Scroller {
 		}
 
 		// If horizontal the difference between height and width must be taken care of.
-		const dw = this.w.h - this.w.w;
-		if(!vertical) this.distance += dw;
+		// const dw = this.w.h - this.w.w;
+		// if(!vertical) this.distance += dw;
 
 		this.content.style.height = `${this.distance}px`;
 		if(!this.useNative && this.virtualScrollBar) {
 			this.virtualScrollBar.contentHeight = this.distance;
 		}
 
-		this.edges[1] = vertical ? this.distance - this.w.h : this.distance - this.w.w - dw;
+		// const d = vertical ? this.w.h : this.w.w - dw;
+		this.edges[0] = 0;
+		// this.edges[1] = this.distance - d;
+		this.edges[1] = this.distance;
+
 	}
 
 	updateScrollValues() {
@@ -456,40 +465,94 @@ export class Scroller {
 			this.virtualScrollBar.progress = MathUtils.clamp(this.position.current / this.edges[1], 0, 1);
 		}
 
-		this.position.current = MathUtils.clamp(this.position.current, this.edges[0], this.edges[1]);
+		if(!this.loop){
+			this.position.current = MathUtils.clamp(this.position.current, this.edges[0], this.edges[1]);
+		}
 
 		const newDelta = (this.position.current - previous) * 0.01;
 		this.delta = MathUtils.clamp(MathUtils.lerp(this.delta, newDelta, 0.1), -1, 1)
 	}
 
+	// This will seameless restart the loop in both directions
+	updateLoop(){
+		if(!this.loop) return;
+
+		const vertical = !this.isHorizontal();
+		const d = vertical ? this.w.h : this.w.w;
+		const distanceBetweenCurrentAndTarget = this.position.target - this.position.current;
+
+		// Todo canviar aixo amb this.distance
+		if (this.position.current < this.edges[0] - d) {
+			this.position.current = this.distance - d;
+			this.position.target = this.position.current + distanceBetweenCurrentAndTarget;
+		}
+
+		if (this.position.current > this.distance) {
+			this.position.current = this.edges[0];
+			this.position.target = this.position.current + distanceBetweenCurrentAndTarget;
+		}
+	}
+
 	updateSections(){
 
-		const scroll = this.position.current;
 		for(let i = 0, len = this.sections.length; i < len; i++) {
 			const section = this.sections[i];
-			section.scroll = scroll;
+			section.scroll = this.position.current;
 			section.delta = this.delta;
 			section.update();
 		}
 
+		// This will make sections believe they are active if the current position is between edges and loop restart
+		if(!this.loop) return;
+
+
+		const vertical = !this.isHorizontal();
+		const d = vertical ? this.w.h : this.w.w;
+
+		let p = 0;
+
+		// Make last sections believe it's their turn
+		if(this.position.current < this.edges[0]) {
+			let l = this.sections.length - 1;
+			for(let i = l; i > 0; i--){
+				if (p > d) break;
+				const section = this.sections[i];
+				section.scroll = this.position.current + this.distance;
+				section.delta = this.delta;
+				section.update();
+				p += vertical ? section.rect.height : section.rect.width;
+			}
+		}
+
+
+
+		if(this.position.current > this.distance - d){
+
+			let l = this.sections.length - 1;
+			for (let i = 0; i < l; i++) {
+				if (p > d) break;
+
+				const section = this.sections[i];
+				section.scroll = this.position.current - this.distance;
+
+				section.delta = this.delta;
+				section.update();
+				p += vertical ? section.rect.height : section.rect.width;
+			}
+
+		}
+
+
+
 	}
 
-	updateOverScrolling(delta:number){
-		this.overScrolling = false;
-		if (this.position.current <= this.edges[0] && delta < 0) {
-			this.overScrolling = true;
-		}
-		if (this.position.current >= this.edges[1] && delta > 0) {
-			this.overScrolling = true;
-		}
-
-	}
 
 	update(){
 		if(!this.loaded) return;
 
 		this.updateTarget();
 		this.updateScrollValues();
+		this.updateLoop();
 
 		if(Math.abs(this.delta) > .001) {
 			this.updateSections();

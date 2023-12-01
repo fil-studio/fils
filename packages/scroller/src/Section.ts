@@ -22,12 +22,7 @@ export class Section {
 		h: 0
 	};
 
-	// From hidden - visible - hidden
 	progress: number = 0;
-	// From hidden - visible
-	// progressIn: number = 0;
-	// From visible - hidden
-	// progressOut: number = 0;
 
 	protected _direction: D = D.LEFT;
 	threshold:number[] = [];
@@ -50,7 +45,6 @@ export class Section {
 
 	nativeScrolling:boolean = false;
 
-
 	constructor(id: string, dom: HTMLElement, direction: D, useNative?:boolean){
 
 		this.id = id;
@@ -64,7 +58,6 @@ export class Section {
 		s.forEach(value=> {
 			this.sticky.push(value as HTMLElement);
 		})
-		// console.log(this.sticky);
 
 	}
 
@@ -90,7 +83,6 @@ export class Section {
 				this.threshold[0] += this.scroll;
 				this.threshold[1] += this.scroll;
 			}
-			// console.log(this.threshold);
 
 		} else {
 			this.threshold = [
@@ -178,7 +170,8 @@ export class Section {
 		}
 		const wH = this.w.h;
 		const wW = this.w.w;
-		let px = this.position.x, py = this.position.y;
+		let px = this.position.x;
+		let py = this.position.y;
 
 		for(const s of this.sticky) {
 			let tY, sY;
@@ -253,8 +246,6 @@ export class Section {
 
 			this.dom.style.setProperty('--fil-scroller-delta', `${this.delta.toFixed(PRECISION)}`);
 			this.progress = MathUtils.smoothstep(this.threshold[0], this.threshold[1], this.scroll);
-			// this.progressIn = MathUtils.smoothstep(this.threshold[0], this.threshold[1] - this.w.w, this.scroll);
-			// this.progressOut = MathUtils.smoothstep(this.threshold[0], this.threshold[1], this.scroll);
 			this.dom.style.setProperty('--fil-scroller-progress', `${this.progress.toFixed(PRECISION)}`);
 
 			this.updateTransform();
