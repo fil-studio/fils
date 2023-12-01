@@ -73,6 +73,7 @@ export class Section {
 
 	calculateDims() {
 		this.rect = this.dom.getBoundingClientRect();
+
 		// VERTICAL SCROLL THRESHOLDS
 		if(this.direction === D.TOP || this.direction === D.BOTTOM) {
 			this.threshold = [
@@ -114,6 +115,7 @@ export class Section {
 		this.progress = 0;
 
 		this.calculateDims();
+
 		for(const lis of this.listeners) {
 			lis?.onAfterRestore();
 		}

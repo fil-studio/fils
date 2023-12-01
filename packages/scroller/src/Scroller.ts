@@ -278,6 +278,8 @@ export class Scroller {
 
 		const containerRect = this.container.getBoundingClientRect();
 
+		const vertical = !this.isHorizontal();
+
 		this.w.w = containerRect.width;
 		this.w.h = containerRect.height;
 
@@ -286,13 +288,13 @@ export class Scroller {
 			section.restore();
 		}
 
-		this.updateSections();
-
 		let w = 0;
 		for(let section of this.sections) {
 			section.widthOffset = w;
-			w += section.sticky.length ? section.rect.width : section.rect.width;
+			w += vertical ? section.rect.height : section.rect.width;
 		}
+
+		this.updateSections();
 
 		this.updateCheckHeight();
 	}
