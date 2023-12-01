@@ -4,8 +4,8 @@ import { D } from "./Scroller";
 export interface ScrollerSectionListener {
 	onAnimationIn?();
 	onAnimationOut?();
-	onBeforeRestore?(resizing:boolean);
-	onAfterRestore?(resizing:boolean);
+	onBeforeRestore?();
+	onAfterRestore?();
 }
 
 const PRECISION = 5;
@@ -105,25 +105,21 @@ export class Section {
 		);
 	}
 
-	restore(resizing:boolean=false){
+	restore(){
 		for(const lis of this.listeners) {
-			lis?.onBeforeRestore(resizing);
+			lis?.onBeforeRestore();
 		}
 		this.dom.style.transform = '';
-		// this.dom.classList.remove('fil-scroller__disabled');
 
 		this.visible = true;
-		// this.hide();
 
 		this.progress = 0;
-		// this.progressIn = 0;
-		// this.progressOut = 0;
+
 		this.calculateDims();
 		for(const lis of this.listeners) {
-			lis?.onAfterRestore(resizing);
+			lis?.onAfterRestore();
 		}
 
-		this.hide();
 	}
 
 	animationIn(){

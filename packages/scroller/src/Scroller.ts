@@ -274,7 +274,7 @@ export class Scroller {
 		return this.direction === D.LEFT || this.direction === D.RIGHT;
 	}
 
-	restore(resizing:boolean=false){
+	restore(){
 
 		const containerRect = this.container.getBoundingClientRect();
 
@@ -283,7 +283,7 @@ export class Scroller {
 
 		for(const section of this.sections) {
 			section.w = this.w;
-			section.restore(resizing);
+			section.restore();
 		}
 
 		this.updateSections();
@@ -300,10 +300,6 @@ export class Scroller {
 	contentChanged() {
 		this.restore();
 		this.update();
-	}
-
-	resize(){
-		this.restore(true);
 	}
 
 	updateExternal(delta:number){

@@ -58,7 +58,7 @@ export abstract class ContentSection implements ScrollerSectionListener {
      * Called on section before restore
      * @param resizing whereas scroller is resizing or not
      */
-    onBeforeRestore(resizing: boolean) {
+    onBeforeRestore() {
 
     }
 
@@ -66,7 +66,7 @@ export abstract class ContentSection implements ScrollerSectionListener {
      * Called on section after restore
      * @param resizing whereas scroller is resizing or not
      */
-    onAfterRestore(resizing: boolean) {
+    onAfterRestore() {
 
     }
 
