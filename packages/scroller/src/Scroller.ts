@@ -369,8 +369,13 @@ export class Scroller {
 		})
 	}
 
-	refresh(forceTop:boolean = true) {
+	dispose(){
 		this.loaded = false;
+		this.sections = [];
+		this.create();
+	}
+
+	refresh(forceTop:boolean = true) {
 
 		if(forceTop){
 			this.position.current = 0;
@@ -380,14 +385,13 @@ export class Scroller {
 		}
 		this.position.target = this.position.current;
 
-		this.sections = [];
-		this.create();
+		this.dispose();
 
 		// Fix a weird bug in horizontal scrolling
 		// by forcing restore once more (To-Do: Look at it!!)
-		if(this.isHorizontal()) {
-			this.restore();
-		}
+		// if(this.isHorizontal()) {
+		// 	this.restore();
+		// }
 	}
 
 	create(){
