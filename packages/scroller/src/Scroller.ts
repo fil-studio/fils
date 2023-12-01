@@ -387,11 +387,7 @@ export class Scroller {
 
 		this.dispose();
 
-		// Fix a weird bug in horizontal scrolling
-		// by forcing restore once more (To-Do: Look at it!!)
-		// if(this.isHorizontal()) {
-		// 	this.restore();
-		// }
+		this.restore();
 	}
 
 	create(){
