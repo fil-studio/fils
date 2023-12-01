@@ -111,8 +111,6 @@ export class Section {
 		}
 		this.dom.style.transform = '';
 
-		this.visible = true;
-
 		this.progress = 0;
 
 		this.calculateDims();
@@ -120,7 +118,6 @@ export class Section {
 			lis?.onAfterRestore();
 		}
 
-		this.hide();
 		this.updateTransform();
 	}
 
@@ -163,9 +160,8 @@ export class Section {
 
 	updateTransform(){
 		if(this.disabled) return;
-		if(this.nativeScrolling) {
-			return;
-		}
+		if(this.nativeScrolling) return;
+
 		const wH = this.w.h;
 		const wW = this.w.w;
 		let px = this.position.x;
