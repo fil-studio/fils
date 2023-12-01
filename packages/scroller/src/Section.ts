@@ -120,6 +120,8 @@ export class Section {
 			lis?.onAfterRestore();
 		}
 
+		this.hide();
+		this.updateTransform();
 	}
 
 	animationIn(){
