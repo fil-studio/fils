@@ -1,6 +1,9 @@
 import { MathUtils } from "@fils/math";
 import { Section } from "./Section";
 import { VirtualScrollBar } from "./VirtualScrollBar";
+import { style } from "./partials/ScrollerStyles";
+import { DEFAULT_EASING, FilScrollerParameters } from "./partials/ScrollerConfig";
+import { ScrollerEvents } from "./partials/ScrollerEvents";
 
 interface position {
 	current: number,
@@ -13,73 +16,6 @@ export enum D {
 	LEFT,
 	RIGHT
 }
-
-const style = `
-	html {
-		overscroll-behavior: none;
-	}
-	[fil-scroller]{
-		overflow: hidden;
-		width: 100%;
-		height: 100%;
-		position: absolute;
-	}
-	[fil-scroller][fil-scroller-native]{
-		position: relative;
-		height: auto;
-		overflow: unset;
-	}
-	[fil-scroller-section]{
-		opacity: 0;
-		visibility: hidden;
-		will-change: auto;
-	}
-	[fil-scroller-sticky]{
-		position: sticky;
-		top: 0;
-	}
-	[fil-scroller-section].fil-scroller__visible {
-		opacity: 1;
-		visibility: visible;
-		will-change: transform, scroll-position;
-	}
-	[fil-scroller="disabled"] [fil-scroller-container] {
-		position: relative;
-	}
-
-	.fil-scroller-disabled,
-	.fil-scroller-disabled body {
-		overflow: hidden !important;
-	}
-
-	[fil-scroller-section].fil-scroller__visible [fil-scroller-sticky] {
-		will-change: transform;
-	}
-`;
-
-const touchWheel = {
-	delta: 0,
-	startY: 0,
-	amp: 10,
-	startDrag: 0
-}
-
-export type FilScrollerParameters = {
-	loop?:boolean;
-	useNative?:boolean;
-	easing?:number;
-	direction?:D;
-	showVirtualScrollBar?:boolean;
-	customScrollBar?:VirtualScrollBar;
-	touchForce?:number;
-	wheelForce?:number;
-	customContainer?:HTMLElement;
-	customContent?:HTMLElement;
-	allowVerticalScrolling?:boolean;
-	allowHorizontalScrolling?:boolean;
-}
-
-const DEFAULT_EASING = 0.16;
 
 export class Scroller {
 	container:HTMLElement;
@@ -112,10 +48,10 @@ export class Scroller {
 
 	sections:Section[] = [];
 
-	private loaded: boolean = false;
-	// private paused: boolean = false;
-	private disabled: boolean = false;
-	private blocked: boolean = false;
+	loaded: boolean = false;
+	// paused: boolean = false;
+	disabled: boolean = false;
+	blocked: boolean = false;
 
 	distance: number = 0;
 	private _ease: number;
@@ -132,6 +68,8 @@ export class Scroller {
 	loopAvailable: boolean = true;
 
 	useNative:boolean = false;
+
+	events: ScrollerEvents;
 
 	constructor(params?:FilScrollerParameters){
 		if(params.customContainer) {
@@ -185,7 +123,13 @@ export class Scroller {
 		this.addStyles();
 		this.refresh();
 
+		this.events = new ScrollerEvents(this);
 		this.addEventListeners(this.container);
+	}
+
+	private addEventListeners(target?: HTMLElement) {
+		if (this.useNative) return;
+		this.events.addEventListeners(target)
 	}
 
 	get enabled(): boolean {
@@ -216,6 +160,7 @@ export class Scroller {
 			this.virtualScrollBar.dom.style.display = 'block';
 		}
 	}
+
 	// Block - Unblock
 	block(){
 		if(this.blocked) return;
@@ -275,6 +220,8 @@ export class Scroller {
 	}
 
 	restore(){
+		if(this.disabled) return;
+		console.log('Restore');
 
 		const containerRect = this.container.getBoundingClientRect();
 
@@ -290,85 +237,25 @@ export class Scroller {
 
 		let w = 0;
 		for(let section of this.sections) {
+			if(section.disabled) continue;
 			section.widthOffset = w;
 			w += vertical ? section.rect.height : section.rect.width;
 		}
 
 		this.updateSections();
-
 		this.updateCheckHeight();
 	}
 
-	contentChanged() {
-		this.restore();
-		this.update();
-	}
+	// contentChanged() {
+	// 	this.restore();
+	// 	this.update();
+	// }
 
 	updateExternal(delta:number){
 
 		if(this.loop && this.loopAvailable)	this.position.target += delta;
 		else this.position.target = MathUtils.clamp(this.position.target + delta, this.edges[0], this.edges[1]);
 
-	}
-
-	addEventListeners(_target?:HTMLElement){
-		if(this.useNative) return;
-
-		const target = _target || window;
-
-		target.addEventListener('wheel', (e:WheelEvent) => {
-
-			if(this.disabled) return;
-			if(this.blocked) return;
-
-			let delta = e.deltaY;
-			if(this.scrollDirection.horizontal && this.scrollDirection.vertical){
-				const d = Math.abs(e.deltaX) > Math.abs(e.deltaY);
-				delta = d ? e.deltaX : e.deltaY;
-			} else if(this.scrollDirection.horizontal){
-				delta = e.deltaX;
-			}
-
-			this.updateExternal(delta * this.force.wheel);
-		})
-
-		target.addEventListener('touchstart', (e:TouchEvent) => {
-			if (this.disabled) return;
-			if (this.blocked) return;
-
-			const e1 = e.touches[0];
-			touchWheel.startY = e1.clientY;
-			touchWheel.startDrag = performance.now();
-		}, {
-			passive: false
-		})
-
-		target.addEventListener('touchend', (e:TouchEvent) => {
-			if (this.disabled) return;
-			if (this.blocked) return;
-
-			if(performance.now() - touchWheel.startDrag < 100) {
-				this.updateExternal(-touchWheel.delta * 10 * this.force.touch);
-			}
-
-			touchWheel.delta = 0;
-		}, {
-			passive: false
-		})
-
-		target.addEventListener('touchmove', (e:TouchEvent) => {
-			if (this.disabled) return;
-			if (this.blocked) return;
-
-			e.preventDefault();
-			const e1 = e.touches[0];
-			touchWheel.delta = e1.clientY - touchWheel.startY;
-			touchWheel.startY = e1.clientY;
-
-			this.updateExternal(-touchWheel.delta * this.force.touch);
-		}, {
-			passive: false
-		})
 	}
 
 	dispose(){
@@ -416,6 +303,7 @@ export class Scroller {
 
 		for(let i = 0, len = this.sections.length; i < len; i++) {
 			const section = this.sections[i];
+			if(section.disabled) continue;
 			if(vertical) this.distance += section.rect.height;
 			else this.distance += section.sticky.length ? section.rect.height : section.rect.width;
 		}

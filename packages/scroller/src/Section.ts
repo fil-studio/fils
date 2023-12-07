@@ -72,6 +72,9 @@ export class Section {
 	}
 
 	calculateDims() {
+
+		if(this.disabled)	return;
+
 		this.rect = this.dom.getBoundingClientRect();
 
 		// VERTICAL SCROLL THRESHOLDS
@@ -134,6 +137,20 @@ export class Section {
 		}
 	}
 
+	// Disabled sections won't be accounted for
+	disable(){
+		if(this.disabled) return;
+		this.disabled = true;
+		this.dom.classList.add('fil-scroller__section-disabled');
+		this.threshold = [0, 0];
+	}
+
+	enable(){
+		if(!this.disabled) return;
+		this.disabled = false;
+		this.dom.classList.remove('fil-scroller__section-disabled')
+	}
+
 	get position() {
 
 		if(!this.visible){
@@ -161,7 +178,6 @@ export class Section {
 	}
 
 	updateTransform(){
-		if(this.disabled) return;
 		if(this.nativeScrolling) return;
 
 		const wH = this.w.h;
@@ -224,6 +240,7 @@ export class Section {
 	}
 
 	update(){
+		if(this.disabled) return;
 
 		if(!this.visible){
 			const margin = this.w.w;
