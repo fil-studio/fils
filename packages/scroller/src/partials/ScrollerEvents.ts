@@ -35,14 +35,14 @@ export class ScrollerEvents {
 			if (this.blocked) return;
 
 			let delta = e.deltaY;
-			if (s.scrollDirection.horizontal && s.scrollDirection.vertical) {
+			if (s.config.scrollDirection.horizontal && s.config.scrollDirection.vertical) {
 				const d = Math.abs(e.deltaX) > Math.abs(e.deltaY);
 				delta = d ? e.deltaX : e.deltaY;
-			} else if (s.scrollDirection.horizontal) {
+			} else if (s.config.scrollDirection.horizontal) {
 				delta = e.deltaX;
 			}
 
-			s.updateExternal(delta * s.force.wheel);
+			s.updateExternal(delta * s.config.force.wheel);
 		})
 
 		target.addEventListener('touchstart', (e: TouchEvent) => {
@@ -59,7 +59,7 @@ export class ScrollerEvents {
 			if (this.blocked) return;
 
 			if (performance.now() - touchWheel.startDrag < 100) {
-				s.updateExternal(-touchWheel.delta * 10 * s.force.touch);
+				s.updateExternal(-touchWheel.delta * 10 * s.config.force.touch);
 			}
 
 			touchWheel.delta = 0;
@@ -75,7 +75,7 @@ export class ScrollerEvents {
 			touchWheel.delta = e1.clientY - touchWheel.startY;
 			touchWheel.startY = e1.clientY;
 
-			s.updateExternal(-touchWheel.delta * s.force.touch);
+			s.updateExternal(-touchWheel.delta * s.config.force.touch);
 		}, {
 			passive: false
 		})

@@ -70,18 +70,18 @@ export class ScrollerStyles {
 		const s = this.scroller;
 
 		// If it has loop this makes no sense
-		if(s.loop && s.loopAvailable) return;
+		if(s.config.loop && s.loopAvailable) return;
 
 		// Check isAtStart
 		const isAtStart = s.position.current <= s.edges[0] + START_END_OFFSET;
 		if (isAtStart && !this.isAtStart){
 			this.isAtStart = true;
-			s.container.classList.add('fil-scroller__top');
+			s.config.container.classList.add('fil-scroller__top');
 			return;
 		}
 		if (!isAtStart && this.isAtStart) {
 			this.isAtStart = false;
-			s.container.classList.remove('fil-scroller__top');
+			s.config.container.classList.remove('fil-scroller__top');
 			return;
 		}
 
@@ -89,12 +89,12 @@ export class ScrollerStyles {
 		const isAtEnd = s.position.current >= s.edges[1] - START_END_OFFSET;
 		if (isAtEnd && !this.isAtEnd){
 			this.isAtEnd = true;
-			s.container.classList.add('fil-scroller__bottom');
+			s.config.container.classList.add('fil-scroller__bottom');
 			return;
 		}
 		if(!isAtEnd && this.isAtEnd) {
 			this.isAtEnd = false;
-			s.container.classList.remove('fil-scroller__bottom');
+			s.config.container.classList.remove('fil-scroller__bottom');
 			return;
 		}
 	}

@@ -1,7 +1,7 @@
 import { MathUtils } from "@fils/math";
 import { Section } from "./Section";
 import { VirtualScrollBar } from "./VirtualScrollBar";
-import { DEFAULT_EASING, FilScrollerParameters } from "./partials/ScrollerConfig";
+import { DEFAULT_EASING, FilScrollerParameters, ScrollerConfig } from "./partials/ScrollerConfig";
 import { ScrollerEvents } from "./partials/ScrollerEvents";
 import { ScrollerStyles } from "./partials/ScrollerStyles";
 
@@ -18,42 +18,21 @@ export enum D {
 }
 
 export class Scroller {
-	container:HTMLElement;
-	content:HTMLElement;
 
-	sectionsWrapper: HTMLElement;
 	virtualScrollBar:VirtualScrollBar;
-	isBody:boolean = false;
 
 	progress: number = 0;
-
-	scrollDirection = {
-		vertical: true,
-		horizontal: false
-	}
-
-	force = {
-		touch: 1,
-		wheel: 1
-	}
 
 	position:position = {
 		current: 0,
 		target: 0,
 	};
 
-	overScrolling: boolean = false;
-
-	private _direction: D = D.TOP;
-
 	sections:Section[] = [];
 
 	loaded: boolean = false;
-	// paused: boolean = false;
-	disabled: boolean = false;
 
 	distance: number = 0;
-	private _ease: number;
 
 	delta: number = 0;
 
@@ -63,158 +42,84 @@ export class Scroller {
 	};
 
 	edges:number[] = [0,0];
-	loop: boolean = false;
 	loopAvailable: boolean = true;
 
-	useNative:boolean = false;
-
+	config: ScrollerConfig;
 	styles: ScrollerStyles;
 	events: ScrollerEvents;
 
 	constructor(params?:FilScrollerParameters){
-		if(params.customContainer) {
-			this.container = params.customContainer;
-		} else this.container = document.querySelector('[fil-scroller]') as HTMLElement;
 
-		if(params.customContent) {
-			this.content = params.customContent;
-		} else this.content = this.container.querySelector('[fil-scroller-content]') as HTMLElement;
-
-		if(params.loop) this.loop = params.loop;
-
-		this.isBody = this.container === document.body;
-
-		// Allow scroll events
-		this.scrollDirection.vertical = !(params.allowVerticalScrolling === false);
-		this.scrollDirection.horizontal = params.allowHorizontalScrolling === true;
-
-		if(!this.container){
-			console.warn('Fil Scroller - No `[fil-scroller]` element');
-			return;
+		if(params?.showVirtualScrollBar){
+			this.virtualScrollBar = params?.scrollbar || new VirtualScrollBar(0);
 		}
 
-		this.sectionsWrapper = this.container.querySelector('[fil-scroller-sections-wrapper]');
-		if (!this.sectionsWrapper) {
-			console.log(`Fil Scroller - No '[fil-scroller-sections-wrapper]' element, using [fil-scroller-content] as wrapper`);
-			this.sectionsWrapper = this.content;
-		}
-
-		this.ease = params?.easing || DEFAULT_EASING;
-		this.useNative = params?.useNative === true;
-		this._direction = params?.direction || D.TOP;
-
-		if(params.touchForce) this.force.touch = params.touchForce;
-		if(params.wheelForce) this.force.wheel = params.wheelForce;
-
-		if(this.useNative) {
-			console.log('Using Native Scroll');
-			document.querySelector('[fil-scroller]').setAttribute('fil-scroller-native', '');
-
-			if (this._direction !== D.TOP) {
-				console.warn('Native scrolling supports only D.TOP vertical direction! Forcing D.TOP...');
-				this._direction = D.TOP;
-			}
-			this.ease = 1; // force no easing
-
-		} else if(params?.showVirtualScrollBar){
-			this.virtualScrollBar = params?.customScrollBar || new VirtualScrollBar(0);
-		}
+		// Init config
+		this.config = new ScrollerConfig(params);
 
 		// Init Styles
 		this.styles = new ScrollerStyles(this);
 
 		// Init Events
 		this.events = new ScrollerEvents(this);
-		this.addEventListeners(this.container);
+		this.addEventListeners(this.config.container);
 
 		this.refresh();
 	}
 
 	// --------------------------------------------------- EVENTS
 	private addEventListeners(target?: HTMLElement) {
-		if (this.useNative) return;
+		if (this.config.useNative) return;
 		this.events.addEventListeners(target)
 	}
 	// Block - Unblock
 	block() {		this.events.block();	}
 	unblock() {	this.events.unblock(); }
 
-	// get enabled(): boolean {
-	// 	return !this.disabled;
-	// }
-
-	// Disable - enable
-	// disable(){
-	// 	if(this.disabled) return;
-	// 	this.disabled = true;
-	// 	for(const section of this.sections) section.disabled = this.disabled;
-	// 	const b = document.body;
-	// 	if(this.container != b) this.container.setAttribute('fil-scroller', 'disabled');
-	// 	else document.documentElement.classList.add('fil-scroller-disabled');
-	// 	if(this.virtualScrollBar) {
-	// 		this.virtualScrollBar.dom.style.display = 'none';
-	// 	}
-	// }
-	// enable(){
-	// 	if(!this.disabled) return;
-	// 	this.disabled = false;
-	// 	for(const section of this.sections) section.disabled = this.disabled;
-
-	// 	const b = document.body;
-	// 	if (this.container != b) this.container.setAttribute('fil-scroller', '');
-	// 	else document.documentElement.classList.remove('fil-scroller-disabled');
-	// 	if(this.virtualScrollBar) {
-	// 		this.virtualScrollBar.dom.style.display = 'block';
-	// 	}
-	// }
-
-
-
-	set direction(val: D | number){
-		if(this.useNative && val !== D.TOP) {
-			console.warn('Native scrolling supports only D.TOP vertical direction! Forcing D.TOP...');
-			this._direction = D.TOP;
-		} else {
-			this._direction = MathUtils.clamp(val, 0, 3);
-		}
-		for(const section of this.sections) section.direction = this.direction;
+	// Setters - Getters
+	set direction(d: D | number){
+		this.config.setDirection(d);
+		for(const section of this.sections) section.direction = this.config.direction;
 		this.restore();
 	}
 	get direction(){
-		return this._direction;
+		return this.config.direction;
 	}
-
 	set ease(newEase:number) {
-		this._ease = newEase;
+		this.config.easing = newEase;
 	}
 	get ease(){
-		return this._ease;
+		return this.config.easing;
 	}
+
+	// Get scroller direction
+	isHorizontal() {
+		return this.config.isHorizontal();
+	}
+	isVertical() {
+		return this.config.isVertical();
+	}
+
 
 	addSections(){
 
 		// Get only first level child sections
-		const sections:NodeListOf<HTMLElement> = this.sectionsWrapper.querySelectorAll(':scope > [fil-scroller-section]');
+		const sections:NodeListOf<HTMLElement> = this.config.content.querySelectorAll(':scope > [fil-scroller-section]');
 
 		for(let i = 0, len = sections.length; i<len; i++){
 			const _section = sections[i];
 			const id = _section.getAttribute('fil-scroller-section') ? _section.getAttribute('fil-scroller-section') : `section-${i}`;
-			const section = new Section(id, _section, this.direction, this.useNative);
+			const section = new Section(id, _section, this.direction, this.config.useNative);
 			this.sections.push(section);
 		}
 	}
 
-	isHorizontal() {
-		return this.direction === D.LEFT || this.direction === D.RIGHT;
-	}
 
 	restore(){
-		if(this.disabled) return;
-		console.log('Restore');
 
-		const containerRect = this.container.getBoundingClientRect();
+		const containerRect = this.config.container.getBoundingClientRect();
 
-		const vertical = !this.isHorizontal();
+		const vertical = this.isVertical();
 
 		this.w.w = containerRect.width;
 		this.w.h = containerRect.height;
@@ -235,14 +140,9 @@ export class Scroller {
 		this.updateCheckHeight();
 	}
 
-	// contentChanged() {
-	// 	this.restore();
-	// 	this.update();
-	// }
-
 	updateExternal(delta:number){
 
-		if(this.loop && this.loopAvailable)	this.position.target += delta;
+		if(this.config.loop && this.loopAvailable)	this.position.target += delta;
 		else this.position.target = MathUtils.clamp(this.position.target + delta, this.edges[0], this.edges[1]);
 
 	}
@@ -257,8 +157,8 @@ export class Scroller {
 
 		if(forceTop){
 			this.position.current = 0;
-			if(this.useNative) {
-				this.container.scrollTop = 0;
+			if(this.config.useNative) {
+				this.config.container.scrollTop = 0;
 			}
 		}
 		this.position.target = this.position.current;
@@ -280,15 +180,15 @@ export class Scroller {
 	}
 
 	updateTarget(){
-		if(this.useNative) {
-			this.position.target = this.isBody ? window.scrollY : this.container.scrollTop;
+		if(this.config.useNative) {
+			this.position.target = this.config.container.scrollTop;
 		}
 	}
 
 	updateCheckHeight(){
 		this.distance = 0;
 
-		const vertical = !this.isHorizontal();
+		const vertical = this.isVertical();
 
 		for(let i = 0, len = this.sections.length; i < len; i++) {
 			const section = this.sections[i];
@@ -297,8 +197,8 @@ export class Scroller {
 			else this.distance += section.sticky.length ? section.rect.height : section.rect.width;
 		}
 
-		this.content.style.height = `${this.distance}px`;
-		if(!this.useNative && this.virtualScrollBar) {
+		this.config.content.style.height = `${this.distance}px`;
+		if(!this.config.useNative && this.virtualScrollBar) {
 			this.virtualScrollBar.contentHeight = this.distance;
 		}
 
@@ -313,26 +213,21 @@ export class Scroller {
 
 		const previous = this.position.current;
 
-		if(this.disabled) {
+		this.position.current = MathUtils.lerp(
+			this.position.current,
+			this.position.target,
+			this.config.easing
+		);
+
+		if(Math.abs(this.position.target-this.position.current) < 1) {
 			this.position.current = this.position.target;
-		} else {
-
-			this.position.current = MathUtils.lerp(
-				this.position.current,
-				this.position.target,
-				this.ease
-			);
-
-			if(Math.abs(this.position.target-this.position.current) < 1) {
-				this.position.current = this.position.target;
-			}
 		}
 
-		if(!this.useNative && this.virtualScrollBar) {
+		if(!this.config.useNative && this.virtualScrollBar) {
 			this.virtualScrollBar.progress = MathUtils.clamp(this.position.current / this.edges[1], 0, 1);
 		}
 
-		if(!this.loop || !this.loopAvailable){
+		if(!this.config.loop || !this.loopAvailable){
 			this.position.current = MathUtils.clamp(this.position.current, this.edges[0], this.edges[1]);
 		}
 
@@ -343,10 +238,10 @@ export class Scroller {
 
 	// This will seameless restart the loop in both directions
 	updateLoop(){
-		if(!this.loop) return;
+		if(!this.config.loop) return;
 		if(!this.loopAvailable) return;
 
-		const vertical = !this.isHorizontal();
+		const vertical = this.isVertical();
 		const d = vertical ? this.w.h : this.w.w;
 		const distanceBetweenCurrentAndTarget = this.position.target - this.position.current;
 
@@ -372,11 +267,11 @@ export class Scroller {
 		}
 
 		// This will make sections believe they are active if the current position is between edges and loop restart
-		if(!this.loop) return;
+		if(!this.config.loop) return;
 		if(!this.loopAvailable) return;
 
 
-		const vertical = !this.isHorizontal();
+		const vertical = this.isVertical();
 		const d = vertical ? this.w.h : this.w.w;
 
 		let p = 0;
@@ -442,8 +337,8 @@ export class Scroller {
 		const _k = MathUtils.clamp(k, this.edges[0], this.edges[1]);
 		this.position.target = _k;
 
-		if(this.useNative){
-			this.container.scrollTop = k;
+		if(this.config.useNative){
+			this.config.container.scrollTop = k;
 		}
 	}
 
@@ -459,13 +354,13 @@ export class Scroller {
 
 		const sec = this.sections[k];
 
-		if(this.useNative) {
+		if(this.config.useNative) {
 			// NOTE: If you are in native mode you might just
 			// want to animate using gsap or raf lerp instead
 			const top = Math.min(sec.rect.top, this.distance-this.w.h);
-			this.container.scrollTop = top;
+			this.config.container.scrollTop = top;
 		} else {
-			if(!this.isHorizontal()) {
+			if(this.isVertical()) {
 				const top = Math.min(sec.rect.top, this.distance-this.w.h);
 				this.position.target = top;
 			} else {
