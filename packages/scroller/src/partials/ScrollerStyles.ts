@@ -1,5 +1,6 @@
+import { Scroller } from "../Scroller";
 
-export const style = `
+const style = `
 	html {
 		overscroll-behavior: none;
 	}
@@ -45,3 +46,57 @@ export const style = `
 		display: none;
 	}
 `;
+
+
+const START_END_OFFSET = 10;
+export class ScrollerStyles {
+	private scroller: Scroller;
+	private isAtStart:boolean = false;
+	private isAtEnd:boolean = false;
+
+	constructor(scroller: Scroller){
+		this.scroller = scroller;
+		this.addStyles();
+	}
+
+	addStyles() {
+		document.documentElement.setAttribute('fil-scroller-parent', '')
+		const _styles = document.createElement('style');
+		_styles.textContent = style;
+		document.head.append(_styles);
+	}
+
+	update(){
+		const s = this.scroller;
+
+		// If it has loop this makes no sense
+		if(s.loop && s.loopAvailable) return;
+
+		// Check isAtStart
+		const isAtStart = s.position.current <= s.edges[0] + START_END_OFFSET;
+		if (isAtStart && !this.isAtStart){
+			this.isAtStart = true;
+			s.container.classList.add('fil-scroller__top');
+			return;
+		}
+		if (!isAtStart && this.isAtStart) {
+			this.isAtStart = false;
+			s.container.classList.remove('fil-scroller__top');
+			return;
+		}
+
+		// Check isAtEnd
+		const isAtEnd = s.position.current >= s.edges[1] - START_END_OFFSET;
+		if (isAtEnd && !this.isAtEnd){
+			this.isAtEnd = true;
+			s.container.classList.add('fil-scroller__bottom');
+			return;
+		}
+		if(!isAtEnd && this.isAtEnd) {
+			this.isAtEnd = false;
+			s.container.classList.remove('fil-scroller__bottom');
+			return;
+		}
+	}
+
+}

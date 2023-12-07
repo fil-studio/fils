@@ -1,9 +1,9 @@
 import { MathUtils } from "@fils/math";
 import { Section } from "./Section";
 import { VirtualScrollBar } from "./VirtualScrollBar";
-import { style } from "./partials/ScrollerStyles";
 import { DEFAULT_EASING, FilScrollerParameters } from "./partials/ScrollerConfig";
 import { ScrollerEvents } from "./partials/ScrollerEvents";
+import { ScrollerStyles } from "./partials/ScrollerStyles";
 
 interface position {
 	current: number,
@@ -68,6 +68,7 @@ export class Scroller {
 
 	useNative:boolean = false;
 
+	styles: ScrollerStyles;
 	events: ScrollerEvents;
 
 	constructor(params?:FilScrollerParameters){
@@ -119,11 +120,14 @@ export class Scroller {
 			this.virtualScrollBar = params?.customScrollBar || new VirtualScrollBar(0);
 		}
 
-		this.addStyles();
-		this.refresh();
+		// Init Styles
+		this.styles = new ScrollerStyles(this);
 
+		// Init Events
 		this.events = new ScrollerEvents(this);
 		this.addEventListeners(this.container);
+
+		this.refresh();
 	}
 
 	// --------------------------------------------------- EVENTS
@@ -185,16 +189,6 @@ export class Scroller {
 	}
 	get ease(){
 		return this._ease;
-	}
-
-	addStyles(){
-
-		document.documentElement.setAttribute('fil-scroller-parent', '')
-
-		const _styles = document.createElement('style');
-		_styles.textContent = style;
-		document.head.append(_styles);
-
 	}
 
 	addSections(){
@@ -425,6 +419,8 @@ export class Scroller {
 	update(){
 		if(!this.loaded) return;
 
+		this.styles.update();
+
 		this.updateTarget();
 		this.updateScrollValues();
 		this.updateLoop();
@@ -432,10 +428,6 @@ export class Scroller {
 		if(Math.abs(this.delta) > .001) {
 			this.updateSections();
 		}
-
-		// Update container classes
-		this.container.classList.toggle('fil-scroller__top', this.position.current <= this.edges[0] + 0.5);
-		this.container.classList.toggle('fil-scroller__bottom', this.position.current >= this.edges[1] - 0.5);
 
 		this.progress = MathUtils.truncateDecimals(MathUtils.map(this.position.current, this.edges[0], this.edges[1], 0, 1), 3);
 
