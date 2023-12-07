@@ -9,9 +9,20 @@ const touchWheel = {
 
 export class ScrollerEvents {
 	private scroller: Scroller;
+	private blocked: boolean = false;
 
 	constructor(scroller:Scroller){
 		this.scroller = scroller;
+	}
+
+	// Block - Unblock
+	block() {
+		if (this.blocked) return;
+		this.blocked = true;
+	}
+	unblock() {
+		if (!this.blocked) return;
+		this.blocked = false;
 	}
 
 	addEventListeners(_target?:HTMLElement){
@@ -21,9 +32,7 @@ export class ScrollerEvents {
 		const s = this.scroller;
 
 		target.addEventListener('wheel', (e: WheelEvent) => {
-
-			if (s.disabled) return;
-			if (s.blocked) return;
+			if (this.blocked) return;
 
 			let delta = e.deltaY;
 			if (s.scrollDirection.horizontal && s.scrollDirection.vertical) {
@@ -37,8 +46,7 @@ export class ScrollerEvents {
 		})
 
 		target.addEventListener('touchstart', (e: TouchEvent) => {
-			if (s.disabled) return;
-			if (s.blocked) return;
+			if (this.blocked) return;
 
 			const e1 = e.touches[0];
 			touchWheel.startY = e1.clientY;
@@ -48,8 +56,7 @@ export class ScrollerEvents {
 		})
 
 		target.addEventListener('touchend', (e: TouchEvent) => {
-			if (s.disabled) return;
-			if (s.blocked) return;
+			if (this.blocked) return;
 
 			if (performance.now() - touchWheel.startDrag < 100) {
 				s.updateExternal(-touchWheel.delta * 10 * s.force.touch);
@@ -61,8 +68,7 @@ export class ScrollerEvents {
 		})
 
 		target.addEventListener('touchmove', (e: TouchEvent) => {
-			if (s.disabled) return;
-			if (s.blocked) return;
+			if (this.blocked) return;
 
 			e.preventDefault();
 			const e1 = e.touches[0];

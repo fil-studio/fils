@@ -51,7 +51,6 @@ export class Scroller {
 	loaded: boolean = false;
 	// paused: boolean = false;
 	disabled: boolean = false;
-	blocked: boolean = false;
 
 	distance: number = 0;
 	private _ease: number;
@@ -127,49 +126,45 @@ export class Scroller {
 		this.addEventListeners(this.container);
 	}
 
+	// --------------------------------------------------- EVENTS
 	private addEventListeners(target?: HTMLElement) {
 		if (this.useNative) return;
 		this.events.addEventListeners(target)
 	}
+	// Block - Unblock
+	block() {		this.events.block();	}
+	unblock() {	this.events.unblock(); }
 
-	get enabled(): boolean {
-		return !this.disabled;
-	}
+	// get enabled(): boolean {
+	// 	return !this.disabled;
+	// }
 
 	// Disable - enable
-	disable(){
-		if(this.disabled) return;
-		this.disabled = true;
-		for(const section of this.sections) section.disabled = this.disabled;
-		const b = document.body;
-		if(this.container != b) this.container.setAttribute('fil-scroller', 'disabled');
-		else document.documentElement.classList.add('fil-scroller-disabled');
-		if(this.virtualScrollBar) {
-			this.virtualScrollBar.dom.style.display = 'none';
-		}
-	}
-	enable(){
-		if(!this.disabled) return;
-		this.disabled = false;
-		for(const section of this.sections) section.disabled = this.disabled;
+	// disable(){
+	// 	if(this.disabled) return;
+	// 	this.disabled = true;
+	// 	for(const section of this.sections) section.disabled = this.disabled;
+	// 	const b = document.body;
+	// 	if(this.container != b) this.container.setAttribute('fil-scroller', 'disabled');
+	// 	else document.documentElement.classList.add('fil-scroller-disabled');
+	// 	if(this.virtualScrollBar) {
+	// 		this.virtualScrollBar.dom.style.display = 'none';
+	// 	}
+	// }
+	// enable(){
+	// 	if(!this.disabled) return;
+	// 	this.disabled = false;
+	// 	for(const section of this.sections) section.disabled = this.disabled;
 
-		const b = document.body;
-		if (this.container != b) this.container.setAttribute('fil-scroller', '');
-		else document.documentElement.classList.remove('fil-scroller-disabled');
-		if(this.virtualScrollBar) {
-			this.virtualScrollBar.dom.style.display = 'block';
-		}
-	}
+	// 	const b = document.body;
+	// 	if (this.container != b) this.container.setAttribute('fil-scroller', '');
+	// 	else document.documentElement.classList.remove('fil-scroller-disabled');
+	// 	if(this.virtualScrollBar) {
+	// 		this.virtualScrollBar.dom.style.display = 'block';
+	// 	}
+	// }
 
-	// Block - Unblock
-	block(){
-		if(this.blocked) return;
-		this.blocked = true;
-	}
-	unblock(){
-		if (!this.blocked) return;
-		this.blocked = false;
-	}
+
 
 	set direction(val: D | number){
 		if(this.useNative && val !== D.TOP) {
