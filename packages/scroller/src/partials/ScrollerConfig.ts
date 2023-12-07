@@ -46,6 +46,10 @@ export class ScrollerConfig {
 		horizontal: false
 	}
 
+	// Check if it's possible to do a full loop
+	loopPossible: boolean = false;
+
+
 	constructor(params?: FilScrollerParameters){
 
 		// Default values
@@ -94,6 +98,7 @@ export class ScrollerConfig {
 
 	}
 
+	// Set scroll direction
 	setDirection(d:D){
 		this.direction = d;
 
@@ -103,12 +108,17 @@ export class ScrollerConfig {
 		}
 	}
 
+	// Get scroll direction
 	isHorizontal(){
 		return this.direction === D.LEFT || this.direction === D.RIGHT;
 	}
-
 	isVertical(){
 		return this.direction === D.TOP || this.direction === D.BOTTOM;
+	}
+
+	// Returns true if the loop is wanted and possible
+	canLoop(){
+		return this.loop && this.loopPossible;
 	}
 
 }

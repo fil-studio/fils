@@ -20,20 +20,16 @@ export enum D {
 export class Scroller {
 
 	virtualScrollBar:VirtualScrollBar;
+	sections: Section[] = [];
+
+	loaded: boolean = false;
 
 	progress: number = 0;
-
 	position:position = {
 		current: 0,
 		target: 0,
 	};
-
-	sections:Section[] = [];
-
-	loaded: boolean = false;
-
 	distance: number = 0;
-
 	delta: number = 0;
 
 	w:{w:number, h:number} = {
@@ -42,7 +38,6 @@ export class Scroller {
 	};
 
 	edges:number[] = [0,0];
-	loopAvailable: boolean = true;
 
 	config: ScrollerConfig;
 	styles: ScrollerStyles;
@@ -50,12 +45,11 @@ export class Scroller {
 
 	constructor(params?:FilScrollerParameters){
 
-		if(params?.showVirtualScrollBar){
-			this.virtualScrollBar = params?.scrollbar || new VirtualScrollBar(0);
-		}
-
 		// Init config
 		this.config = new ScrollerConfig(params);
+		if(this.config.showVirtualScrollBar) {
+			this.virtualScrollBar = this.config.scrollbar || new VirtualScrollBar(0);
+		}
 
 		// Init Styles
 		this.styles = new ScrollerStyles(this);
@@ -107,9 +101,8 @@ export class Scroller {
 		const sections:NodeListOf<HTMLElement> = this.config.content.querySelectorAll(':scope > [fil-scroller-section]');
 
 		for(let i = 0, len = sections.length; i<len; i++){
-			const _section = sections[i];
-			const id = _section.getAttribute('fil-scroller-section') ? _section.getAttribute('fil-scroller-section') : `section-${i}`;
-			const section = new Section(id, _section, this.direction, this.config.useNative);
+			const dom = sections[i];
+			const section = new Section(i, dom, this.config);
 			this.sections.push(section);
 		}
 	}
@@ -142,7 +135,7 @@ export class Scroller {
 
 	updateExternal(delta:number){
 
-		if(this.config.loop && this.loopAvailable)	this.position.target += delta;
+		if(this.config.canLoop())	this.position.target += delta;
 		else this.position.target = MathUtils.clamp(this.position.target + delta, this.edges[0], this.edges[1]);
 
 	}
@@ -205,7 +198,8 @@ export class Scroller {
 		const d = vertical ? this.w.h : this.w.w;
 		this.edges[0] = 0;
 		this.edges[1] = this.distance - d;
-		this.loopAvailable = this.distance >= d * 2;
+
+		this.config.loopPossible = this.distance >= d * 2;
 
 	}
 
@@ -227,7 +221,7 @@ export class Scroller {
 			this.virtualScrollBar.progress = MathUtils.clamp(this.position.current / this.edges[1], 0, 1);
 		}
 
-		if(!this.config.loop || !this.loopAvailable){
+		if(!this.config.canLoop()){
 			this.position.current = MathUtils.clamp(this.position.current, this.edges[0], this.edges[1]);
 		}
 
@@ -238,8 +232,7 @@ export class Scroller {
 
 	// This will seameless restart the loop in both directions
 	updateLoop(){
-		if(!this.config.loop) return;
-		if(!this.loopAvailable) return;
+		if(!this.config.canLoop()) return;
 
 		const vertical = this.isVertical();
 		const d = vertical ? this.w.h : this.w.w;
@@ -267,9 +260,7 @@ export class Scroller {
 		}
 
 		// This will make sections believe they are active if the current position is between edges and loop restart
-		if(!this.config.loop) return;
-		if(!this.loopAvailable) return;
-
+		if(this.config.canLoop()) return;
 
 		const vertical = this.isVertical();
 		const d = vertical ? this.w.h : this.w.w;
@@ -290,7 +281,6 @@ export class Scroller {
 		}
 
 
-
 		if(this.position.current > this.distance - d){
 
 			let l = this.sections.length - 1;
@@ -305,8 +295,6 @@ export class Scroller {
 			}
 
 		}
-
-
 
 	}
 

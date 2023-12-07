@@ -1,5 +1,6 @@
 import { MathUtils } from "@fils/math";
 import { D } from "./Scroller";
+import { ScrollerConfig } from "./partials/ScrollerConfig";
 
 export interface ScrollerSectionListener {
 	onAnimationIn?();
@@ -24,7 +25,6 @@ export class Section {
 
 	progress: number = 0;
 
-	protected _direction: D = D.LEFT;
 	threshold:number[] = [];
 
 	scroll: number = 0;
@@ -43,15 +43,18 @@ export class Section {
 
 	sticky:HTMLElement[] = [];
 
-	nativeScrolling:boolean = false;
+	config: ScrollerConfig;
 
-	constructor(id: string, dom: HTMLElement, direction: D, useNative?:boolean){
+	constructor(i:number, dom: HTMLElement, config: ScrollerConfig){
 
-		this.id = id;
+		// Set ID
+		const id = this.dom.getAttribute('fil-scroller-section');
+		if(id) this.id = id;
+		else this.id = `section-${i}`;
+
 		this.dom = dom;
-		this._direction = direction;
 
-		this.nativeScrolling = useNative === true;
+		this.config = config;
 
 		const s = dom.querySelectorAll('[fil-scroller-sticky]');
 
@@ -61,16 +64,6 @@ export class Section {
 
 	}
 
-	set direction(value:D) {
-		if(this._direction === value) return;
-		this._direction = value;
-
-	}
-
-	get direction():D {
-		return this._direction;
-	}
-
 	calculateDims() {
 
 		if(this.disabled)	return;
@@ -78,12 +71,12 @@ export class Section {
 		this.rect = this.dom.getBoundingClientRect();
 
 		// VERTICAL SCROLL THRESHOLDS
-		if(this.direction === D.TOP || this.direction === D.BOTTOM) {
+		if(this.config.isVertical()) {
 			this.threshold = [
 				this.rect.top - this.w.h,
 				this.rect.top + this.rect.height
 			];
-			if(this.nativeScrolling) {
+			if(this.config.useNative) {
 				this.threshold[0] += this.scroll;
 				this.threshold[1] += this.scroll;
 			}
@@ -157,19 +150,19 @@ export class Section {
 			this._position.x = 0;
 			this._position.y = -this.w.h;
 		}
-		if(this.direction === D.TOP){
+		if(this.config.direction === D.TOP){
 			this._position.x = 0;
 			this._position.y = -this.scroll;
 		}
-		if(this.direction === D.BOTTOM){
+		if(this.config.direction === D.BOTTOM){
 			this._position.x = 0;
 			this._position.y = this.scroll + (this.w.h - this.rect.height) - this.rect.top * 2;
 		}
-		if(this.direction === D.LEFT){
+		if(this.config.direction === D.LEFT){
 			this._position.x = this.widthOffset - this.scroll;
 			this._position.y = -this.rect.top;
 		}
-		if(this.direction === D.RIGHT){
+		if(this.config.direction === D.RIGHT){
 			this._position.x = this.scroll + (this.w.w - this.rect.width) - this.widthOffset;
 			this._position.y = -this.rect.top;
 		}
@@ -178,7 +171,7 @@ export class Section {
 	}
 
 	updateTransform(){
-		if(this.nativeScrolling) return;
+		if(this.config.useNative) return;
 
 		const wH = this.w.h;
 		const wW = this.w.w;
@@ -187,7 +180,7 @@ export class Section {
 
 		for(const s of this.sticky) {
 			let tY, sY;
-			switch(this.direction) {
+			switch(this.config.direction) {
 				case D.TOP:
 					tY = 1 - MathUtils.smoothstep(-this.threshold[1] + wH, -this.threshold[0] - wH, py);
 					sY = tY * (this.threshold[1] - this.threshold[0] - 2*wH);
