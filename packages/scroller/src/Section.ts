@@ -262,26 +262,27 @@ export class Section {
 		if (!this.visible) {
 			this._position.x = 0;
 			this._position.y = -this.containerSize.h;
-		} else { // Todo mirar que aquest else estigui bé que l'he posat una mica a saco
-			if (this.config.direction === D.TOP) {
-				this._position.x = 0;
-				this._position.y = -this.scroll;
-			}
-			if (this.config.direction === D.BOTTOM) {
-				this._position.x = 0;
-				this._position.y = this.scroll + (this.containerSize.h - this.rect.height) - this.rect.top * 2;
-			}
-			if (this.config.direction === D.LEFT) {
-				// Section offset in relation to the other sections
-				this._position.x = this.offset - this.scroll;
-				this._position.y = -this.rect.top;
-			}
-			if (this.config.direction === D.RIGHT) {
-				// Section offset in relation to the other sections
-				this._position.x = this.scroll + (this.containerSize.w - this.rect.width) - this.offset;
-				this._position.y = -this.rect.top;
-			}
 		}
+
+		if (this.config.direction === D.TOP) {
+			this._position.x = 0;
+			this._position.y = -this.scroll;
+		}
+		if (this.config.direction === D.BOTTOM) {
+			this._position.x = 0;
+			this._position.y = this.scroll + (this.containerSize.h - this.rect.height) - this.rect.top * 2;
+		}
+		if (this.config.direction === D.LEFT) {
+			// Section offset in relation to the other sections
+			this._position.x = this.offset - this.scroll;
+			this._position.y = -this.rect.top;
+		}
+		if (this.config.direction === D.RIGHT) {
+			// Section offset in relation to the other sections
+			this._position.x = this.scroll + (this.containerSize.w - this.rect.width) - this.offset;
+			this._position.y = -this.rect.top;
+		}
+
 
 		return this._position;
 	}

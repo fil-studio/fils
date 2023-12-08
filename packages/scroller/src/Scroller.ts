@@ -274,6 +274,7 @@ export class Scroller {
 
 			for(let i = l; i > 0; i--){
 				if (p > containerSize) break;
+
 				const section = this.sections[i];
 				const current = this.position.current + this.distance;
 				this.updateSection(section, current, this.delta);
