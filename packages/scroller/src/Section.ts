@@ -11,22 +11,27 @@ export interface ScrollerSectionListener {
 
 const PRECISION = 5;
 
+// Todo
+// -- treure lo de this.containerSize, que ho miri de config
+// -- bug disabled i restore
+
 export class Section {
 	id: string;
 	dom: HTMLElement;
+	config: ScrollerConfig;
 
+	// Section rect
 	rect: DOMRect;
-	widthOffset: number;
+	// Section offset in relation to the other sections
+	offset: number;
 
-	w:{w:number, h:number} = {
+	containerSize:{w:number, h:number} = {
 		w: 0,
 		h: 0
 	};
 
 	progress: number = 0;
-
 	threshold:number[] = [];
-
 	scroll: number = 0;
 	delta: number = 0;
 
@@ -43,82 +48,90 @@ export class Section {
 
 	sticky:HTMLElement[] = [];
 
-	config: ScrollerConfig;
-
 	constructor(i:number, dom: HTMLElement, config: ScrollerConfig){
 
 		// Set ID
+		this.dom = dom;
+
 		const id = this.dom.getAttribute('fil-scroller-section');
 		if(id) this.id = id;
 		else this.id = `section-${i}`;
 
-		this.dom = dom;
-
 		this.config = config;
 
 		const s = dom.querySelectorAll('[fil-scroller-sticky]');
-
 		s.forEach(value=> {
 			this.sticky.push(value as HTMLElement);
 		})
 
 	}
 
-	calculateDims() {
+	restore() {
+		this.onBeforeRestore();
 
-		if(this.disabled)	return;
+		this.dom.style.transform = '';
+
+		this.progress = 0;
+
+		// Section offset in relation to the other sections
+		// todo aqui el offset ha d'estar 100% canviat abans de fer restore, mirar que estigui bé aixo
+		this.calculateThreshold();
+
+		this.updateTransform();
+
+		this.onAfterRestore();
+
+	}
+	calculateThreshold() {
 
 		this.rect = this.dom.getBoundingClientRect();
 
 		// VERTICAL SCROLL THRESHOLDS
 		if(this.config.isVertical()) {
+
 			this.threshold = [
-				this.rect.top - this.w.h,
+				this.rect.top - this.containerSize.h,
 				this.rect.top + this.rect.height
 			];
+
 			if(this.config.useNative) {
 				this.threshold[0] += this.scroll;
 				this.threshold[1] += this.scroll;
 			}
 
 		} else {
+
 			this.threshold = [
-				this.widthOffset - this.w.w,
-				this.widthOffset + this.rect.width
+				// Section offset in relation to the other sections
+				this.offset - this.containerSize.w,
+				// Section offset in relation to the other sections
+				this.offset + this.rect.width
 			];
 		}
 
 	}
 
-	addSectionListener(lis:ScrollerSectionListener) {
-		if(this.listeners.indexOf(lis) > -1) return;
+	// Listeners
+	addSectionListener(lis: ScrollerSectionListener) {
+		if (this.listeners.indexOf(lis) > -1) return;
 		this.listeners.push(lis);
 	}
-
-	removeSectionListener(lis:ScrollerSectionListener) {
+	removeSectionListener(lis: ScrollerSectionListener) {
 		this.listeners.splice(
 			this.listeners.indexOf(lis),
 			1
 		);
 	}
-
-	restore(){
-		for(const lis of this.listeners) {
+	onBeforeRestore(){
+		for (const lis of this.listeners) {
 			lis?.onBeforeRestore();
 		}
-		this.dom.style.transform = '';
-
-		this.progress = 0;
-
-		this.calculateDims();
-
-		for(const lis of this.listeners) {
+	}
+	onAfterRestore(){
+		for (const lis of this.listeners) {
 			lis?.onAfterRestore();
 		}
-
-		this.updateTransform();
 	}
-
 	animationIn(){
 		for(const lis of this.listeners) {
 			lis?.onAnimationIn();
@@ -137,116 +150,53 @@ export class Section {
 		this.dom.classList.add('fil-scroller__section-disabled');
 		this.threshold = [0, 0];
 	}
-
 	enable(){
 		if(!this.disabled) return;
 		this.disabled = false;
 		this.dom.classList.remove('fil-scroller__section-disabled')
 	}
 
-	get position() {
-
-		if(!this.visible){
-			this._position.x = 0;
-			this._position.y = -this.w.h;
-		}
-		if(this.config.direction === D.TOP){
-			this._position.x = 0;
-			this._position.y = -this.scroll;
-		}
-		if(this.config.direction === D.BOTTOM){
-			this._position.x = 0;
-			this._position.y = this.scroll + (this.w.h - this.rect.height) - this.rect.top * 2;
-		}
-		if(this.config.direction === D.LEFT){
-			this._position.x = this.widthOffset - this.scroll;
-			this._position.y = -this.rect.top;
-		}
-		if(this.config.direction === D.RIGHT){
-			this._position.x = this.scroll + (this.w.w - this.rect.width) - this.widthOffset;
-			this._position.y = -this.rect.top;
-		}
-
-		return this._position;
-	}
-
-	updateTransform(){
-		if(this.config.useNative) return;
-
-		const wH = this.w.h;
-		const wW = this.w.w;
-		let px = this.position.x;
-		let py = this.position.y;
-
-		for(const s of this.sticky) {
-			let tY, sY;
-			switch(this.config.direction) {
-				case D.TOP:
-					tY = 1 - MathUtils.smoothstep(-this.threshold[1] + wH, -this.threshold[0] - wH, py);
-					sY = tY * (this.threshold[1] - this.threshold[0] - 2*wH);
-					s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(PRECISION)},0,1)`;
-					break;
-				case D.BOTTOM:
-					// console.log(-this.threshold[1]+ wH, -this.threshold[0]-wH, py);
-					tY = 1 - MathUtils.smoothstep(-this.threshold[1]+ wH, -this.threshold[0]-wH, py);
-					sY = tY * (this.threshold[1] - this.threshold[0] - 2*wH);
-					s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(PRECISION)},0,1)`;
-					break;
-				// case D.RIGHT:
-				// 	tY = 1 - MathUtils.smoothstep(-this.threshold[1]+ wW, -this.threshold[0]-wW, px);
-				// 	sY = tY * (this.threshold[1] - this.threshold[0] - 2*wW);
-				// 	s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${sY.toFixed(PRECISION)},0,0,1)`;
-				// 	break;
-				case D.LEFT:
-					tY = 1 - MathUtils.smoothstep(-this.threshold[1]+ wW, -this.threshold[0]-wW, px);
-					sY = tY * (this.threshold[1] - this.threshold[0] - 2*wW);
-					s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${sY.toFixed(PRECISION)},0,0,1)`;
-					break;
-			}
-		}
-
-		this.dom.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${px.toFixed(PRECISION)},${py.toFixed(PRECISION)},0,1)`;
-	}
-
+	// Show - Hide
 	protected show() {
 		if(this.visible) return;
 
 		this.animationIn();
-		// this.dom.classList.remove('fil-scroller__disabled');
+
 		this.dom.classList.add('fil-scroller__visible');
 		this.visible = true;
 	}
-
 	protected hide() {
 		if(!this.visible) return;
 
 		this.animationOut();
+
 		this.visible = false;
 		this.progress = 0;
-		// this.progressIn = 0;
-		// this.progressOut = 0;
 		this.delta = 0;
 		this.dom.classList.remove('fil-scroller__visible');
-		// this.dom.classList.add('fil-scroller__disabled');
 		this.dom.style.setProperty('--fil-scroller-delta', '0');
 		this.dom.style.setProperty('--fil-scroller-progress', '0');
 	}
 
-	update(){
-		if(this.disabled) return;
+	// ------------------------- UPDATE
+	updateCloseToVisible(){
+		if(this.visible) return;
 
-		if(!this.visible){
-			const margin = this.w.w;
-			if (this.scroll + margin > this.threshold[0] && this.scroll + margin < this.threshold[1]) {
-				this.closeToVisible = true;
-			} else {
-				this.closeToVisible = false;
-			}
+		const margin = this.containerSize.w;
+		const close1 = this.scroll + margin > this.threshold[0];
+		const close2 = this.scroll + margin < this.threshold[1];
+		const inRange = close1 && close2;
+		if (inRange != this.closeToVisible){
+			this.dom.classList.toggle('fil-scroller__section-close-to-visible', inRange);
+			this.closeToVisible = inRange;
 		}
+	}
+	updateVisible(){
 
-		if(this.scroll > this.threshold[0] && this.scroll < this.threshold[1] ) {
+		// If its visible then
+		if (this.scroll > this.threshold[0] && this.scroll < this.threshold[1]) {
 
-			if(!this.visible) {
+			if (!this.visible) {
 				this.show();
 			}
 
@@ -256,14 +206,91 @@ export class Section {
 
 			this.updateTransform();
 
-			return
+			return;
 		}
 
+		// if it's not between thresholds and its visible, hide it
+		if (this.visible) {
+			this.hide();
+			this.updateTransform();
+		}
+	}
+	updateSticky(){
+		const cH = this.containerSize.h;
+		const cW = this.containerSize.w;
+		const t0 = this.threshold[0];
+		const t1 = this.threshold[1];
 
-		if(!this.visible) return;
+		for (const s of this.sticky) {
+			let tY, sY;
+			switch (this.config.direction) {
+				case D.TOP:
+					tY = 1 - MathUtils.smoothstep(-t1 + cH, -t0 - cH, py);
+					sY = tY * (t1 - t0 - 2 * cH);
+					s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(PRECISION)},0,1)`;
+					break;
+				case D.BOTTOM:
+					tY = 1 - MathUtils.smoothstep(-t1 + cH, -t0 - cH, py);
+					sY = tY * (t1 - t0 - 2 * cH);
+					s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(PRECISION)},0,1)`;
+					break;
+				// case D.RIGHT:
+				// 	tY = 1 - MathUtils.smoothstep(-t1+ cW, -t0-cW, px);
+				// 	sY = tY * (t1 - t0 - 2*cW);
+				// 	s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${sY.toFixed(PRECISION)},0,0,1)`;
+				// 	break;
+				case D.LEFT:
+					tY = 1 - MathUtils.smoothstep(-t1 + cW, -t0 - cW, px);
+					sY = tY * (this.threshold[1] - t0 - 2 * cW);
+					s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${sY.toFixed(PRECISION)},0,0,1)`;
+					break;
+			}
+		}
+	}
+	updateTransform() {
+		if (this.config.useNative) return;
 
-		this.hide();
+		this.updateSticky();
 
-		this.updateTransform();
+		let px = this.position.x;
+		let py = this.position.y;
+		this.dom.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${px.toFixed(PRECISION)},${py.toFixed(PRECISION)},0,1)`;
+	}
+	get position() {
+
+		if (!this.visible) {
+			this._position.x = 0;
+			this._position.y = -this.containerSize.h;
+		} else { // Todo mirar que aquest else estigui bé que l'he posat una mica a saco
+			if (this.config.direction === D.TOP) {
+				this._position.x = 0;
+				this._position.y = -this.scroll;
+			}
+			if (this.config.direction === D.BOTTOM) {
+				this._position.x = 0;
+				this._position.y = this.scroll + (this.containerSize.h - this.rect.height) - this.rect.top * 2;
+			}
+			if (this.config.direction === D.LEFT) {
+				// Section offset in relation to the other sections
+				this._position.x = this.offset - this.scroll;
+				this._position.y = -this.rect.top;
+			}
+			if (this.config.direction === D.RIGHT) {
+				// Section offset in relation to the other sections
+				this._position.x = this.scroll + (this.containerSize.w - this.rect.width) - this.offset;
+				this._position.y = -this.rect.top;
+			}
+		}
+
+		return this._position;
+	}
+
+	update(){
+		if(this.disabled) return;
+
+		// Toggle closeToVisible if it's close
+		this.updateCloseToVisible();
+		this.updateVisible();
+
 	}
 }

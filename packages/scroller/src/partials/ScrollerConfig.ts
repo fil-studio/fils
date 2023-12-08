@@ -49,7 +49,6 @@ export class ScrollerConfig {
 	// Check if it's possible to do a full loop
 	loopPossible: boolean = false;
 
-
 	constructor(params?: FilScrollerParameters){
 
 		// Default values
