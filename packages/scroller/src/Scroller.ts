@@ -74,7 +74,6 @@ export class Scroller {
 	// Setters - Getters
 	set direction(d: D | number){
 		this.config.setDirection(d);
-		for(const section of this.sections) section.direction = this.config.direction;
 		this.restore();
 	}
 	get direction(){
@@ -95,7 +94,6 @@ export class Scroller {
 		return this.config.isVertical();
 	}
 
-
 	addSections(){
 
 		// Get only first level child sections
@@ -108,7 +106,6 @@ export class Scroller {
 		}
 	}
 
-
 	restore(){
 
 		const containerRect = this.config.container.getBoundingClientRect();
@@ -118,17 +115,18 @@ export class Scroller {
 		this.containerSize.w = containerRect.width;
 		this.containerSize.h = containerRect.height;
 
-		for(const section of this.sections) {
-			section.containerSize = this.containerSize;
-			section.restore();
-		}
-
 		let w = 0;
 		for(let section of this.sections) {
+			section.containerSize = this.containerSize;
 			section.offset = w;
 			if(section.disabled) continue;
 			w += vertical ? section.rect.height : section.rect.width;
 		}
+
+		for (const section of this.sections) {
+			section.restore();
+		}
+
 
 		this.updateSections();
 		this.updateCheckHeight();
@@ -186,15 +184,17 @@ export class Scroller {
 		}
 
 		this.config.content.style.height = `${this.distance}px`;
+
 		if(!this.config.useNative && this.virtualScrollBar) {
 			this.virtualScrollBar.contentHeight = this.distance;
 		}
 
-		const d = vertical ? this.containerSize.h : this.containerSize.w;
+		const containerSize = vertical ? this.containerSize.h : this.containerSize.w;
 		this.edges[0] = 0;
-		this.edges[1] = this.distance - d;
+		this.edges[1] = this.distance - containerSize;
 
-		this.config.loopPossible = this.distance >= d * 2;
+
+		this.config.loopPossible = this.distance >= containerSize * 2;
 
 	}
 	updateTarget() {
@@ -260,7 +260,7 @@ export class Scroller {
 		}
 
 		// This will make sections believe they are active if the current position is between edges and loop restart
-		if(this.config.canLoop()) return;
+		if(!this.config.canLoop()) return;
 
 		const vertical = this.isVertical();
 		// Container size

@@ -64,6 +64,8 @@ export class Section {
 			this.sticky.push(value as HTMLElement);
 		})
 
+		this.calculateThreshold();
+
 	}
 
 	restore() {
@@ -148,7 +150,6 @@ export class Section {
 		if(this.disabled) return;
 		this.disabled = true;
 		this.dom.classList.add('fil-scroller__section-disabled');
-		this.threshold = [0, 0];
 	}
 	enable(){
 		if(!this.disabled) return;
@@ -286,7 +287,6 @@ export class Section {
 	}
 
 	update(){
-		if(this.disabled) return;
 
 		// Toggle closeToVisible if it's close
 		this.updateCloseToVisible();
