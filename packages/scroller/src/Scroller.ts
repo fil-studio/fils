@@ -17,8 +17,6 @@ export enum D {
 	RIGHT
 }
 
-// Todo
-// Moure els scrollTo a events o a una altre banda de funcionalitats
 
 export class Scroller {
 
@@ -188,8 +186,7 @@ export class Scroller {
 
 		const containerSize = vertical ? this.containerSize.h : this.containerSize.w;
 		this.edges[0] = 0;
-		this.edges[1] = this.distance - containerSize;
-
+		this.edges[1] = MathUtils.clamp(this.distance - containerSize, 0, this.distance);
 
 		this.config.loopPossible = this.distance >= containerSize * 2;
 
@@ -209,9 +206,10 @@ export class Scroller {
 			this.config.easing
 		);
 
-		if(Math.abs(this.position.target-this.position.current) < 1) {
-			this.position.current = this.position.target;
-		}
+		// Aixo no entenc que esta fent
+		// if(Math.abs(this.position.target-this.position.current) < 1) {
+		// 	this.position.current = this.position.target;
+		// }
 
 		if(!this.config.useNative && this.virtualScrollBar) {
 			this.virtualScrollBar.progress = MathUtils.clamp(this.position.current / this.edges[1], 0, 1);
@@ -307,9 +305,6 @@ export class Scroller {
 		this.updateSections();
 
 		this.progress = MathUtils.truncateDecimals(MathUtils.map(this.position.current, this.edges[0], this.edges[1], 0, 1), 3);
-
-		// console.log(this.sections);
-
 
 	}
 

@@ -72,7 +72,7 @@ export class ScrollerStyles {
 		const s = this.scroller;
 
 		// If it has loop this makes no sense
-		if(s.config.loop && s.loopAvailable) return;
+		if(s.config.canLoop()) return;
 
 		// Check isAtStart
 		const isAtStart = s.position.current <= s.edges[0] + START_END_OFFSET;

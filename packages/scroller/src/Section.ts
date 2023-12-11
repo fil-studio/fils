@@ -10,11 +10,6 @@ export interface ScrollerSectionListener {
 }
 
 const PRECISION = 5;
-
-// Todo
-// -- treure lo de this.containerSize, que ho miri de config
-// -- bug disabled i restore
-
 export class Section {
 	id: string;
 	dom: HTMLElement;
@@ -260,11 +255,6 @@ export class Section {
 		this.dom.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${px.toFixed(PRECISION)},${py.toFixed(PRECISION)},0,1)`;
 	}
 	get position() {
-
-		// if (!this.visible) {
-		// 	this._position.x = 0;
-		// 	this._position.y = -this.containerSize.h;
-		// }
 
 		if (this.config.direction === D.TOP) {
 			this._position.x = 0;
