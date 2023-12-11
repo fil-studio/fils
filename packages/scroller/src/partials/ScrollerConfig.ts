@@ -1,4 +1,4 @@
-import { D, Scroller } from "../Scroller";
+import { D } from "../Scroller";
 import { VirtualScrollBar } from "../VirtualScrollBar";
 
 export type FilScrollerParameters = {

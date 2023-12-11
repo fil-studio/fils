@@ -221,6 +221,8 @@ export class Section {
 		const cW = this.containerSize.w;
 		const t0 = this.threshold[0];
 		const t1 = this.threshold[1];
+		let px = this.position.x;
+		let py = this.position.y;
 
 		for (const s of this.sticky) {
 			let tY, sY;
@@ -259,10 +261,10 @@ export class Section {
 	}
 	get position() {
 
-		if (!this.visible) {
-			this._position.x = 0;
-			this._position.y = -this.containerSize.h;
-		}
+		// if (!this.visible) {
+		// 	this._position.x = 0;
+		// 	this._position.y = -this.containerSize.h;
+		// }
 
 		if (this.config.direction === D.TOP) {
 			this._position.x = 0;

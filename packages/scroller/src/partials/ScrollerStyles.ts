@@ -43,7 +43,9 @@ const style = `
 	}
 
 	[fil-scroller-section].fil-scroller__section-disabled {
-		display: none;
+		opacity: 0;
+		visibility: hidden;
+		pointer-events: none;
 	}
 `;
 

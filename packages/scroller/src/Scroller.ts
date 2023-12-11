@@ -17,6 +17,9 @@ export enum D {
 	RIGHT
 }
 
+// Todo
+// Moure els scrollTo a events o a una altre banda de funcionalitats
+
 export class Scroller {
 
 	virtualScrollBar:VirtualScrollBar;
@@ -56,17 +59,12 @@ export class Scroller {
 
 		// Init Events
 		this.events = new ScrollerEvents(this);
-		this.addEventListeners(this.config.container);
+		if(!this.config.useNative) this.events.addEventListeners(this.config.container);
 
 		this.refresh();
 	}
 
 	// --------------------------------------------------- EVENTS
-	private addEventListeners(target?: HTMLElement) {
-		if (this.config.useNative) return;
-		this.events.addEventListeners(target)
-	}
-
 	// Block - Unblock
 	block() {		this.events.block();	}
 	unblock() {	this.events.unblock(); }
@@ -126,7 +124,6 @@ export class Scroller {
 		for (const section of this.sections) {
 			section.restore();
 		}
-
 
 		this.updateSections();
 		this.updateCheckHeight();
@@ -310,6 +307,9 @@ export class Scroller {
 		this.updateSections();
 
 		this.progress = MathUtils.truncateDecimals(MathUtils.map(this.position.current, this.edges[0], this.edges[1], 0, 1), 3);
+
+		// console.log(this.sections);
+
 
 	}
 
