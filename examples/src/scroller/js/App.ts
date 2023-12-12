@@ -42,7 +42,7 @@ export class App {
 			this.scroller
 		);
 		this.sections.push(s);
-		
+
 		this.cssVariablesElements = document.querySelectorAll('[css-var]');
 
 		const stats = new Stats();
@@ -90,11 +90,11 @@ export class App {
 		})
 
 		gui.addButton('Refresh', () => {
-			this.scroller.refresh();
+			// this.scroller.refresh();
 		})
 
 		window.addEventListener('resize', () => {
-			this.scroller.resize();
+			this.scroller.restore();
 		})
 
 	}

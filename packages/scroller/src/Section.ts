@@ -1,5 +1,5 @@
 import { MathUtils } from "@fils/math";
-import { D } from "./Scroller";
+import { D, PRECISION } from "./Scroller";
 import { ScrollerConfig } from "./partials/ScrollerConfig";
 
 export interface ScrollerSectionListener {
@@ -9,7 +9,6 @@ export interface ScrollerSectionListener {
 	onAfterRestore?();
 }
 
-const PRECISION = 5;
 export class Section {
 	id: string;
 	dom: HTMLElement;
@@ -70,8 +69,6 @@ export class Section {
 
 		this.progress = 0;
 
-		// Section offset in relation to the other sections
-		// todo aqui el offset ha d'estar 100% canviat abans de fer restore, mirar que estigui bé aixo
 		this.calculateThreshold();
 
 		this.updateTransform();

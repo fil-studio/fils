@@ -11,6 +11,7 @@ export type FilScrollerParameters = {
 	easing?: number;
 	loop?: boolean;
 	showVirtualScrollBar?: boolean;
+	snapping?: boolean;
 	touchForce?: number;
 	useNative?: boolean;
 	wheelForce?: number;
@@ -30,6 +31,8 @@ export class ScrollerConfig {
 	easing: number;
 	loop: boolean;
 	showVirtualScrollBar: boolean;
+	snapping: boolean;
+	snappingPossible: boolean;
 	touchForce: number;
 	useNative: boolean;
 	wheelForce: number;
@@ -60,6 +63,8 @@ export class ScrollerConfig {
 		this.easing = DEFAULT_EASING;
 		this.loop = false;
 		this.showVirtualScrollBar = false;
+		this.snapping = false;
+		this.snappingPossible = false;
 		this.touchForce = 1;
 		this.scrollbar = null;
 		this.useNative = false;
@@ -76,7 +81,11 @@ export class ScrollerConfig {
 		if (this.touchForce) this.force.touch = this.touchForce;
 		if (this.wheelForce) this.force.wheel = this.wheelForce;
 
+
+		console.log(params);
+
 		this.container = this.container ? this.container : document.querySelector('[fil-scroller]') as HTMLElement;
+
 		this.content = this.content ? this.content : this.container.querySelector('[fil-scroller-content]') as HTMLElement;
 
 		if (!this.container) {

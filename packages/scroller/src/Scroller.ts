@@ -17,6 +17,8 @@ export enum D {
 	RIGHT
 }
 
+export const PRECISION = 5;
+
 
 export class Scroller {
 
@@ -82,6 +84,13 @@ export class Scroller {
 		return this.config.easing;
 	}
 
+	getSectionIndex(s:Section){
+		for(let i = 0; i < this.sections.length; i++){
+			if(this.sections[i] === s) return i;
+		}
+		return 0;
+	}
+
 	// Get scroller direction
 	isHorizontal() {
 		return this.config.isHorizontal();
@@ -127,13 +136,6 @@ export class Scroller {
 		this.updateCheckHeight();
 	}
 
-	updateExternal(delta:number){
-
-		if(this.config.canLoop())	this.position.target += delta;
-		else this.position.target = MathUtils.clamp(this.position.target + delta, this.edges[0], this.edges[1]);
-
-	}
-
 	dispose(){
 		this.loaded = false;
 		this.sections = [];
@@ -152,7 +154,6 @@ export class Scroller {
 
 		this.dispose();
 
-		this.restore();
 	}
 
 	create(){
@@ -166,6 +167,13 @@ export class Scroller {
 		this.loaded = true;
 	}
 
+
+	updateExternal(delta: number) {
+
+		if (this.config.canLoop()) this.position.target += delta;
+		else this.position.target = MathUtils.clamp(this.position.target + delta, this.edges[0], this.edges[1]);
+
+	}
 	updateCheckHeight(){
 		this.distance = 0;
 
@@ -206,11 +214,6 @@ export class Scroller {
 			this.config.easing
 		);
 
-		// Aixo no entenc que esta fent
-		// if(Math.abs(this.position.target-this.position.current) < 1) {
-		// 	this.position.current = this.position.target;
-		// }
-
 		if(!this.config.useNative && this.virtualScrollBar) {
 			this.virtualScrollBar.progress = MathUtils.clamp(this.position.current / this.edges[1], 0, 1);
 		}
@@ -220,7 +223,10 @@ export class Scroller {
 		}
 
 		const newDelta = (this.position.current - previous) * 0.01;
-		this.delta = MathUtils.clamp(MathUtils.lerp(this.delta, newDelta, 0.1), -1, 1);
+		const previousDelta = parseFloat(this.delta.toFixed(PRECISION));
+		this.delta = parseFloat((MathUtils.clamp(MathUtils.lerp(this.delta, newDelta, 0.1), -1, 1)).toFixed(PRECISION));
+
+		this.snapCheck(previousDelta, this.delta);
 
 	}
 	// This will seameless restart the loop in both directions
@@ -293,7 +299,6 @@ export class Scroller {
 		}
 
 	}
-
 	update(){
 		if(!this.loaded) return;
 
@@ -305,6 +310,48 @@ export class Scroller {
 		this.updateSections();
 
 		this.progress = MathUtils.truncateDecimals(MathUtils.map(this.position.current, this.edges[0], this.edges[1], 0, 1), 3);
+
+	}
+
+	// Trigger snapping
+	// Todo
+	// - snap to center
+	// - snap mirant el loop, ara si estas en el tros aquest entre un i altre encara creu que es mes propera la primera o ultima que la loopejada
+	snapCheck(previousDelta, delta){
+		if (!this.config.snapping) return;
+
+		const SNAP_MIN = 0.01;
+		const absDelta = Math.abs(delta);
+		const absPrevDelta = Math.abs(previousDelta);
+
+		// Reset one snap if the user has scrolled
+		if (absDelta > absPrevDelta && absDelta > SNAP_MIN) this.config.snappingPossible = true;
+
+		// If can snap, delta is decreasing and delta is really small, then snap
+		if (absDelta < absPrevDelta && this.config.snappingPossible) {
+			if (absDelta < SNAP_MIN) {
+				this.config.snappingPossible = false;
+				this.snap();
+			}
+		}
+
+	}
+	snap(){
+
+		let section = this.sections[0];
+		this.sections.forEach(s => {
+
+			const currentDiff = Math.abs(s.offset - this.position.current);
+			const closestDiff = Math.abs(section.offset - this.position.current);
+
+			if (currentDiff < closestDiff) {
+				section = s;
+			}
+
+		})
+
+		console.log(`Fil Scroller - Snap to Section ${this.getSectionIndex(section)}`);
+		this.scrollToSection(section as Section);
 
 	}
 
@@ -324,10 +371,12 @@ export class Scroller {
 
 	/**
 	 * Scrolls to a given section
-	 * @param k index of section to scroll to
+	 * @param k index of section or Section to scroll to
 	 * @returns
 	 */
-	scrollToSection(k:number) {
+	scrollToSection(s:number | Section) {
+
+		const k = typeof s === 'number' ? s : this.getSectionIndex(s);
 
 		if(k < 0 || k > this.sections.length - 1) {
 			return console.warn('Fil Scroller - Section Out of bounds');
@@ -357,7 +406,7 @@ export class Scroller {
 	 * @param section Section from where you are scrolling from
 	 */
 	scrollToNextSection(section:Section) {
-		this.scrollToSection(this.sections.indexOf(section)+1);
+		this.scrollToSection(this.sections.indexOf(section) + 1);
 	}
 
 	/**
@@ -365,6 +414,6 @@ export class Scroller {
 	 * @param section Section from where you are scrolling from
 	 */
 	scrollToPrevSection(section:Section) {
-		this.scrollToSection(this.sections.indexOf(section)-1);
+		this.scrollToSection(this.sections.indexOf(section) - 1);
 	}
 }
