@@ -22,6 +22,8 @@ export interface NomadParameters {
 	replace?:boolean
 }
 
+// Todo
+// Que passa quan fas spam
 
 export class Nomad {
 	utils: Utils;
@@ -52,13 +54,15 @@ export class Nomad {
 			Object.assign(this, params)
 		}
 
+		// Init Utils
+		this.utils = new Utils();
+
+		// Events Handler
 		this.events = new NomadEvents(this);
 
 		// Create page function
 		this.createPage = createPage;
 
-		// Init Utils
-		this.utils = new Utils();
 
 		// State handlers
 		this.isPopstate = false;
@@ -73,14 +77,16 @@ export class Nomad {
 			return;
 		}
 
+		this.firstRoute();
 
-		// Create initial route
-		const newPage = this.wrapper.querySelector('[nomad-template]') as HTMLElement;
-		const template = newPage.getAttribute('nomad-template');
 
-		this.createRoute(template, newPage);
+		// // Create initial route
+		// const newPage = this.wrapper.querySelector('[nomad-template]') as HTMLElement;
+		// const template = newPage.getAttribute('nomad-template');
 
-		this.route.page.transitionIn(() => {});
+		// this.createRoute(template, newPage);
+
+		// this.route.page.transitionIn(() => {});
 
 	}
 	addRouteListener(lis:NomadRouteListener) {
@@ -91,7 +97,7 @@ export class Nomad {
 	}
 
 	// Routes handler
-	createRoute(dom:HTMLElement, href: string = window.location.href){
+	createRoute(dom:HTMLElement, href:string = window.location.href){
 
 		const location = this.utils.getLocation(href);
 
@@ -102,6 +108,8 @@ export class Nomad {
 		}
 
 		// Thats just the page content, not the whole html
+		console.log(dom);
+
 		const pageDom = dom.querySelector('[nomad-template]') as HTMLElement;
 		const id = location.pathname;
 		const template = pageDom.getAttribute('nomad-template');
@@ -139,7 +147,8 @@ export class Nomad {
 
 		if (response.status >= 200 && response.status < 300) {
 			const content = el('div');
-			content.innerHTML = `${response.text()}`;
+			const html = await response.text();
+			content.innerHTML = html;
 			return content;
 		}
 
@@ -150,7 +159,14 @@ export class Nomad {
 
 	}
 
-	// Lifecycle
+
+	firstRoute(){
+		const href = window.location.href;
+		this.events.onRouteChangeStart(href);
+		this.addContent(href, document.documentElement).then(() => {
+			this.transitionIn();
+		})
+	}
 	/**
 	 * @description Trigger location change
 	 * @param {string} href - The new location URL.
@@ -163,14 +179,10 @@ export class Nomad {
 
 		this.events.onRouteChangeStart(href);
 
-
-		// if(this.inProgress) {
-		// 	this.route.page.dispose();
-		// 	this.route.page.dom.remove();
-		// }
-		// this.inProgress = true;
-
 		const oldRoute = this.route;
+
+		console.log('Nomad - Replace ', this.replace);
+
 
 		this.fetch(href).then(html => {
 			if(html){
@@ -227,21 +239,20 @@ export class Nomad {
 	async transitionOut(route:NomadRoute = this.route){
 
 		const promise = new Promise((resolve, reject) => {
-
-			route.page.transitionOut(resolve).then(() => {
-				// Dispose old page
-				route.page.dispose();
-
-				if(this.replace) {
-					// HTML Remove
-					const oldPage = this.wrapper.querySelector(`[nomad-id="${route.id}"]`) as HTMLElement;
-					oldPage.remove();
-				}
-			});
-
+			route.page.transitionOut(resolve)
 		})
 
-		return await promise;
+		await promise;
+
+		// Dispose old page
+		route.page.dispose();
+
+		if (this.replace) {
+			// HTML Remove
+			const oldPage = this.wrapper.querySelector(`[nomad-id="${route.id}"]`) as HTMLElement;
+			oldPage.remove();
+		}
+
 
 	}
 	async transitionIn() {
@@ -249,15 +260,13 @@ export class Nomad {
 		// Wait transition IN
 		const promise = new Promise((resolve, reject) => {
 			this.route.page.create();
-			this.route.page.transitionIn(resolve).then(() => {
-				this.inProgress = false;
-				this.isPopstate = false;
-				this.events.onRouteChangedComplete();
-			})
-
+			this.route.page.transitionIn(resolve)
 		})
 
-		return await promise;
+		await promise;
+
+		this.isPopstate = false;
+		this.events.onRouteChangedComplete();
 
 	}
 

@@ -11,7 +11,7 @@ export class Page {
 
 	constructor(id:string, template:string, dom:HTMLElement){
 		this.dom = dom;
-		this.id = template;
+		this.id = id;
 		this.template = template;
 
 		this.addEventListeners();
