@@ -5,6 +5,7 @@ import { NomadEvents } from './partials/NomadEvents';
 
 
 export interface NomadRoute {
+	initialized: boolean,
 	id: string,
 	template: string,
 	page: Page,
@@ -79,15 +80,6 @@ export class Nomad {
 
 		this.firstRoute();
 
-
-		// // Create initial route
-		// const newPage = this.wrapper.querySelector('[nomad-template]') as HTMLElement;
-		// const template = newPage.getAttribute('nomad-template');
-
-		// this.createRoute(template, newPage);
-
-		// this.route.page.transitionIn(() => {});
-
 	}
 	addRouteListener(lis:NomadRouteListener) {
 		this.events.addRouteListener(lis);
@@ -108,14 +100,13 @@ export class Nomad {
 		}
 
 		// Thats just the page content, not the whole html
-		console.log(dom);
-
 		const pageDom = dom.querySelector('[nomad-template]') as HTMLElement;
 		const id = location.pathname;
 		const template = pageDom.getAttribute('nomad-template');
 		pageDom.setAttribute('nomad-id', id);
 
 		const newRoute = {
+			initialized: false,
 			id,
 			template,
 			page: this.createPage(id, template, pageDom) || new Page(id, template, pageDom),
@@ -163,9 +154,8 @@ export class Nomad {
 	firstRoute(){
 		const href = window.location.href;
 		this.events.onRouteChangeStart(href);
-		this.addContent(href, document.documentElement).then(() => {
-			this.transitionIn();
-		})
+		this.addContent(href, document.documentElement)
+		this.transitionIn();
 	}
 	/**
 	 * @description Trigger location change
@@ -194,9 +184,8 @@ export class Nomad {
 				if(this.replace){
 
 					this.transitionOut().then(() => {
-						this.addContent(href, html).then(() => {
-							this.transitionIn();
-						})
+						this.addContent(href, html);
+						this.transitionIn();
 					})
 
 				// If it's not replacing content transition can happen at the same time:
@@ -204,17 +193,16 @@ export class Nomad {
 				// -- Transition Out & In
 				} else {
 
-					this.addContent(href, html).then(() => {
-						this.transitionOut(oldRoute)
-						this.transitionIn();
-					})
+					this.addContent(href, html);
+					this.transitionOut(oldRoute)
+					this.transitionIn();
 
 				}
 			}
 		})
 	}
 
-	async addContent(href: string, html: HTMLElement) {
+	addContent(href: string, html: HTMLElement) {
 
 		// Create route
 		this.createRoute(html, href);
@@ -228,11 +216,18 @@ export class Nomad {
 		window.history.pushState(this.route.location, title, this.route.location.href);
 
 		// Add new content
-		this.wrapper.appendChild(this.route.page.dom);
+		if (!this.wrapper.contains(this.route.page.dom)) {
+			// If not, append it
+			this.wrapper.appendChild(this.route.page.dom);
+		}
+
+		if(!this.route.initialized) {
+			this.route.initialized = true;
+			this.route.page.init();
+		}
 
 		this.events.addLinksListener();
 
-		return
 
 	}
 
@@ -257,9 +252,10 @@ export class Nomad {
 	}
 	async transitionIn() {
 
+		this.route.page.create();
+
 		// Wait transition IN
 		const promise = new Promise((resolve, reject) => {
-			this.route.page.create();
 			this.route.page.transitionIn(resolve)
 		})
 

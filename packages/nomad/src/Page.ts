@@ -2,8 +2,7 @@
 
 export class Page {
 
-	isActive: boolean = false;
-	isLoaded: boolean = false;
+	active: boolean = false;
 
 	id: string;
 	dom:HTMLElement;
@@ -13,18 +12,26 @@ export class Page {
 		this.dom = dom;
 		this.id = id;
 		this.template = template;
-
-		this.addEventListeners();
 	}
 
-	addEventListeners(){}
+	/**
+	 * @description Triggers on class creation, this will be triggered only once, even if the user comes back to this page
+	 */
+	init(){}
 
+
+	/**
+	 * @description Triggers each time the user comes back to this page
+	 */
 	create(){
-		this.isActive = true;
+		this.active = true;
 	}
 
+	/**
+	 * @description Triggers each time the user leaves this page
+	 */
 	dispose(){
-		this.isActive = false;
+		this.active = false;
 	}
 
 	async transitionIn(resolve){
