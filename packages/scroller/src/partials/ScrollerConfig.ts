@@ -81,9 +81,6 @@ export class ScrollerConfig {
 		if (this.touchForce) this.force.touch = this.touchForce;
 		if (this.wheelForce) this.force.wheel = this.wheelForce;
 
-
-		console.log(params);
-
 		this.container = this.container ? this.container : document.querySelector('[fil-scroller]') as HTMLElement;
 
 		this.content = this.content ? this.content : this.container.querySelector('[fil-scroller-content]') as HTMLElement;

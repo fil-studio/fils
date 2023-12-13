@@ -1,20 +1,25 @@
 import { el } from '@fils/utils';
 import { Page } from "./Page";
 import { Location, Utils } from "./utils";
+import { NomadEvents } from './partials/NomadEvents';
 
-const linkRule = 'a:not([target]):not([href^=\\#]):not([fil-nomad-ignore])';
 
 export interface NomadRoute {
 	id: string,
 	template: string,
 	page: Page,
-	location: Location
+	location: Location,
+	dom: HTMLElement,
 }
 
 export interface NomadRouteListener {
 	onRouteChangeStart?(href:string):void
 	onRouteChanged?(route:NomadRoute):void;
 	onRouteChangedComplete?(route:NomadRoute):void
+}
+
+export interface NomadParameters {
+	replace?:boolean
 }
 
 
@@ -28,14 +33,28 @@ export class Nomad {
 	route: NomadRoute;
 
 	wrapper:HTMLElement;
-	links:Array<HTMLLinkElement>;
 
 	createPage: Function;
 
-	private listeners:NomadRouteListener[] = [];
+	// Parameters
+	replace: boolean;
 
-	constructor(createPage:Function = (template: string, dom: HTMLElement): Page => { return null; }){
+	// Partials
+	events: NomadEvents;
 
+	constructor(params:NomadParameters, createPage:Function = (dom: HTMLElement): Page => { return null; }){
+
+		// Default parameters
+		this.replace = true;
+
+		// Assign parameters
+		if(params){
+			Object.assign(this, params)
+		}
+
+		this.events = new NomadEvents(this);
+
+		// Create page function
 		this.createPage = createPage;
 
 		// Init Utils
@@ -54,101 +73,81 @@ export class Nomad {
 			return;
 		}
 
-		this.links = [];
-
-		// Init current page
-		this.addLinksListener();
-		window.addEventListener('popstate', (e) => {
-			this.onPopState();
-		});
 
 		// Create initial route
-		const newPage = this.wrapper.querySelector('[template]') as HTMLElement;
-		const template = newPage.getAttribute('template');
-		// let newPageClass = this.createPage(template, newPage);
-		// if(!newPageClass) newPageClass = new Page(newPage);
+		const newPage = this.wrapper.querySelector('[nomad-template]') as HTMLElement;
+		const template = newPage.getAttribute('nomad-template');
+
 		this.createRoute(template, newPage);
 
 		this.route.page.transitionIn(() => {});
 
 	}
-
 	addRouteListener(lis:NomadRouteListener) {
-		if(this.listeners.indexOf(lis) > -1) return;
-		this.listeners.push(lis);
+		this.events.addRouteListener(lis);
 	}
-
 	removeRouteListener(lis:NomadRouteListener) {
-		this.listeners.splice(this.listeners.indexOf(lis), 1);
-	}
-
-	onRouteChangeStart(href:string) {
-		for (const lis of this.listeners) {
-			if (lis.onRouteChangeStart) lis.onRouteChangeStart(href);
-		}
-	}
-	onRouteChanged() {
-		for (const lis of this.listeners) {
-			if (lis.onRouteChanged) lis.onRouteChanged(this.route);
-		}
-	}
-	onRouteChangedComplete() {
-		for (const lis of this.listeners) {
-			if (lis.onRouteChangedComplete) lis.onRouteChangedComplete(this.route);
-		}
+		this.events.removeRouteListener(lis);
 	}
 
 	// Routes handler
-	createRoute(template: string, dom:HTMLElement, href: string = window.location.href){
+	createRoute(dom:HTMLElement, href: string = window.location.href){
 
 		const location = this.utils.getLocation(href);
 
 		const exists = this.routes.find(x => x.id === location.pathname);
+		if(exists){
+			this.route = exists;
+			return;
+		}
 
-		this.route = exists || {
-			id: location.pathname,
+		// Thats just the page content, not the whole html
+		const pageDom = dom.querySelector('[nomad-template]') as HTMLElement;
+		const id = location.pathname;
+		const template = pageDom.getAttribute('nomad-template');
+		pageDom.setAttribute('nomad-id', id);
+
+		const newRoute = {
+			id,
 			template,
-			page: this.createPage(template, dom) || new Page(dom),
+			page: this.createPage(id, template, pageDom) || new Page(id, template, pageDom),
 			location,
+			dom,
 		}
 
-		if(exists === undefined) {
-			this.routes.push(this.route);
-		}
-
+		this.route = newRoute;
+		this.routes.push(this.route);
 
 	}
 
-	// Events
-	addLinksListener(){
+	// Enters href, returns HTML
+	async fetch(href) {
 
-		// Prevents double events on links
-		const allPageLinks = document.querySelectorAll(linkRule) as NodeListOf<HTMLLinkElement>;
-		const newLinks = [];
+		// Check if dom already exists
+		const route = this.routes.find(x => {
+			x.location === href
+		});
+		if (route) return route.dom;
 
-		for(const link of allPageLinks){
-			if(this.links.find(x => x === link)) continue;
-			this.links.push(link);
-			newLinks.push(link);
+		// Else, fetch it
+		const response = await fetch(href, {
+			mode: 'same-origin',
+			method: 'GET',
+			headers: { 'X-Requested-With': 'Nomad' },
+			credentials: 'same-origin'
+		});
+
+		if (response.status >= 200 && response.status < 300) {
+			const content = el('div');
+			content.innerHTML = `${response.text()}`;
+			return content;
 		}
 
-		for(const link of newLinks) {
-			link.addEventListener('click', (e) => {
-				this.onClick(e);
-			}, true);
-		}
+		// Force reload if response fails
+		console.log('Fil Nomad - Fetch failed');
 
-		this.utils.checkActiveLinks(allPageLinks);
+		return false;
 
-	}
-	onClick(e){
-		if (e.metaKey || e.ctrlKey) return;
-		e.preventDefault();
-		this.lifeCycle(e.currentTarget.href)
-	}
-	onPopState(){
-		this.isPopstate = true;
-		this.lifeCycle(window.location.href);
 	}
 
 	// Lifecycle
@@ -160,128 +159,107 @@ export class Nomad {
 	 *   If true the user will be responsible for everything. Nomad will only handle page title and template.
 	 *   By default, this is set to false.
 	 */
-	goTo(href, preloadedHTML:string = null, replace:boolean = true){
-		this.lifeCycle(href, preloadedHTML);
-	}
-	lifeCycle(href, preloadedHTML: string = null, replace: boolean = true){
+	goTo(href){
 
-		this.onRouteChangeStart(href);
+		this.events.onRouteChangeStart(href);
 
-		if(this.inProgress) {
-			this.route.page.dispose();
-			this.route.page.dom.remove();
-		}
 
-		this.inProgress = true;
+		// if(this.inProgress) {
+		// 	this.route.page.dispose();
+		// 	this.route.page.dom.remove();
+		// }
+		// this.inProgress = true;
 
-		this.beforeFetch().then(() => {
+		const oldRoute = this.route;
 
-			// Default behaviour without preloaded HTML
-			if (preloadedHTML === null || !replace){
-				this.fetch(href).then((html) => {
-					if(html){
+		this.fetch(href).then(html => {
+			if(html){
+
+				// If its replacing content:
+				// -- Transition Out
+				// -- Replace
+				// -- Transition In
+				if(this.replace){
+
+					this.transitionOut().then(() => {
 						this.addContent(href, html).then(() => {
-							this.afterFetch();
+							this.transitionIn();
 						})
-					}
-				})
+					})
 
-			// If HTML is preloaded just pass it
-			} else {
-				this.addContent(href, preloadedHTML, replace).then(() => {
-					this.afterFetch();
-				})
+				// If it's not replacing content transition can happen at the same time:
+				// -- Add Content
+				// -- Transition Out & In
+				} else {
+
+					this.addContent(href, html).then(() => {
+						this.transitionOut(oldRoute)
+						this.transitionIn();
+					})
+
+				}
 			}
 		})
+	}
+
+	async addContent(href: string, html: HTMLElement) {
+
+		// Create route
+		this.createRoute(html, href);
+		this.events.onRouteChanged();
+
+		// Update page title
+		const title = html.querySelector('title').textContent;
+		document.documentElement.querySelector('title').textContent = title;
+
+		// Update pushState
+		window.history.pushState(this.route.location, title, this.route.location.href);
+
+		// Add new content
+		this.wrapper.appendChild(this.route.page.dom);
+
+		this.events.addLinksListener();
+
+		return
 
 	}
 
-	async beforeFetch(){
+	async transitionOut(route:NomadRoute = this.route){
 
 		const promise = new Promise((resolve, reject) => {
-			this.route.page.transitionOut(resolve);
+
+			route.page.transitionOut(resolve).then(() => {
+				// Dispose old page
+				route.page.dispose();
+
+				if(this.replace) {
+					// HTML Remove
+					const oldPage = this.wrapper.querySelector(`[nomad-id="${route.id}"]`) as HTMLElement;
+					oldPage.remove();
+				}
+			});
+
 		})
 
 		return await promise;
 
 	}
-
-	async addContent(href: string, html: string, replace:boolean = true){
-
-		// Dispose old page
-		this.route.page.dispose();
-		this.route.page.isActive = false;
-
-		// Create html
-		const content = el('div');
-		content.innerHTML = html;
-
-
-		// Create new Page & Route
-		const newPage = content.querySelector('[template]') as HTMLElement;
-		const template = newPage.getAttribute('template');
-
-		// Create route
-		this.createRoute(template, newPage, href);
-		this.route.page.dom = newPage;
-		this.route.page.isActive = true;
-		this.onRouteChanged();
-		if(!this.route.page.isLoaded) {
-			await new Promise((resolve) => {
-				this.route.page.load(resolve);
-			})
-			this.route.page.loaded();
-		}
-
-		// Update page title
-		const title = content.querySelector('title').textContent;
-		document.documentElement.querySelector('title').textContent = title;
-		if(!this.isPopstate) window.history.pushState(this.route.location, title, this.route.location.href);
-
-		// HTML Swap
-		if(replace){
-			const oldPage = this.wrapper.querySelector('[template]') as HTMLElement;
-			oldPage?.remove();
-			this.wrapper.appendChild(newPage);
-		}
-
-		this.addLinksListener();
+	async transitionIn() {
 
 		// Wait transition IN
 		const promise = new Promise((resolve, reject) => {
-			this.route.page.transitionIn(resolve);
-			this.onRouteChangedComplete();
+			this.route.page.create();
+			this.route.page.transitionIn(resolve).then(() => {
+				this.inProgress = false;
+				this.isPopstate = false;
+				this.events.onRouteChangedComplete();
+			})
+
 		})
 
 		return await promise;
 
 	}
 
-	async fetch(href){
 
-		const response = await fetch(href, {
-			mode: 'same-origin',
-			method: 'GET',
-			headers: { 'X-Requested-With': 'Nomad' },
-			credentials: 'same-origin'
-		});
-
-		if (response.status >= 200 && response.status < 300) {
-			return response.text();
-		}
-
-		// Force reload if response fails
-		// window.location.href = href;
-		console.log('Fil Nomad - Fetch failed');
-
-		return false;
-
-	}
-
-	afterFetch(){
-
-		this.inProgress = false;
-		this.isPopstate = false;
-
-	}
 }

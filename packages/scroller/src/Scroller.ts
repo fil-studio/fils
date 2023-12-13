@@ -320,7 +320,7 @@ export class Scroller {
 	snapCheck(previousDelta, delta){
 		if (!this.config.snapping) return;
 
-		const SNAP_MIN = 0.01;
+		const SNAP_MIN = 0.005;
 		const absDelta = Math.abs(delta);
 		const absPrevDelta = Math.abs(previousDelta);
 

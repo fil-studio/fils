@@ -1,31 +1,31 @@
 
 
 export class Page {
-	id: string = '';
 
 	isActive: boolean = false;
 	isLoaded: boolean = false;
 
+	id: string;
 	dom:HTMLElement;
+	template: string;
 
-	constructor(dom:HTMLElement){
+	constructor(id:string, template:string, dom:HTMLElement){
 		this.dom = dom;
+		this.id = template;
+		this.template = template;
 
-		this.create();
 		this.addEventListeners();
 	}
 
 	addEventListeners(){}
 
 	create(){
-	}
-	dispose(){
+		this.isActive = true;
 	}
 
-	async load(resolve){
-		resolve();
+	dispose(){
+		this.isActive = false;
 	}
-	loaded(){}
 
 	async transitionIn(resolve){
 		resolve();
