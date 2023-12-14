@@ -202,7 +202,7 @@ export class Nomad {
 		})
 	}
 
-	addContent(href: string, html: HTMLElement) {
+	async addContent(href: string, html: HTMLElement) {
 
 		// Create route
 		this.createRoute(html, href);
@@ -223,7 +223,10 @@ export class Nomad {
 
 		if(!this.route.initialized) {
 			this.route.initialized = true;
-			this.route.page.init();
+			const initPromise = new Promise((resolve, reject) => {
+				this.route.page.init(resolve)
+			})
+			await initPromise;
 		}
 
 		this.events.addLinksListener();
@@ -240,6 +243,7 @@ export class Nomad {
 		await promise;
 
 		// Dispose old page
+		route.page.active = false;
 		route.page.dispose();
 
 		if (this.replace) {
@@ -252,6 +256,7 @@ export class Nomad {
 	}
 	async transitionIn() {
 
+		this.route.page.active = true;
 		this.route.page.create();
 
 		// Wait transition IN
