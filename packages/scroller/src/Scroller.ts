@@ -18,6 +18,7 @@ export enum D {
 }
 
 export const PRECISION = 5;
+const SNAP_THRESHOLD = 0.005;
 
 
 export class Scroller {
@@ -320,35 +321,32 @@ export class Scroller {
 	snapCheck(previousDelta, delta){
 		if (!this.config.snapping) return;
 
-		const SNAP_MIN = 0.005;
 		const absDelta = Math.abs(delta);
 		const absPrevDelta = Math.abs(previousDelta);
 
 		// Reset one snap if the user has scrolled
-		if (absDelta > absPrevDelta && absDelta > SNAP_MIN) this.config.snappingPossible = true;
+		if (absDelta > absPrevDelta && absDelta > SNAP_THRESHOLD) this.config.snappingPossible = true;
 
 		// If can snap, delta is decreasing and delta is really small, then snap
-		if (absDelta < absPrevDelta && this.config.snappingPossible) {
-			if (absDelta < SNAP_MIN) {
-				this.config.snappingPossible = false;
-				this.snap();
-			}
+		if (absDelta < absPrevDelta && this.config.snappingPossible && absDelta < SNAP_THRESHOLD) {
+			this.config.snappingPossible = false;
+			this.snap();
 		}
 
 	}
 	snap(){
 
 		let section = this.sections[0];
-		this.sections.forEach(s => {
+		for(let i = 0; i < this.sections.length; i++){
 
+			const s = this.sections[i];
 			const currentDiff = Math.abs(s.offset - this.position.current);
 			const closestDiff = Math.abs(section.offset - this.position.current);
 
 			if (currentDiff < closestDiff) {
 				section = s;
 			}
-
-		})
+		}
 
 		console.log(`Fil Scroller - Snap to Section ${this.getSectionIndex(section)}`);
 		this.scrollToSection(section as Section);

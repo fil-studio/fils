@@ -154,8 +154,9 @@ export class Nomad {
 	firstRoute(){
 		const href = window.location.href;
 		this.events.onRouteChangeStart(href);
-		this.addContent(href, document.documentElement)
-		this.transitionIn();
+		this.addContent(href, document.documentElement).then(() => {
+			this.transitionIn();
+		})
 	}
 	/**
 	 * @description Trigger location change
@@ -167,16 +168,18 @@ export class Nomad {
 	 */
 	goTo(href){
 
+		if(this.inProgress){
+			console.log('Nomad - Transition already in progress');
+			return;
+		}
+		this.inProgress = true;
+
 		this.events.onRouteChangeStart(href);
 
 		const oldRoute = this.route;
 
-		console.log('Nomad - Replace ', this.replace);
-
-
 		this.fetch(href).then(html => {
 			if(html){
-
 				// If its replacing content:
 				// -- Transition Out
 				// -- Replace
@@ -184,8 +187,11 @@ export class Nomad {
 				if(this.replace){
 
 					this.transitionOut().then(() => {
-						this.addContent(href, html);
-						this.transitionIn();
+						this.addContent(href, html).then(() => {
+							this.transitionIn().then(() => {
+								this.inProgress = false;
+							})
+						})
 					})
 
 				// If it's not replacing content transition can happen at the same time:
@@ -193,9 +199,13 @@ export class Nomad {
 				// -- Transition Out & In
 				} else {
 
-					this.addContent(href, html);
-					this.transitionOut(oldRoute)
-					this.transitionIn();
+					this.addContent(href, html).then(() => {
+
+						this.transitionOut(oldRoute)
+						this.transitionIn().then(() => {
+							this.inProgress = false;
+						})
+					});
 
 				}
 			}

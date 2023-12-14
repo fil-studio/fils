@@ -18,7 +18,6 @@ const style = `
 	[fil-scroller-section]{
 		opacity: 0;
 		visibility: hidden;
-		will-change: auto;
 	}
 	[fil-scroller-sticky]{
 		position: sticky;
@@ -27,7 +26,7 @@ const style = `
 	[fil-scroller-section].fil-scroller__visible {
 		opacity: 1;
 		visibility: visible;
-		will-change: transform, scroll-position;
+		will-change: transform;
 	}
 	[fil-scroller="disabled"] [fil-scroller-container] {
 		position: relative;
