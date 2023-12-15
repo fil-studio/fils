@@ -168,11 +168,17 @@ export class Nomad {
 	 */
 	goTo(href){
 
+		if(this.utils.getPathname(href) === this.route.location.pathname){
+			console.warn('Nomad - Trying to access current location', this.route.location.pathname);
+			return;
+		}
+
 		if(this.inProgress){
-			console.log('Nomad - Transition already in progress');
+			console.warn('Nomad - Transition already in progress');
 			return;
 		}
 		this.inProgress = true;
+
 
 		this.events.onRouteChangeStart(href);
 
