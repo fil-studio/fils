@@ -42,7 +42,7 @@ export class ScrollerEvents {
 				delta = e.deltaX;
 			}
 
-			s.updateExternal(delta * s.config.force.wheel);
+			s.updateExternalByType(delta, 'wheel')
 		})
 
 		target.addEventListener('touchstart', (e: TouchEvent) => {
@@ -59,7 +59,7 @@ export class ScrollerEvents {
 			if (this.blocked) return;
 
 			if (performance.now() - touchWheel.startDrag < 100) {
-				s.updateExternal(-touchWheel.delta * 10 * s.config.force.touch);
+				s.updateExternalByType(-touchWheel.delta * 10, 'touch')
 			}
 
 			touchWheel.delta = 0;
@@ -75,7 +75,7 @@ export class ScrollerEvents {
 			touchWheel.delta = e1.clientY - touchWheel.startY;
 			touchWheel.startY = e1.clientY;
 
-			s.updateExternal(-touchWheel.delta * s.config.force.touch);
+			s.updateExternalByType(-touchWheel.delta, 'touch')
 		}, {
 			passive: false
 		})

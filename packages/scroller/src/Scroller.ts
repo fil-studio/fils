@@ -168,6 +168,11 @@ export class Scroller {
 		this.loaded = true;
 	}
 
+	updateExternalByType(_delta:number, type: 'touch' | 'wheel'){
+		const force = type === 'touch' ? this.config.force.touch : this.config.force.wheel;
+		const delta = _delta * force;
+		this.updateExternal(delta);
+	}
 
 	updateExternal(delta: number) {
 
