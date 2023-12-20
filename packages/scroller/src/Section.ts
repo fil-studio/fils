@@ -19,10 +19,7 @@ export class Section {
 	// Section offset in relation to the other sections
 	offset: number;
 
-	containerSize:{w:number, h:number} = {
-		w: 0,
-		h: 0
-	};
+	containerRect: DOMRect;
 
 	progress: number = 0;
 	threshold:number[] = [];
@@ -58,6 +55,7 @@ export class Section {
 			this.sticky.push(value as HTMLElement);
 		})
 
+		this.containerRect = this.config.container.getBoundingClientRect();
 		this.calculateThreshold();
 
 	}
@@ -84,7 +82,7 @@ export class Section {
 		if(this.config.isVertical()) {
 
 			this.threshold = [
-				this.rect.top - this.containerSize.h,
+				this.rect.top - this.containerRect.height,
 				this.rect.top + this.rect.height
 			];
 
@@ -97,7 +95,7 @@ export class Section {
 
 			this.threshold = [
 				// Section offset in relation to the other sections
-				this.offset - this.containerSize.w,
+				this.offset - this.containerRect.width,
 				// Section offset in relation to the other sections
 				this.offset + this.rect.width
 			];
@@ -175,7 +173,7 @@ export class Section {
 	updateCloseToVisible(){
 		if(this.visible) return;
 
-		const margin = this.containerSize.w;
+		const margin = this.containerRect.width;
 		const close1 = this.scroll + margin > this.threshold[0];
 		const close2 = this.scroll + margin < this.threshold[1];
 		const inRange = close1 && close2;
@@ -209,8 +207,8 @@ export class Section {
 		}
 	}
 	updateSticky(){
-		const cH = this.containerSize.h;
-		const cW = this.containerSize.w;
+		const cH = this.containerRect.height;
+		const cW = this.containerRect.width;
 		const t0 = this.threshold[0];
 		const t1 = this.threshold[1];
 		let px = this.position.x;
@@ -259,16 +257,16 @@ export class Section {
 		}
 		if (this.config.direction === D.BOTTOM) {
 			this._position.x = 0;
-			this._position.y = this.scroll + (this.containerSize.h - this.rect.height) - this.rect.top * 2;
+			this._position.y = this.scroll + (this.containerRect.height - this.rect.height) - this.rect.top * 2;
 		}
 		if (this.config.direction === D.LEFT) {
 			// Section offset in relation to the other sections
 			this._position.x = this.offset - this.scroll;
-			this._position.y = -this.rect.top;
+			this._position.y = this.containerRect.top - this.rect.top;
 		}
 		if (this.config.direction === D.RIGHT) {
 			// Section offset in relation to the other sections
-			this._position.x = this.scroll + (this.containerSize.w - this.rect.width) - this.offset;
+			this._position.x = this.scroll + (this.containerRect.width - this.rect.width) - this.offset;
 			this._position.y = -this.rect.top;
 		}
 

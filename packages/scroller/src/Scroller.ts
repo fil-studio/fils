@@ -123,7 +123,7 @@ export class Scroller {
 
 		let w = 0;
 		for(let section of this.sections) {
-			section.containerSize = this.containerSize;
+			section.containerRect = containerRect;
 			section.offset = w;
 			if(section.disabled) continue;
 			w += vertical ? section.rect.height : section.rect.width;
