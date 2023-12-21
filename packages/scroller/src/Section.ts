@@ -82,8 +82,8 @@ export class Section {
 		if(this.config.isVertical()) {
 
 			this.threshold = [
-				this.rect.top - this.containerRect.height,
-				this.rect.top + this.rect.height
+				this.rect.top - this.containerRect.height - this.containerRect.top,
+				this.rect.top + this.rect.height - this.containerRect.top
 			];
 
 			if(this.config.useNative) {
@@ -250,6 +250,9 @@ export class Section {
 		this.dom.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${px.toFixed(PRECISION)},${py.toFixed(PRECISION)},0,1)`;
 	}
 	get position() {
+
+		// Todo, D.Left esta arreglat pero els altres no
+		// El position x i y ha de tenir en compte el parent, altrament, si el parent ha tingut un transform deixa de posar-se a lloc (mirar el position.y del D.LEFT, aquest ho te en compte)
 
 		if (this.config.direction === D.TOP) {
 			this._position.x = 0;
