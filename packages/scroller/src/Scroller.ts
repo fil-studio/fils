@@ -143,6 +143,11 @@ export class Scroller {
 		this.create();
 	}
 
+	stop(){
+		this.delta = 0;
+		this.position.target = this.position.current;
+	}
+
 	refresh(forceTop:boolean = true) {
 
 		if(forceTop){
