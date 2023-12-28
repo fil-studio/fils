@@ -11,6 +11,7 @@ export interface NomadRoute {
 	page: Page,
 	location: Location,
 	dom: HTMLElement,
+	order: number[]
 }
 
 export interface NomadRouteListener {
@@ -44,6 +45,9 @@ export class Nomad {
 
 	// Partials
 	events: NomadEvents;
+
+	currentOrder:number = 0;
+	previousRoute: NomadRoute;
 
 	constructor(params:NomadParameters, createPage:Function = (dom: HTMLElement): Page => { return null; }){
 
@@ -96,6 +100,7 @@ export class Nomad {
 		const exists = this.routes.find(x => x.id === location.pathname);
 		if(exists){
 			this.route = exists;
+			this.route.order.push(this.currentOrder);
 			return;
 		}
 
@@ -112,6 +117,7 @@ export class Nomad {
 			page: this.createPage(id, template, pageDom) || new Page(id, template, pageDom),
 			location,
 			dom,
+			order: [this.currentOrder]
 		}
 
 		this.route = newRoute;
@@ -150,7 +156,6 @@ export class Nomad {
 
 	}
 
-
 	firstRoute(){
 		const href = window.location.href;
 		this.events.onRouteChangeStart(href);
@@ -179,10 +184,10 @@ export class Nomad {
 		}
 		this.inProgress = true;
 
-
 		this.events.onRouteChangeStart(href);
 
-		const oldRoute = this.route;
+		this.previousRoute = this.route;
+		this.currentOrder++;
 
 		this.fetch(href).then(html => {
 			if(html){
@@ -207,9 +212,11 @@ export class Nomad {
 
 					this.addContent(href, html).then(() => {
 
-						this.transitionOut(oldRoute)
+						this.transitionOut(this.previousRoute)
 						this.transitionIn().then(() => {
 							this.inProgress = false;
+							this.previousRoute.page.dom.setAttribute('nomad-page-state', 'disabled');
+							this.route.page.dom.setAttribute('nomad-page-state', 'enabled');
 						})
 					});
 
@@ -270,6 +277,7 @@ export class Nomad {
 
 
 	}
+
 	async transitionIn() {
 
 		this.route.page.active = true;
@@ -286,6 +294,5 @@ export class Nomad {
 		this.events.onRouteChangedComplete();
 
 	}
-
 
 }

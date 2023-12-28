@@ -1,3 +1,4 @@
+import { debounce } from "@fils/utils";
 import { Nomad, NomadRouteListener } from "../Nomad";
 
 const linkRule = 'a:not([target]):not([href^=\\#]):not([fil-nomad-ignore])';
@@ -17,9 +18,10 @@ export class NomadEvents {
 
 		// Init current page
 		this.addLinksListener();
-		window.addEventListener('popstate', (e) => {
+		window.addEventListener('popstate', debounce((e) => {
+			console.log('Popstate');
 			this.onPopState();
-		});
+		}, 300));
 
 	}
 
