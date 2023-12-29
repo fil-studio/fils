@@ -110,15 +110,17 @@ export class VFXRenderer2 {
     }
 
     render(scene:Scene, camera:PerspectiveCamera|OrthographicCamera) {
-        const bg = scene.background;
-        scene.background = null;
-        const alpha = this.rnd.getClearAlpha();
-        this.rnd.setClearAlpha(0);
-        this.rnd.setRenderTarget(this.glowRT);
-        this.rnd.render(scene, camera);
-        this.rnd.setRenderTarget(null);
-        this.rnd.setClearAlpha(alpha);
-        scene.background = bg;
+        if(this.params.enableGlow) {
+            const bg = scene.background;
+            scene.background = null;
+            const alpha = this.rnd.getClearAlpha();
+            this.rnd.setClearAlpha(0);
+            this.rnd.setRenderTarget(this.glowRT);
+            this.rnd.render(scene, camera);
+            this.rnd.setRenderTarget(null);
+            this.rnd.setClearAlpha(alpha);
+            scene.background = bg;
+        }
         this.vfxPipeline.render(scene, camera);
     }
 }
