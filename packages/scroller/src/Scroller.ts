@@ -1,6 +1,9 @@
 import { MathUtils } from "@fils/math";
 import { Section } from "./Section";
 import { VirtualScrollBar } from "./VirtualScrollBar";
+import { DEFAULT_EASING, FilScrollerParameters, ScrollerConfig } from "./partials/ScrollerConfig";
+import { ScrollerEvents } from "./partials/ScrollerEvents";
+import { ScrollerStyles } from "./partials/ScrollerStyles";
 
 interface position {
 	current: number,
@@ -14,382 +17,149 @@ export enum D {
 	RIGHT
 }
 
-const style = `
-	html {
-		overscroll-behavior: none;
-	}
-	[fil-scroller]{
-		overflow: hidden;
-		width: 100%;
-		height: 100%;
-		position: absolute;
-	}
-	[fil-scroller][fil-scroller-native]{
-		position: relative;
-		height: auto;
-		overflow: unset;
-	}
-	[fil-scroller-section]{
-		opacity: 0;
-		visibility: hidden;
-		will-change: auto;
-	}
-	[fil-scroller-sticky]{
-		position: sticky;
-		top: 0;
-	}
-	[fil-scroller-section].fil-scroller__visible {
-		opacity: 1;
-		visibility: visible;
-		will-change: transform, scroll-position;
-	}
-	[fil-scroller="disabled"] [fil-scroller-container] {
-		position: relative;
-	}
+export const PRECISION = 5;
+const SNAP_THRESHOLD = 0.005;
 
-	.fil-scroller-disabled,
-	.fil-scroller-disabled body {
-		overflow: hidden !important;
-	}
-
-	[fil-scroller-section].fil-scroller__visible [fil-scroller-sticky] {
-		will-change: transform;
-	}
-`;
-
-const touchWheel = {
-	delta: 0,
-	startY: 0,
-	amp: 10,
-	startDrag: 0
-}
-
-export type FilScrollerParameters = {
-	useNative?:boolean;
-	easing?:number;
-	direction?:D;
-	showVirtualScrollBar?:boolean;
-	customScrollBar?:VirtualScrollBar;
-	touchForce?:number;
-	wheelForce?:number;
-	customContainer?:HTMLElement;
-	customContent?:HTMLElement;
-	allowVerticalScrolling?:boolean;
-	allowHorizontalScrolling?:boolean;
-}
-
-const DEFAULT_EASING = 0.16;
 
 export class Scroller {
-	container:HTMLElement;
-	content:HTMLElement;
 
-	sectionsWrapper: HTMLElement;
 	virtualScrollBar:VirtualScrollBar;
-	isBody:boolean = false;
+	sections: Section[] = [];
+
+	loaded: boolean = false;
 
 	progress: number = 0;
-
-	scrollDirection = {
-		vertical: true,
-		horizontal: false
-	}
-
-	force = {
-		touch: 1,
-		wheel: 1
-	}
-
 	position:position = {
 		current: 0,
 		target: 0,
 	};
-
-	overScrolling: boolean = false;
-
-	private _direction: D = D.TOP;
-
-	sections:Section[] = [];
-
-	private loaded: boolean = false;
-	// private paused: boolean = false;
-	private disabled: boolean = false;
-	private blocked: boolean = false;
-
 	distance: number = 0;
-	private _ease: number;
-
 	delta: number = 0;
 
-	w:{w:number, h:number} = {
+	containerSize:{w:number, h:number} = {
 		w: 0,
 		h: 0
 	};
 
 	edges:number[] = [0,0];
 
-	useNative:boolean = false;
+	config: ScrollerConfig;
+	styles: ScrollerStyles;
+	events: ScrollerEvents;
 
 	constructor(params?:FilScrollerParameters){
-		if(params.customContainer) {
-			this.container = params.customContainer;
-		} else this.container = document.querySelector('[fil-scroller]') as HTMLElement;
-		if(params.customContent) {
-			this.content = params.customContent;
-		} else this.content = this.container.querySelector('[fil-scroller-content]') as HTMLElement;
 
-		this.isBody = this.container === document.body;
-
-		// Allow scroll events
-		this.scrollDirection.vertical = !(params.allowVerticalScrolling === false);
-		this.scrollDirection.horizontal = params.allowHorizontalScrolling === true;
-
-		if(!this.container){
-			console.warn('Fil Scroller - No `[fil-scroller]` element');
-			return;
+		// Init config
+		this.config = new ScrollerConfig(params);
+		if(this.config.showVirtualScrollBar) {
+			this.virtualScrollBar = this.config.scrollbar || new VirtualScrollBar(0);
 		}
 
-		this.sectionsWrapper = this.container.querySelector('[fil-scroller-sections-wrapper]');
-		if (!this.sectionsWrapper) {
-			console.log(`Fil Scroller - No '[fil-scroller-sections-wrapper]' element, using [fil-scroller-content] as wrapper`);
-			this.sectionsWrapper = this.content;
-		}
+		// Init Styles
+		this.styles = new ScrollerStyles(this);
 
-		this.ease = params?.easing || DEFAULT_EASING;
-		this.useNative = params?.useNative === true;
-		this._direction = params?.direction || D.TOP;
+		// Init Events
+		this.events = new ScrollerEvents(this);
+		if(!this.config.useNative) this.events.addEventListeners(this.config.container);
 
-		if(params.touchForce) this.force.touch = params.touchForce;
-		if(params.wheelForce) this.force.wheel = params.wheelForce;
-
-		if(this.useNative) {
-			console.log('Using Native Scroll');
-			document.querySelector('[fil-scroller]').setAttribute('fil-scroller-native', '');
-
-			if (this._direction !== D.TOP) {
-				console.warn('Native scrolling supports only D.TOP vertical direction! Forcing D.TOP...');
-				this._direction = D.TOP;
-			}
-			this.ease = 1; // force no easing
-
-		} else if(params?.showVirtualScrollBar){
-			this.virtualScrollBar = params?.customScrollBar || new VirtualScrollBar(0);
-		}
-
-		this.addStyles();
 		this.refresh();
-		this.addEventListeners(this.container);
 	}
 
-	get enabled(): boolean {
-		return !this.disabled;
-	}
-
-	// Disable - enable
-	disable(){
-		if(this.disabled) return;
-		this.disabled = true;
-		for(const section of this.sections) section.disabled = this.disabled;
-		const b = document.body;
-		if(this.container != b) this.container.setAttribute('fil-scroller', 'disabled');
-		else document.documentElement.classList.add('fil-scroller-disabled');
-		if(this.virtualScrollBar) {
-			this.virtualScrollBar.dom.style.display = 'none';
-		}
-	}
-	enable(){
-		if(!this.disabled) return;
-		this.disabled = false;
-		for(const section of this.sections) section.disabled = this.disabled;
-
-		const b = document.body;
-		if (this.container != b) this.container.setAttribute('fil-scroller', '');
-		else document.documentElement.classList.remove('fil-scroller-disabled');
-		if(this.virtualScrollBar) {
-			this.virtualScrollBar.dom.style.display = 'block';
-		}
-	}
+	// --------------------------------------------------- EVENTS
 	// Block - Unblock
-	block(){
-		if(this.blocked) return;
-		this.blocked = true;
-	}
-	unblock(){
-		if (!this.blocked) return;
-		this.blocked = false;
-	}
+	block() {		this.events.block();	}
+	unblock() {	this.events.unblock(); }
 
-	set direction(val: D | number){
-		if(this.useNative && val !== D.TOP) {
-			console.warn('Native scrolling supports only D.TOP vertical direction! Forcing D.TOP...');
-			this._direction = D.TOP;
-		} else {
-			this._direction = MathUtils.clamp(val, 0, 3);
-		}
-		for(const section of this.sections) section.direction = this.direction;
+	// Setters - Getters
+	set direction(d: D | number){
+		this.config.setDirection(d);
 		this.restore();
 	}
 	get direction(){
-		return this._direction;
+		return this.config.direction;
 	}
-
 	set ease(newEase:number) {
-		this._ease = newEase;
+		this.config.easing = newEase;
 	}
 	get ease(){
-		return this._ease;
+		return this.config.easing;
 	}
 
-	addStyles(){
+	getSectionIndex(s:Section){
+		for(let i = 0; i < this.sections.length; i++){
+			if(this.sections[i] === s) return i;
+		}
+		return 0;
+	}
 
-		document.documentElement.setAttribute('fil-scroller-parent', '')
-
-		const _styles = document.createElement('style');
-		_styles.textContent = style;
-		document.head.append(_styles);
-
+	// Get scroller direction
+	isHorizontal() {
+		return this.config.isHorizontal();
+	}
+	isVertical() {
+		return this.config.isVertical();
 	}
 
 	addSections(){
 
 		// Get only first level child sections
-		const sections:NodeListOf<HTMLElement> = this.sectionsWrapper.querySelectorAll(':scope > [fil-scroller-section]');
+		const sections:NodeListOf<HTMLElement> = this.config.content.querySelectorAll(':scope > [fil-scroller-section]');
 
 		for(let i = 0, len = sections.length; i<len; i++){
-			const _section = sections[i];
-			const id = _section.getAttribute('fil-scroller-section') ? _section.getAttribute('fil-scroller-section') : `section-${i}`;
-			const section = new Section(id, _section, this.direction, this.useNative);
+			const dom = sections[i];
+			const section = new Section(i, dom, this.config);
 			this.sections.push(section);
 		}
 	}
 
-	isHorizontal() {
-		return this.direction === D.LEFT || this.direction === D.RIGHT;
-	}
+	restore(){
 
-	restore(resizing:boolean=false){
-		// To-Do: size should be based on container's size
-		// let ww = window.innerWidth;
-		// let wh = window.innerHeight; // this.useNative ? window.outerHeight : window.innerHeight;
-		// if(this.w.w === ww && this.w.h === wh) return;
-		// this.w.w = ww;
-		// this.w.h = wh;
-		// console.log('resize');
+		const containerRect = this.config.container.getBoundingClientRect();
 
-		const containerRect = this.container.getBoundingClientRect();
+		const vertical = this.isVertical();
 
-		this.w.w = containerRect.width;
-		this.w.h = containerRect.height;
-
-		for(const section of this.sections) {
-			// section.dom.classList.remove('disabled');
-			section.w = this.w;
-			section.restore(resizing);
-		}
-
-		this.updateSections();
+		this.containerSize.w = containerRect.width;
+		this.containerSize.h = containerRect.height;
 
 		let w = 0;
 		for(let section of this.sections) {
-			section.widthOffset = w;
-			w += section.sticky.length ? section.rect.width : section.rect.width;
+			section.containerRect = containerRect;
+			section.offset = w;
+			if(section.disabled) continue;
+			w += vertical ? section.rect.height : section.rect.width;
 		}
 
+		for (const section of this.sections) {
+			section.restore();
+		}
+
+		this.updateSections();
 		this.updateCheckHeight();
 	}
 
-	contentChanged() {
-		this.restore();
-		this.update();
+	dispose(){
+		this.loaded = false;
+		this.sections = [];
+		this.create();
 	}
 
-	resize(){
-		this.restore(true);
-	}
-
-	updateExternal(delta:number){
-		this.position.target = MathUtils.clamp(this.position.target + delta, this.edges[0], this.edges[1]);
-		this.updateOverScrolling(delta)
-	}
-
-	addEventListeners(_target?:HTMLElement){
-		if(this.useNative) return;
-
-		const target = _target || window;
-
-		target.addEventListener('wheel', (e:WheelEvent) => {
-			if(this.disabled) return;
-			if(this.blocked) return;
-
-			let delta = e.deltaY;
-			if(this.scrollDirection.horizontal && this.scrollDirection.vertical){
-				const d = Math.abs(e.deltaX) > Math.abs(e.deltaY);
-				delta = d ? e.deltaX : e.deltaY;
-			} else if(this.scrollDirection.horizontal){
-				delta = e.deltaX;
-			}
-
-			this.updateExternal(delta * this.force.wheel);
-		})
-
-		target.addEventListener('touchstart', (e:TouchEvent) => {
-			if (this.disabled) return;
-			if (this.blocked) return;
-
-			const e1 = e.touches[0];
-			touchWheel.startY = e1.clientY;
-			touchWheel.startDrag = performance.now();
-		}, {
-			passive: false
-		})
-
-		target.addEventListener('touchend', (e:TouchEvent) => {
-			if (this.disabled) return;
-			if (this.blocked) return;
-
-			if(performance.now() - touchWheel.startDrag < 100) {
-				this.updateExternal(-touchWheel.delta * 10 * this.force.touch);
-			}
-
-			touchWheel.delta = 0;
-		}, {
-			passive: false
-		})
-
-		target.addEventListener('touchmove', (e:TouchEvent) => {
-			if (this.disabled) return;
-			if (this.blocked) return;
-
-			e.preventDefault();
-			const e1 = e.touches[0];
-			touchWheel.delta = e1.clientY - touchWheel.startY;
-			touchWheel.startY = e1.clientY;
-
-			this.updateExternal(-touchWheel.delta * this.force.touch);
-		}, {
-			passive: false
-		})
+	stop(){
+		this.delta = 0;
+		this.position.target = this.position.current;
 	}
 
 	refresh(forceTop:boolean = true) {
-		this.loaded = false;
 
 		if(forceTop){
 			this.position.current = 0;
-			if(this.useNative) {
-				this.container.scrollTop = 0;
+			if(this.config.useNative) {
+				this.config.container.scrollTop = 0;
 			}
 		}
 		this.position.target = this.position.current;
 
-		this.sections = [];
-		this.create();
+		this.dispose();
 
-		// Fix a weird bug in horizontal scrolling
-		// by forcing restore once more (To-Do: Look at it!!)
-		if(this.isHorizontal()) {
-			this.restore();
-		}
 	}
 
 	create(){
@@ -403,103 +173,193 @@ export class Scroller {
 		this.loaded = true;
 	}
 
-	updateTarget(){
-		if(this.useNative) {
-			this.position.target = this.isBody ? window.scrollY : this.container.scrollTop;
-		}
+	updateExternalByType(_delta:number, type: 'touch' | 'wheel'){
+		const force = type === 'touch' ? this.config.force.touch : this.config.force.wheel;
+		const delta = _delta * force;
+		this.updateExternal(delta);
 	}
 
+	updateExternal(delta: number) {
+
+		if (this.config.canLoop()) this.position.target += delta;
+		else this.position.target = MathUtils.clamp(this.position.target + delta, this.edges[0], this.edges[1]);
+
+	}
 	updateCheckHeight(){
 		this.distance = 0;
 
-		const vertical = !this.isHorizontal();
+		const vertical = this.isVertical();
 
 		for(let i = 0, len = this.sections.length; i < len; i++) {
 			const section = this.sections[i];
+			if(section.disabled) continue;
 			if(vertical) this.distance += section.rect.height;
 			else this.distance += section.sticky.length ? section.rect.height : section.rect.width;
 		}
 
-		// If horizontal the difference between height and width must be taken care of.
-		const dw = this.w.h - this.w.w;
-		if(!vertical) this.distance += dw;
+		this.config.content.style.height = `${this.distance}px`;
 
-		this.content.style.height = `${this.distance}px`;
-		if(!this.useNative && this.virtualScrollBar) {
+		if(!this.config.useNative && this.virtualScrollBar) {
 			this.virtualScrollBar.contentHeight = this.distance;
 		}
 
-		this.edges[1] = vertical ? this.distance - this.w.h : this.distance - this.w.w - dw;
-	}
+		const containerSize = vertical ? this.containerSize.h : this.containerSize.w;
+		this.edges[0] = 0;
+		this.edges[1] = MathUtils.clamp(this.distance - containerSize, 0, this.distance);
 
+		this.config.loopPossible = this.distance >= containerSize * 2;
+
+	}
+	updateTarget() {
+		if (this.config.useNative) {
+			this.position.target = this.config.container.scrollTop;
+		}
+	}
 	updateScrollValues() {
 
 		const previous = this.position.current;
 
-		if(this.disabled) {
-			this.position.current = this.position.target;
-		} else {
+		this.position.current = MathUtils.lerp(
+			this.position.current,
+			this.position.target,
+			this.config.easing
+		);
 
-			this.position.current = MathUtils.lerp(
-				this.position.current,
-				this.position.target,
-				this.ease
-			);
+		if(!this.config.useNative && this.virtualScrollBar) {
+			this.virtualScrollBar.progress = MathUtils.clamp(this.position.current / this.edges[1], 0, 1);
+		}
 
-			if(Math.abs(this.position.target-this.position.current) < 1) {
-				this.position.current = this.position.target;
+		if(!this.config.canLoop()){
+			this.position.current = MathUtils.clamp(this.position.current, this.edges[0], this.edges[1]);
+		}
+
+		const newDelta = (this.position.current - previous) * 0.01;
+		const previousDelta = parseFloat(this.delta.toFixed(PRECISION));
+		this.delta = parseFloat((MathUtils.clamp(MathUtils.lerp(this.delta, newDelta, 0.1), -1, 1)).toFixed(PRECISION));
+
+		this.snapCheck(previousDelta, this.delta);
+
+	}
+	// This will seameless restart the loop in both directions
+	updateLoop(){
+		if(!this.config.canLoop()) return;
+
+		const vertical = this.isVertical();
+		const containerSize = vertical ? this.containerSize.h : this.containerSize.w;
+		const distanceBetweenCurrentAndTarget = this.position.target - this.position.current;
+
+		if (this.position.current < this.edges[0] - containerSize) {
+			this.position.current = this.distance - containerSize;
+			this.position.target = this.position.current + distanceBetweenCurrentAndTarget;
+		}
+
+		if (this.position.current > this.distance) {
+			this.position.current = this.edges[0];
+			this.position.target = this.position.current + distanceBetweenCurrentAndTarget;
+		}
+	}
+	updateSection(section: Section, scroll:number, delta:number){
+		section.scroll = scroll;
+		section.delta = delta;
+		section.update();
+	}
+	updateSections(){
+
+		// Default Update
+		for(let i = 0, len = this.sections.length; i < len; i++) {
+			const section = this.sections[i];
+			this.updateSection(section, this.position.current, this.delta)
+		}
+
+		// This will make sections believe they are active if the current position is between edges and loop restart
+		if(!this.config.canLoop()) return;
+
+		const vertical = this.isVertical();
+		// Container size
+		const containerSize = vertical ? this.containerSize.h : this.containerSize.w;
+
+		let p = 0;
+		const l = this.sections.length - 1;
+
+		// Make last sections believe it's their turn
+		if(this.position.current < this.edges[0]) {
+
+			for(let i = l; i > 0; i--){
+				if (p > containerSize) break;
+
+				const section = this.sections[i];
+				const current = this.position.current + this.distance;
+				this.updateSection(section, current, this.delta);
+
+				p += vertical ? section.rect.height : section.rect.width;
+			}
+		}
+
+		if(this.position.current > this.distance - containerSize){
+
+			for (let i = 0; i < l; i++) {
+				if (p > containerSize) break;
+
+				const section = this.sections[i];
+				const current = this.position.current - this.distance;
+				this.updateSection(section, current, this.delta);
+
+				p += vertical ? section.rect.height : section.rect.width;
 			}
 
 		}
 
-		if(!this.useNative && this.virtualScrollBar) {
-			this.virtualScrollBar.progress = MathUtils.clamp(this.position.current / this.edges[1], 0, 1);
-		}
-
-		this.position.current = MathUtils.clamp(this.position.current, this.edges[0], this.edges[1]);
-
-		const newDelta = (this.position.current - previous) * 0.01;
-		this.delta = MathUtils.clamp(MathUtils.lerp(this.delta, newDelta, 0.1), -1, 1)
 	}
-
-	updateSections(){
-
-		const scroll = this.position.current;
-		for(let i = 0, len = this.sections.length; i < len; i++) {
-			const section = this.sections[i];
-			section.scroll = scroll;
-			section.delta = this.delta;
-			section.update();
-		}
-
-	}
-
-	updateOverScrolling(delta:number){
-		this.overScrolling = false;
-		if (this.position.current <= this.edges[0] && delta < 0) {
-			this.overScrolling = true;
-		}
-		if (this.position.current >= this.edges[1] && delta > 0) {
-			this.overScrolling = true;
-		}
-
-	}
-
 	update(){
 		if(!this.loaded) return;
 
+		this.styles.update();
+
 		this.updateTarget();
 		this.updateScrollValues();
-
-		if(Math.abs(this.delta) > .001) {
-			this.updateSections();
-		}
-
-		// Update container classes
-		this.container.classList.toggle('fil-scroller__top', this.position.current <= this.edges[0] + 0.5);
-		this.container.classList.toggle('fil-scroller__bottom', this.position.current >= this.edges[1] - 0.5);
+		this.updateLoop();
+		this.updateSections();
 
 		this.progress = MathUtils.truncateDecimals(MathUtils.map(this.position.current, this.edges[0], this.edges[1], 0, 1), 3);
+
+	}
+
+	// Trigger snapping
+	// Todo
+	// - snap to center
+	// - snap mirant el loop, ara si estas en el tros aquest entre un i altre encara creu que es mes propera la primera o ultima que la loopejada
+	snapCheck(previousDelta, delta){
+		if (!this.config.snapping) return;
+
+		const absDelta = Math.abs(delta);
+		const absPrevDelta = Math.abs(previousDelta);
+
+		// Reset one snap if the user has scrolled
+		if (absDelta > absPrevDelta && absDelta > SNAP_THRESHOLD) this.config.snappingPossible = true;
+
+		// If can snap, delta is decreasing and delta is really small, then snap
+		if (absDelta < absPrevDelta && this.config.snappingPossible && absDelta < SNAP_THRESHOLD) {
+			this.config.snappingPossible = false;
+			this.snap();
+		}
+
+	}
+	snap(){
+
+		let section = this.sections[0];
+		for(let i = 0; i < this.sections.length; i++){
+
+			const s = this.sections[i];
+			const currentDiff = Math.abs(s.offset - this.position.current);
+			const closestDiff = Math.abs(section.offset - this.position.current);
+
+			if (currentDiff < closestDiff) {
+				section = s;
+			}
+		}
+
+		console.log(`Fil Scroller - Snap to Section ${this.getSectionIndex(section)}`);
+		this.scrollToSection(section as Section);
 
 	}
 
@@ -512,36 +372,40 @@ export class Scroller {
 		const _k = MathUtils.clamp(k, this.edges[0], this.edges[1]);
 		this.position.target = _k;
 
-		if(this.useNative){
-			this.container.scrollTop = k;
+		if(this.config.useNative){
+			this.config.container.scrollTop = k;
 		}
 	}
 
 	/**
 	 * Scrolls to a given section
-	 * @param k index of section to scroll to
+	 * @param k index of section or Section to scroll to
 	 * @returns
 	 */
-	scrollToSection(k:number) {
-		if(k<0 || k>this.sections.length-1) {
-			return console.warn('Section Out of bounds!');
+	scrollToSection(s:number | Section) {
+
+		const k = typeof s === 'number' ? s : this.getSectionIndex(s);
+
+		if(k < 0 || k > this.sections.length - 1) {
+			return console.warn('Fil Scroller - Section Out of bounds');
 		}
 
-		const sec = this.sections[k];
+		const section = this.sections[k];
 
-		if(this.useNative) {
-			// NOTE: If you are in native mode you might just
-			// want to animate using gsap or raf lerp instead
-			const top = Math.min(sec.rect.top, this.distance-this.w.h);
-			this.container.scrollTop = top;
+		if(this.config.useNative) {
+			const top = Math.min(section.rect.top, this.distance-this.containerSize.h);
+			this.config.container.scrollTop = top;
+
 		} else {
-			if(!this.isHorizontal()) {
-				const top = Math.min(sec.rect.top, this.distance-this.w.h);
+
+			if(this.isVertical()) {
+				const top = Math.min(section.rect.top, this.distance-this.containerSize.h);
 				this.position.target = top;
 			} else {
-				const l = Math.min(sec.widthOffset, this.distance);
+				const l = Math.min(section.offset, this.distance);
 				this.position.target = l;
 			}
+
 		}
 	}
 
@@ -550,7 +414,7 @@ export class Scroller {
 	 * @param section Section from where you are scrolling from
 	 */
 	scrollToNextSection(section:Section) {
-		this.scrollToSection(this.sections.indexOf(section)+1);
+		this.scrollToSection(this.sections.indexOf(section) + 1);
 	}
 
 	/**
@@ -558,6 +422,6 @@ export class Scroller {
 	 * @param section Section from where you are scrolling from
 	 */
 	scrollToPrevSection(section:Section) {
-		this.scrollToSection(this.sections.indexOf(section)-1);
+		this.scrollToSection(this.sections.indexOf(section) - 1);
 	}
 }

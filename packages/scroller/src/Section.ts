@@ -1,272 +1,299 @@
 import { MathUtils } from "@fils/math";
-import { D } from "./Scroller";
+import { D, PRECISION } from "./Scroller";
+import { ScrollerConfig } from "./partials/ScrollerConfig";
 
 export interface ScrollerSectionListener {
-	onAnimationIn?();
-	onAnimationOut?();
-	onBeforeRestore?(resizing:boolean);
-	onAfterRestore?(resizing:boolean);
+  onAnimationIn?();
+  onAnimationOut?();
+  onBeforeRestore?();
+  onAfterRestore?();
 }
 
-const PRECISION = 5;
-
 export class Section {
-	id: string;
-	dom: HTMLElement;
+  id: string;
+  dom: HTMLElement;
+  config: ScrollerConfig;
 
-	rect: DOMRect;
-	widthOffset: number;
+  // Section rect
+  rect: DOMRect;
+  // Section offset in relation to the other sections
+  offset: number;
 
-	w:{w:number, h:number} = {
-		w: 0,
-		h: 0
-	};
+  containerRect: DOMRect;
 
-	// From hidden - visible - hidden
-	progress: number = 0;
-	// From hidden - visible
-	// progressIn: number = 0;
-	// From visible - hidden
-	// progressOut: number = 0;
+  progress: number = 0;
+  threshold: number[] = [];
+  scroll: number = 0;
+  delta: number = 0;
 
-	protected _direction: D = D.LEFT;
-	threshold:number[] = [];
+  _position = {
+    x: 0,
+    y: 0,
+  };
 
-	scroll: number = 0;
-	delta: number = 0;
+  visible: boolean = false;
+  closeToVisible: boolean = false;
+  disabled: boolean = false;
 
-	_position = {
-		x: 0,
-		y: 0
-	}
+  protected listeners: ScrollerSectionListener[] = [];
 
-	visible: boolean = false;
-	closeToVisible: boolean = false;
-	disabled: boolean = false;
+  sticky: HTMLElement[] = [];
 
-	protected listeners:ScrollerSectionListener[] = [];
+  constructor(i: number, dom: HTMLElement, config: ScrollerConfig) {
+    // Set ID
+    this.dom = dom;
 
-	sticky:HTMLElement[] = [];
+    const id = this.dom.getAttribute("fil-scroller-section");
+    if (id) this.id = id;
+    else this.id = `section-${i}`;
 
-	nativeScrolling:boolean = false;
+    this.config = config;
 
+    const s = dom.querySelectorAll("[fil-scroller-sticky]");
+    s.forEach((value) => {
+      this.sticky.push(value as HTMLElement);
+    });
 
-	constructor(id: string, dom: HTMLElement, direction: D, useNative?:boolean){
+    this.containerRect = this.config.container.getBoundingClientRect();
+    this.calculateThreshold();
+  }
 
-		this.id = id;
-		this.dom = dom;
-		this._direction = direction;
+  restore() {
+    this.onBeforeRestore();
 
-		this.nativeScrolling = useNative === true;
+    this.dom.style.transform = "";
 
-		const s = dom.querySelectorAll('[fil-scroller-sticky]');
+    this.progress = 0;
 
-		s.forEach(value=> {
-			this.sticky.push(value as HTMLElement);
-		})
-		// console.log(this.sticky);
+    this.calculateThreshold();
 
-	}
+    this.updateTransform();
 
-	set direction(value:D) {
-		if(this._direction === value) return;
-		this._direction = value;
+    this.onAfterRestore();
+  }
+  calculateThreshold() {
+    this.rect = this.dom.getBoundingClientRect();
 
-	}
+    // VERTICAL SCROLL THRESHOLDS
+    if (this.config.isVertical()) {
+      this.threshold = [
+        this.rect.top - this.containerRect.height - this.containerRect.top,
+        this.rect.top + this.rect.height - this.containerRect.top,
+      ];
 
-	get direction():D {
-		return this._direction;
-	}
+      if (this.config.useNative) {
+        this.threshold[0] += this.scroll;
+        this.threshold[1] += this.scroll;
+      }
+    } else {
+      this.threshold = [
+        // Section offset in relation to the other sections
+        this.offset - this.containerRect.width,
+        // Section offset in relation to the other sections
+        this.offset + this.rect.width,
+      ];
+    }
+  }
 
-	calculateDims() {
-		this.rect = this.dom.getBoundingClientRect();
-		// VERTICAL SCROLL THRESHOLDS
-		if(this.direction === D.TOP || this.direction === D.BOTTOM) {
-			this.threshold = [
-				this.rect.top - this.w.h,
-				this.rect.top + this.rect.height
-			];
-			if(this.nativeScrolling) {
-				this.threshold[0] += this.scroll;
-				this.threshold[1] += this.scroll;
-			}
-			// console.log(this.threshold);
+  // Listeners
+  addSectionListener(lis: ScrollerSectionListener) {
+    if (this.listeners.indexOf(lis) > -1) return;
+    this.listeners.push(lis);
+  }
+  removeSectionListener(lis: ScrollerSectionListener) {
+    this.listeners.splice(this.listeners.indexOf(lis), 1);
+  }
+  onBeforeRestore() {
+    for (const lis of this.listeners) {
+      lis?.onBeforeRestore();
+    }
+  }
+  onAfterRestore() {
+    for (const lis of this.listeners) {
+      lis?.onAfterRestore();
+    }
+  }
+  animationIn() {
+    for (const lis of this.listeners) {
+      lis?.onAnimationIn();
+    }
+  }
+  animationOut() {
+    for (const lis of this.listeners) {
+      lis?.onAnimationOut();
+    }
+  }
 
-		} else {
-			this.threshold = [
-				this.widthOffset - this.w.w,
-				this.widthOffset + this.rect.width
-			];
-		}
+  // Disabled sections won't be accounted for
+  disable() {
+    if (this.disabled) return;
+    this.disabled = true;
+    this.dom.classList.add("fil-scroller__section-disabled");
+  }
+  enable() {
+    if (!this.disabled) return;
+    this.disabled = false;
+    this.dom.classList.remove("fil-scroller__section-disabled");
+  }
 
-	}
+  // Show - Hide
+  protected show() {
+    if (this.visible) return;
 
-	addSectionListener(lis:ScrollerSectionListener) {
-		if(this.listeners.indexOf(lis) > -1) return;
-		this.listeners.push(lis);
-	}
+    this.animationIn();
 
-	removeSectionListener(lis:ScrollerSectionListener) {
-		this.listeners.splice(
-			this.listeners.indexOf(lis),
-			1
-		);
-	}
+    this.dom.classList.add("fil-scroller__visible");
+    this.visible = true;
+  }
+  protected hide() {
+    if (!this.visible) return;
 
-	restore(resizing:boolean=false){
-		for(const lis of this.listeners) {
-			lis?.onBeforeRestore(resizing);
-		}
-		this.dom.style.transform = '';
-		// this.dom.classList.remove('fil-scroller__disabled');
+    this.animationOut();
 
-		this.visible = true;
-		// this.hide();
+    this.visible = false;
+    this.progress = 0;
+    this.delta = 0;
+    this.dom.classList.remove("fil-scroller__visible");
+    this.dom.style.setProperty("--fil-scroller-delta", "0");
+    this.dom.style.setProperty("--fil-scroller-progress", "0");
+  }
 
-		this.progress = 0;
-		// this.progressIn = 0;
-		// this.progressOut = 0;
-		this.calculateDims();
-		for(const lis of this.listeners) {
-			lis?.onAfterRestore(resizing);
-		}
+  // ------------------------- UPDATE
+  updateCloseToVisible() {
+    if (this.visible) return;
 
-		this.hide();
-	}
+    const margin = this.containerRect.width;
+    const close1 = this.scroll + margin > this.threshold[0];
+    const close2 = this.scroll + margin < this.threshold[1];
+    const inRange = close1 && close2;
+    if (inRange != this.closeToVisible) {
+      this.dom.classList.toggle(
+        "fil-scroller__section-close-to-visible",
+        inRange
+      );
+      this.closeToVisible = inRange;
+    }
+  }
+  updateVisible() {
+    // If its visible then
+    if (this.scroll > this.threshold[0] && this.scroll < this.threshold[1]) {
+      if (!this.visible) {
+        this.show();
+      }
 
-	animationIn(){
-		for(const lis of this.listeners) {
-			lis?.onAnimationIn();
-		}
-	}
-	animationOut(){
-		for(const lis of this.listeners) {
-			lis?.onAnimationOut();
-		}
-	}
+      this.dom.style.setProperty(
+        "--fil-scroller-delta",
+        `${this.delta.toFixed(PRECISION)}`
+      );
+      this.progress = MathUtils.smoothstep(
+        this.threshold[0],
+        this.threshold[1],
+        this.scroll
+      );
+      this.dom.style.setProperty(
+        "--fil-scroller-progress",
+        `${this.progress.toFixed(PRECISION)}`
+      );
 
-	get position() {
+      this.updateTransform();
 
-		if(!this.visible){
-			this._position.x = 0;
-			this._position.y = -this.w.h;
-		}
-		if(this.direction === D.TOP){
-			this._position.x = 0;
-			this._position.y = -this.scroll;
-		}
-		if(this.direction === D.BOTTOM){
-			this._position.x = 0;
-			this._position.y = this.scroll + (this.w.h - this.rect.height) - this.rect.top * 2;
-		}
-		if(this.direction === D.LEFT){
-			this._position.x = this.widthOffset - this.scroll;
-			this._position.y = -this.rect.top;
-		}
-		if(this.direction === D.RIGHT){
-			this._position.x = this.scroll + (this.w.w - this.rect.width) - this.widthOffset;
-			this._position.y = -this.rect.top;
-		}
+      return;
+    }
 
-		return this._position;
-	}
+    // if it's not between thresholds and its visible, hide it
+    if (this.visible) {
+      this.hide();
+      this.updateTransform();
+    }
+  }
+  updateSticky() {
+    const cH = this.containerRect.height;
+    const cW = this.containerRect.width;
+    const t0 = this.threshold[0];
+    const t1 = this.threshold[1];
+    let px = this.position.x;
+    let py = this.position.y;
 
-	updateTransform(){
-		if(this.disabled) return;
-		if(this.nativeScrolling) {
-			return;
-		}
-		const wH = this.w.h;
-		const wW = this.w.w;
-		let px = this.position.x, py = this.position.y;
+    for (const s of this.sticky) {
+      let tY, sY;
+      switch (this.config.direction) {
+        case D.TOP:
+          tY = 1 - MathUtils.smoothstep(-t1 + cH, -t0 - cH, py);
+          sY = tY * (t1 - t0 - 2 * cH);
+          s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(
+            PRECISION
+          )},0,1)`;
+          break;
+        case D.BOTTOM:
+          tY = 1 - MathUtils.smoothstep(-t1 + cH, -t0 - cH, py);
+          sY = tY * (t1 - t0 - 2 * cH);
+          s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(
+            PRECISION
+          )},0,1)`;
+          break;
+        // case D.RIGHT:
+        // 	tY = 1 - MathUtils.smoothstep(-t1+ cW, -t0-cW, px);
+        // 	sY = tY * (t1 - t0 - 2*cW);
+        // 	s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${sY.toFixed(PRECISION)},0,0,1)`;
+        // 	break;
+        case D.LEFT:
+          tY = 1 - MathUtils.smoothstep(-t1 + cW, -t0 - cW, px);
+          sY = tY * (this.threshold[1] - t0 - 2 * cW);
+          s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${sY.toFixed(
+            PRECISION
+          )},0,0,1)`;
+          break;
+      }
+    }
+  }
+  updateTransform() {
+    if (this.config.useNative) return;
 
-		for(const s of this.sticky) {
-			let tY, sY;
-			switch(this.direction) {
-				case D.TOP:
-					tY = 1 - MathUtils.smoothstep(-this.threshold[1] + wH, -this.threshold[0] - wH, py);
-					sY = tY * (this.threshold[1] - this.threshold[0] - 2*wH);
-					s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(PRECISION)},0,1)`;
-					break;
-				case D.BOTTOM:
-					// console.log(-this.threshold[1]+ wH, -this.threshold[0]-wH, py);
-					tY = 1 - MathUtils.smoothstep(-this.threshold[1]+ wH, -this.threshold[0]-wH, py);
-					sY = tY * (this.threshold[1] - this.threshold[0] - 2*wH);
-					s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(PRECISION)},0,1)`;
-					break;
-				// case D.RIGHT:
-				// 	tY = 1 - MathUtils.smoothstep(-this.threshold[1]+ wW, -this.threshold[0]-wW, px);
-				// 	sY = tY * (this.threshold[1] - this.threshold[0] - 2*wW);
-				// 	s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${sY.toFixed(PRECISION)},0,0,1)`;
-				// 	break;
-				case D.LEFT:
-					tY = 1 - MathUtils.smoothstep(-this.threshold[1]+ wW, -this.threshold[0]-wW, px);
-					sY = tY * (this.threshold[1] - this.threshold[0] - 2*wW);
-					s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${sY.toFixed(PRECISION)},0,0,1)`;
-					break;
-			}
-		}
+    this.updateSticky();
 
-		this.dom.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${px.toFixed(PRECISION)},${py.toFixed(PRECISION)},0,1)`;
-	}
+    let px = this.position.x;
+    let py = this.position.y;
+    this.dom.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${px.toFixed(
+      PRECISION
+    )},${py.toFixed(PRECISION)},0,1)`;
+  }
+  get position() {
+    // Todo, D.Left esta arreglat pero els altres no
+    // El position x i y ha de tenir en compte el parent, altrament, si el parent ha tingut un transform deixa de posar-se a lloc (mirar el position.y del D.LEFT, aquest ho te en compte)
 
-	protected show() {
-		if(this.visible) return;
+    if (this.config.direction === D.TOP) {
+      this._position.x = 0;
+      this._position.y = -this.scroll; // AQUI S'HA DE POSAR L'OFFSET O ALGO PER CONTRARESTAR LES DISABLED
+    }
+    if (this.config.direction === D.BOTTOM) {
+      // Aquest encara s'ha de fer funcionar amb sections disabled
+      this._position.x = 0;
+      this._position.y =
+        this.scroll +
+        (this.containerRect.height - this.rect.height) -
+        this.rect.top * 2;
+    }
+    if (this.config.direction === D.LEFT) {
+      // Section offset in relation to the other sections
+      this._position.x = this.offset - this.scroll;
+      this._position.y = this.containerRect.top - this.rect.top;
+    }
+    if (this.config.direction === D.RIGHT) {
+      // Aquest encara s'ha de fer funcionar amb sections disabled
+      // Section offset in relation to the other sections
+      this._position.x =
+        this.scroll +
+        (this.containerRect.width - this.rect.width) -
+        this.offset;
+      this._position.y = -this.rect.top;
+    }
 
-		this.animationIn();
-		// this.dom.classList.remove('fil-scroller__disabled');
-		this.dom.classList.add('fil-scroller__visible');
-		this.visible = true;
-	}
+    return this._position;
+  }
 
-	protected hide() {
-		if(!this.visible) return;
-
-		this.animationOut();
-		this.visible = false;
-		this.progress = 0;
-		// this.progressIn = 0;
-		// this.progressOut = 0;
-		this.delta = 0;
-		this.dom.classList.remove('fil-scroller__visible');
-		// this.dom.classList.add('fil-scroller__disabled');
-		this.dom.style.setProperty('--fil-scroller-delta', '0');
-		this.dom.style.setProperty('--fil-scroller-progress', '0');
-	}
-
-	update(){
-
-		if(!this.visible){
-			const margin = this.w.w;
-			if (this.scroll + margin > this.threshold[0] && this.scroll + margin < this.threshold[1]) {
-				this.closeToVisible = true;
-			} else {
-				this.closeToVisible = false;
-			}
-		}
-
-		if(this.scroll > this.threshold[0] && this.scroll < this.threshold[1] ) {
-
-			if(!this.visible) {
-				this.show();
-			}
-
-			this.dom.style.setProperty('--fil-scroller-delta', `${this.delta.toFixed(PRECISION)}`);
-			this.progress = MathUtils.smoothstep(this.threshold[0], this.threshold[1], this.scroll);
-			// this.progressIn = MathUtils.smoothstep(this.threshold[0], this.threshold[1] - this.w.w, this.scroll);
-			// this.progressOut = MathUtils.smoothstep(this.threshold[0], this.threshold[1], this.scroll);
-			this.dom.style.setProperty('--fil-scroller-progress', `${this.progress.toFixed(PRECISION)}`);
-
-			this.updateTransform();
-
-			return
-		}
-
-
-		if(!this.visible) return;
-
-		this.hide();
-
-		this.updateTransform();
-	}
+  update() {
+    // Toggle closeToVisible if it's close
+    this.updateCloseToVisible();
+    this.updateVisible();
+  }
 }

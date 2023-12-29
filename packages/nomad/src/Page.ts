@@ -1,31 +1,37 @@
 
 
 export class Page {
-	id: string = '';
 
-	isActive: boolean = false;
-	isLoaded: boolean = false;
+	active: boolean = false;
 
+	id: string;
 	dom:HTMLElement;
+	template: string;
 
-	constructor(dom:HTMLElement){
+	constructor(id:string, template:string, dom:HTMLElement){
 		this.dom = dom;
-
-		this.create();
-		this.addEventListeners();
+		this.id = id;
+		this.template = template;
 	}
 
-	addEventListeners(){}
-
-	create(){
-	}
-	dispose(){
-	}
-
-	async load(resolve){
+	/**
+	 * @description Triggers on class creation, this will be triggered only once, even if the user comes back to this page
+	 */
+	async init(resolve){
 		resolve();
 	}
-	loaded(){}
+
+	/**
+	 * @description Triggers each time the user comes back to this page
+	 */
+	create(){
+	}
+
+	/**
+	 * @description Triggers each time the user leaves this page
+	 */
+	dispose(){
+	}
 
 	async transitionIn(resolve){
 		resolve();
