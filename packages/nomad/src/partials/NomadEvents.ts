@@ -1,7 +1,7 @@
 import { debounce } from "@fils/utils";
 import { Nomad, NomadRouteListener } from "../Nomad";
 
-const linkRule = 'a:not([target]):not([href^=\\#]):not([fil-nomad-ignore])';
+const linkRule = 'a:not([target]):not([href^=\\#]):not([fil-nomad-ignore]):not([href^="tel:"])';
 
 
 export class NomadEvents {
