@@ -3,12 +3,14 @@ import { ScrollerSectionListener, Section } from "./Section";
 
 export abstract class ContentSection implements ScrollerSectionListener {
     dom:HTMLElement;
+    scroller: Scroller;
     section:Section
 
-    constructor(_dom:HTMLElement, scroller?:Scroller) {
+    constructor(_dom:HTMLElement, scroller:Scroller) {
         this.dom = _dom;
 
-        const sections = scroller?.sections;
+        this.scroller = scroller;
+        const sections = scroller.sections;
 
         if(sections) {
             const s = sections.find(s=> s.dom === _dom);

@@ -21,7 +21,9 @@ export interface NomadRouteListener {
 }
 
 export interface NomadParameters {
-	replace?:boolean
+	replace?:boolean,
+	appMode?:boolean,
+	appModeRoot?:string
 }
 
 // Todo
@@ -48,6 +50,10 @@ export class Nomad {
 
 	currentOrder:number = 0;
 	previousRoute: NomadRoute;
+
+	appMode: boolean = false;
+	appModeRoot: string = 'public';
+	appModePath: string = '';
 
 	constructor(params:NomadParameters, createPage:Function = (dom: HTMLElement): Page => { return null; }){
 
@@ -82,7 +88,13 @@ export class Nomad {
 			return;
 		}
 
+		if(this.appMode) {
+			console.log('Nomad in App Mode');
+			this.appModePath = this.utils.getAppModePathname(window.location.href, this.appModeRoot);
+		}
+
 		this.firstRoute();
+
 
 	}
 	addRouteListener(lis:NomadRouteListener) {
@@ -96,8 +108,12 @@ export class Nomad {
 	createRoute(dom:HTMLElement, href:string = window.location.href){
 
 		const location = this.utils.getLocation(href);
+		if(this.appMode){
+			location.pathname = href;
+		}
 
 		const exists = this.routes.find(x => x.id === location.pathname);
+
 		if(exists){
 			this.route = exists;
 			this.route.order.push(this.currentOrder);
@@ -109,6 +125,7 @@ export class Nomad {
 		const id = location.pathname;
 		const template = pageDom.getAttribute('nomad-template');
 		pageDom.setAttribute('nomad-id', id);
+
 
 		const newRoute = {
 			initialized: false,
@@ -135,18 +152,37 @@ export class Nomad {
 		if (route) return route.dom;
 
 		// Else, fetch it
-		const response = await fetch(href, {
-			mode: 'same-origin',
-			method: 'GET',
-			headers: { 'X-Requested-With': 'Nomad' },
-			credentials: 'same-origin'
-		});
+		if (typeof window['require'] === 'function') {
+			const fs = window['require']('fs');
 
-		if (response.status >= 200 && response.status < 300) {
-			const content = el('div');
-			const html = await response.text();
-			content.innerHTML = html;
-			return content;
+			const path = `${this.appModePath}${href}index.html`;
+
+			try {
+
+				const html = fs.readFileSync(path.substring(7), 'utf-8');
+				const content = el('div');
+				content.innerHTML = html;
+				return content;
+
+			} catch (error) {
+				console.error('Nomad (App mode) - Error reading file:', error);
+				return false;
+			}
+		}  else {
+
+			const response = await fetch(href, {
+				mode: 'same-origin',
+				method: 'GET',
+				headers: { 'X-Requested-With': 'Nomad' },
+				credentials: 'same-origin'
+			});
+
+			if (response.status >= 200 && response.status < 300) {
+				const content = el('div');
+				const html = await response.text();
+				content.innerHTML = html;
+				return content;
+			}
 		}
 
 		// Force reload if response fails
@@ -157,7 +193,10 @@ export class Nomad {
 	}
 
 	firstRoute(){
-		const href = window.location.href;
+		let href = window.location.href;
+		if(this.appMode){
+			href = '/'
+		}
 		this.events.onRouteChangeStart(href);
 		this.addContent(href, document.documentElement).then(() => {
 			this.transitionIn();
@@ -173,9 +212,18 @@ export class Nomad {
 	 */
 	goTo(href){
 
-		if(this.utils.getPathname(href) === this.route.location.pathname){
-			console.warn('Nomad - Trying to access current location', this.route.location.pathname);
-			return;
+		let path = this.appMode ? href.replace(/^file:\/\//, '') : href;
+
+		if(!this.appMode){
+			if(this.utils.getPathname(path) === this.route.location.pathname){
+				console.warn('Nomad - Trying to access current location', this.route.location.pathname);
+				return;
+			}
+		} else {
+			if(path === this.route.location.pathname){
+				console.warn('Nomad (App mode) - Trying to access current location', this.route.location.pathname);
+				return
+			}
 		}
 
 		if(this.inProgress){
@@ -184,12 +232,13 @@ export class Nomad {
 		}
 		this.inProgress = true;
 
-		this.events.onRouteChangeStart(href);
+		this.events.onRouteChangeStart(path);
 
 		this.previousRoute = this.route;
 		this.currentOrder++;
 
-		this.fetch(href).then(html => {
+		this.fetch(path).then(html => {
+
 			if(html){
 				// If its replacing content:
 				// -- Transition Out
@@ -198,7 +247,7 @@ export class Nomad {
 				if(this.replace){
 
 					this.transitionOut().then(() => {
-						this.addContent(href, html).then(() => {
+						this.addContent(path, html).then(() => {
 							this.transitionIn().then(() => {
 								this.inProgress = false;
 							})
@@ -210,7 +259,7 @@ export class Nomad {
 				// -- Transition Out & In
 				} else {
 
-					this.addContent(href, html).then(() => {
+					this.addContent(path, html).then(() => {
 
 						this.transitionOut(this.previousRoute)
 						this.transitionIn().then(() => {
@@ -230,6 +279,9 @@ export class Nomad {
 		// Create route
 		this.createRoute(html, href);
 		this.events.onRouteChanged();
+
+		console.log(this.route, this.previousRoute);
+
 
 		// Update page title
 		const title = html.querySelector('title').textContent;
@@ -253,7 +305,6 @@ export class Nomad {
 		}
 
 		this.events.addLinksListener();
-
 
 	}
 

@@ -33,6 +33,19 @@ export class Utils {
 
 	}
 
+	getAppModePathname(url, root){
+		const regex = new RegExp(`(file:///.*?/${root}/)`);
+		const match = url.match(regex);
+		if (match) {
+			let result:string = match[1];
+			if (result.charAt(result.length - 1) === '/') result = result.slice(0, -1);
+			return result;
+		} else {
+			console.log(`Nomad - Provided root "${root}" can't be found in path`);
+			return null;
+		}
+	}
+
 	addSlash(url){
 		return url.charAt(url.length - 1) === '/' ? url : `${url}/`
 	}
@@ -93,6 +106,7 @@ export class Utils {
 
 		return location;
 	}
+
 
 }
 
