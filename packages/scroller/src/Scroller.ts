@@ -369,9 +369,12 @@ export class Scroller {
 	 * @param k index of section to scroll to
 	 * @returns
 	 */
-	scrollTo(k:number){
+	scrollTo(k:number, instant:boolean = false){
 		const _k = MathUtils.clamp(k, this.edges[0], this.edges[1]);
 		this.position.target = _k;
+		if(instant){
+			this.position.current = 0;
+		}
 
 		if(this.config.useNative){
 			this.config.container.scrollTop = k;
