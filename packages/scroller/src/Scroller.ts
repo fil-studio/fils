@@ -116,6 +116,7 @@ export class Scroller {
 
 		const containerRect = this.config.container.getBoundingClientRect();
 
+
 		const vertical = this.isVertical();
 
 		this.containerSize.w = containerRect.width;
