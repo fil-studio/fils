@@ -214,28 +214,32 @@ export class Section {
     let px = this.position.x;
     let py = this.position.y;
 
+    // Si LEFT i BOTTOM no van, prova treure el t0 dels calculs, el threshold "de dalt" no s'ha de posar o fa que fallin els stickys quan no son el primer element del parent
+
     for (const s of this.sticky) {
       let tY, sY;
       switch (this.config.direction) {
         case D.TOP:
-          tY = 1 - MathUtils.smoothstep(-t1 + cH, -t0 - cH, py);
-          sY = tY * (t1 - t0 - 2 * cH);
+
+          tY = 1 - MathUtils.smoothstep(-t1 + cH, -cH, py);
+          sY = tY * (t1 - 2 * cH);
           s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(
             PRECISION
           )},0,1)`;
           break;
         case D.BOTTOM:
+
           tY = 1 - MathUtils.smoothstep(-t1 + cH, -t0 - cH, py);
           sY = tY * (t1 - t0 - 2 * cH);
           s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(
             PRECISION
           )},0,1)`;
           break;
-        // case D.RIGHT:
-        // 	tY = 1 - MathUtils.smoothstep(-t1+ cW, -t0-cW, px);
-        // 	sY = tY * (t1 - t0 - 2*cW);
-        // 	s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${sY.toFixed(PRECISION)},0,0,1)`;
-        // 	break;
+        case D.RIGHT:
+        	tY = 1 - MathUtils.smoothstep(-t1+ cW, -cW, px);
+        	sY = tY * (t1 - 2*cW);
+        	s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${sY.toFixed(PRECISION)},0,0,1)`;
+        	break;
         case D.LEFT:
           tY = 1 - MathUtils.smoothstep(-t1 + cW, -t0 - cW, px);
           sY = tY * (this.threshold[1] - t0 - 2 * cW);
