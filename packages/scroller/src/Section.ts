@@ -34,6 +34,7 @@ export class Section {
     out: 0,
     focus: 0
   }
+
   threshold: number[] = [];
   scroll: number = 0;
   delta: number = 0;
