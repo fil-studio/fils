@@ -74,8 +74,12 @@ export class VirtualScrollBar {
         this.hide();
     }
 
-    hide() {
+    hide(force:boolean = false) {
         window.clearTimeout(tid);
+        if(force) {
+            this.dom.style.opacity = `0`;
+            return;
+        }
         tid = window.setTimeout(()=>{
             this.dom.style.opacity = `0`;
         }, TIMEOUT);
