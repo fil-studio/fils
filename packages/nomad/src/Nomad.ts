@@ -155,7 +155,7 @@ export class Nomad {
 		if (typeof window['require'] === 'function') {
 			const fs = window['require']('fs');
 
-			const path = `${this.appModePath}${href}index.html`;
+			const path = `${this.appModePath}${href.endsWith('.html') ? href : `${href}index.html`}`;
 
 			try {
 
