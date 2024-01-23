@@ -81,8 +81,6 @@ export class Section {
   }
 
   restore() {
-    this.onBeforeRestore();
-
     this.dom.style.transform = "";
 
     this.progress.visible = 0;
@@ -90,9 +88,8 @@ export class Section {
     this.calculateThreshold();
 
     this.updateTransform();
-
-    this.onAfterRestore();
   }
+
   calculateThreshold() {
     this.rect = this.dom.getBoundingClientRect();
 

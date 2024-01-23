@@ -114,8 +114,11 @@ export class Scroller {
 
 	restore(){
 
-		const containerRect = this.config.container.getBoundingClientRect();
+		for(const section of this.sections){
+			section.onBeforeRestore();
+		}
 
+		const containerRect = this.config.container.getBoundingClientRect();
 
 		const vertical = this.isVertical();
 
@@ -136,6 +139,11 @@ export class Scroller {
 
 		this.updateSections();
 		this.updateCheckHeight();
+
+
+		for (const section of this.sections) {
+			section.onAfterRestore();
+		}
 	}
 
 	dispose(){
