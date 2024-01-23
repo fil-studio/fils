@@ -141,9 +141,13 @@ export class Scroller {
 		this.updateCheckHeight();
 
 
-		for (const section of this.sections) {
-			section.onAfterRestore();
-		}
+		// Force at least one raf loop, so dom has time to fall into position
+		setTimeout(() => {
+			for (const section of this.sections) {
+				section.onAfterRestore();
+			}
+		}, 15);
+
 	}
 
 	dispose(){
