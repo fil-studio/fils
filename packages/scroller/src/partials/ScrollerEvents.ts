@@ -82,7 +82,6 @@ export class ScrollerEvents {
 
 			s.updateExternalByType(delta, 'wheel')
 
-			this.onUserInputInProgress();
 			if (userInputTimer) {
         clearTimeout(userInputTimer);
     	}
@@ -130,10 +129,14 @@ export class ScrollerEvents {
 			touchWheel.startY = e1.clientY;
 
 			s.updateExternalByType(-touchWheel.delta, 'touch')
-
-			this.onUserInputInProgress();
 		}, {
 			passive: false
 		})
+	}
+
+	update(){
+		if(this.userInput){
+			this.onUserInputInProgress();
+		}
 	}
 }

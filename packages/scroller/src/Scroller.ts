@@ -335,6 +335,8 @@ export class Scroller {
 
 		this.progress = MathUtils.truncateDecimals(MathUtils.map(this.position.current, this.edges[0], this.edges[1], 0, 1), 3);
 
+		this.events.update();
+
 	}
 
 	// Trigger snapping
