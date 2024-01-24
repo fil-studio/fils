@@ -25,11 +25,11 @@ export class ScrollerEvents {
 	}
 
 	// Listeners
-	addSectionListener(lis: FilScrollerUserEventsListener) {
+	addUserInputListener(lis: FilScrollerUserEventsListener) {
 		if (this.listeners.indexOf(lis) > -1) return;
 		this.listeners.push(lis);
 	}
-	removeSectionListener(lis: FilScrollerUserEventsListener) {
+	removeUserInputListener(lis: FilScrollerUserEventsListener) {
 		this.listeners.splice(this.listeners.indexOf(lis), 1);
 	}
 	userInputStart(){
