@@ -34,18 +34,24 @@ export class ScrollerEvents {
 	}
 	onUserInputStart(){
 		for (const lis of this.listeners) {
-      lis?.onUserInputStart();
-    }
+			if (lis && typeof lis.onUserInputStart === 'function') {
+				lis.onUserInputStart();
+			}
+		}
 	}
 	onUserInputInProgress(){
 		for (const lis of this.listeners) {
-      lis?.onUserInputInProgress();
-    }
+			if (lis && typeof lis.onUserInputInProgress === 'function') {
+				lis.onUserInputInProgress();
+			}
+		}
 	}
 	onUserInputStop(){
 		for (const lis of this.listeners) {
-      lis?.onUserInputStop();
-    }
+			if (lis && typeof lis.onUserInputStop === 'function') {
+				lis.onUserInputStop();
+			}
+		}
 	}
 
 	// Block - Unblock
