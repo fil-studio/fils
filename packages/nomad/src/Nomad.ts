@@ -280,9 +280,6 @@ export class Nomad {
 		this.createRoute(html, href);
 		this.events.onRouteChanged();
 
-		console.log(this.route, this.previousRoute);
-
-
 		// Update page title
 		const title = html.querySelector('title').textContent;
 		document.documentElement.querySelector('title').textContent = title;

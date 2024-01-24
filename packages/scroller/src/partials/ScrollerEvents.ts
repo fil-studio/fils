@@ -7,12 +7,45 @@ const touchWheel = {
 	startDrag: 0
 }
 
+export interface FilScrollerUserEventsListener {
+	userInputStart?()
+	userInputInProgress?()
+	userInputStop?()
+}
+
 export class ScrollerEvents {
 	private scroller: Scroller;
 	private blocked: boolean = false;
 
+	protected userInput:boolean = false;
+	protected listeners: FilScrollerUserEventsListener[] = [];
+
 	constructor(scroller:Scroller){
 		this.scroller = scroller;
+	}
+
+	// Listeners
+	addSectionListener(lis: FilScrollerUserEventsListener) {
+		if (this.listeners.indexOf(lis) > -1) return;
+		this.listeners.push(lis);
+	}
+	removeSectionListener(lis: FilScrollerUserEventsListener) {
+		this.listeners.splice(this.listeners.indexOf(lis), 1);
+	}
+	userInputStart(){
+		for (const lis of this.listeners) {
+      lis?.userInputStart();
+    }
+	}
+	userInputInProgress(){
+		for (const lis of this.listeners) {
+      lis?.userInputInProgress();
+    }
+	}
+	userInputStop(){
+		for (const lis of this.listeners) {
+      lis?.userInputStop();
+    }
 	}
 
 	// Block - Unblock
@@ -31,8 +64,14 @@ export class ScrollerEvents {
 
 		const s = this.scroller;
 
+		let userInputTimer;
+
 		target.addEventListener('wheel', (e: WheelEvent) => {
 			if (this.blocked) return;
+
+			if(!this.userInput) this.userInputStart();
+			this.userInput = true;
+			this.userInputInProgress();
 
 			let delta = e.deltaY;
 			if (s.config.scrollDirection.horizontal && s.config.scrollDirection.vertical) {
@@ -43,10 +82,21 @@ export class ScrollerEvents {
 			}
 
 			s.updateExternalByType(delta, 'wheel')
+
+			if (userInputTimer) {
+        clearTimeout(userInputTimer);
+    	}
+			userInputTimer = setTimeout(() => {
+					this.userInputStop();
+					this.userInput = false;
+			}, 100);
 		})
 
 		target.addEventListener('touchstart', (e: TouchEvent) => {
 			if (this.blocked) return;
+
+			this.userInput = true;
+			this.userInputStart();
 
 			const e1 = e.touches[0];
 			touchWheel.startY = e1.clientY;
@@ -57,6 +107,9 @@ export class ScrollerEvents {
 
 		target.addEventListener('touchend', (e: TouchEvent) => {
 			if (this.blocked) return;
+
+			this.userInput = false;
+			this.userInputStop();
 
 			if (performance.now() - touchWheel.startDrag < 100) {
 				s.updateExternalByType(-touchWheel.delta * 10, 'touch')
@@ -69,6 +122,8 @@ export class ScrollerEvents {
 
 		target.addEventListener('touchmove', (e: TouchEvent) => {
 			if (this.blocked) return;
+
+			this.userInputInProgress();
 
 			e.preventDefault();
 			const e1 = e.touches[0];
