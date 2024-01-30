@@ -18,6 +18,7 @@ export class Page {
 	 * @description Triggers on class creation, this will be triggered only once, even if the user comes back to this page
 	 */
 	async init(resolve){
+		this.active = true;
 		resolve();
 	}
 
@@ -25,12 +26,14 @@ export class Page {
 	 * @description Triggers each time the user comes back to this page
 	 */
 	create(){
+		this.active = true;
 	}
 
 	/**
 	 * @description Triggers each time the user leaves this page
 	 */
 	dispose(){
+		this.active = false;
 	}
 
 	async transitionIn(resolve){
