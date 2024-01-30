@@ -34,9 +34,29 @@ export abstract class ContentSection implements ScrollerSectionListener {
     }
 
     /**
-     * You must initialize all your stuff here
+     * onInit triggers first time that this section loads
      */
     onInit() {}
+
+    /**
+     * Resume, triggers any time this section is re-inititated (if it's already created it will trigger "resume" but not onInit)
+     */
+    resume(){
+
+    }
+    /**
+     * Stop, triggers any time this section is stopped, when the user leaves the page with this section but it's not destroying its dom
+     */
+    stop(){
+
+    }
+
+    /**
+     * Dispose, triggers when the
+     */
+    dispose(){
+
+    }
 
     addEventListeners() {}
 
@@ -77,13 +97,6 @@ export abstract class ContentSection implements ScrollerSectionListener {
      * @param time animation time in seconds
      */
     update(time:number=0) {
-
-    }
-
-    /**
-     * Dispose events
-     */
-    dispose(){
 
     }
 }
