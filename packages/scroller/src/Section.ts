@@ -9,6 +9,13 @@ export interface ScrollerSectionListener {
   onAfterRestore?();
 }
 
+export interface ScrollerSectionProgress {
+  visible: number,
+  in: number,
+  out: number,
+  focus:number
+}
+
 export class Section {
   id: string;
   dom: HTMLElement;
@@ -21,7 +28,13 @@ export class Section {
 
   containerRect: DOMRect;
 
-  progress: number = 0;
+  progress: ScrollerSectionProgress = {
+    visible: 0,
+    in: 0,
+    out: 0,
+    focus: 0
+  }
+
   threshold: number[] = [];
   scroll: number = 0;
   delta: number = 0;
@@ -39,6 +52,10 @@ export class Section {
 
   sticky: HTMLElement[] = [];
 
+
+  exposeProgressValues:boolean = false;
+
+
   constructor(i: number, dom: HTMLElement, config: ScrollerConfig) {
     // Set ID
     this.dom = dom;
@@ -54,23 +71,25 @@ export class Section {
       this.sticky.push(value as HTMLElement);
     });
 
+    // Add this to the section to expose the progress values!
+    if(this.dom.hasAttribute('fil-scroller-expose')){
+      this.exposeProgressValues = true;
+    }
+
     this.containerRect = this.config.container.getBoundingClientRect();
     this.calculateThreshold();
   }
 
   restore() {
-    this.onBeforeRestore();
-
     this.dom.style.transform = "";
 
-    this.progress = 0;
+    this.progress.visible = 0;
 
     this.calculateThreshold();
 
     this.updateTransform();
-
-    this.onAfterRestore();
   }
+
   calculateThreshold() {
     this.rect = this.dom.getBoundingClientRect();
 
@@ -151,11 +170,9 @@ export class Section {
     this.animationOut();
 
     this.visible = false;
-    this.progress = 0;
+    this.progress.visible = 0;
     this.delta = 0;
     this.dom.classList.remove("fil-scroller__visible");
-    this.dom.style.setProperty("--fil-scroller-delta", "0");
-    this.dom.style.setProperty("--fil-scroller-progress", "0");
   }
 
   // ------------------------- UPDATE
@@ -174,6 +191,54 @@ export class Section {
       this.closeToVisible = inRange;
     }
   }
+  updateProgress(){
+
+    this.progress.visible = MathUtils.smoothstep(
+      this.threshold[0],
+      this.threshold[1],
+      this.scroll
+    );
+
+    this.progress.in = MathUtils.smoothstep(
+      this.threshold[0],
+      this.threshold[0] + this.containerRect.height,
+      this.scroll
+    )
+    this.progress.out = MathUtils.smoothstep(
+      this.threshold[1] - this.containerRect.height,
+      this.threshold[1],
+      this.scroll
+    )
+    this.progress.focus = MathUtils.smoothstep(
+      this.threshold[0] + this.containerRect.height,
+      this.threshold[1] - this.containerRect.height,
+      this.scroll
+    )
+
+    if(this.exposeProgressValues){
+      this.dom.style.setProperty(
+        "--fil-scroller-delta",
+        `${this.delta.toFixed(PRECISION)}`
+      );
+
+      this.dom.style.setProperty(
+        "--fil-scroller-progress-visible",
+        `${this.progress.visible.toFixed(PRECISION)}`
+      );
+      this.dom.style.setProperty(
+        "--fil-scroller-progress-in",
+        `${this.progress.in.toFixed(PRECISION)}`
+      );
+      this.dom.style.setProperty(
+        "--fil-scroller-progress-out",
+        `${this.progress.out.toFixed(PRECISION)}`
+      );
+      this.dom.style.setProperty(
+        "--fil-scroller-progress-focus",
+        `${this.progress.focus.toFixed(PRECISION)}`
+      );
+    }
+  }
   updateVisible() {
     // If its visible then
     if (this.scroll > this.threshold[0] && this.scroll < this.threshold[1]) {
@@ -181,20 +246,7 @@ export class Section {
         this.show();
       }
 
-      this.dom.style.setProperty(
-        "--fil-scroller-delta",
-        `${this.delta.toFixed(PRECISION)}`
-      );
-      this.progress = MathUtils.smoothstep(
-        this.threshold[0],
-        this.threshold[1],
-        this.scroll
-      );
-      this.dom.style.setProperty(
-        "--fil-scroller-progress",
-        `${this.progress.toFixed(PRECISION)}`
-      );
-
+      this.updateProgress();
       this.updateTransform();
 
       return;
@@ -207,6 +259,7 @@ export class Section {
     }
   }
   updateSticky() {
+
     const cH = this.containerRect.height;
     const cW = this.containerRect.width;
     const t0 = this.threshold[0];
@@ -214,12 +267,17 @@ export class Section {
     let px = this.position.x;
     let py = this.position.y;
 
+    // Sticky no va si el block sticky NO es el primer block de la secció
+    // Sticky no va si el block fa més de 100vh
+
     for (const s of this.sticky) {
       let tY, sY;
       switch (this.config.direction) {
         case D.TOP:
+
           tY = 1 - MathUtils.smoothstep(-t1 + cH, -t0 - cH, py);
           sY = tY * (t1 - t0 - 2 * cH);
+
           s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(
             PRECISION
           )},0,1)`;
@@ -231,14 +289,14 @@ export class Section {
             PRECISION
           )},0,1)`;
           break;
-        // case D.RIGHT:
-        // 	tY = 1 - MathUtils.smoothstep(-t1+ cW, -t0-cW, px);
-        // 	sY = tY * (t1 - t0 - 2*cW);
-        // 	s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${sY.toFixed(PRECISION)},0,0,1)`;
-        // 	break;
+        case D.RIGHT:
+        	tY = 1 - MathUtils.smoothstep(-t1+ cW, -t0-cW, px);
+        	sY = tY * (t1 - t0 - 2*cW);
+        	s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${sY.toFixed(PRECISION)},0,0,1)`;
+        	break;
         case D.LEFT:
           tY = 1 - MathUtils.smoothstep(-t1 + cW, -t0 - cW, px);
-          sY = tY * (this.threshold[1] - t0 - 2 * cW);
+          sY = tY * (t1 - t0 - 2 * cW);
           s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${sY.toFixed(
             PRECISION
           )},0,0,1)`;

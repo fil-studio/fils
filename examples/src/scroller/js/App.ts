@@ -20,7 +20,7 @@ export class App {
 			showVirtualScrollBar: true,
 			touchForce: 2,
 			wheelForce: 1,
-			customContainer: useNative ? document.body : undefined
+			// container: useNative ? document.body : undefined
 			// direction: D.LEFT
 		});
 

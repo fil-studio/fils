@@ -114,6 +114,10 @@ export class Scroller {
 
 	restore(){
 
+		for(const section of this.sections){
+			section.onBeforeRestore();
+		}
+
 		const containerRect = this.config.container.getBoundingClientRect();
 
 		const vertical = this.isVertical();
@@ -135,6 +139,15 @@ export class Scroller {
 
 		this.updateSections();
 		this.updateCheckHeight();
+
+
+		// Force at least one raf loop, so dom has time to fall into position
+		setTimeout(() => {
+			for (const section of this.sections) {
+				section.onAfterRestore();
+			}
+		}, 15);
+
 	}
 
 	dispose(){
@@ -322,6 +335,8 @@ export class Scroller {
 
 		this.progress = MathUtils.truncateDecimals(MathUtils.map(this.position.current, this.edges[0], this.edges[1], 0, 1), 3);
 
+		this.events.update();
+
 	}
 
 	// Trigger snapping
@@ -368,9 +383,12 @@ export class Scroller {
 	 * @param k index of section to scroll to
 	 * @returns
 	 */
-	scrollTo(k:number){
+	scrollTo(k:number, instant:boolean = false){
 		const _k = MathUtils.clamp(k, this.edges[0], this.edges[1]);
 		this.position.target = _k;
+		if(instant){
+			this.position.current = 0;
+		}
 
 		if(this.config.useNative){
 			this.config.container.scrollTop = k;

@@ -155,7 +155,7 @@ export class Nomad {
 		if (typeof window['require'] === 'function') {
 			const fs = window['require']('fs');
 
-			const path = `${this.appModePath}${href}index.html`;
+			const path = `${this.appModePath}${href.endsWith('.html') ? href : `${href}index.html`}`;
 
 			try {
 
@@ -279,9 +279,6 @@ export class Nomad {
 		// Create route
 		this.createRoute(html, href);
 		this.events.onRouteChanged();
-
-		console.log(this.route, this.previousRoute);
-
 
 		// Update page title
 		const title = html.querySelector('title').textContent;

@@ -69,14 +69,17 @@ export class VirtualScrollBar {
         this.bar.style.height = `${this.height}px`;
     }
 
-    protected show(blockTimeout:boolean=false) {
+    show() {
         this.dom.style.opacity = `1`;
-        if(blockTimeout) return;
         this.hide();
     }
 
-    protected hide() {
+    hide(force:boolean = false) {
         window.clearTimeout(tid);
+        if(force) {
+            this.dom.style.opacity = `0`;
+            return;
+        }
         tid = window.setTimeout(()=>{
             this.dom.style.opacity = `0`;
         }, TIMEOUT);
@@ -91,7 +94,6 @@ export class VirtualScrollBar {
 
     updatePosition() {
         const t = MathUtils.lerp(0, window.innerHeight-this.height, this._progress);
-
         this.bar.style.transform = `translateX(-50%) translateY(${t}px)`;
     }
 }
