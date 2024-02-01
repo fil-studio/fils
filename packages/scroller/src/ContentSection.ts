@@ -29,8 +29,6 @@ export abstract class ContentSection implements ScrollerSectionListener {
     private init() {
         this.onInit();
         this.addEventListeners();
-
-        if(this.section.visible) this.onAnimationIn();
     }
 
     /**
