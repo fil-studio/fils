@@ -115,7 +115,7 @@ export class FilCursor {
 		return parseFloat(num.toFixed(this.decimals))
 	}
 
-	changeState(state: string){
+	stateChange(state: string){
 		if(state === this.state.current) return;
 		this.state.previous = this.state.current;
 		this.state.current = state;
@@ -152,20 +152,26 @@ export class FilCursor {
 		if(!this.states) return;
 
 		let hover = false;
+		let state = false;
 
 		if (document.elementsFromPoint) {
 			let elements = document.elementsFromPoint(this.position.x, this.position.y);
 			for(const el of elements){
 				if(el.hasAttribute('fil-cursor')){
-					const state = el.getAttribute('fil-cursor');
-					this.changeState(state)
+					state = true;
+					const newState = el.getAttribute('fil-cursor');
+					this.stateChange(newState)
 				}
 				if(this.hovers){
-					if(el.hasAttribute('fil-hover')){
+					if(el.hasAttribute('fil-cursor-hover')){
 						hover = true;
 						this.hoverChange(el as HTMLElement);
 					}
 				}
+			}
+
+			if(!state){
+				this.stateChange(null)
 			}
 
 			if(!hover){
