@@ -1,0 +1,24 @@
+{
+	"name": "@fils/cursor",
+	"version": "0.0.0",
+	"description": "Custom Cursor Package written in TypeScript",
+	"main": "lib/main.js",
+	"repository": "git@github.com:fil-studio/fils.git",
+	"homepage": "https://github.com/fil-studio/fils/tree/main/packages/cursor",
+	"author": "fil studio <hello@fil.studio>",
+	"license": "Apache-2.0",
+	"private": false,
+	"scripts": {
+		"prepare": "yarn build",
+		"build": "tsc"
+	},
+	"files": [
+		"lib"
+	],
+	"devDependencies": {
+		"typescript": "^4.5.2"
+	},
+	"dependencies": {
+		"@fils/math": "0.1.0"
+	}
+}
