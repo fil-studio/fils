@@ -5,6 +5,7 @@ export interface CursorParameters {
 	ease?: number
 	normalized?: boolean
 	states?: boolean
+	hovers?: boolean // For hovers to work, states need to be set to true
 }
 
 interface Position {
@@ -29,6 +30,7 @@ export class FilCursor {
 	ease: number
 	normalized: boolean
 	states: boolean
+	hovers: boolean
 
 	// Positions
 	position: Position;
@@ -37,6 +39,7 @@ export class FilCursor {
 
 	// State
 	state: States
+	hover: HTMLElement
 
 	constructor(params?: CursorParameters ){
 
@@ -44,11 +47,18 @@ export class FilCursor {
 		this.ease = 0.3;
 		this.normalized = false;
 		this.states = false;
+		this.hovers = false
 
 		// Override with provided parameters
 		if (params) {
 			Object.assign(this, params);
 		}
+
+		if(this.hovers) {
+			console.warn('Fil Cursor - States check set to true due to hovers check set to true')
+			this.states = true;
+		}
+
 
 		this.position = {
 			x: 0,
@@ -136,6 +146,11 @@ export class FilCursor {
 				if(el.hasAttribute('fil-cursor')){
 					const state = el.getAttribute('fil-cursor');
 					this.changeState(state)
+				}
+				if(this.hovers){
+					if(el.hasAttribute('fil-hover')){
+						this.hover = el as HTMLElement;
+					}
 				}
 			}
 		}
