@@ -18,12 +18,13 @@ interface States {
 	previous: string
 }
 
-interface FilCursorListener {
+export interface FilCursorListener {
 	onStateChange?(toState:string, fromState:string)
+	onHoverChange?(element:HTMLElement)
 }
 
 export class FilCursor {
-	listeners: FilCursorListener[]
+	listeners: FilCursorListener[] = []
 
 	// Params
 	decimals: number
@@ -58,7 +59,6 @@ export class FilCursor {
 			console.warn('Fil Cursor - States check set to true due to hovers check set to true')
 			this.states = true;
 		}
-
 
 		this.position = {
 			x: 0,
@@ -105,6 +105,11 @@ export class FilCursor {
 			if(lis && lis.onStateChange) lis.onStateChange(this.state.current, this.state.previous)
 		}
 	}
+	onHoverChange(){
+		for(const lis of this.listeners){
+			if(lis && lis.onHoverChange) lis.onHoverChange(this.hover)
+		}
+	}
 
 	toDecimals(num:number):number {
 		return parseFloat(num.toFixed(this.decimals))
@@ -116,6 +121,12 @@ export class FilCursor {
 		this.state.current = state;
 
 		this.onStateChange();
+	}
+
+	hoverChange(element: HTMLElement){
+		if(element === this.hover) return;
+		this.hover = element;
+		this.onHoverChange();
 	}
 
 	updatePosition(){
@@ -140,6 +151,8 @@ export class FilCursor {
 	updateStates(){
 		if(!this.states) return;
 
+		let hover = false;
+
 		if (document.elementsFromPoint) {
 			let elements = document.elementsFromPoint(this.position.x, this.position.y);
 			for(const el of elements){
@@ -149,9 +162,14 @@ export class FilCursor {
 				}
 				if(this.hovers){
 					if(el.hasAttribute('fil-hover')){
-						this.hover = el as HTMLElement;
+						hover = true;
+						this.hoverChange(el as HTMLElement);
 					}
 				}
+			}
+
+			if(!hover){
+				this.hoverChange(null)
 			}
 		}
 
