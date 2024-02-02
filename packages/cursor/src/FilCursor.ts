@@ -13,13 +13,18 @@ interface Position {
 	y: number
 }
 
+export interface FilCursorState {
+	id: string,
+	trigger: HTMLElement
+}
+
 interface States {
-	current: string,
-	previous: string
+	current: FilCursorState,
+	previous: FilCursorState
 }
 
 export interface FilCursorListener {
-	onStateChange?(toState:string, fromState:string)
+	onStateChange?(toState:FilCursorState, fromState:FilCursorState)
 	onHoverChange?(element:HTMLElement)
 }
 
@@ -74,8 +79,8 @@ export class FilCursor {
 		}
 
 		this.state = {
-			current: '',
-			previous: ''
+			current: null,
+			previous: null
 		}
 
 		this.addEventListeners()
@@ -115,7 +120,7 @@ export class FilCursor {
 		return parseFloat(num.toFixed(this.decimals))
 	}
 
-	stateChange(state: string){
+	stateChange(state: FilCursorState){
 		if(state === this.state.current) return;
 		this.state.previous = this.state.current;
 		this.state.current = state;
@@ -160,8 +165,11 @@ export class FilCursor {
 			for(const el of elements){
 				if(el.hasAttribute('fil-cursor') && !state){
 					state = true;
-					const newState = el.getAttribute('fil-cursor');
-					this.stateChange(newState)
+					const newState = {
+						id: el.getAttribute('fil-cursor'),
+						trigger: el
+					}
+					this.stateChange(newState as FilCursorState)
 				}
 				if(this.hovers && !hover){
 					if(el.hasAttribute('fil-cursor-hover')){
