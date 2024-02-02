@@ -156,13 +156,14 @@ export class FilCursor {
 
 		if (document.elementsFromPoint) {
 			let elements = document.elementsFromPoint(this.position.x, this.position.y);
+
 			for(const el of elements){
-				if(el.hasAttribute('fil-cursor')){
+				if(el.hasAttribute('fil-cursor') && !state){
 					state = true;
 					const newState = el.getAttribute('fil-cursor');
 					this.stateChange(newState)
 				}
-				if(this.hovers){
+				if(this.hovers && !hover){
 					if(el.hasAttribute('fil-cursor-hover')){
 						hover = true;
 						this.hoverChange(el as HTMLElement);
