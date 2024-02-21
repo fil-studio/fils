@@ -43,6 +43,7 @@ export class ThreeDOMLayer extends GLDOMLayer {
         // if(GLOBALS.clock.paused) return;
         this.renderer.setRenderTarget(params.target || null);
         this.renderer.render(params.scene, params.camera);
+        this.renderer.setRenderTarget(null);
     }
 
     dispose(): void {

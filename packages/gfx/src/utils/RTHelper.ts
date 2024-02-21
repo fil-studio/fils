@@ -63,6 +63,7 @@ export class RTHelper {
 		this.quad.material = this.material;
 		this.material.uniforms.tInput.value = texture;
 		this.material.transparent = texture.format == RGBAFormat;
+
 		this.material.uniforms.opacity.value = opacity;
 		//renderer.clearDepth();
 		renderer.render(this.scene, this.camera);
