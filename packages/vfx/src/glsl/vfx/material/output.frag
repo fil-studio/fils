@@ -5,3 +5,5 @@
 #else
     oGlow = vec4(totalEmissiveRadiance, 1.0);
 #endif
+
+#include <oGlow>

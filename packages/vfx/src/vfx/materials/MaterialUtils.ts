@@ -1,7 +1,11 @@
-import { Material, Shader, WebGLRenderer } from "three";
+import { Material, Shader, ShaderChunk, WebGLRenderer } from "three";
 
 import output from '../../glsl/vfx/material/output.frag';
 import pars from '../../glsl/vfx/material/pars.frag';
+
+import oGlow from "../../glsl/vfx/material/glow.frag";
+
+ShaderChunk['oGlow'] = oGlow;
 
 export function injectVFXBasics(shader:Shader, emissive:boolean=false) {
     if(!emissive) {

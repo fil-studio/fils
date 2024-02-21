@@ -14110,32 +14110,32 @@
     }
   });
 
-  // ../packages/gfx/lib/utils/glInfo.js
+  // ../packages/vfx/node_modules/@fils/gfx/lib/utils/glInfo.js
   var init_glInfo = __esm({
-    "../packages/gfx/lib/utils/glInfo.js"() {
+    "../packages/vfx/node_modules/@fils/gfx/lib/utils/glInfo.js"() {
     }
   });
 
-  // ../packages/gfx/lib/glsl/fbo.frag
+  // ../packages/vfx/node_modules/@fils/gfx/lib/glsl/fbo.frag
   var fbo_default;
   var init_fbo = __esm({
-    "../packages/gfx/lib/glsl/fbo.frag"() {
+    "../packages/vfx/node_modules/@fils/gfx/lib/glsl/fbo.frag"() {
       fbo_default = "#version 100\nprecision lowp float;\n\nuniform sampler2D tInput;\nuniform float opacity;\n\nvarying vec2 vUv;\n\nvoid main() {\n	gl_FragColor = texture2D(tInput, vUv) * opacity;\n}";
     }
   });
 
-  // ../packages/gfx/lib/glsl/fbo.vert
+  // ../packages/vfx/node_modules/@fils/gfx/lib/glsl/fbo.vert
   var fbo_default2;
   var init_fbo2 = __esm({
-    "../packages/gfx/lib/glsl/fbo.vert"() {
+    "../packages/vfx/node_modules/@fils/gfx/lib/glsl/fbo.vert"() {
       fbo_default2 = "#version 100\n\nprecision lowp float;\n\nattribute vec3 position;\nattribute vec2 uv;\n\nuniform mat4 projectionMatrix;\nuniform mat4 modelViewMatrix;\nuniform mat4 viewMatrix;\nuniform mat4 modelMatrix;\n\nuniform float time;\n\nvarying vec2 vUv;\n\nvoid main () {\n	vec3 pos = position;\n	vUv = uv;\n	vec4 mvPos = modelViewMatrix * vec4(pos, 1.0);\n	gl_Position = projectionMatrix * mvPos;\n}";
     }
   });
 
-  // ../packages/gfx/lib/utils/RTHelper.js
+  // ../packages/vfx/node_modules/@fils/gfx/lib/utils/RTHelper.js
   var import_three2, TMP, MAT, RTHelper;
   var init_RTHelper = __esm({
-    "../packages/gfx/lib/utils/RTHelper.js"() {
+    "../packages/vfx/node_modules/@fils/gfx/lib/utils/RTHelper.js"() {
       import_three2 = __toESM(require_three_min());
       init_fbo();
       init_fbo2();
@@ -14221,10 +14221,10 @@
     }
   });
 
-  // ../packages/gfx/lib/utils/RTUtils.js
+  // ../packages/vfx/node_modules/@fils/gfx/lib/utils/RTUtils.js
   var import_three3, RTUtils;
   var init_RTUtils = __esm({
-    "../packages/gfx/lib/utils/RTUtils.js"() {
+    "../packages/vfx/node_modules/@fils/gfx/lib/utils/RTUtils.js"() {
       import_three3 = __toESM(require_three_min());
       init_RTHelper();
       RTUtils = class {
@@ -14263,191 +14263,51 @@
     }
   });
 
-  // ../packages/gfx/lib/prototype/Sketch.js
-  var Sketch;
+  // ../packages/vfx/node_modules/@fils/gfx/lib/prototype/Sketch.js
   var init_Sketch = __esm({
-    "../packages/gfx/lib/prototype/Sketch.js"() {
-      Sketch = class {
-        constructor() {
-          this._paused = false;
-          this._raf = null;
-          this._rafId = -1;
-          this._startTime = 0;
-          this._started = false;
-        }
-        get started() {
-          return this._started;
-        }
-        start(customRaf = null) {
-          if (this._started)
-            return;
-          this._started = true;
-          const animate = () => {
-            this.update();
-            this.render();
-            requestAnimationFrame(animate);
-          };
-          if (customRaf == null) {
-            this._raf = animate;
-          } else {
-            this._raf = customRaf;
-          }
-          this.addEventListeners();
-          this._startTime = performance.now();
-          this._rafId = requestAnimationFrame(this._raf);
-          return this._rafId;
-        }
-        addEventListeners() {
-        }
-        pause() {
-          if (!this._started)
-            return;
-          if (this._paused)
-            return;
-          this._paused = true;
-          cancelAnimationFrame(this._rafId);
-        }
-        resume() {
-          if (!this._started)
-            return;
-          if (!this._paused)
-            return;
-          this._paused = false;
-          this._rafId = requestAnimationFrame(this._raf);
-        }
-        update() {
-          const time = performance.now() - this._startTime;
-          this.manualUpdate(time);
-        }
-        manualUpdate(time) {
-        }
-        render() {
-        }
-      };
+    "../packages/vfx/node_modules/@fils/gfx/lib/prototype/Sketch.js"() {
     }
   });
 
-  // ../packages/gfx/lib/prototype/WebGLSketch.js
-  var import_three4, WebGLSketch;
+  // ../packages/vfx/node_modules/@fils/gfx/lib/prototype/WebGLSketch.js
+  var import_three4;
   var init_WebGLSketch = __esm({
-    "../packages/gfx/lib/prototype/WebGLSketch.js"() {
+    "../packages/vfx/node_modules/@fils/gfx/lib/prototype/WebGLSketch.js"() {
       import_three4 = __toESM(require_three_min());
       init_Sketch();
-      WebGLSketch = class extends Sketch {
-        constructor(width = window.innerWidth, height = window.innerHeight, opts = {}, autoStart = false) {
-          super();
-          this.vrMode = false;
-          this.size = new import_three4.Vector2();
-          this.scene = new import_three4.Scene();
-          if (opts.ortho) {
-            this.camera = new import_three4.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, opts.near != void 0 ? opts.near : 0.1, opts.far != void 0 ? opts.far : 1e3);
-          } else {
-            this.camera = new import_three4.PerspectiveCamera(opts.fov != void 0 ? opts.fov : 35, width / height, opts.near != void 0 ? opts.near : 0.1, opts.far != void 0 ? opts.far : 1e3);
-          }
-          this.scene.add(this.camera);
-          this.renderer = new import_three4.WebGLRenderer({
-            antialias: opts.antialias != void 0 ? opts.antialias : true,
-            alpha: opts.alpha != void 0 ? opts.alpha : true
-          });
-          this.renderer.setSize(width, height);
-          if (autoStart)
-            this.start();
-        }
-        start(customRaf = null) {
-          if (this.started)
-            return;
-          this.clock = new import_three4.Clock(true);
-          if (this.vrMode) {
-            this._started = true;
-            this._raf = customRaf ? customRaf : () => {
-              this.update();
-              this.render();
-            };
-            this.renderer.setAnimationLoop(this._raf);
-            return 1;
-          }
-          return super.start(customRaf);
-        }
-        pause() {
-          if (!this._started)
-            return;
-          if (this._paused)
-            return;
-          this._paused = true;
-          if (!this.vrMode)
-            cancelAnimationFrame(this._rafId);
-          else {
-            this.renderer.setAnimationLoop(null);
-          }
-        }
-        resume() {
-          if (!this._started)
-            return;
-          if (!this._paused)
-            return;
-          this._paused = false;
-          if (!this.vrMode)
-            this._rafId = requestAnimationFrame(this._raf);
-          else
-            this.renderer.setAnimationLoop(this._raf);
-        }
-        get domElement() {
-          return this.renderer.domElement;
-        }
-        resize(width, height) {
-          if (width === this.size.x && height === this.size.y)
-            return;
-          this.size.set(width, height);
-          this.renderer.setSize(this.size.x, this.size.y);
-          if (this.camera.type == "PerspectiveCamera") {
-            const cam = this.camera;
-            cam.aspect = this.size.x / this.size.y;
-          } else {
-            const cam = this.camera;
-            cam.left = -width / 2;
-            cam.right = width / 2;
-            cam.top = height / 2;
-            cam.bottom = -height / 2;
-          }
-          this.camera.updateProjectionMatrix();
-        }
-        render() {
-          this.renderer.render(this.scene, this.camera);
-        }
-      };
     }
   });
 
-  // ../packages/gfx/lib/utils/SceneUtils.js
+  // ../packages/vfx/node_modules/@fils/gfx/lib/utils/SceneUtils.js
   var import_three5;
   var init_SceneUtils = __esm({
-    "../packages/gfx/lib/utils/SceneUtils.js"() {
+    "../packages/vfx/node_modules/@fils/gfx/lib/utils/SceneUtils.js"() {
       import_three5 = __toESM(require_three_min());
     }
   });
 
-  // ../packages/gfx/lib/utils/GfxUtils.js
+  // ../packages/vfx/node_modules/@fils/gfx/lib/utils/GfxUtils.js
   var import_three6, RAD2DEG, DEG2RAD;
   var init_GfxUtils = __esm({
-    "../packages/gfx/lib/utils/GfxUtils.js"() {
+    "../packages/vfx/node_modules/@fils/gfx/lib/utils/GfxUtils.js"() {
       import_three6 = __toESM(require_three_min());
       RAD2DEG = 180 / Math.PI;
       DEG2RAD = Math.PI / 180;
     }
   });
 
-  // ../packages/gfx/lib/utils/EquirectangularToCubemap.js
+  // ../packages/vfx/node_modules/@fils/gfx/lib/utils/EquirectangularToCubemap.js
   var import_three7, GEO;
   var init_EquirectangularToCubemap = __esm({
-    "../packages/gfx/lib/utils/EquirectangularToCubemap.js"() {
+    "../packages/vfx/node_modules/@fils/gfx/lib/utils/EquirectangularToCubemap.js"() {
       import_three7 = __toESM(require_three_min());
       GEO = new import_three7.SphereGeometry(100, 64, 64);
     }
   });
 
-  // ../packages/gfx/lib/main.js
+  // ../packages/vfx/node_modules/@fils/gfx/lib/main.js
   var init_main = __esm({
-    "../packages/gfx/lib/main.js"() {
+    "../packages/vfx/node_modules/@fils/gfx/lib/main.js"() {
       init_glInfo();
       init_RTHelper();
       init_RTUtils();
@@ -14582,6 +14442,24 @@
     }
   });
 
+  // ../packages/vfx/lib/vfx/VFXPipeline.js
+  var import_three9;
+  var init_VFXPipeline = __esm({
+    "../packages/vfx/lib/vfx/VFXPipeline.js"() {
+      import_three9 = __toESM(require_three_min());
+    }
+  });
+
+  // ../packages/vfx/lib/vfx/VFXRenderer2.js
+  var import_three10;
+  var init_VFXRenderer2 = __esm({
+    "../packages/vfx/lib/vfx/VFXRenderer2.js"() {
+      import_three10 = __toESM(require_three_min());
+      init_main2();
+      init_VFXPipeline();
+    }
+  });
+
   // ../packages/vfx/lib/vfx/pipeline/RenderPass.js
   var RenderPass;
   var init_RenderPass = __esm({
@@ -14626,10 +14504,10 @@
   });
 
   // ../packages/vfx/lib/vfx/pipeline/BlurPass.js
-  var import_three9, BlurDefaults, BlurPass;
+  var import_three11, BlurDefaults, BlurPass;
   var init_BlurPass = __esm({
     "../packages/vfx/lib/vfx/pipeline/BlurPass.js"() {
-      import_three9 = __toESM(require_three_min());
+      import_three11 = __toESM(require_three_min());
       init_RenderPass();
       init_fbo3();
       init_blur();
@@ -14650,21 +14528,21 @@
           const radius = settings.radius || BlurDefaults.radius;
           const iterations = settings.iterations || BlurDefaults.iterations;
           const quality = settings.quality || BlurDefaults.quality;
-          this.read = new import_three9.WebGLRenderTarget(width, height);
+          this.read = new import_three11.WebGLRenderTarget(width, height);
           this.write = this.read.clone();
           this.radius = radius;
           this.iterations = iterations;
           this.scale = scale;
           this.quality = quality;
-          this.shader = new import_three9.RawShaderMaterial({
+          this.shader = new import_three11.RawShaderMaterial({
             vertexShader: fbo_default3,
             fragmentShader: blur_default,
             uniforms: {
               resolution: {
-                value: new import_three9.Vector2(width, height)
+                value: new import_three11.Vector2(width, height)
               },
               direction: {
-                value: new import_three9.Vector2()
+                value: new import_three11.Vector2()
               },
               scale: {
                 value: scale
@@ -14680,13 +14558,13 @@
               }
             }
           });
-          this.scene = new import_three9.Scene();
+          this.scene = new import_three11.Scene();
           const w = scale * width / 2;
           const h2 = scale * height / 2;
-          this.camera = new import_three9.OrthographicCamera(-w, w, h2, -h2, 0, 100);
+          this.camera = new import_three11.OrthographicCamera(-w, w, h2, -h2, 0, 100);
           this.camera.position.z = 1;
           this.scene.add(this.camera);
-          this.quad = new import_three9.Mesh(new import_three9.PlaneGeometry(1, 1), this.shader);
+          this.quad = new import_three11.Mesh(new import_three11.PlaneGeometry(1, 1), this.shader);
           this.quad.scale.set(width * scale, height * scale, 1);
           this.scene.add(this.quad);
         }
@@ -14751,6 +14629,41 @@
     }
   });
 
+  // ../packages/vfx/lib/glsl/vfx/glow.frag
+  var glow_default;
+  var init_glow = __esm({
+    "../packages/vfx/lib/glsl/vfx/glow.frag"() {
+      glow_default = "precision highp float;\n\nuniform sampler2D tInput;\nuniform sampler2D glow;\n\nuniform float strength;\nvarying vec2 vUv;\n\nvoid main() {\n    vec4 c = texture2D(tInput, vUv);\n    vec4 g = strength * texture2D(glow, vUv);\n    // gl_FragColor = mix(c, c + g, g.a);\n    gl_FragColor = c + g * g.a;\n    // gl_FragColor.a = 1.0;\n    // gl_FragColor.rgb += g.rgb;\n    // gl_FragColor = g;\n}";
+    }
+  });
+
+  // ../packages/vfx/lib/vfx/pipeline/GlowPass.js
+  var import_three12, SHADER;
+  var init_GlowPass = __esm({
+    "../packages/vfx/lib/vfx/pipeline/GlowPass.js"() {
+      import_three12 = __toESM(require_three_min());
+      init_BlurPass();
+      init_RenderPass();
+      init_fbo3();
+      init_glow();
+      SHADER = new import_three12.RawShaderMaterial({
+        vertexShader: fbo_default3,
+        fragmentShader: glow_default,
+        uniforms: {
+          strength: {
+            value: 1
+          },
+          tInput: {
+            value: null
+          },
+          glow: {
+            value: null
+          }
+        }
+      });
+    }
+  });
+
   // ../packages/vfx/lib/glsl/vfx/final.frag
   var final_default;
   var init_final = __esm({
@@ -14784,14 +14697,14 @@
   });
 
   // ../packages/vfx/lib/vfx/pipeline/FinalPass.js
-  var import_three10, SHADER;
+  var import_three13, SHADER2;
   var init_FinalPass = __esm({
     "../packages/vfx/lib/vfx/pipeline/FinalPass.js"() {
       init_fbo3();
       init_final();
       init_RenderPass();
-      import_three10 = __toESM(require_three_min());
-      SHADER = new import_three10.RawShaderMaterial({
+      import_three13 = __toESM(require_three_min());
+      SHADER2 = new import_three13.RawShaderMaterial({
         vertexShader: fbo_default3,
         fragmentShader: final_default,
         uniforms: {
@@ -14845,15 +14758,15 @@
   });
 
   // ../packages/vfx/lib/vfx/pipeline/DoFPass.js
-  var import_three11, SHADER2;
+  var import_three14, SHADER3;
   var init_DoFPass = __esm({
     "../packages/vfx/lib/vfx/pipeline/DoFPass.js"() {
-      import_three11 = __toESM(require_three_min());
+      import_three14 = __toESM(require_three_min());
       init_BlurPass();
       init_RenderPass();
       init_fbo3();
       init_dof();
-      SHADER2 = new import_three11.RawShaderMaterial({
+      SHADER3 = new import_three14.RawShaderMaterial({
         vertexShader: fbo_default3,
         fragmentShader: dof_default,
         uniforms: {
@@ -14871,20 +14784,20 @@
   });
 
   // ../packages/vfx/lib/vfx/pipeline/FXAAPass.js
-  var import_three12;
+  var import_three15;
   var init_FXAAPass = __esm({
     "../packages/vfx/lib/vfx/pipeline/FXAAPass.js"() {
       init_RenderPass();
-      import_three12 = __toESM(require_three_min());
+      import_three15 = __toESM(require_three_min());
     }
   });
 
   // ../packages/vfx/lib/vfx/pipeline/LutPass.js
-  var import_three13;
+  var import_three16;
   var init_LutPass = __esm({
     "../packages/vfx/lib/vfx/pipeline/LutPass.js"() {
       init_RenderPass();
-      import_three13 = __toESM(require_three_min());
+      import_three16 = __toESM(require_three_min());
     }
   });
 
@@ -14913,19 +14826,19 @@
   });
 
   // ../packages/vfx/lib/vfx/pipeline/RetroPass.js
-  var import_three14, VFX;
+  var import_three17, VFX;
   var init_RetroPass = __esm({
     "../packages/vfx/lib/vfx/pipeline/RetroPass.js"() {
       init_RenderPass();
       init_fbo3();
       init_retro();
-      import_three14 = __toESM(require_three_min());
-      VFX = new import_three14.RawShaderMaterial({
+      import_three17 = __toESM(require_three_min());
+      VFX = new import_three17.RawShaderMaterial({
         vertexShader: fbo_default3,
         fragmentShader: retro_default,
         uniforms: {
           resolution: {
-            value: new import_three14.Vector2()
+            value: new import_three17.Vector2()
           },
           tInput: { value: null },
           pixelate: { value: true },
@@ -14933,14 +14846,6 @@
           gridSize: { value: 5 }
         }
       });
-    }
-  });
-
-  // ../packages/vfx/lib/vfx/VFXPipeline.js
-  var import_three15;
-  var init_VFXPipeline = __esm({
-    "../packages/vfx/lib/vfx/VFXPipeline.js"() {
-      import_three15 = __toESM(require_three_min());
     }
   });
 
@@ -14998,32 +14903,32 @@
   });
 
   // ../packages/vfx/lib/vfx/materials/VFXBasicMaterials.js
-  var import_three16, vfxBasic, vfxPhong, vfxStandard, vfxPhysical;
+  var import_three18, vfxBasic, vfxPhong, vfxStandard, vfxPhysical;
   var init_VFXBasicMaterials = __esm({
     "../packages/vfx/lib/vfx/materials/VFXBasicMaterials.js"() {
-      import_three16 = __toESM(require_three_min());
+      import_three18 = __toESM(require_three_min());
       init_MaterialUtils();
       vfxBasic = {
-        vertexShader: import_three16.ShaderLib["basic"].vertexShader.split("").join(""),
-        fragmentShader: import_three16.ShaderLib["basic"].fragmentShader.split("").join(""),
+        vertexShader: import_three18.ShaderLib["basic"].vertexShader.split("").join(""),
+        fragmentShader: import_three18.ShaderLib["basic"].fragmentShader.split("").join(""),
         uniforms: null
       };
       injectVFXBasics(vfxBasic, false);
       vfxPhong = {
-        vertexShader: import_three16.ShaderLib["phong"].vertexShader.split("").join(""),
-        fragmentShader: import_three16.ShaderLib["phong"].fragmentShader.split("").join(""),
+        vertexShader: import_three18.ShaderLib["phong"].vertexShader.split("").join(""),
+        fragmentShader: import_three18.ShaderLib["phong"].fragmentShader.split("").join(""),
         uniforms: null
       };
       injectVFXBasics(vfxPhong, true);
       vfxStandard = {
-        vertexShader: import_three16.ShaderLib["standard"].vertexShader.split("").join(""),
-        fragmentShader: import_three16.ShaderLib["standard"].fragmentShader.split("").join(""),
+        vertexShader: import_three18.ShaderLib["standard"].vertexShader.split("").join(""),
+        fragmentShader: import_three18.ShaderLib["standard"].fragmentShader.split("").join(""),
         uniforms: null
       };
       injectVFXBasics(vfxStandard, true);
       vfxPhysical = {
-        vertexShader: import_three16.ShaderLib["physical"].vertexShader.split("").join(""),
-        fragmentShader: import_three16.ShaderLib["physical"].fragmentShader.split("").join(""),
+        vertexShader: import_three18.ShaderLib["physical"].vertexShader.split("").join(""),
+        fragmentShader: import_three18.ShaderLib["physical"].fragmentShader.split("").join(""),
         uniforms: null
       };
       injectVFXBasics(vfxPhysical, true);
@@ -15035,8 +14940,10 @@
   var init_main2 = __esm({
     "../packages/vfx/lib/main.js"() {
       init_VFXRenderer();
+      init_VFXRenderer2();
       init_RenderPass();
       init_BlurPass();
+      init_GlowPass();
       init_FinalPass();
       init_DoFPass();
       init_FXAAPass();
@@ -15063,24 +14970,373 @@
     }
   });
 
+  // ../packages/gfx/lib/utils/glInfo.js
+  var init_glInfo2 = __esm({
+    "../packages/gfx/lib/utils/glInfo.js"() {
+    }
+  });
+
+  // ../packages/gfx/lib/glsl/fbo.frag
+  var fbo_default4;
+  var init_fbo4 = __esm({
+    "../packages/gfx/lib/glsl/fbo.frag"() {
+      fbo_default4 = "// #version 100\nprecision lowp float;\n\nuniform sampler2D tInput;\nuniform float opacity;\n\nvarying vec2 vUv;\n\nvoid main() {\n	gl_FragColor = texture2D(tInput, vUv) * opacity;\n}";
+    }
+  });
+
+  // ../packages/gfx/lib/glsl/fbo.vert
+  var fbo_default5;
+  var init_fbo5 = __esm({
+    "../packages/gfx/lib/glsl/fbo.vert"() {
+      fbo_default5 = "// #version 100\n\nprecision lowp float;\n\n/* attribute vec3 position;\nattribute vec2 uv;\n\nuniform mat4 projectionMatrix;\nuniform mat4 modelViewMatrix;\nuniform mat4 viewMatrix;\nuniform mat4 modelMatrix; */\n\nuniform float time;\n\nvarying vec2 vUv;\n\nvoid main () {\n	vec3 pos = position;\n	vUv = uv;\n	vec4 mvPos = modelViewMatrix * vec4(pos, 1.0);\n	gl_Position = projectionMatrix * mvPos;\n}";
+    }
+  });
+
+  // ../packages/gfx/lib/utils/RTHelper.js
+  var import_three19, TMP2, MAT2, RTHelper2;
+  var init_RTHelper2 = __esm({
+    "../packages/gfx/lib/utils/RTHelper.js"() {
+      import_three19 = __toESM(require_three_min());
+      init_fbo4();
+      init_fbo5();
+      TMP2 = new import_three19.Vector2();
+      MAT2 = new import_three19.ShaderMaterial({
+        vertexShader: fbo_default5,
+        fragmentShader: fbo_default4,
+        uniforms: {
+          tInput: { value: null },
+          opacity: { value: 1 }
+        }
+      });
+      RTHelper2 = class {
+        constructor() {
+          this.camera = new import_three19.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+          this.material = MAT2;
+          var postPlane = new import_three19.PlaneGeometry(1, 1);
+          this.quad = new import_three19.Mesh(postPlane, this.material);
+          this.scene = new import_three19.Scene();
+          this.scene.add(this.quad);
+        }
+        render(target, renderer, x = 0, y = 0, width = 0, height = 0, opacity = 1) {
+          if (width == 0 || height == 0) {
+            width = target.width;
+            height = target.height;
+          }
+          this.drawTexture(target.texture, renderer, x, y, width, height, opacity);
+        }
+        renderMRT(target, renderer, index, x = 0, y = 0, width = 0, height = 0) {
+          if (width == 0 || height == 0) {
+            width = target["width"];
+            height = target["height"];
+          }
+          this.drawTexture(target.texture[index], renderer, x, y, width, height);
+        }
+        drawTexture(texture, renderer, x = 0, y = 0, width = 0, height = 0, opacity = 1) {
+          const s2 = new import_three19.Vector2();
+          renderer.getSize(s2);
+          this.camera.left = -s2.width / 2;
+          this.camera.right = s2.width / 2;
+          this.camera.top = s2.height / 2;
+          this.camera.bottom = -s2.height / 2;
+          this.camera.updateProjectionMatrix();
+          this.quad.scale.set(width, height, 1);
+          this.quad.position.set(-s2.width / 2 + width / 2 + x, s2.height / 2 - height / 2 - y, 0);
+          this.quad.material = this.material;
+          this.material.uniforms.tInput.value = texture;
+          this.material.transparent = texture.format == import_three19.RGBAFormat;
+          this.material.uniforms.opacity.value = opacity;
+          renderer.render(this.scene, this.camera);
+        }
+        renderToTarget(target, renderer, material) {
+          let s2 = new import_three19.Vector2(target["width"], target["height"]);
+          this.camera.left = -s2.width / 2;
+          this.camera.right = s2.width / 2;
+          this.camera.top = s2.height / 2;
+          this.camera.bottom = -s2.height / 2;
+          this.camera.updateProjectionMatrix();
+          this.quad.scale.set(s2.width, s2.height, 1);
+          this.quad.position.set(0, 0, 0);
+          this.quad.material = material;
+          renderer.setRenderTarget(target);
+          renderer.render(this.scene, this.camera);
+          renderer.setRenderTarget(null);
+        }
+        renderToViewport(renderer, material) {
+          renderer.getSize(TMP2);
+          this.camera.left = -TMP2.x / 2;
+          this.camera.right = TMP2.x / 2;
+          this.camera.top = TMP2.y / 2;
+          this.camera.bottom = -TMP2.y / 2;
+          this.camera.updateProjectionMatrix();
+          this.quad.scale.set(TMP2.x, TMP2.y, 1);
+          this.quad.position.set(0, 0, 0);
+          this.quad.material = material;
+          renderer.setRenderTarget(null);
+          renderer.render(this.scene, this.camera);
+        }
+        dispose() {
+          this.quad.geometry.dispose();
+        }
+      };
+    }
+  });
+
+  // ../packages/gfx/lib/utils/RTUtils.js
+  var import_three20, RTUtils2;
+  var init_RTUtils2 = __esm({
+    "../packages/gfx/lib/utils/RTUtils.js"() {
+      import_three20 = __toESM(require_three_min());
+      init_RTHelper2();
+      RTUtils2 = class {
+        static getRenderTarget(width, height, settings = {}, depth = false) {
+          const target = new import_three20.WebGLRenderTarget(width, height, {
+            minFilter: settings.minFilter !== void 0 ? settings.minFilter : import_three20.LinearFilter,
+            magFilter: settings.magFilter !== void 0 ? settings.magFilter : import_three20.LinearFilter,
+            wrapS: settings.wrapS !== void 0 ? settings.wrapS : import_three20.ClampToEdgeWrapping,
+            wrapT: settings.wrapT !== void 0 ? settings.wrapT : import_three20.ClampToEdgeWrapping,
+            format: settings.format ? settings.format : import_three20.RGBAFormat,
+            type: settings.type !== void 0 ? settings.type : import_three20.UnsignedByteType,
+            stencilBuffer: settings.stencilBuffer !== void 0 ? settings.stencilBuffer : true
+          });
+          if (depth) {
+            target.depthTexture = new import_three20.DepthTexture(width, height, import_three20.UnsignedShortType);
+          }
+          return target;
+        }
+        static drawRT(rt, renderer, x = 0, y = 0, width = 0, height = 0, opacity = 1) {
+          RTUtils2.helper.render(rt, renderer, x, y, width, height, opacity);
+        }
+        static drawMRT(mrt, renderer, index, x = 0, y = 0, width = 0, height = 0) {
+          RTUtils2.helper.renderMRT(mrt, renderer, index, x, y, width, height);
+        }
+        static drawTexture(texture, renderer, x = 0, y = 0, width = 0, height = 0, opacity = 1) {
+          RTUtils2.helper.drawTexture(texture, renderer, x, y, width, height, opacity);
+        }
+        static renderToRT(rt, renderer, material) {
+          RTUtils2.helper.renderToTarget(rt, renderer, material);
+        }
+        static renderToViewport(renderer, material) {
+          RTUtils2.helper.renderToViewport(renderer, material);
+        }
+      };
+      RTUtils2.helper = new RTHelper2();
+    }
+  });
+
+  // ../packages/gfx/lib/prototype/Sketch.js
+  var Sketch2;
+  var init_Sketch2 = __esm({
+    "../packages/gfx/lib/prototype/Sketch.js"() {
+      Sketch2 = class {
+        constructor() {
+          this._paused = false;
+          this._raf = null;
+          this._rafId = -1;
+          this._startTime = 0;
+          this._started = false;
+        }
+        get started() {
+          return this._started;
+        }
+        start(customRaf = null) {
+          if (this._started)
+            return;
+          this._started = true;
+          const animate = () => {
+            this.update();
+            this.render();
+            requestAnimationFrame(animate);
+          };
+          if (customRaf == null) {
+            this._raf = animate;
+          } else {
+            this._raf = customRaf;
+          }
+          this.addEventListeners();
+          this._startTime = performance.now();
+          this._rafId = requestAnimationFrame(this._raf);
+          return this._rafId;
+        }
+        addEventListeners() {
+        }
+        pause() {
+          if (!this._started)
+            return;
+          if (this._paused)
+            return;
+          this._paused = true;
+          cancelAnimationFrame(this._rafId);
+        }
+        resume() {
+          if (!this._started)
+            return;
+          if (!this._paused)
+            return;
+          this._paused = false;
+          this._rafId = requestAnimationFrame(this._raf);
+        }
+        update() {
+          const time = performance.now() - this._startTime;
+          this.manualUpdate(time);
+        }
+        manualUpdate(time) {
+        }
+        render() {
+        }
+      };
+    }
+  });
+
+  // ../packages/gfx/lib/prototype/WebGLSketch.js
+  var import_three21, WebGLSketch;
+  var init_WebGLSketch2 = __esm({
+    "../packages/gfx/lib/prototype/WebGLSketch.js"() {
+      import_three21 = __toESM(require_three_min());
+      init_Sketch2();
+      WebGLSketch = class extends Sketch2 {
+        constructor(width = window.innerWidth, height = window.innerHeight, opts = {}, autoStart = false) {
+          super();
+          this.vrMode = false;
+          this.size = new import_three21.Vector2();
+          this.scene = new import_three21.Scene();
+          if (opts.ortho) {
+            this.camera = new import_three21.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, opts.near != void 0 ? opts.near : 0.1, opts.far != void 0 ? opts.far : 1e3);
+          } else {
+            this.camera = new import_three21.PerspectiveCamera(opts.fov != void 0 ? opts.fov : 35, width / height, opts.near != void 0 ? opts.near : 0.1, opts.far != void 0 ? opts.far : 1e3);
+          }
+          this.scene.add(this.camera);
+          this.renderer = new import_three21.WebGLRenderer({
+            antialias: opts.antialias != void 0 ? opts.antialias : true,
+            alpha: opts.alpha != void 0 ? opts.alpha : true
+          });
+          this.renderer.setSize(width, height);
+          if (autoStart)
+            this.start();
+        }
+        start(customRaf = null) {
+          if (this.started)
+            return;
+          this.clock = new import_three21.Clock(true);
+          if (this.vrMode) {
+            this._started = true;
+            this._raf = customRaf ? customRaf : () => {
+              this.update();
+              this.render();
+            };
+            this.renderer.setAnimationLoop(this._raf);
+            return 1;
+          }
+          return super.start(customRaf);
+        }
+        pause() {
+          if (!this._started)
+            return;
+          if (this._paused)
+            return;
+          this._paused = true;
+          if (!this.vrMode)
+            cancelAnimationFrame(this._rafId);
+          else {
+            this.renderer.setAnimationLoop(null);
+          }
+        }
+        resume() {
+          if (!this._started)
+            return;
+          if (!this._paused)
+            return;
+          this._paused = false;
+          if (!this.vrMode)
+            this._rafId = requestAnimationFrame(this._raf);
+          else
+            this.renderer.setAnimationLoop(this._raf);
+        }
+        get domElement() {
+          return this.renderer.domElement;
+        }
+        resize(width, height) {
+          if (width === this.size.x && height === this.size.y)
+            return;
+          this.size.set(width, height);
+          this.renderer.setSize(this.size.x, this.size.y);
+          if (this.camera.type == "PerspectiveCamera") {
+            const cam = this.camera;
+            cam.aspect = this.size.x / this.size.y;
+          } else {
+            const cam = this.camera;
+            cam.left = -width / 2;
+            cam.right = width / 2;
+            cam.top = height / 2;
+            cam.bottom = -height / 2;
+          }
+          this.camera.updateProjectionMatrix();
+        }
+        render() {
+          this.renderer.render(this.scene, this.camera);
+        }
+      };
+    }
+  });
+
+  // ../packages/gfx/lib/utils/SceneUtils.js
+  var import_three22;
+  var init_SceneUtils2 = __esm({
+    "../packages/gfx/lib/utils/SceneUtils.js"() {
+      import_three22 = __toESM(require_three_min());
+    }
+  });
+
+  // ../packages/gfx/lib/utils/GfxUtils.js
+  var import_three23, RAD2DEG2, DEG2RAD2;
+  var init_GfxUtils2 = __esm({
+    "../packages/gfx/lib/utils/GfxUtils.js"() {
+      import_three23 = __toESM(require_three_min());
+      RAD2DEG2 = 180 / Math.PI;
+      DEG2RAD2 = Math.PI / 180;
+    }
+  });
+
+  // ../packages/gfx/lib/utils/EquirectangularToCubemap.js
+  var import_three24, GEO2;
+  var init_EquirectangularToCubemap2 = __esm({
+    "../packages/gfx/lib/utils/EquirectangularToCubemap.js"() {
+      import_three24 = __toESM(require_three_min());
+      GEO2 = new import_three24.SphereGeometry(100, 64, 64);
+    }
+  });
+
+  // ../packages/gfx/lib/main.js
+  var init_main3 = __esm({
+    "../packages/gfx/lib/main.js"() {
+      init_glInfo2();
+      init_RTHelper2();
+      init_RTUtils2();
+      init_Sketch2();
+      init_WebGLSketch2();
+      init_SceneUtils2();
+      init_GfxUtils2();
+      init_EquirectangularToCubemap2();
+    }
+  });
+
   // src/selective-glow/js/App.ts
   var App_exports = {};
   __export(App_exports, {
     App: () => App
   });
-  var import_three17, BOX_GEO, BALL_GEO, CYL_GEO, TOR_GEO, App;
+  var import_three25, BOX_GEO, BALL_GEO, CYL_GEO, TOR_GEO, App;
   var init_App = __esm({
     "src/selective-glow/js/App.ts"() {
-      import_three17 = __toESM(require_three_min());
+      import_three25 = __toESM(require_three_min());
       init_stats_module();
       init_lil_gui_module_min();
       init_OrbitControls();
       init_main2();
-      init_main();
-      BOX_GEO = new import_three17.BoxGeometry(1, 1, 1);
-      BALL_GEO = new import_three17.SphereGeometry(1);
-      CYL_GEO = new import_three17.CylinderGeometry(0.1, 0.1, 1, 32, 8);
-      TOR_GEO = new import_three17.TorusKnotGeometry(10, 2, 64, 32, 2, 3);
+      init_main3();
+      BOX_GEO = new import_three25.BoxGeometry(1, 1, 1);
+      BALL_GEO = new import_three25.SphereGeometry(1);
+      CYL_GEO = new import_three25.CylinderGeometry(0.1, 0.1, 1, 32, 8);
+      TOR_GEO = new import_three25.TorusKnotGeometry(10, 2, 64, 32, 2, 3);
       App = class extends WebGLSketch {
         constructor() {
           super(window.innerWidth, window.innerHeight, {
@@ -15091,14 +15347,14 @@
           this.renderer.setClearColor(0, 1);
           document.body.appendChild(this.domElement);
           this.domElement.className = "view";
-          import_three17.ShaderChunk["rgbSplit"] = vfxShaders.rgbSplit;
-          const L = new import_three17.DirectionalLight(16777215, 0.35);
+          import_three25.ShaderChunk["rgbSplit"] = vfxShaders.rgbSplit;
+          const L = new import_three25.DirectionalLight(16777215, 0.35);
           L.position.set(-1, 1, 1);
           this.scene.add(L);
-          const box1 = new import_three17.Mesh(
+          const box1 = new import_three25.Mesh(
             BOX_GEO,
             initMaterial(
-              new import_three17.MeshPhongMaterial({
+              new import_three25.MeshPhongMaterial({
                 color: 16711680
               })
             )
@@ -15107,10 +15363,10 @@
           box1.scale.x = 1.5;
           this.scene.add(box1);
           this.meshes.push(box1);
-          const ball1 = new import_three17.Mesh(
+          const ball1 = new import_three25.Mesh(
             BALL_GEO,
             initMaterial(
-              new import_three17.MeshPhongMaterial({
+              new import_three25.MeshPhongMaterial({
                 color: 255,
                 emissive: 1118719,
                 emissiveIntensity: 1.7
@@ -15122,10 +15378,10 @@
           ball1.scale.setScalar(0.75);
           this.scene.add(ball1);
           this.meshes.push(ball1);
-          const cyl = new import_three17.Mesh(
+          const cyl = new import_three25.Mesh(
             CYL_GEO,
             initMaterial(
-              new import_three17.MeshPhongMaterial({
+              new import_three25.MeshPhongMaterial({
                 color: 65280,
                 emissive: 2293538,
                 emissiveIntensity: 2.2
@@ -15137,10 +15393,10 @@
           cyl.scale.y = 5;
           this.scene.add(cyl);
           this.meshes.push(cyl);
-          const torus = new import_three17.Mesh(
+          const torus = new import_three25.Mesh(
             TOR_GEO,
             initMaterial(
-              new import_three17.MeshPhongMaterial({
+              new import_three25.MeshPhongMaterial({
                 color: 0
               })
             )

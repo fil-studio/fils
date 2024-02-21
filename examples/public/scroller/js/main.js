@@ -168,18 +168,18 @@
     }
   });
 
-  // ../packages/scroller/node_modules/@fils/math/lib/Random.js
+  // ../packages/math/lib/Random.js
   var import_mersenne;
   var init_Random = __esm({
-    "../packages/scroller/node_modules/@fils/math/lib/Random.js"() {
+    "../packages/math/lib/Random.js"() {
       import_mersenne = __toESM(require_mersenne());
     }
   });
 
-  // ../packages/scroller/node_modules/@fils/math/lib/MathUtils.js
+  // ../packages/math/lib/MathUtils.js
   var MathUtils;
   var init_MathUtils = __esm({
-    "../packages/scroller/node_modules/@fils/math/lib/MathUtils.js"() {
+    "../packages/math/lib/MathUtils.js"() {
       MathUtils = class {
         static clamp(v, min, max) {
           return Math.min(max, Math.max(min, v));
@@ -200,8 +200,12 @@
         static step(thrsh, val) {
           return val < thrsh ? 0 : 1;
         }
-        static map(x, a, b, c7, d) {
-          return (x - a) * (d - c7) / (b - a) + c7;
+        static map(x, a1, a2, b1, b2) {
+          return (x - a1) * (b2 - b1) / (a2 - a1) + b1;
+        }
+        static truncateDecimals(value, decimalPlaces) {
+          const factor = Math.pow(10, decimalPlaces);
+          return Math.floor(value * factor) / factor;
         }
         static fract(n) {
           return n % 1;
@@ -210,16 +214,16 @@
     }
   });
 
-  // ../packages/scroller/node_modules/@fils/math/lib/Vector.js
+  // ../packages/math/lib/Vector.js
   var init_Vector = __esm({
-    "../packages/scroller/node_modules/@fils/math/lib/Vector.js"() {
+    "../packages/math/lib/Vector.js"() {
       init_MathUtils();
     }
   });
 
-  // ../packages/scroller/node_modules/@fils/math/lib/main.js
+  // ../packages/math/lib/main.js
   var init_main = __esm({
-    "../packages/scroller/node_modules/@fils/math/lib/main.js"() {
+    "../packages/math/lib/main.js"() {
       init_Random();
       init_MathUtils();
       init_Vector();
@@ -249,6 +253,7 @@
             y: 0
           };
           this.visible = false;
+          this.closeToVisible = false;
           this.disabled = false;
           this.listeners = [];
           this.sticky = [];
@@ -302,12 +307,12 @@
           }
           this.dom.style.transform = "";
           this.visible = true;
-          this.hide();
           this.progress = 0;
           this.calculateDims();
           for (const lis of this.listeners) {
             lis === null || lis === void 0 ? void 0 : lis.onAfterRestore(resizing);
           }
+          this.hide();
         }
         animationIn() {
           for (const lis of this.listeners) {
@@ -392,6 +397,14 @@
           this.dom.style.setProperty("--fil-scroller-progress", "0");
         }
         update() {
+          if (!this.visible) {
+            const margin = this.w.w;
+            if (this.scroll + margin > this.threshold[0] && this.scroll + margin < this.threshold[1]) {
+              this.closeToVisible = true;
+            } else {
+              this.closeToVisible = false;
+            }
+          }
           if (this.scroll > this.threshold[0] && this.scroll < this.threshold[1]) {
             if (!this.visible) {
               this.show();
@@ -558,6 +571,7 @@
       Scroller = class {
         constructor(params) {
           this.isBody = false;
+          this.progress = 0;
           this.scrollDirection = {
             vertical: true,
             horizontal: false
@@ -570,6 +584,7 @@
             current: 0,
             target: 0
           };
+          this.overScrolling = false;
           this._direction = D.TOP;
           this.sections = [];
           this.loaded = false;
@@ -623,7 +638,7 @@
           }
           this.addStyles();
           this.refresh();
-          this.addEventListeners();
+          this.addEventListeners(this.container);
         }
         get enabled() {
           return !this.disabled;
@@ -714,6 +729,7 @@
           this.w.w = ww;
           this.w.h = wh;
           for (const section of this.sections) {
+            section.dom.classList.remove("disabled");
             section.w = this.w;
             section.restore(resizing);
           }
@@ -733,18 +749,14 @@
           this.restore(true);
         }
         updateExternal(delta) {
-          if (this.position.target <= this.edges[0] && delta > 0) {
-            this.position.target = this.edges[0];
-          }
-          if (this.position.target >= this.edges[1] && delta < 0) {
-            this.position.target = this.edges[1];
-          }
-          this.position.target = this.position.target + delta;
+          this.position.target = MathUtils.clamp(this.position.target + delta, this.edges[0], this.edges[1]);
+          this.updateOverScrolling(delta);
         }
-        addEventListeners() {
+        addEventListeners(_target) {
           if (this.useNative)
             return;
-          window.addEventListener("wheel", (e) => {
+          const target = _target || window;
+          target.addEventListener("wheel", (e) => {
             if (this.disabled)
               return;
             if (this.blocked)
@@ -758,7 +770,7 @@
             }
             this.updateExternal(delta * this.force.wheel);
           });
-          window.addEventListener("touchstart", (e) => {
+          target.addEventListener("touchstart", (e) => {
             if (this.disabled)
               return;
             if (this.blocked)
@@ -769,7 +781,7 @@
           }, {
             passive: false
           });
-          window.addEventListener("touchend", (e) => {
+          target.addEventListener("touchend", (e) => {
             if (this.disabled)
               return;
             if (this.blocked)
@@ -781,7 +793,7 @@
           }, {
             passive: false
           });
-          window.addEventListener("touchmove", (e) => {
+          target.addEventListener("touchmove", (e) => {
             if (this.disabled)
               return;
             if (this.blocked)
@@ -853,7 +865,7 @@
             }
           }
           if (!this.useNative && this.virtualScrollBar) {
-            this.virtualScrollBar.progress = this.position.current / this.edges[1];
+            this.virtualScrollBar.progress = MathUtils.clamp(this.position.current / this.edges[1], 0, 1);
           }
           this.position.current = MathUtils.clamp(this.position.current, this.edges[0], this.edges[1]);
           const newDelta = (this.position.current - previous) * 0.01;
@@ -868,6 +880,15 @@
             section.update();
           }
         }
+        updateOverScrolling(delta) {
+          this.overScrolling = false;
+          if (this.position.current <= this.edges[0] && delta < 0) {
+            this.overScrolling = true;
+          }
+          if (this.position.current >= this.edges[1] && delta > 0) {
+            this.overScrolling = true;
+          }
+        }
         update() {
           if (!this.loaded)
             return;
@@ -875,6 +896,21 @@
           this.updateScrollValues();
           if (Math.abs(this.delta) > 1e-3) {
             this.updateSections();
+          }
+          this.container.classList.toggle("fil-scroller__top", this.position.current <= this.edges[0] + 0.5);
+          this.container.classList.toggle("fil-scroller__bottom", this.position.current >= this.edges[1] - 0.5);
+          this.progress = MathUtils.truncateDecimals(MathUtils.map(this.position.current, this.edges[0], this.edges[1], 0, 1), 3);
+        }
+        /**
+         * Scrolls to a given position
+         * @param k index of section to scroll to
+         * @returns
+         */
+        scrollTo(k) {
+          const _k = MathUtils.clamp(k, this.edges[0], this.edges[1]);
+          this.position.target = _k;
+          if (this.useNative) {
+            this.container.scrollTop = k;
           }
         }
         /**
@@ -3702,8 +3738,8 @@
             easing: 0.1,
             showVirtualScrollBar: true,
             touchForce: 2,
-            wheelForce: 1,
-            customContainer: useNative ? document.body : void 0
+            wheelForce: 1
+            // container: useNative ? document.body : undefined
             // direction: D.LEFT
           });
           if (useNative) {
@@ -3762,10 +3798,9 @@
               this.scroller.enable();
           });
           gui.addButton("Refresh", () => {
-            this.scroller.refresh();
           });
           window.addEventListener("resize", () => {
-            this.scroller.resize();
+            this.scroller.restore();
           });
         }
         update() {

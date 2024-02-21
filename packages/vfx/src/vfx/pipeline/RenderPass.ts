@@ -1,8 +1,8 @@
-import { RawShaderMaterial, WebGLRenderer, WebGLRenderTarget } from "three";
+import { RawShaderMaterial, ShaderMaterial, WebGLRenderer, WebGLRenderTarget } from "three";
 import { VFXPipeline } from "../VFXPipeline";
 
 export class RenderPass {
-	shader: RawShaderMaterial
+	shader: RawShaderMaterial|ShaderMaterial
 	enabled:boolean = true;
 	constructor () {
 

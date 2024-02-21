@@ -1,10 +1,10 @@
-import { Material, Mesh, OrthographicCamera, PlaneGeometry, RawShaderMaterial, RGBAFormat, Scene, Texture, Vector2, WebGLMultipleRenderTargets, WebGLRenderer, WebGLRenderTarget } from 'three';
+import { Material, Mesh, OrthographicCamera, PlaneGeometry, RawShaderMaterial, RGBAFormat, Scene, ShaderMaterial, Texture, Vector2, WebGLMultipleRenderTargets, WebGLRenderer, WebGLRenderTarget } from 'three';
 import frag from '../glsl/fbo.frag';
 import vert from '../glsl/fbo.vert';
 
 const TMP:Vector2 = new Vector2();
 
-const MAT:RawShaderMaterial = new RawShaderMaterial({
+const MAT:ShaderMaterial = new ShaderMaterial({
 	vertexShader: vert,
 	fragmentShader: frag,
 	uniforms: {
@@ -15,7 +15,7 @@ const MAT:RawShaderMaterial = new RawShaderMaterial({
 
 export class RTHelper {
 	camera:OrthographicCamera
-	material:RawShaderMaterial
+	material:ShaderMaterial
 	quad:Mesh
 	scene:Scene
 

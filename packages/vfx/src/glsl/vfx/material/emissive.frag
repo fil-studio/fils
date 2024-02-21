@@ -23,6 +23,7 @@ void main() {
     outgoingLight = totalEmissiveRadiance * emissiveIntensity;
 	#include <output_fragment>
     oGlow = vec4(totalEmissiveRadiance, 1.0) * emissiveIntensity;
+	#include <oGlow>
 	#include <tonemapping_fragment>
 	#include <encodings_fragment>
 	#include <fog_fragment>

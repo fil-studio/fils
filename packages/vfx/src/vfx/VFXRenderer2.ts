@@ -110,7 +110,7 @@ export class VFXRenderer2 {
     }
 
     render(scene:Scene, camera:PerspectiveCamera|OrthographicCamera) {
-        if(this.params.enableGlow) {
+        if(this.params.enableGlow && this.glow.enabled) {
             const bg = scene.background;
             scene.background = null;
             const alpha = this.rnd.getClearAlpha();

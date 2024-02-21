@@ -19,14 +19,16 @@ import depth from './glsl/lib/depth.glsl';
 import lut from './glsl/lib/lut.glsl';
 import luma from './glsl/lib/luma.glsl';
 import dither2 from './glsl/lib/dither2.glsl';
+import glow from './glsl/vfx/material/glow.frag';
 
 const vfxShaders = {
 	rgbSplit: rgb,
 	dithering: dither,
-	depth: depth,
-	lut: lut,
-	luma: luma,
-	dither2: dither2
+	depth,
+	lut,
+	luma,
+	dither2,
+	oGlow: glow
 }
 
 export {
