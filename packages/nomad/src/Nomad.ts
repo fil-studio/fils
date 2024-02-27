@@ -76,7 +76,7 @@ export class Nomad {
 
 		this.wrapper = document.querySelector('[nomad-wrapper]');
 		if(!this.wrapper) {
-			console.warn("Nomad can't work without warpper element.");
+			console.warn("Fil Nomad can't work without warpper element.");
 			return;
 		}
 
@@ -160,7 +160,7 @@ export class Nomad {
 		let href = window.location.href;
 
 		this.events.onRouteChangeStart(href);
-		this.addContent(href, document.documentElement).then(() => {
+		this.addContent(href, document.documentElement, false).then(() => {
 			this.transitionIn();
 		})
 	}
@@ -229,18 +229,20 @@ export class Nomad {
 		})
 	}
 
-	async addContent(href: string, html: HTMLElement) {
+	async addContent(href: string, html: HTMLElement, updateState: boolean = true) {
 
 		// Create route
 		this.createRoute(html, href);
 		this.events.onRouteChanged();
 
-		// Update page title
-		const title = html.querySelector('title').textContent;
-		document.documentElement.querySelector('title').textContent = title;
+		if(updateState){
+			// Update page title
+			const title = html.querySelector('title').textContent;
+			document.documentElement.querySelector('title').textContent = title;
 
-		// Update pushState
-		window.history.pushState(this.route.location, title, this.route.location.href);
+			// Update pushState
+			if(!this.isPopstate) window.history.pushState(this.route.location, title, this.route.location.href);
+		}
 
 		// Add new content
 		if (!this.wrapper.contains(this.route.page.dom)) {

@@ -19,7 +19,7 @@ export class NomadEvents {
 		// Init current page
 		this.addLinksListener();
 		window.addEventListener('popstate', debounce((e) => {
-			console.log('Popstate');
+			console.log('Fil Nomad - Popstate');
 			this.onPopState();
 		}, 300));
 
