@@ -1,5 +1,9 @@
 import { MathUtils } from "@fils/math";
 
+
+// -------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------ PETRA IS USING ITS OWN VERSION
+// -------------------------------------------------------------------------------------------------
 export interface CursorParameters {
 	decimals?: number
 	ease?: number
@@ -120,8 +124,26 @@ export class FilCursor {
 		return parseFloat(num.toFixed(this.decimals))
 	}
 
-	stateChange(state: FilCursorState){
+	stateChange(state: FilCursorState = null){
+
 		if(state === this.state.current) return;
+
+		if(state === null ) {
+			this.state.previous = this.state.current;
+			this.state.current = state;
+			this.onStateChange();
+			return
+		}
+
+		if(this.state.current === null) {
+			this.state.previous = this.state.current;
+			this.state.current = state;
+			this.onStateChange();
+			return
+		}
+
+		if(state.id === this.state.current.id && state.trigger === this.state.current.trigger) return;
+
 		this.state.previous = this.state.current;
 		this.state.current = state;
 

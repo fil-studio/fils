@@ -241,7 +241,11 @@ export class Section {
   }
   updateVisible() {
     // If its visible then
-    if (this.scroll > this.threshold[0] && this.scroll < this.threshold[1]) {
+
+
+    const offset = 1; // This offset rounds up the value so it doesn't get stuck by a slow easing
+    if (this.scroll - offset > this.threshold[0] && this.scroll + offset < this.threshold[1]) {
+
       if (!this.visible) {
         this.show();
       }
