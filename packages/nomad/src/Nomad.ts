@@ -22,12 +22,8 @@ export interface NomadRouteListener {
 
 export interface NomadParameters {
 	replace?:boolean,
-	appMode?:boolean,
-	appModeRoot?:string
 }
 
-// Todo
-// Que passa quan fas spam
 
 export class Nomad {
 	utils: Utils;
@@ -50,10 +46,6 @@ export class Nomad {
 
 	currentOrder:number = 0;
 	previousRoute: NomadRoute;
-
-	appMode: boolean = false;
-	appModeRoot: string = 'public';
-	appModePath: string = '';
 
 	constructor(params:NomadParameters, createPage:Function = (dom: HTMLElement): Page => { return null; }){
 
@@ -88,13 +80,7 @@ export class Nomad {
 			return;
 		}
 
-		if(this.appMode) {
-			console.log('Nomad in App Mode');
-			this.appModePath = this.utils.getAppModePathname(window.location.href, this.appModeRoot);
-		}
-
 		this.firstRoute();
-
 
 	}
 	addRouteListener(lis:NomadRouteListener) {
@@ -108,9 +94,6 @@ export class Nomad {
 	createRoute(dom:HTMLElement, href:string = window.location.href){
 
 		const location = this.utils.getLocation(href);
-		if(this.appMode){
-			location.pathname = href;
-		}
 
 		const exists = this.routes.find(x => x.id === location.pathname);
 
@@ -151,39 +134,20 @@ export class Nomad {
 		});
 		if (route) return route.dom;
 
-		// Else, fetch it
-		if (typeof window['require'] === 'function') {
-			const fs = window['require']('fs');
+		const response = await fetch(href, {
+			mode: 'same-origin',
+			method: 'GET',
+			headers: { 'X-Requested-With': 'Nomad' },
+			credentials: 'same-origin'
+		});
 
-			const path = `${this.appModePath}${href.endsWith('.html') ? href : `${href}index.html`}`;
-
-			try {
-
-				const html = fs.readFileSync(path.substring(7), 'utf-8');
-				const content = el('div');
-				content.innerHTML = html;
-				return content;
-
-			} catch (error) {
-				console.error('Nomad (App mode) - Error reading file:', error);
-				return false;
-			}
-		}  else {
-
-			const response = await fetch(href, {
-				mode: 'same-origin',
-				method: 'GET',
-				headers: { 'X-Requested-With': 'Nomad' },
-				credentials: 'same-origin'
-			});
-
-			if (response.status >= 200 && response.status < 300) {
-				const content = el('div');
-				const html = await response.text();
-				content.innerHTML = html;
-				return content;
-			}
+		if (response.status >= 200 && response.status < 300) {
+			const content = el('div');
+			const html = await response.text();
+			content.innerHTML = html;
+			return content;
 		}
+
 
 		// Force reload if response fails
 		console.log('Fil Nomad - Fetch failed');
@@ -194,9 +158,7 @@ export class Nomad {
 
 	firstRoute(){
 		let href = window.location.href;
-		if(this.appMode){
-			href = '/'
-		}
+
 		this.events.onRouteChangeStart(href);
 		this.addContent(href, document.documentElement).then(() => {
 			this.transitionIn();
@@ -212,18 +174,11 @@ export class Nomad {
 	 */
 	goTo(href){
 
-		let path = this.appMode ? href.replace(/^file:\/\//, '') : href;
+		let path = href;
 
-		if(!this.appMode){
-			if(this.utils.getPathname(path) === this.route.location.pathname){
-				console.warn('Nomad - Trying to access current location', this.route.location.pathname);
-				return;
-			}
-		} else {
-			if(path === this.route.location.pathname){
-				console.warn('Nomad (App mode) - Trying to access current location', this.route.location.pathname);
-				return
-			}
+		if(this.utils.getPathname(path) === this.route.location.pathname){
+			console.warn('Nomad - Trying to access current location', this.route.location.pathname);
+			return;
 		}
 
 		if(this.inProgress){

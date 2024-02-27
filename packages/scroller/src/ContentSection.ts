@@ -21,6 +21,9 @@ export abstract class ContentSection implements ScrollerSectionListener {
         }
 
         this.init();
+
+        // Trigger animation in if
+        if(this.section.visible) this.onAnimationIn();
     }
 
     /**
@@ -29,6 +32,7 @@ export abstract class ContentSection implements ScrollerSectionListener {
     private init() {
         this.onInit();
         this.addEventListeners();
+
     }
 
     /**
