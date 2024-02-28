@@ -105,7 +105,7 @@ export class FilCursor {
 		window.addEventListener('mousemove', (e:MouseEvent) => {
 			this.target.x = e.clientX;
 			this.target.y = e.clientY;
-		})
+		}, { passive: true })
 
 	}
 

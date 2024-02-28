@@ -95,7 +95,7 @@ export class ScrollerEvents {
 					this.onUserInputStop();
 					this.userInput = false;
 			}, 100);
-		})
+		}, { passive: true })
 
 		target.addEventListener('touchstart', (e: TouchEvent) => {
 			if (this.blocked) return;
@@ -107,7 +107,7 @@ export class ScrollerEvents {
 			touchWheel.startY = e1.clientY;
 			touchWheel.startDrag = performance.now();
 		}, {
-			passive: false
+			passive: true
 		})
 
 		target.addEventListener('touchend', (e: TouchEvent) => {
@@ -122,7 +122,7 @@ export class ScrollerEvents {
 
 			touchWheel.delta = 0;
 		}, {
-			passive: false
+			passive: true
 		})
 
 		target.addEventListener('touchmove', (e: TouchEvent) => {
@@ -136,7 +136,7 @@ export class ScrollerEvents {
 
 			s.updateExternalByType(-touchWheel.delta, 'touch')
 		}, {
-			passive: false
+			passive: true
 		})
 	}
 
