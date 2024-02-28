@@ -1,4 +1,4 @@
-# @fils/scroller
+# @fils/cursor
 Custom Cursor written in Typescript.
 
 ### License
