@@ -158,21 +158,19 @@ export class Section {
   // Show - Hide
   protected show() {
     if (this.visible) return;
+    this.visible = true;
+    this.dom.classList.add("fil-scroller__visible");
 
     this.animationIn();
-
-    this.dom.classList.add("fil-scroller__visible");
-    this.visible = true;
   }
   protected hide() {
     if (!this.visible) return;
-
-    this.animationOut();
-
     this.visible = false;
     this.progress.visible = 0;
     this.delta = 0;
     this.dom.classList.remove("fil-scroller__visible");
+
+    this.animationOut();
   }
 
   // ------------------------- UPDATE
