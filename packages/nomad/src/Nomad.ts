@@ -95,12 +95,15 @@ export class Nomad {
 
 		const location = this.utils.getLocation(href);
 
-		const exists = this.routes.find(x => x.id === location.pathname);
+		if(!this.replace){
 
-		if(exists){
-			this.route = exists;
-			this.route.order.push(this.currentOrder);
-			return;
+			const exists = this.routes.find(x => x.id === location.pathname);
+
+			if(exists){
+				this.route = exists;
+				this.route.order.push(this.currentOrder);
+				return;
+			}
 		}
 
 		// Thats just the page content, not the whole html
