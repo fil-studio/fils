@@ -127,16 +127,12 @@ export class ScrollerEvents {
 
 		target.addEventListener('touchmove', (e: TouchEvent) => {
 			if (this.blocked) return;
-
-
 			e.preventDefault();
 			const e1 = e.touches[0];
 			touchWheel.delta = e1.clientY - touchWheel.startY;
 			touchWheel.startY = e1.clientY;
 
 			s.updateExternalByType(-touchWheel.delta, 'touch')
-		}, {
-			passive: true
 		})
 	}
 
