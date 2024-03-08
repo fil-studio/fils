@@ -15,6 +15,7 @@ export interface NomadRoute {
 }
 
 export interface NomadRouteListener {
+	onAccessCurrentRoute?():void
 	onRouteChangeStart?(href:string):void
 	onRouteChanged?(route:NomadRoute):void;
 	onRouteChangedComplete?(route:NomadRoute):void
@@ -160,6 +161,8 @@ export class Nomad {
 	}
 
 	firstRoute(){
+		console.log('First route');
+
 		let href = window.location.href;
 
 		this.events.onRouteChangeStart(href);
@@ -180,6 +183,7 @@ export class Nomad {
 		let path = href;
 
 		if(this.utils.getPathname(path) === this.route.location.pathname){
+			this.events.onAccessCurrentRoute();
 			console.warn('Nomad - Trying to access current location', this.route.location.pathname);
 			return;
 		}

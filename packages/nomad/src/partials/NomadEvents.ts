@@ -17,7 +17,7 @@ export class NomadEvents {
 		this.links = [];
 
 		// Init current page
-		this.addLinksListener();
+		// this.addLinksListener();
 		window.addEventListener('popstate', debounce((e) => {
 			console.log('Fil Nomad - Popstate');
 			this.onPopState();
@@ -32,6 +32,11 @@ export class NomadEvents {
 	}
 	removeRouteListener(lis: NomadRouteListener) {
 		this.listeners.splice(this.listeners.indexOf(lis), 1);
+	}
+	onAccessCurrentRoute() {
+		for (const lis of this.listeners) {
+			if (lis.onAccessCurrentRoute) lis.onAccessCurrentRoute();
+		}
 	}
 	onRouteChangeStart(href: string) {
 		for (const lis of this.listeners) {
@@ -49,7 +54,6 @@ export class NomadEvents {
 		}
 	}
 
-	// Events
 	// Events
 	addLinksListener() {
 
