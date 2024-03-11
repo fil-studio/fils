@@ -33,6 +33,8 @@ export interface FilCursorListener {
 export class FilCursor {
   listeners: FilCursorListener[] = []
 
+  enabled: boolean = true
+
   still: boolean
   stillTimer: ReturnType<typeof setTimeout>
 
@@ -116,11 +118,14 @@ export class FilCursor {
     }
   }
 
+
   addEventListeners() {
     window.addEventListener(
       'mousemove',
       (e: MouseEvent) => {
         if (this.stillTimer) clearTimeout(this.stillTimer)
+
+        if(!this.enabled) return;
 
         this.stillEnd()
         this.stillTimer = setTimeout(() => {
@@ -257,6 +262,8 @@ export class FilCursor {
   }
 
   update() {
+    if(!this.enabled) return;
+
     this.updatePosition()
 
     this.updateNormalized()
