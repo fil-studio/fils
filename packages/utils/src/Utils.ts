@@ -15,13 +15,41 @@ export function remove(el:HTMLElement):void {
 	el.remove();
 }
 
-export function requestFullscreen(el:HTMLElement) {
+export function requestVideoFullscreen(el:HTMLElement) {
 	if(el.requestFullscreen) return el.requestFullscreen();
-
 	try {
 			//@ts-ignore
 			el.webkitEnterFullScreen();
-	} catch(e) {}
+	} catch(e) {
+		console.log(e);
+
+	}
+}
+
+export function openFullScreen(_el = document.documentElement) {
+	const el3 = _el as any;
+	if (el3.requestFullscreen) {
+		el3.requestFullscreen().catch(error => { console.log(error); });
+	} else if (el3.mozRequestFullScreen) {
+		el3.mozRequestFullScreen().catch(error => { console.log(error); });
+	} else if (el3.webkitRequestFullscreen) {
+		el3.webkitRequestFullscreen().catch(error => { console.log(error); });
+	} else if (el3.msRequestFullscreen) {
+		el3.msRequestFullscreen().catch(error => { console.log(error); });
+	}
+}
+
+export function closeFullScreen() {
+	const doc = document as any;
+	if (doc.exitFullscreen) {
+		doc.exitFullscreen().catch(error => { console.log(error); });
+	} else if (doc.mozCancelFullScreen) { /* Firefox */
+		doc.mozCancelFullScreen().catch(error => { console.log(error); });
+	} else if (doc.webkitExitFullscreen) { /* Chrome, Safari & Opera */
+		doc.webkitExitFullscreen().catch(error => { console.log(error); });
+	} else if (doc.msExitFullscreen) { /* IE/Edge */
+		doc.msExitFullscreen().catch(error => { console.log(error); });
+	}
 }
 
 export function removeListeners (el:any):void {
