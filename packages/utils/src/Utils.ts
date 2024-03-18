@@ -24,7 +24,7 @@ export function requestVideoFullscreen(el: HTMLElement) {
     console.log(e)
   }
 }
-export function createVideoFullsreen(src: string, onExit:() => {}) {
+export function createVideoFullsreen(src: string, onExit:Function = () => {}) {
   const video = el(
 		'video',
 		'fil-fullscreen-video',
