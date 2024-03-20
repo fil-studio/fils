@@ -73,10 +73,18 @@ export class ScrollerEvents {
 		let userInputTimer;
 
 		target.addEventListener('wheel', (e: WheelEvent) => {
-			if (this.blocked) return;
-
 			if(!this.userInput) this.onUserInputStart();
 			this.userInput = true;
+
+			if (userInputTimer) {
+        clearTimeout(userInputTimer);
+    	}
+			userInputTimer = setTimeout(() => {
+					this.onUserInputStop();
+					this.userInput = false;
+			}, 100);
+
+			if (this.blocked) return;
 
 			let delta = e.deltaY;
 			if (s.config.scrollDirection.horizontal && s.config.scrollDirection.vertical) {
@@ -88,20 +96,14 @@ export class ScrollerEvents {
 
 			s.updateExternalByType(delta, 'wheel')
 
-			if (userInputTimer) {
-        clearTimeout(userInputTimer);
-    	}
-			userInputTimer = setTimeout(() => {
-					this.onUserInputStop();
-					this.userInput = false;
-			}, 100);
 		}, { passive: true })
 
 		target.addEventListener('touchstart', (e: TouchEvent) => {
-			if (this.blocked) return;
 
 			this.userInput = true;
 			this.onUserInputStart();
+
+			if (this.blocked) return;
 
 			const e1 = e.touches[0];
 			touchWheel.startY = e1.clientY;
@@ -111,10 +113,9 @@ export class ScrollerEvents {
 		})
 
 		target.addEventListener('touchend', (e: TouchEvent) => {
-			if (this.blocked) return;
-
 			this.userInput = false;
 			this.onUserInputStop();
+			if (this.blocked) return;
 
 			if (performance.now() - touchWheel.startDrag < 100) {
 				s.updateExternalByType(-touchWheel.delta * 10, 'touch')

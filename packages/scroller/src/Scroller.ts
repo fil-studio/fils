@@ -1,7 +1,7 @@
 import { MathUtils } from "@fils/math";
 import { Section } from "./Section";
 import { VirtualScrollBar } from "./VirtualScrollBar";
-import { DEFAULT_EASING, FilScrollerParameters, ScrollerConfig } from "./partials/ScrollerConfig";
+import { FilScrollerParameters, ScrollerConfig } from "./partials/ScrollerConfig";
 import { ScrollerEvents } from "./partials/ScrollerEvents";
 import { ScrollerStyles } from "./partials/ScrollerStyles";
 
