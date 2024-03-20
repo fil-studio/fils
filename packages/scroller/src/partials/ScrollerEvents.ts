@@ -24,12 +24,13 @@ export class ScrollerEvents {
 	protected listeners: FilScrollerUserEventsListener[] = [];
 
 
-	protected userSwipe: 'up' | 'down' | 'left' | 'right' | 'none' = 'none'
+	userSwipe: 'up' | 'down' | 'left' | 'right' | 'none' | null = null;
 	protected swipeStart: {
 		x: number,
 		y: number,
 	}
-	protected swipeTimeCount: number
+	protected swipeTimeCount: ReturnType<typeof setTimeout>;
+	swipeTooLong: boolean
 	swipeParams: {
 		time: number,
 		threshold: number
@@ -48,7 +49,8 @@ export class ScrollerEvents {
 			threshold: SWIPE_THRESHOLD
 		}
 
-		this.swipeTimeCount = 0;
+		this.swipeTimeCount = null
+		this.swipeTooLong = false;
 	}
 
 	// Listeners
@@ -135,7 +137,13 @@ export class ScrollerEvents {
 			// Swipe values
 			this.swipeStart.x = e.changedTouches[0].pageX;
 			this.swipeStart.y = e.changedTouches[0].pageY;
-			this.swipeTimeCount = performance.now();
+			if(this.swipeTimeCount) clearTimeout(this.swipeTimeCount);
+			this.swipeTooLong = false;
+			this.userSwipe = 'none'
+			this.swipeTimeCount = setTimeout(() => {
+				this.swipeTooLong = true;
+				this.userSwipe = null;
+			}, this.swipeParams.time);
 
 			if (this.blocked) return;
 			const et = e.touches[0];
@@ -168,12 +176,11 @@ export class ScrollerEvents {
 			const et = e.changedTouches[0];
 			const dx = et.pageX - this.swipeStart.x;
 			const dy = et.pageY - this.swipeStart.y;
-			const dt = performance.now() - this.swipeTimeCount;
 			const absX = Math.abs(dx);
 			const absY = Math.abs(dy);
 
 			// Swipe time check
-			if(dt < this.swipeParams.time){
+			if(!this.swipeTooLong){
 
 				// Swipe threshold check
 				if(absX > this.swipeParams.threshold || absY > this.swipeParams.threshold){
@@ -196,7 +203,7 @@ export class ScrollerEvents {
 				}
 
 			} else {
-				this.userSwipe = 'none';
+				this.userSwipe = null;
 			}
 
 			if (this.blocked) return;
