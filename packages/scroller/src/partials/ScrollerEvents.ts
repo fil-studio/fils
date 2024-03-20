@@ -145,10 +145,6 @@ export class ScrollerEvents {
 
 		target.addEventListener('touchend', (e: TouchEvent) => {
 
-			// User input stop
-			this.userInput = false;
-			this.onUserInputStop();
-
 			// Swipe
 			const et = e.changedTouches[0];
 			const dx = et.pageX - this.swipeStart.x;
@@ -180,6 +176,10 @@ export class ScrollerEvents {
 					}
 				}
 			}
+
+			// User input stop
+			this.userInput = false;
+			this.onUserInputStop();
 
 			if (this.blocked) return;
 
