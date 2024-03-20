@@ -7,8 +7,8 @@ const touchWheel = {
 	startDrag: 0
 }
 
-const swipeTime = 300;
-const swipeThreshold = 10;
+const SWIPE_TIME = 300;
+const SWIPE_THRESHOLD = 10;
 
 export interface FilScrollerUserEventsListener {
 	onSwipe?(direction: 'up' | 'down' | 'left' | 'right')
@@ -29,6 +29,11 @@ export class ScrollerEvents {
 		y: number,
 	}
 	protected swipeTime: number
+	swipe: {
+		time: number,
+		threshold: number
+	}
+
 
 
 	constructor(scroller:Scroller){
@@ -37,6 +42,11 @@ export class ScrollerEvents {
 		this.swipeStart = {
 			x: 0,
 			y: 0
+		}
+
+		this.swipe = {
+			time: SWIPE_TIME,
+			threshold: SWIPE_THRESHOLD
 		}
 
 		this.swipeTime = 0;
@@ -154,10 +164,10 @@ export class ScrollerEvents {
 			const absY = Math.abs(dy);
 
 			// Swipe time check
-			if(dt < swipeTime){
+			if(dt < this.swipe.time){
 
 				// Swipe threshold check
-				if(absX > swipeThreshold || absY > swipeThreshold){
+				if(absX > this.swipe.threshold || absY > this.swipe.threshold){
 
 					// Horizontal swipe
 					if(absX > absY){
