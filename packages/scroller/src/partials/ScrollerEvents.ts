@@ -7,7 +7,11 @@ const touchWheel = {
 	startDrag: 0
 }
 
+const swipeTime = 300;
+const swipeThreshold = 10;
+
 export interface FilScrollerUserEventsListener {
+	onSwipe?(direction: 'up' | 'down' | 'left' | 'right')
 	onUserInputStart?()
 	onUserInputInProgress?()
 	onUserInputStop?()
@@ -20,8 +24,22 @@ export class ScrollerEvents {
 	protected userInput:boolean = false;
 	protected listeners: FilScrollerUserEventsListener[] = [];
 
+	protected swipeStart: {
+		x: number,
+		y: number,
+	}
+	protected swipeTime: number
+
+
 	constructor(scroller:Scroller){
 		this.scroller = scroller;
+
+		this.swipeStart = {
+			x: 0,
+			y: 0
+		}
+
+		this.swipeTime = 0;
 	}
 
 	// Listeners
@@ -31,6 +49,14 @@ export class ScrollerEvents {
 	}
 	removeUserInputListener(lis: FilScrollerUserEventsListener) {
 		this.listeners.splice(this.listeners.indexOf(lis), 1);
+	}
+
+	onSwipe(direction: 'up' | 'down' | 'left' | 'right') {
+		for (const lis of this.listeners) {
+			if (lis && typeof lis.onSwipe === 'function') {
+				lis.onSwipe(direction);
+			}
+		}
 	}
 	onUserInputStart(){
 		for (const lis of this.listeners) {
@@ -100,21 +126,61 @@ export class ScrollerEvents {
 
 		target.addEventListener('touchstart', (e: TouchEvent) => {
 
+			// Input start
 			this.userInput = true;
 			this.onUserInputStart();
 
-			if (this.blocked) return;
+			// Swipe values
+			this.swipeStart.x = e.changedTouches[0].pageX;
+			this.swipeStart.y = e.changedTouches[0].pageY;
+			this.swipeTime = performance.now();
 
-			const e1 = e.touches[0];
-			touchWheel.startY = e1.clientY;
+			if (this.blocked) return;
+			const et = e.touches[0];
+			touchWheel.startY = et.clientY;
 			touchWheel.startDrag = performance.now();
 		}, {
 			passive: true
 		})
 
 		target.addEventListener('touchend', (e: TouchEvent) => {
+
+			// User input stop
 			this.userInput = false;
 			this.onUserInputStop();
+
+			// Swipe
+			const et = e.changedTouches[0];
+			const dx = et.pageX - this.swipeStart.x;
+			const dy = et.pageY - this.swipeStart.y;
+			const dt = performance.now() - this.swipeTime;
+			const absX = Math.abs(dx);
+			const absY = Math.abs(dy);
+
+			// Swipe time check
+			if(dt < swipeTime){
+
+				// Swipe threshold check
+				if(absX > swipeThreshold || absY > swipeThreshold){
+
+					// Horizontal swipe
+					if(absX > absY){
+						if(dx > 0){
+							this.onSwipe('right');
+						}else{
+							this.onSwipe('left');
+						}
+					// Vertical swipe
+					} else {
+						if(dy > 0){
+							this.onSwipe('down');
+						}else{
+							this.onSwipe('up');
+						}
+					}
+				}
+			}
+
 			if (this.blocked) return;
 
 			if (performance.now() - touchWheel.startDrag < 100) {
