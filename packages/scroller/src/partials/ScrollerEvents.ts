@@ -11,7 +11,6 @@ const SWIPE_TIME = 300;
 const SWIPE_THRESHOLD = 10;
 
 export interface FilScrollerUserEventsListener {
-	onSwipe?(direction: 'up' | 'down' | 'left' | 'right')
 	onUserInputStart?()
 	onUserInputInProgress?()
 	onUserInputStop?()
@@ -24,17 +23,17 @@ export class ScrollerEvents {
 	protected userInput:boolean = false;
 	protected listeners: FilScrollerUserEventsListener[] = [];
 
+
+	protected userSwipe: 'up' | 'down' | 'left' | 'right' | 'none' = 'none'
 	protected swipeStart: {
 		x: number,
 		y: number,
 	}
-	protected swipeTime: number
-	swipe: {
+	protected swipeTimeCount: number
+	swipeParams: {
 		time: number,
 		threshold: number
 	}
-
-
 
 	constructor(scroller:Scroller){
 		this.scroller = scroller;
@@ -44,12 +43,12 @@ export class ScrollerEvents {
 			y: 0
 		}
 
-		this.swipe = {
+		this.swipeParams = {
 			time: SWIPE_TIME,
 			threshold: SWIPE_THRESHOLD
 		}
 
-		this.swipeTime = 0;
+		this.swipeTimeCount = 0;
 	}
 
 	// Listeners
@@ -61,13 +60,6 @@ export class ScrollerEvents {
 		this.listeners.splice(this.listeners.indexOf(lis), 1);
 	}
 
-	onSwipe(direction: 'up' | 'down' | 'left' | 'right') {
-		for (const lis of this.listeners) {
-			if (lis && typeof lis.onSwipe === 'function') {
-				lis.onSwipe(direction);
-			}
-		}
-	}
 	onUserInputStart(){
 		for (const lis of this.listeners) {
 			if (lis && typeof lis.onUserInputStart === 'function') {
@@ -143,7 +135,7 @@ export class ScrollerEvents {
 			// Swipe values
 			this.swipeStart.x = e.changedTouches[0].pageX;
 			this.swipeStart.y = e.changedTouches[0].pageY;
-			this.swipeTime = performance.now();
+			this.swipeTimeCount = performance.now();
 
 			if (this.blocked) return;
 			const et = e.touches[0];
@@ -154,38 +146,6 @@ export class ScrollerEvents {
 		})
 
 		target.addEventListener('touchend', (e: TouchEvent) => {
-
-			// Swipe
-			const et = e.changedTouches[0];
-			const dx = et.pageX - this.swipeStart.x;
-			const dy = et.pageY - this.swipeStart.y;
-			const dt = performance.now() - this.swipeTime;
-			const absX = Math.abs(dx);
-			const absY = Math.abs(dy);
-
-			// Swipe time check
-			if(dt < this.swipe.time){
-
-				// Swipe threshold check
-				if(absX > this.swipe.threshold || absY > this.swipe.threshold){
-
-					// Horizontal swipe
-					if(absX > absY){
-						if(dx > 0){
-							this.onSwipe('right');
-						}else{
-							this.onSwipe('left');
-						}
-					// Vertical swipe
-					} else {
-						if(dy > 0){
-							this.onSwipe('down');
-						}else{
-							this.onSwipe('up');
-						}
-					}
-				}
-			}
 
 			// User input stop
 			this.userInput = false;
@@ -203,6 +163,42 @@ export class ScrollerEvents {
 		})
 
 		target.addEventListener('touchmove', (e: TouchEvent) => {
+
+			// Swipe
+			const et = e.changedTouches[0];
+			const dx = et.pageX - this.swipeStart.x;
+			const dy = et.pageY - this.swipeStart.y;
+			const dt = performance.now() - this.swipeTimeCount;
+			const absX = Math.abs(dx);
+			const absY = Math.abs(dy);
+
+			// Swipe time check
+			if(dt < this.swipeParams.time){
+
+				// Swipe threshold check
+				if(absX > this.swipeParams.threshold || absY > this.swipeParams.threshold){
+
+					// Horizontal swipe
+					if(absX > absY){
+						if(dx > 0){
+							this.userSwipe = 'right'
+						}else{
+							this.userSwipe = 'left';
+						}
+					// Vertical swipe
+					} else {
+						if(dy > 0){
+							this.userSwipe = 'down';
+						}else{
+							this.userSwipe = 'up';
+						}
+					}
+				}
+
+			} else {
+				this.userSwipe = 'none';
+			}
+
 			if (this.blocked) return;
 			const e1 = e.touches[0];
 			touchWheel.delta = e1.clientY - touchWheel.startY;
