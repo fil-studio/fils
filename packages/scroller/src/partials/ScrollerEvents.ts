@@ -212,6 +212,8 @@ export class ScrollerEvents {
 			touchWheel.startY = e1.clientY;
 
 			s.updateExternalByType(-touchWheel.delta, 'touch')
+		}, {
+			passive: true
 		})
 	}
 
