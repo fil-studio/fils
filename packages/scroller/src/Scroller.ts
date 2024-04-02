@@ -223,20 +223,22 @@ export class Scroller {
 		this.config.loopPossible = this.distance >= containerSize * 2;
 
 	}
-	updateTarget() {
-		if (this.config.useNative) {
-			this.position.target = this.config.container.scrollTop;
-		}
+	updateNativeTarget() {
+		if (!this.config.useNative) return
+		this.position.target = window.scrollY;
+
 	}
 	updateScrollValues() {
 
 		const previous = this.position.current;
+
 
 		this.position.current = MathUtils.lerp(
 			this.position.current,
 			this.position.target,
 			this.config.easing
 		);
+
 
 		if(!this.config.useNative && this.virtualScrollBar) {
 			this.virtualScrollBar.progress = MathUtils.clamp(this.position.current / this.edges[1], 0, 1);
@@ -328,7 +330,7 @@ export class Scroller {
 
 		this.styles.update();
 
-		this.updateTarget();
+		this.updateNativeTarget();
 		this.updateScrollValues();
 		this.updateLoop();
 		this.updateSections();
