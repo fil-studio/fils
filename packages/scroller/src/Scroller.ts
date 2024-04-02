@@ -219,6 +219,9 @@ export class Scroller {
 		const containerSize = vertical ? this.containerSize.h : this.containerSize.w;
 		this.edges[0] = 0;
 		this.edges[1] = MathUtils.clamp(this.distance - containerSize, 0, this.distance);
+		if(this.config.useNative){
+			this.edges[1] = this.distance - window.innerHeight;
+		}
 
 		this.config.loopPossible = this.distance >= containerSize * 2;
 
