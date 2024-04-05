@@ -10,8 +10,6 @@ export class Page {
 
 	constructor(id:string, template:string, dom:HTMLElement){
 		this.dom = dom;
-		console.log(dom);
-
 		this.id = id;
 		this.template = template;
 	}
