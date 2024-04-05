@@ -161,7 +161,7 @@ export class Nomad {
 	}
 
 	firstRoute(){
-		console.log('First route');
+		console.log('Nomad - First route');
 
 		let href = window.location.href;
 
