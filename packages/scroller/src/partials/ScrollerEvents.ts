@@ -56,11 +56,11 @@ export class ScrollerEvents {
 	}
 
 	// Listeners
-	addUserInputListener(lis: FilScrollerEventsListener) {
+	addEventsListener(lis: FilScrollerEventsListener) {
 		if (this.listeners.indexOf(lis) > -1) return;
 		this.listeners.push(lis);
 	}
-	removeUserInputListener(lis: FilScrollerEventsListener) {
+	removeEventsListener(lis: FilScrollerEventsListener) {
 		this.listeners.splice(this.listeners.indexOf(lis), 1);
 	}
 
@@ -110,7 +110,7 @@ export class ScrollerEvents {
 		this.blocked = false;
 	}
 
-	addEventListeners(_target?:HTMLElement){
+	addInternalEventListeners(_target?:HTMLElement){
 
 		const target = _target || window;
 

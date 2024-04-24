@@ -60,7 +60,7 @@ export class Scroller {
 
 		// Init Events
 		this.events = new ScrollerEvents(this);
-		if(!this.config.useNative) this.events.addEventListeners(this.config.container);
+		if(!this.config.useNative) this.events.addInternalEventListeners(this.config.container);
 
 		this.refresh();
 	}
