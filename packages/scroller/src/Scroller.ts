@@ -116,6 +116,7 @@ export class Scroller {
 
 		for(const section of this.sections){
 			section.onBeforeRestore();
+			this.events.onBeforeRestore();
 		}
 
 		const containerRect = this.config.container.getBoundingClientRect();
@@ -145,6 +146,7 @@ export class Scroller {
 		setTimeout(() => {
 			for (const section of this.sections) {
 				section.onAfterRestore();
+				this.events.onAfterRestore();
 			}
 		}, 15);
 

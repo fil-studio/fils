@@ -10,10 +10,12 @@ const touchWheel = {
 const SWIPE_TIME = 300;
 const SWIPE_THRESHOLD = 10;
 
-export interface FilScrollerUserEventsListener {
+export interface FilScrollerEventsListener {
 	onUserInputStart?()
 	onUserInputInProgress?()
 	onUserInputStop?()
+	onAfterRestore?()
+	onBeforeRestore?()
 }
 
 export class ScrollerEvents {
@@ -21,7 +23,7 @@ export class ScrollerEvents {
 	private blocked: boolean = false;
 
 	protected userInput:boolean = false;
-	protected listeners: FilScrollerUserEventsListener[] = [];
+	protected listeners: FilScrollerEventsListener[] = [];
 
 
 	userSwipe: 'up' | 'down' | 'left' | 'right' | 'none' | null = null;
@@ -54,11 +56,11 @@ export class ScrollerEvents {
 	}
 
 	// Listeners
-	addUserInputListener(lis: FilScrollerUserEventsListener) {
+	addUserInputListener(lis: FilScrollerEventsListener) {
 		if (this.listeners.indexOf(lis) > -1) return;
 		this.listeners.push(lis);
 	}
-	removeUserInputListener(lis: FilScrollerUserEventsListener) {
+	removeUserInputListener(lis: FilScrollerEventsListener) {
 		this.listeners.splice(this.listeners.indexOf(lis), 1);
 	}
 
