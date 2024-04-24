@@ -85,6 +85,20 @@ export class ScrollerEvents {
 			}
 		}
 	}
+	onBeforeRestore(){
+		for (const lis of this.listeners) {
+			if (lis && typeof lis.onBeforeRestore === 'function') {
+				lis.onBeforeRestore();
+			}
+		}
+	}
+	onAfterRestore(){
+		for (const lis of this.listeners) {
+			if (lis && typeof lis.onAfterRestore === 'function') {
+				lis.onAfterRestore();
+			}
+		}
+	}
 
 	// Block - Unblock
 	block() {
