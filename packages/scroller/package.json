@@ -1,6 +1,6 @@
 {
 	"name": "@fils/scroller",
-	"version": "0.9.25",
+	"version": "0.9.26",
 	"description": "Smooth scroller by sections Package written in TypeScript",
 	"main": "lib/main.js",
 	"repository": "git@github.com:fil-studio/fils.git",
