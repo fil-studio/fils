@@ -95,14 +95,21 @@ export class Section {
 
     // VERTICAL SCROLL THRESHOLDS
     if (this.config.isVertical()) {
+
+      // Cuidado si es toca aixo que fa petar el de nadiu.
+      // El de nadiu ha d'anar amb el window, lo que hi havia amb el container height no funcionava, en realitat no se com funcionava enlloc.
+      // Amb el window els scrollers han de fer tota la finestra, crec que requereix bastanta mes feina fer que es puguin tenir scrollers independents amb mides diferents.
       this.threshold = [
-        this.rect.top - this.containerRect.height - this.containerRect.top,
-        this.rect.top + this.rect.height - this.containerRect.top,
+        this.rect.top - window.innerHeight,
+        this.rect.top + this.rect.height,
       ];
 
       if (this.config.useNative) {
+
         this.threshold[0] += this.scroll;
         this.threshold[1] += this.scroll;
+
+
       }
     } else {
       this.threshold = [
