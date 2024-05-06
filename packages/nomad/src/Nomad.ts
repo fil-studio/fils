@@ -32,7 +32,6 @@ export class Nomad {
 	isPopstate:boolean;
 	inProgress:boolean;
 
-	routes:Array<NomadRoute>;
 	route: NomadRoute;
 
 	wrapper:HTMLElement;
@@ -72,7 +71,6 @@ export class Nomad {
 		this.isPopstate = false;
 		this.inProgress = false;
 
-		this.routes = [];
 		this.route = null;
 
 		this.wrapper = document.querySelector('[nomad-wrapper]');
@@ -96,17 +94,6 @@ export class Nomad {
 
 		const location = this.utils.getLocation(href);
 
-		if(!this.replace){
-
-			const exists = this.routes.find(x => x.id === location.pathname);
-
-			if(exists){
-				this.route = exists;
-				this.route.order.push(this.currentOrder);
-				return;
-			}
-		}
-
 		// Thats just the page content, not the whole html
 		const pageDom = dom.querySelector('[nomad-template]') as HTMLElement;
 		const id = location.pathname;
@@ -125,18 +112,11 @@ export class Nomad {
 		}
 
 		this.route = newRoute;
-		this.routes.push(this.route);
 
 	}
 
 	// Enters href, returns HTML
 	async fetch(href) {
-
-		// Check if dom already exists
-		const route = this.routes.find(x => {
-			x.location === href
-		});
-		if (route) return route.dom;
 
 		const response = await fetch(href, {
 			mode: 'same-origin',
