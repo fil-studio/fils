@@ -40,18 +40,18 @@ export abstract class ContentSection implements ScrollerSectionListener {
      */
     onInit() {}
 
-    /**
-     * Resume, triggers any time this section is re-inititated (if it's already created it will trigger "resume" but not onInit)
-     */
-    resume(){
+    // /**
+    //  * Resume, triggers any time this section is re-inititated (if it's already created it will trigger "resume" but not onInit)
+    //  */
+    // resume(){
 
-    }
-    /**
-     * Stop, triggers any time this section is stopped, when the user leaves the page with this section but it's not destroying its dom
-     */
-    stop(){
+    // }
+    // /**
+    //  * Stop, triggers any time this section is stopped, when the user leaves the page with this section but it's not destroying its dom
+    //  */
+    // stop(){
 
-    }
+    // }
 
     /**
      * Dispose, triggers when the

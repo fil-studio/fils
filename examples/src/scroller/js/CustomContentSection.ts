@@ -8,13 +8,13 @@ import { ContentSection, Scroller } from "@fils/scroller";
 
 export class CustomContentSection extends ContentSection {
     h2:HTMLElement;
-    constructor(_dom:HTMLElement, scroller?:Scroller) {
+    constructor(_dom:HTMLElement, scroller:Scroller) {
         super(_dom, scroller);
     }
 
     onInit(): void {
         console.log('INIT');
-        
+
         this.dom.style.opacity = '0';
         this.dom.style.transition = 'opacity 0s ease-out';
         this.h2 = this.dom.querySelector('h2') as HTMLElement;

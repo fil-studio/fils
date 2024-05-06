@@ -15,6 +15,42 @@ export function remove(el:HTMLElement):void {
 	el.remove();
 }
 
+export function requestVideoFullscreen(el: HTMLElement) {
+  if (el.requestFullscreen) return el.requestFullscreen()
+  try {
+    //@ts-ignore
+    el.webkitEnterFullScreen()
+  } catch (e) {
+    console.log(e)
+  }
+}
+export function createVideoFullsreen(src: string, onExit:Function = () => {}) {
+  const video = el(
+		'video',
+		'fil-fullscreen-video',
+		document.body,
+	) as HTMLVideoElement
+	video.src = src;
+	video.autoplay = true
+	requestVideoFullscreen(video)
+
+	// Listen to video fullscreen change
+	video.addEventListener('fullscreenchange', (event) => {
+		if (!document.fullscreenElement) {
+			document.body.removeChild(video)
+			onExit()
+		}
+	})
+
+	video.addEventListener('webkitendfullscreen', (event) => {
+		if (!document.fullscreenElement) {
+			document.body.removeChild(video)
+			onExit()
+		}
+	})
+}
+
+
 export function openFullScreen(_el = document.documentElement) {
 	const el3 = _el as any;
 	if (el3.requestFullscreen) {

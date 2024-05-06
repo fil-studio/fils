@@ -1,225 +1,273 @@
-import { MathUtils } from "@fils/math";
+import { MathUtils } from '@fils/math'
 
-
-// -------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------ PETRA IS USING ITS OWN VERSION
-// -------------------------------------------------------------------------------------------------
 export interface CursorParameters {
-	decimals?: number
-	ease?: number
-	normalized?: boolean
-	states?: boolean
-	hovers?: boolean // For hovers to work, states need to be set to true
+  decimals?: number
+  ease?: number
+  normalized?: boolean
+  states?: boolean
+  hovers?: boolean // For hovers to work, states need to be set to true
 }
 
 interface Position {
-	x: number,
-	y: number
+  x: number
+  y: number
 }
 
 export interface FilCursorState {
-	id: string,
-	trigger: HTMLElement
+  id: string
+  trigger: HTMLElement
 }
 
 interface States {
-	current: FilCursorState,
-	previous: FilCursorState
+  current: FilCursorState
+  previous: FilCursorState
 }
 
 export interface FilCursorListener {
-	onStateChange?(toState:FilCursorState, fromState:FilCursorState)
-	onHoverChange?(element:HTMLElement)
+  onStateChange?(toState: FilCursorState, fromState: FilCursorState)
+  onHoverChange?(element: HTMLElement)
+  onStillStart?()
+  onStillEnd?()
 }
 
 export class FilCursor {
-	listeners: FilCursorListener[] = []
+  listeners: FilCursorListener[] = []
 
-	// Params
-	decimals: number
-	ease: number
-	normalized: boolean
-	states: boolean
-	hovers: boolean
+  enabled: boolean = true
 
-	// Positions
-	position: Position;
-	positionNormalized: Position;
-	target: Position;
+  still: boolean
+  stillTimer: ReturnType<typeof setTimeout>
 
-	// State
-	state: States
-	hover: HTMLElement
+  // Params
+  decimals: number
+  ease: number
+  normalized: boolean
+  states: boolean
+  hovers: boolean
 
-	constructor(params?: CursorParameters ){
+  // Positions
+  position: Position
+  positionNormalized: Position
+  target: Position
 
-		this.decimals = 3;
-		this.ease = 0.3;
-		this.normalized = false;
-		this.states = false;
-		this.hovers = false
+  // State
+  state: States
+  hover: HTMLElement
 
-		// Override with provided parameters
-		if (params) {
-			Object.assign(this, params);
-		}
+  constructor(params?: CursorParameters) {
+    this.decimals = 3
+    this.ease = 0.3
+    this.normalized = false
+    this.states = false
+    this.hovers = false
 
-		if(this.hovers) {
-			console.warn('Fil Cursor - States check set to true due to hovers check set to true')
-			this.states = true;
-		}
+    this.still = false
 
-		this.position = {
-			x: 0,
-			y: 0
-		}
-		this.positionNormalized = {
-			x: 0,
-			y: 0
-		}
-		this.target = {
-			x: 0,
-			y: 0
-		}
+    // Override with provided parameters
+    if (params) {
+      Object.assign(this, params)
+    }
 
-		this.state = {
-			current: null,
-			previous: null
-		}
+    if (this.hovers) {
+      console.warn(
+        'Fil Cursor - States check set to true due to hovers check set to true',
+      )
+      this.states = true
+    }
 
-		this.addEventListeners()
+    this.position = {
+      x: 0,
+      y: 0,
+    }
 
-	}
+    this.positionNormalized = {
+      x: 0,
+      y: 0,
+    }
+    this.target = {
+      x: 0,
+      y: 0,
+    }
 
-	// Listeners
-	addCursorListener(lis: FilCursorListener) {
-		if (this.listeners.indexOf(lis) > -1) return;
-		this.listeners.push(lis);
-	}
-	removeCursorListener(lis: FilCursorListener) {
-		this.listeners.splice(this.listeners.indexOf(lis), 1);
-	}
+    this.state = {
+      current: null,
+      previous: null,
+    }
 
-	addEventListeners(){
+    this.addEventListeners()
+  }
 
-		window.addEventListener('mousemove', (e:MouseEvent) => {
-			this.target.x = e.clientX;
-			this.target.y = e.clientY;
-		})
+  // Listeners
+  addCursorListener(lis: FilCursorListener) {
+    if (this.listeners.indexOf(lis) > -1) return
+    this.listeners.push(lis)
+  }
+  removeCursorListener(lis: FilCursorListener) {
+    this.listeners.splice(this.listeners.indexOf(lis), 1)
+  }
 
-	}
+  stillStart() {
+    for (const lis of this.listeners) {
+      if (lis && lis.onStillStart) lis.onStillStart()
+    }
+  }
+  stillEnd() {
+    if (!this.still) return
+    for (const lis of this.listeners) {
+      if (lis && lis.onStillEnd) lis.onStillEnd()
+    }
+  }
 
-	onStateChange(){
-		for(const lis of this.listeners){
-			if(lis && lis.onStateChange) lis.onStateChange(this.state.current, this.state.previous)
-		}
-	}
-	onHoverChange(){
-		for(const lis of this.listeners){
-			if(lis && lis.onHoverChange) lis.onHoverChange(this.hover)
-		}
-	}
 
-	toDecimals(num:number):number {
-		return parseFloat(num.toFixed(this.decimals))
-	}
+  addEventListeners() {
+    window.addEventListener(
+      'mousemove',
+      (e: MouseEvent) => {
+        if (this.stillTimer) clearTimeout(this.stillTimer)
 
-	stateChange(state: FilCursorState = null){
+        if(!this.enabled) return;
 
-		if(state === this.state.current) return;
+        this.stillEnd()
+        this.stillTimer = setTimeout(() => {
+          this.still = true
+          this.stillStart()
+        }, 100)
+        this.still = false
 
-		if(state === null ) {
-			this.state.previous = this.state.current;
-			this.state.current = state;
-			this.onStateChange();
-			return
-		}
+        this.target.x = e.clientX
+        this.target.y = e.clientY
+      },
+      { passive: true },
+    )
+  }
 
-		if(this.state.current === null) {
-			this.state.previous = this.state.current;
-			this.state.current = state;
-			this.onStateChange();
-			return
-		}
+  onStateChange() {
+    for (const lis of this.listeners) {
+      if (lis && lis.onStateChange)
+        lis.onStateChange(this.state.current, this.state.previous)
+    }
+  }
+  onHoverChange() {
+    for (const lis of this.listeners) {
+      if (lis && lis.onHoverChange) lis.onHoverChange(this.hover)
+    }
+  }
 
-		if(state.id === this.state.current.id && state.trigger === this.state.current.trigger) return;
+  toDecimals(num: number): number {
+    return parseFloat(num.toFixed(this.decimals))
+  }
 
-		this.state.previous = this.state.current;
-		this.state.current = state;
+  stateChange(state: FilCursorState = null) {
+    if (state === this.state.current) return
 
-		this.onStateChange();
-	}
+    if (state === null) {
+      this.state.previous = this.state.current
+      this.state.current = state
+      this.onStateChange()
+      return
+    }
 
-	hoverChange(element: HTMLElement){
-		if(element === this.hover) return;
-		this.hover = element;
-		this.onHoverChange();
-	}
+    if (this.state.current === null) {
+      this.state.previous = this.state.current
+      this.state.current = state
+      this.onStateChange()
+      return
+    }
 
-	updatePosition(){
-		this.position.x = MathUtils.lerp(this.position.x, this.target.x, this.ease)
-		this.position.y = MathUtils.lerp(this.position.y, this.target.y, this.ease)
+    if (
+      state.id === this.state.current.id &&
+      state.trigger === this.state.current.trigger
+    )
+      return
 
-		this.position.x = this.toDecimals(this.position.x)
-		this.position.y = this.toDecimals(this.position.y)
-	}
+    this.state.previous = this.state.current
+    this.state.current = state
 
-	updateNormalized(){
-		if(!this.normalized) return
+    this.onStateChange()
+  }
 
-		this.positionNormalized.x = MathUtils.map(this.position.x, 0, window.innerWidth, 0 , 1)
-		this.positionNormalized.y = MathUtils.map(this.position.y, 0, window.innerHeight, 0 , 1)
+  hoverChange(element: HTMLElement) {
+    if (element === this.hover) return
+    this.hover = element
+    this.onHoverChange()
+  }
 
-		this.positionNormalized.x = this.toDecimals(this.positionNormalized.x)
-		this.positionNormalized.y = this.toDecimals(this.positionNormalized.y)
+  updatePosition() {
+    this.position.x = MathUtils.lerp(this.position.x, this.target.x, this.ease)
+    this.position.y = MathUtils.lerp(this.position.y, this.target.y, this.ease)
 
-	}
+    this.position.x = this.toDecimals(this.position.x)
+    this.position.y = this.toDecimals(this.position.y)
+  }
 
-	updateStates(){
-		if(!this.states) return;
+  updateNormalized() {
+    if (!this.normalized) return
 
-		let hover = false;
-		let state = false;
+    this.positionNormalized.x = MathUtils.map(
+      this.position.x,
+      0,
+      window.innerWidth,
+      0,
+      1,
+    )
+    this.positionNormalized.y = MathUtils.map(
+      this.position.y,
+      0,
+      window.innerHeight,
+      0,
+      1,
+    )
 
-		if (document.elementsFromPoint) {
-			let elements = document.elementsFromPoint(this.position.x, this.position.y);
+    this.positionNormalized.x = this.toDecimals(this.positionNormalized.x)
+    this.positionNormalized.y = this.toDecimals(this.positionNormalized.y)
+  }
 
-			for(const el of elements){
-				if(el.hasAttribute('fil-cursor') && !state){
-					state = true;
-					const newState = {
-						id: el.getAttribute('fil-cursor'),
-						trigger: el
-					}
-					this.stateChange(newState as FilCursorState)
-				}
-				if(this.hovers && !hover){
-					if(el.hasAttribute('fil-cursor-hover')){
-						hover = true;
-						this.hoverChange(el as HTMLElement);
-					}
-				}
-			}
+  updateStates() {
+    if (!this.states) return
 
-			if(!state){
-				this.stateChange(null)
-			}
+    let hover = false
+    let state = false
 
-			if(!hover){
-				this.hoverChange(null)
-			}
-		}
+    if (document.elementsFromPoint) {
+      let elements = document.elementsFromPoint(
+        this.position.x,
+        this.position.y,
+      )
 
-	}
+      for (const el of elements) {
+        if (el.hasAttribute('fil-cursor') && !state) {
+          state = true
+          const newState = {
+            id: el.getAttribute('fil-cursor'),
+            trigger: el,
+          }
+          this.stateChange(newState as FilCursorState)
+        }
+        if (this.hovers && !hover) {
+          if (el.hasAttribute('fil-cursor-hover')) {
+            hover = true
+            this.hoverChange(el as HTMLElement)
+          }
+        }
+      }
 
-	update(){
+      if (!state) {
+        this.stateChange(null)
+      }
 
-		this.updatePosition();
+      if (!hover) {
+        this.hoverChange(null)
+      }
+    }
+  }
 
-		this.updateNormalized();
+  update() {
+    if(!this.enabled) return;
 
-		this.updateStates();
+    this.updatePosition()
 
-	}
+    this.updateNormalized()
 
+    this.updateStates()
+  }
 }
