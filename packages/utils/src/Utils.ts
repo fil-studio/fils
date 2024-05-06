@@ -38,6 +38,8 @@ export function createVideoFullsreen(src: string, onExit:Function = () => {}) {
 	video.addEventListener('fullscreenchange', (event) => {
 		if (!document.fullscreenElement) {
 			document.body.removeChild(video)
+			video.pause();
+			video.src = "";
 			onExit()
 		}
 	})
