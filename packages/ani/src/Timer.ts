@@ -1,7 +1,7 @@
 export class Timer {
     speed:number = 1;
     running:boolean = false;
-    paused:boolean = false;
+    paused:boolean = true;
 
     protected delta:number = 0;
     protected time:number = 0;
@@ -29,6 +29,7 @@ export class Timer {
         }
         this.lastTime = performance.now();
         this.running = true;
+        this.paused = false;
     }
 
     stop() {
