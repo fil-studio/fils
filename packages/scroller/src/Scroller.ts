@@ -155,7 +155,6 @@ export class Scroller {
 	dispose(){
 		this.loaded = false;
 		this.sections = [];
-		this.create();
 	}
 
 	stop(){
