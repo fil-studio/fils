@@ -173,6 +173,7 @@ export class Scroller {
 		this.position.target = this.position.current;
 
 		this.dispose();
+		this.create()
 
 	}
 
