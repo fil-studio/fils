@@ -34,20 +34,23 @@ export function createVideoFullsreen(src: string, onExit:Function = () => {}) {
 	video.autoplay = true
 	requestVideoFullscreen(video)
 
+	function exit() {
+		video.remove();
+		video.pause();
+		video.src = "";
+		onExit()
+	}
+
 	// Listen to video fullscreen change
 	video.addEventListener('fullscreenchange', (event) => {
 		if (!document.fullscreenElement) {
-			document.body.removeChild(video)
-			video.pause();
-			video.src = "";
-			onExit()
+			exit();
 		}
 	})
 
 	video.addEventListener('webkitendfullscreen', (event) => {
 		if (!document.fullscreenElement) {
-			document.body.removeChild(video)
-			onExit()
+			exit();
 		}
 	})
 }
