@@ -155,6 +155,7 @@ export class Scroller {
 	dispose(){
 		this.loaded = false;
 		this.sections = [];
+		this.virtualScrollBar.remove();
 	}
 
 	stop(){
