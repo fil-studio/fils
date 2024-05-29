@@ -1,4 +1,4 @@
-import { Camera, Scene, WebGLMultipleRenderTargets, WebGLRenderTarget, WebGLRenderer, WebGLRendererParameters } from "three";
+import { Camera, Scene, WebGLRenderTarget, WebGLRenderer, WebGLRendererParameters } from "three";
 import { GLDOMLayer, GLRenderParameters } from "../gl/GLDOMLayer";
 import { ThreeLayer } from "./ThreeLayer";
 
@@ -8,7 +8,7 @@ import { ThreeLayer } from "./ThreeLayer";
 export interface ThreeRenderParameters extends GLRenderParameters {
     scene:Scene;
     camera:Camera;
-    target?:WebGLRenderTarget|WebGLMultipleRenderTargets;  
+    target?:WebGLRenderTarget;  
 }
 
 /**

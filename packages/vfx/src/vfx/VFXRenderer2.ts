@@ -1,4 +1,4 @@
-import { OrthographicCamera, PerspectiveCamera, Scene, WebGLMultipleRenderTargets, WebGLRenderer } from "three";
+import { OrthographicCamera, PerspectiveCamera, Scene, WebGLRenderTarget, WebGLRenderer } from "three";
 import { DoFPass, DoFSettings, FXAAPass, FinalPass, FinalPassSettings, GlowPass, GlowSettings } from "../main";
 import { VFXPipeline } from "./VFXPipeline";
 
@@ -27,7 +27,7 @@ const DEFAULTS:VFXRenderer2Parameters = {
 
 export class VFXRenderer2 {
     rnd:WebGLRenderer;
-    glowRT:WebGLMultipleRenderTargets;
+    glowRT:WebGLRenderTarget;
     vfxPipeline:VFXPipeline;
 
     protected scale:number = 1;
@@ -59,11 +59,11 @@ export class VFXRenderer2 {
         if(params.enableGlow) {
             const gScale = params.glow && params.glow.blurSettings && params.glow.blurSettings.scale ? params.glow.blurSettings.scale : .25;
             this.glowScale = gScale;
-            this.glowRT = new WebGLMultipleRenderTargets(
+            this.glowRT = new WebGLRenderTarget(
                 width * gScale,
                 height * gScale,
-                2,
                 {
+                    count: 2,
                     samples: 1
                 }
             );

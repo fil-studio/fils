@@ -10,7 +10,7 @@
     "packages/*"
   ],
   "dependencies": {
-    "three": "^0.155.0"
+    "three": "^0.164.1"
   },
   "scripts": {
     "clean": "node scripts/clean.js",

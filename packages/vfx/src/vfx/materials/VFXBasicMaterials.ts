@@ -1,4 +1,4 @@
-import { Color, ColorRepresentation, Material, MaterialParameters, MeshBasicMaterial, MeshBasicMaterialParameters, MeshPhongMaterial, MeshPhongMaterialParameters, MeshPhysicalMaterial, MeshPhysicalMaterialParameters, MeshStandardMaterial, MeshStandardMaterialParameters, Shader, ShaderLib, Texture, UniformsUtils, Vector2, WebGLRenderer } from "three";
+import { Color, ColorRepresentation, Material, MaterialParameters, MeshBasicMaterial, MeshBasicMaterialParameters, MeshPhongMaterial, MeshPhongMaterialParameters, MeshPhysicalMaterial, MeshPhysicalMaterialParameters, MeshStandardMaterial, MeshStandardMaterialParameters, ShaderLib, Texture, Vector2, WebGLProgramParametersWithUniforms, WebGLRenderer } from "three";
 
 export interface VFXEmissiveMaterialParameters extends MaterialParameters {
     emissive?:ColorRepresentation;
@@ -10,34 +10,35 @@ import emissive_frag from '../../glsl/vfx/material/emissive.frag';
 import emissive_vert from '../../glsl/vfx/material/emissive.vert';
 import { injectVFXBasics } from "./MaterialUtils";
 
+export interface Shader {
+    vertexShader:string,
+    fragmentShader:string
+}
+
 /**
  * Inject Materials to Library
  */
 const vfxBasic:Shader = {
     vertexShader: ShaderLib["basic"].vertexShader.split('').join(''),
     fragmentShader: ShaderLib["basic"].fragmentShader.split('').join(''),
-    uniforms: null
 }
 injectVFXBasics(vfxBasic, false);
 
 const vfxPhong:Shader = {
     vertexShader: ShaderLib["phong"].vertexShader.split('').join(''),
     fragmentShader: ShaderLib["phong"].fragmentShader.split('').join(''),
-    uniforms: null
 }
 injectVFXBasics(vfxPhong, true);
 
 const vfxStandard:Shader = {
     vertexShader: ShaderLib["standard"].vertexShader.split('').join(''),
     fragmentShader: ShaderLib["standard"].fragmentShader.split('').join(''),
-    uniforms: null
 }
 injectVFXBasics(vfxStandard, true);
 
 const vfxPhysical:Shader = {
     vertexShader: ShaderLib["physical"].vertexShader.split('').join(''),
     fragmentShader: ShaderLib["physical"].fragmentShader.split('').join(''),
-    uniforms: null
 }
 injectVFXBasics(vfxPhysical, true);
 
@@ -51,7 +52,7 @@ export class VFXEmissiveMaterial extends Material {
     emissiveMap:Texture = null;
     isVFXEmissiveMaterial = true;
     type:string;
-    protected shaderRef:Shader;
+    protected shaderRef:WebGLProgramParametersWithUniforms;
 
     constructor(params?:VFXEmissiveMaterialParameters) {
         super();
@@ -71,7 +72,7 @@ export class VFXEmissiveMaterial extends Material {
         return this;
     }
 
-    injectShaderCode(shader: Shader, renderer:WebGLRenderer): Shader {
+    injectShaderCode(shader: WebGLProgramParametersWithUniforms, renderer:WebGLRenderer): Shader {
         shader.vertexShader = emissive_vert;
         shader.fragmentShader = emissive_frag;
         shader.uniforms = {
@@ -83,7 +84,7 @@ export class VFXEmissiveMaterial extends Material {
         return shader;
     }
 
-    onBeforeCompile(shader: Shader, renderer: WebGLRenderer): void {
+    onBeforeCompile(shader: WebGLProgramParametersWithUniforms, renderer: WebGLRenderer): void {
         this.injectShaderCode(shader, renderer);
         this.shaderRef = shader;
     }
@@ -98,14 +99,14 @@ export class VFXEmissiveMaterial extends Material {
 
 export class VFXBasicMaterial extends MeshBasicMaterial {
     isVFXBasicMaterial = true;
-    shaderRef:Shader;
+    shaderRef:WebGLProgramParametersWithUniforms;
 
     constructor(params?:MeshBasicMaterialParameters) {
         super(params);
         // this.type = "VFXBasicMaterial"; --> This doesn't work
     }
 
-    onBeforeCompile (shader:Shader, renderer:WebGLRenderer):void {
+    onBeforeCompile (shader:WebGLProgramParametersWithUniforms, renderer:WebGLRenderer):void {
         shader.vertexShader = vfxBasic.vertexShader;
         shader.fragmentShader = vfxBasic.fragmentShader;
         this.shaderRef = shader;
@@ -114,13 +115,13 @@ export class VFXBasicMaterial extends MeshBasicMaterial {
 
 export class VFXPhongMaterial extends MeshPhongMaterial {
     isVFXPhongMaterial = true;
-    shaderRef:Shader;
+    shaderRef:WebGLProgramParametersWithUniforms;
 
     constructor(params?:MeshPhongMaterialParameters) {
         super(params);
     }
 
-    onBeforeCompile (shader:Shader, renderer:WebGLRenderer):void {
+    onBeforeCompile (shader:WebGLProgramParametersWithUniforms, renderer:WebGLRenderer):void {
         shader.vertexShader = vfxPhong.vertexShader;
         shader.fragmentShader = vfxPhong.fragmentShader;
         this.shaderRef = shader;
@@ -129,13 +130,13 @@ export class VFXPhongMaterial extends MeshPhongMaterial {
 
 export class VFXStandardMaterial extends MeshStandardMaterial {
     isVFXStandardMaterial = true;
-    shaderRef:Shader;
+    shaderRef:WebGLProgramParametersWithUniforms;
 
     constructor(params?:MeshStandardMaterialParameters) {
         super(params);
     }
 
-    onBeforeCompile (shader:Shader, renderer:WebGLRenderer):void {
+    onBeforeCompile (shader:WebGLProgramParametersWithUniforms, renderer:WebGLRenderer):void {
         shader.vertexShader = vfxStandard.vertexShader;
         shader.fragmentShader = vfxStandard.fragmentShader;
         this.shaderRef = shader;
@@ -144,13 +145,13 @@ export class VFXStandardMaterial extends MeshStandardMaterial {
 
 export class VFXPhysicalMaterial extends MeshPhysicalMaterial {
     isVFXPhysicalMaterial = true;
-    shaderRef:Shader;
+    shaderRef:WebGLProgramParametersWithUniforms;
 
     constructor(params?:MeshPhysicalMaterialParameters) {
         super(params);
     }
 
-    onBeforeCompile (shader:Shader, renderer:WebGLRenderer):void {
+    onBeforeCompile (shader:WebGLProgramParametersWithUniforms, renderer:WebGLRenderer):void {
         shader.vertexShader = vfxPhysical.vertexShader;
         shader.fragmentShader = vfxPhysical.fragmentShader;
         this.shaderRef = shader;

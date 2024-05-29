@@ -12,6 +12,8 @@ It might remain undocumented for a long while but feel free to try it out!
 | [@fils/ani](https://www.npmjs.com/package/@fils/ani) | Easing functions and animation utilities. |
 | [@fils/gen](https://www.npmjs.com/package/@fils/gen) | Vertex Buffer Generators for procedural geometries. |
 | [@fils/gfx](https://www.npmjs.com/package/@fils/gfx) | GFX package for WebGL & ThreeJS Utilities. |
+| [@fils/vfx](https://www.npmjs.com/package/@fils/vfx) | VFX package for WebGL & ThreeJS. |
+| [@fils/gl-dom](https://www.npmjs.com/package/@fils/gl-dom) | WebGL DOM Utils with ThreeJS support. |
 | [@fils/io](https://www.npmjs.com/package/@fils/io) | Utilities for loading data, assets & creating assets bundles. |
 | [@fils/math](https://www.npmjs.com/package/@fils/math) | Math utilities and better Random. |
 | [@fils/color](https://www.npmjs.com/package/@fils/color) | Color utilities. |
@@ -19,6 +21,19 @@ It might remain undocumented for a long while but feel free to try it out!
 | [@fils/phy](https://www.npmjs.com/package/@fils/phy) | Verlet Physics package. |
 | [@fils/scroller](https://www.npmjs.com/package/@fils/scroller) | Smooth Scroller by sections. |
 | [@fils/utils](https://www.npmjs.com/package/@fils/utils) | Utils and FileUtils for the web. |
+| [@fils/ui](https://www.npmjs.com/package/@fils/ui) | GUI library. |
+| [@fils/ui-icons](https://www.npmjs.com/package/@fils/ui-icons) | Icons for GUI. |
+
+## Version Notes
+
+Packages have been migrated and upgraded to ThreeJS `v0.164.1` in the following versions:
+
+| Package | Version |
+|:--|:--|
+| [@fils/gfx](https://www.npmjs.com/package/@fils/gfx) | 0.1.4 |
+| [@fils/vfx](https://www.npmjs.com/package/@fils/vfx) | 0.2.3 |
+| [@fils/gl-dom](https://www.npmjs.com/package/@fils/gl-dom) | 0.0.8 |
+
 
 ## License
 © Copyright 2022, fil studio

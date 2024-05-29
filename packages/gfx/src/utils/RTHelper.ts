@@ -1,4 +1,4 @@
-import { Material, Mesh, OrthographicCamera, PlaneGeometry, RawShaderMaterial, RGBAFormat, Scene, ShaderMaterial, Texture, Vector2, WebGLMultipleRenderTargets, WebGLRenderer, WebGLRenderTarget } from 'three';
+import { Material, Mesh, OrthographicCamera, PlaneGeometry, RGBAFormat, Scene, ShaderMaterial, Texture, Vector2, WebGLRenderer, WebGLRenderTarget } from 'three';
 import frag from '../glsl/fbo.frag';
 import vert from '../glsl/fbo.vert';
 
@@ -28,24 +28,18 @@ export class RTHelper {
 		this.scene.add(this.quad);
 	}
 
-	render(target:WebGLRenderTarget, renderer:WebGLRenderer, x:number=0, y:number=0, width:number=0, height:number=0, opacity:number=1) {
+	render(target:WebGLRenderTarget, renderer:WebGLRenderer, x:number=0, y:number=0, width:number=0, height:number=0, opacity:number=1, index:number=0) {
 		// render FBO to screen
 		if (width == 0 || height == 0) {
 			width = target.width;
 			height = target.height;
 		}
 
-		this.drawTexture(target.texture, renderer, x, y, width, height, opacity);
-	}
-
-	renderMRT(target:WebGLMultipleRenderTargets, renderer:WebGLRenderer, index:number, x:number=0, y:number=0, width:number=0, height:number=0) {
-		// render FBO to screen
-		if (width == 0 || height == 0) {
-			width = target['width'];
-			height = target['height'];
+		if(index > target.textures.length-1) {
+			return console.warn('RenderTarget index out of bounds!');
 		}
 
-		this.drawTexture(target.texture[index], renderer, x, y, width, height);
+		this.drawTexture(target.textures[index], renderer, x, y, width, height, opacity);
 	}
 
 	drawTexture(texture:Texture, renderer:WebGLRenderer, x:number=0, y:number=0, width:number=0, height:number=0, opacity:number=1) {
@@ -69,7 +63,7 @@ export class RTHelper {
 		renderer.render(this.scene, this.camera);
 	}
 
-	renderToTarget(target:WebGLRenderTarget|WebGLMultipleRenderTargets, renderer:WebGLRenderer, material:Material) {
+	renderToTarget(target:WebGLRenderTarget, renderer:WebGLRenderer, material:Material) {
 		let s = new Vector2(target['width'], target['height']);
 		
 		this.camera.left = -s.width / 2;

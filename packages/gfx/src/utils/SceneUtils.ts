@@ -1,9 +1,9 @@
-import { EquirectangularReflectionMapping, LinearFilter, PMREMGenerator, Texture, TextureEncoding, ToneMapping, WebGLRenderer } from "three";
+import { ColorSpace, EquirectangularReflectionMapping, LinearFilter, PMREMGenerator, Texture, ToneMapping, WebGLRenderer } from "three";
 
 export type ToneMappingOptions = {
 	toneMapping?:ToneMapping,
 	exposure?:number,
-	outputEncoding?:TextureEncoding
+	outputColorSpace?:ColorSpace
 }
 
 /**
@@ -25,7 +25,7 @@ export function getHDRI(env:Texture, renderer:WebGLRenderer, opts:ToneMappingOpt
 
 	if(opts.toneMapping != undefined) renderer.toneMapping = opts.toneMapping;
 	if(opts.exposure != undefined) renderer.toneMappingExposure = opts.exposure;
-	if(opts.outputEncoding != undefined) renderer.outputEncoding = opts.outputEncoding;
+	if(opts.outputColorSpace != undefined) renderer.outputColorSpace = opts.outputColorSpace;
 
 	return envMap;
 }

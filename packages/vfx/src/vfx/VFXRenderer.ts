@@ -1,4 +1,4 @@
-import { DepthFormat, DepthTexture, FloatType, OrthographicCamera, PerspectiveCamera, RawShaderMaterial, RGBAFormat, Scene, ShaderMaterial, UniformsGroup, UnsignedByteType, WebGLMultipleRenderTargets, WebGLRenderer, WebGLRenderTarget } from "three";
+import { DepthFormat, DepthTexture, FloatType, OrthographicCamera, PerspectiveCamera, RGBAFormat, Scene, ShaderMaterial, UniformsGroup, UnsignedByteType, WebGLRenderer, WebGLRenderTarget } from "three";
 import { BlurPass, BlurSettings } from "../main";
 
 
@@ -20,9 +20,9 @@ import { BlurPass, BlurSettings } from "../main";
  * as explained below.
 */
 
-import vert from '../glsl/vfx/comp.vert';
-import frag from '../glsl/vfx/comp.frag';
 import { RTUtils } from "@fils/gfx";
+import frag from '../glsl/vfx/comp.frag';
+import vert from '../glsl/vfx/comp.vert';
 
 const COMP = new ShaderMaterial({
     vertexShader: vert,
@@ -57,7 +57,7 @@ const GLOW_DEFAULTS:BlurSettings = {
 
 export class VFXRenderer {
     rnd:WebGLRenderer;
-    sceneRT:WebGLMultipleRenderTargets;
+    sceneRT:WebGLRenderTarget;
     glow:BlurPass;
     showBackground:boolean = true;
     showGlow:boolean = true;
@@ -73,7 +73,10 @@ export class VFXRenderer {
         const w = width * pr;
         const h = height * pr;
 
-        this.sceneRT = new WebGLMultipleRenderTargets(w, h, 2, {
+        console.warn('VFXRenderer is deprecated and no longer maintained! use VFXRenderer2 instead');
+
+        this.sceneRT = new WebGLRenderTarget(w, h, {
+            count: 2,
             format: RGBAFormat,
             type: UnsignedByteType,
             samples: settings && settings.samples ? settings.samples : 4
