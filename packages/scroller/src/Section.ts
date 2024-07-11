@@ -45,7 +45,6 @@ export class Section {
   };
 
   visible: boolean = false;
-  closeToVisible: boolean = false;
   disabled: boolean = false;
 
   protected listeners: ScrollerSectionListener[] = [];
@@ -181,21 +180,6 @@ export class Section {
   }
 
   // ------------------------- UPDATE
-  updateCloseToVisible() {
-    if (this.visible) return;
-
-    const margin = this.containerRect.width;
-    const close1 = this.scroll + margin > this.threshold[0];
-    const close2 = this.scroll + margin < this.threshold[1];
-    const inRange = close1 && close2;
-    if (inRange != this.closeToVisible) {
-      this.dom.classList.toggle(
-        "fil-scroller__section-close-to-visible",
-        inRange
-      );
-      this.closeToVisible = inRange;
-    }
-  }
   updateProgress(){
 
     this.progress.visible = MathUtils.smoothstep(
@@ -357,8 +341,6 @@ export class Section {
   }
 
   update() {
-    // Toggle closeToVisible if it's close
-    this.updateCloseToVisible();
     this.updateVisible();
   }
 }

@@ -75,7 +75,7 @@ export class Nomad {
 
 		this.wrapper = document.querySelector('[nomad-wrapper]');
 		if(!this.wrapper) {
-			console.warn("Fil Nomad can't work without warpper element.");
+			console.warn("Fil Nomad can't work without wrapper element.");
 			return;
 		}
 
@@ -204,6 +204,7 @@ export class Nomad {
 					this.addContent(path, html).then(() => {
 
 						this.transitionOut(this.previousRoute)
+
 						this.transitionIn().then(() => {
 							this.inProgress = false;
 							this.previousRoute.page.dom.setAttribute('nomad-page-state', 'disabled');

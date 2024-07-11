@@ -114,6 +114,7 @@ export class ScrollerEvents {
 
 		const target = _target || window;
 
+
 		const s = this.scroller;
 
 		let userInputTimer;
