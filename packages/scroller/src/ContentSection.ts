@@ -20,19 +20,21 @@ export abstract class ContentSection implements ScrollerSectionListener {
             }
         }
 
-        this.init();
+        // --- We can't call functions here. We need to make sure we call init
+        // --- on child classes ----
+        // this.init();
 
         // Trigger animation in if
-        if(this.section.visible) this.onAnimationIn();
+        // if(this.section.visible) this.onAnimationIn();
     }
 
     /**
      * Init function. Must be called by your child classes
      */
-    private init() {
+    protected init() {
         this.onInit();
         this.addEventListeners();
-
+        if(this.section.visible) this.onAnimationIn();
     }
 
     /**
@@ -80,7 +82,6 @@ export abstract class ContentSection implements ScrollerSectionListener {
 
     /**
      * Called on section before restore
-     * @param resizing whereas scroller is resizing or not
      */
     onBeforeRestore() {
 
@@ -88,17 +89,15 @@ export abstract class ContentSection implements ScrollerSectionListener {
 
     /**
      * Called on section after restore
-     * @param resizing whereas scroller is resizing or not
      */
     onAfterRestore() {
 
     }
 
     /**
-     * You must call this function in your own raf
-     * @param time animation time in seconds
+     * Called on section update when visible
      */
-    update(time:number=0) {
-
+    onUpdate() {
+        
     }
 }

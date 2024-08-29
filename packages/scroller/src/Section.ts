@@ -7,6 +7,7 @@ export interface ScrollerSectionListener {
   onAnimationOut?();
   onBeforeRestore?();
   onAfterRestore?();
+  onUpdate?();
 }
 
 export interface ScrollerSectionProgress {
@@ -342,5 +343,9 @@ export class Section {
 
   update() {
     this.updateVisible();
+    if(!this.visible) return;
+    for(let i=0,len=this.listeners.length;i<len;i++) {
+      this.listeners[i]?.onUpdate();
+    }
   }
 }
