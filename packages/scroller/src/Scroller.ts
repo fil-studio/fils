@@ -1,7 +1,7 @@
 import { MathUtils } from "@fils/math";
 import { Section } from "./Section";
 import { VirtualScrollBar } from "./VirtualScrollBar";
-import { DEFAULT_EASING, FilScrollerParameters, ScrollerConfig } from "./partials/ScrollerConfig";
+import { FilScrollerParameters, ScrollerConfig } from "./partials/ScrollerConfig";
 import { ScrollerEvents } from "./partials/ScrollerEvents";
 import { ScrollerStyles } from "./partials/ScrollerStyles";
 
@@ -60,7 +60,7 @@ export class Scroller {
 
 		// Init Events
 		this.events = new ScrollerEvents(this);
-		if(!this.config.useNative) this.events.addEventListeners(this.config.container);
+		if(!this.config.useNative) this.events.addInternalEventListeners(this.config.container);
 
 		this.refresh();
 	}
@@ -116,6 +116,7 @@ export class Scroller {
 
 		for(const section of this.sections){
 			section.onBeforeRestore();
+			this.events.onBeforeRestore();
 		}
 
 		const containerRect = this.config.container.getBoundingClientRect();
@@ -145,6 +146,7 @@ export class Scroller {
 		setTimeout(() => {
 			for (const section of this.sections) {
 				section.onAfterRestore();
+				this.events.onAfterRestore();
 			}
 		}, 15);
 
@@ -153,7 +155,6 @@ export class Scroller {
 	dispose(){
 		this.loaded = false;
 		this.sections = [];
-		this.create();
 	}
 
 	stop(){
@@ -172,6 +173,7 @@ export class Scroller {
 		this.position.target = this.position.current;
 
 		this.dispose();
+		this.create()
 
 	}
 
@@ -219,24 +221,29 @@ export class Scroller {
 		const containerSize = vertical ? this.containerSize.h : this.containerSize.w;
 		this.edges[0] = 0;
 		this.edges[1] = MathUtils.clamp(this.distance - containerSize, 0, this.distance);
+		if(this.config.useNative){
+			this.edges[1] = this.distance - window.innerHeight;
+		}
 
 		this.config.loopPossible = this.distance >= containerSize * 2;
 
 	}
-	updateTarget() {
-		if (this.config.useNative) {
-			this.position.target = this.config.container.scrollTop;
-		}
+	updateNativeTarget() {
+		if (!this.config.useNative) return
+		this.position.target = window.scrollY;
+
 	}
 	updateScrollValues() {
 
 		const previous = this.position.current;
+
 
 		this.position.current = MathUtils.lerp(
 			this.position.current,
 			this.position.target,
 			this.config.easing
 		);
+
 
 		if(!this.config.useNative && this.virtualScrollBar) {
 			this.virtualScrollBar.progress = MathUtils.clamp(this.position.current / this.edges[1], 0, 1);
@@ -328,7 +335,7 @@ export class Scroller {
 
 		this.styles.update();
 
-		this.updateTarget();
+		this.updateNativeTarget();
 		this.updateScrollValues();
 		this.updateLoop();
 		this.updateSections();

@@ -51,6 +51,10 @@ export class VirtualScrollBar {
         document.body.appendChild(this.dom);
     }
 
+    remove(){
+        this.dom.remove();
+    }
+
     set contentHeight(height:number) {
         const dh = height - window.innerHeight;
 

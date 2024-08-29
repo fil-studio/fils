@@ -7,6 +7,7 @@ export interface ScrollerSectionListener {
   onAnimationOut?();
   onBeforeRestore?();
   onAfterRestore?();
+  onUpdate?();
 }
 
 export interface ScrollerSectionProgress {
@@ -45,7 +46,6 @@ export class Section {
   };
 
   visible: boolean = false;
-  closeToVisible: boolean = false;
   disabled: boolean = false;
 
   protected listeners: ScrollerSectionListener[] = [];
@@ -95,14 +95,21 @@ export class Section {
 
     // VERTICAL SCROLL THRESHOLDS
     if (this.config.isVertical()) {
+
+      // Cuidado si es toca aixo que fa petar el de nadiu.
+      // El de nadiu ha d'anar amb el window, lo que hi havia amb el container height no funcionava, en realitat no se com funcionava enlloc.
+      // Amb el window els scrollers han de fer tota la finestra, crec que requereix bastanta mes feina fer que es puguin tenir scrollers independents amb mides diferents.
       this.threshold = [
-        this.rect.top - this.containerRect.height - this.containerRect.top,
-        this.rect.top + this.rect.height - this.containerRect.top,
+        this.rect.top - window.innerHeight,
+        this.rect.top + this.rect.height,
       ];
 
       if (this.config.useNative) {
+
         this.threshold[0] += this.scroll;
         this.threshold[1] += this.scroll;
+
+
       }
     } else {
       this.threshold = [
@@ -174,21 +181,6 @@ export class Section {
   }
 
   // ------------------------- UPDATE
-  updateCloseToVisible() {
-    if (this.visible) return;
-
-    const margin = this.containerRect.width;
-    const close1 = this.scroll + margin > this.threshold[0];
-    const close2 = this.scroll + margin < this.threshold[1];
-    const inRange = close1 && close2;
-    if (inRange != this.closeToVisible) {
-      this.dom.classList.toggle(
-        "fil-scroller__section-close-to-visible",
-        inRange
-      );
-      this.closeToVisible = inRange;
-    }
-  }
   updateProgress(){
 
     this.progress.visible = MathUtils.smoothstep(
@@ -238,10 +230,9 @@ export class Section {
     }
   }
   updateVisible() {
-    // If its visible then
 
-    const offset = 1; // This offset rounds up the value so it doesn't get stuck by a slow easing
-    if (this.scroll - offset > this.threshold[0] && this.scroll + offset < this.threshold[1]) {
+    // If its visible then
+    if (this.scroll >= this.threshold[0] && this.scroll <= this.threshold[1]) {
 
       if (!this.visible) {
         this.show();
@@ -351,8 +342,10 @@ export class Section {
   }
 
   update() {
-    // Toggle closeToVisible if it's close
-    this.updateCloseToVisible();
     this.updateVisible();
+    if(!this.visible) return;
+    for(let i=0,len=this.listeners.length;i<len;i++) {
+      this.listeners[i]?.onUpdate();
+    }
   }
 }
