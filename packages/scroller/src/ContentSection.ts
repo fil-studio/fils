@@ -29,9 +29,9 @@ export abstract class ContentSection implements ScrollerSectionListener {
     }
 
     /**
-     * Init function. Must be called by your child classes
+     * Init function. Must be called
      */
-    protected init() {
+    init() {
         this.onInit();
         this.addEventListeners();
         if(this.section.visible) this.onAnimationIn();
@@ -98,6 +98,6 @@ export abstract class ContentSection implements ScrollerSectionListener {
      * Called on section update when visible
      */
     onUpdate() {
-        
+
     }
 }
