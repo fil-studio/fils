@@ -1,6 +1,6 @@
 {
 	"name": "@fils/gl-dom",
-	"version": "0.0.8",
+	"version": "0.0.9",
 	"description": "GL Dom interface",
 	"module": "lib/main.js",
 	"main": "lib/main.js",
@@ -21,7 +21,7 @@
 		"typescript": "^4.8.4"
 	},
 	"peerDependencies": {
-		"three": "^0.164.1"
+		"three": "*"
 	},
 	"dependencies": {}
 }
