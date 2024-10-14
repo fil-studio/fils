@@ -1,4 +1,4 @@
-import { BufferAttribute, BufferGeometry, InstancedBufferAttribute, InstancedMesh, Material, Object3D, Vector3 } from "three";
+import { BufferAttribute, BufferGeometry, InstancedBufferAttribute, InstancedMesh, Material, Object3D, TypedArray, Vector3 } from "three";
 import { F } from "./types";
 
 export enum ArrayTypes {
@@ -39,7 +39,7 @@ export function vba2BufferGeometry(vba:VBA):BufferGeometry {
 
     for(const vb of vba.attributes) {
         const attr = new BufferAttribute(
-            vb2TypedArray(vb),
+            vb2TypedArray(vb) as TypedArray,
             vb.size
         );
 
@@ -51,7 +51,7 @@ export function vba2BufferGeometry(vba:VBA):BufferGeometry {
     if(vba.instancedAttributes) {
         for(const vb of vba.attributes) {
             const attr = new InstancedBufferAttribute(
-                vb2TypedArray(vb),
+                vb2TypedArray(vb) as TypedArray,
                 vb.size
             );
 
@@ -66,7 +66,7 @@ export function vba2InstancedMesh(vba:VBA, mat:Material):InstancedMesh {
     if(!vba.instances || vba.instances.length === 0) {
         console.warn('There is no instance information!');
         return null;
-        
+
     }
     const geo = vba2BufferGeometry(vba);
     const count = vba.instances.length;
