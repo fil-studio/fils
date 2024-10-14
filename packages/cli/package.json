@@ -1,0 +1,22 @@
+{
+    "name": "@fils/cli",
+    "version": "0.0.3",
+    "module": "src/index.mjs",
+    "type": "module",
+    "repository": "git@github.com:fil-studio/fils.git",
+    "homepage": "https://github.com/fil-studio/fils/tree/main/packages/cli",
+    "author": "fil studio <hello@fil.studio>",
+    "bin": {
+      "fil": "./scripts/index.mjs"
+    },
+    "license": "Apache-2.0",
+    "scripts": {
+      "test": "node ./scripts/index.mjs"
+    },
+    "dependencies": {
+      "ansi-colors": "^4.1.3",
+      "cli-progress": "^3.12.0",
+      "dotenv": "^16.4.5",
+      "toml": "^3.0.0"
+    }
+  }
