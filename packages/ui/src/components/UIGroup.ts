@@ -198,9 +198,10 @@ export class UIGroup extends UIElement {
 	*
 	* @param {text} text - Info text. String or Array of strings.
 	*/
-	addInfo(text: string | string[]){
+	addInfo(text: string | string[]):Info {
 		const info = new Info(this.depth + 1, {text});
 		if(info && info.el) this.content.appendChild(info.el);
+		return info;
 	}
 
 	/**

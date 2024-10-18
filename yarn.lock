@@ -2,6 +2,16 @@
 # yarn lockfile v1
 
 
+"@fils/gfx@0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@fils/gfx/-/gfx-0.1.4.tgz#a39372e3129133162194a3d452a613092c403c39"
+  integrity sha512-ItglwpI+Z7hTxWDWoVd5+IzmJoMTMbjM8pPn2x9IwMo8IhiCbpXDbrx9yCq2ZGDIfQBPU2X+Dw/JBVrGCUJbiA==
+
+"@fils/io@^0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@fils/io/-/io-0.0.8.tgz#1300b7e692fcfec7f93e402bd2b7137b8ca779ea"
+  integrity sha512-vqUVmbaYG2x55v2DF/08+g3wC/LVu6ViSEJfbY7/KX8NklZ020yMsjIPKJ14xGWnwS/pa3n7+gVVU/2IrRDscg==
+
 "@fils/math@^0.0.8":
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/@fils/math/-/math-0.0.8.tgz#6827b0f59ae61b54b6390a72d0e18e07b1471ce6"
