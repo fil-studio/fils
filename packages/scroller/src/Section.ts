@@ -232,7 +232,7 @@ export class Section {
   updateVisible() {
 
     // If its visible then
-    if (this.scroll >= this.threshold[0] && this.scroll <= this.threshold[1]) {
+    if (this.scroll > this.threshold[0] && this.scroll < this.threshold[1]) {
 
       if (!this.visible) {
         this.show();
