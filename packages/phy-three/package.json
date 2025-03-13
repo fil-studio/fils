@@ -1,0 +1,26 @@
+{
+  "name": "@fils/phy-three",
+  "version": "0.0.1",
+  "description": "ThreeJS utils for @phy/three",
+  "main": "lib/main.js",
+  "repository": "git@github.com:fil-studio/fils.git",
+  "homepage": "https://github.com/fil-studio/fils/tree/main/packages/phy-three",
+  "author": "Fil Studio <hello@fil.studio>",
+  "license": "Apache-2.0",
+  "scripts": {
+    "prepare": "yarn build",
+    "build": "tsc"
+  },
+  "files": [
+    "lib"
+  ],
+  "devDependencies": {
+    "typescript": "^4.5.4"
+  },
+  "dependencies": {
+    "@fils/phy": "^0.0.4"
+  },
+  "peerDependencies": {
+		"three": "*"
+	}
+}

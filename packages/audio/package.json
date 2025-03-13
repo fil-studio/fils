@@ -1,0 +1,29 @@
+{
+  "name": "@fils/audio",
+  "version": "0.0.1",
+  "description": "Audio Manager & audio utils",
+  "main": "lib/main.js",
+  "repository": "git@github.com:fil-studio/fils.git",
+  "author": "Fil Studio <hello@fil.studio>",
+  "license": "Apache-2.0",
+  "private": false,
+  "scripts": {
+    "prepare": "yarn build",
+    "build": "tsc"
+  },
+  "files": [
+    "lib"
+  ],
+  "devDependencies": {
+    "typescript": "^5.8.2"
+  },
+  "keywords": [
+    "typescript",
+    "audio",
+    "sound",
+    "webaudio"
+  ],
+  "dependencies": {
+    "gsap": "^3.12.7"
+  }
+}
