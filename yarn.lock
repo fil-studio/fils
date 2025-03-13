@@ -2,6 +2,16 @@
 # yarn lockfile v1
 
 
+"@fils/gfx@0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@fils/gfx/-/gfx-0.1.4.tgz#a39372e3129133162194a3d452a613092c403c39"
+  integrity sha512-ItglwpI+Z7hTxWDWoVd5+IzmJoMTMbjM8pPn2x9IwMo8IhiCbpXDbrx9yCq2ZGDIfQBPU2X+Dw/JBVrGCUJbiA==
+
+"@fils/io@^0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@fils/io/-/io-0.0.8.tgz#1300b7e692fcfec7f93e402bd2b7137b8ca779ea"
+  integrity sha512-vqUVmbaYG2x55v2DF/08+g3wC/LVu6ViSEJfbY7/KX8NklZ020yMsjIPKJ14xGWnwS/pa3n7+gVVU/2IrRDscg==
+
 "@fils/math@^0.0.8":
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/@fils/math/-/math-0.0.8.tgz#6827b0f59ae61b54b6390a72d0e18e07b1471ce6"
@@ -215,6 +225,11 @@ glob-parent@~5.1.2:
   dependencies:
     is-glob "^4.0.1"
 
+gsap@^3.12.7:
+  version "3.12.7"
+  resolved "https://registry.yarnpkg.com/gsap/-/gsap-3.12.7.tgz#1b690def901ac9b21d4909f39c2b52418154463d"
+  integrity sha512-V4GsyVamhmKefvcAKaoy0h6si0xX7ogwBoBSs2CTJwt7luW0oZzC0LhdkyuKV8PJAXr7Yaj8pMjCKD4GJ+eEMg==
+
 immutable@^4.0.0:
   version "4.3.4"
   resolved "https://registry.yarnpkg.com/immutable/-/immutable-4.3.4.tgz#2e07b33837b4bb7662f288c244d1ced1ef65a78f"
@@ -410,6 +425,11 @@ typescript@^4.2.3, typescript@^4.5.2, typescript@^4.5.4, typescript@^4.8.4, type
   version "4.9.5"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.5.tgz#095979f9bcc0d09da324d58d03ce8f8374cbe65a"
   integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
+
+typescript@^5.8.2:
+  version "5.8.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.8.2.tgz#8170b3702f74b79db2e5a96207c15e65807999e4"
+  integrity sha512-aJn6wq13/afZp/jT9QZmwEjDqqvSGp1VT5GVg+f/t6/oVyrgXM6BY1h9BRh/O5p3PlUPAe+WuiEZOmb/49RqoQ==
 
 which-module@^2.0.0:
   version "2.0.1"

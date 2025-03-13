@@ -1,7 +1,11 @@
 
 export interface ItemParametersInterface {
-	view?: string,
+	view?: string;
 	title?: string;
+}
+
+export interface StringItemParameters extends ItemParametersInterface {
+	emptyState?:string;
 }
 
 export interface NumberItemParameters extends ItemParametersInterface {
@@ -24,4 +28,4 @@ export interface SelectItemParameters extends ItemParametersInterface {
 	options: Object;
 }
 
-export type ItemParameters = ItemParametersInterface | NumberItemParameters | RangeItemParameters | UploadItemParameters | SelectItemParameters;
+export type ItemParameters = ItemParametersInterface | StringItemParameters | NumberItemParameters | RangeItemParameters | UploadItemParameters | SelectItemParameters;
