@@ -17,12 +17,14 @@ if(cmd.toLowerCase() === 'init') {
 
     if(!path) {
         console.log(c.red('[fil Error]'), c.gray('Init command needs a path'));
-        console.log('Usage:', c.gray('fil init <path>'));
+        console.log('Usage:', c.gray('fil init <path> [template]'));
         process.exit(0);
     }
 
-    console.log(c.cyan('[fil]'), c.gray('Initializing Boilerplate...'));
-    init(resolve(process.cwd(), path)).then(() => {
+    const template = process.argv[4] ? process.argv[4] : 'web';
+    console.log(c.cyan('[fil]'), c.gray(`Initializing Boilerplate ${template}...`));
+
+    init(resolve(process.cwd(), path), template === 'web' ? 'main' : template).then(() => {
         console.log(c.green('Done'));
     }).catch(e => {
         console.log(c.red('Error'));
