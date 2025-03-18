@@ -1,14 +1,5 @@
-// const client = require('./client')
-// const imageUrlBuilder = require('@sanity/image-url')
-
 const { configDotenv } = require("dotenv");
 configDotenv();
-
-/* const builder = imageUrlBuilder(client)
-
-function urlFor(source) {
-  return builder.image(source)
-} */
 
 const baseURL = `https://cdn.sanity.io/images/${process.env.SANITY_PROJECT_ID}/production`;
 

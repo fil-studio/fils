@@ -1,8 +1,8 @@
 {
   "name": "@fils/sanity",
-  "version": "0.0.1",
+  "version": "0.0.8",
   "description": "Fil's Front-End utils for Sanity Back-Ends",
-  "main": "src/main.js",
+  "main": "src/main.cjs",
   "repository": "git@github.com:fil-studio/fils.git",
   "author": "Fil Studio <hello@fil.studio>",
   "license": "Apache-2.0",
