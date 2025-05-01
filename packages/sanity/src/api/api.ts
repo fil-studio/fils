@@ -1,37 +1,37 @@
-const groq = require("groq");
-const { client } = require("./client.js");
+import groq from "groq";
+import { sanityClient } from "./client";
 
-async function getCustomQuery(query) {
+export async function getCustomQuery(query:string) {
 	const filter = groq`${query}`;
-	const docs = await client.fetch(filter).catch((err) => console.error(err));
+	const docs = await sanityClient.fetch(filter).catch((err) => console.error(err));
 	if(!docs) return [];
 	return docs;
 }
 
-async function getPage(id) {
+export async function getPage(id:string) {
 	const filter = groq`*[_type == "${id}" && !(_id match "*drafts*") ][0]`;
-	const docs = await client.fetch(filter).catch((err) => console.error(err));
+	const docs = await sanityClient.fetch(filter).catch((err) => console.error(err));
 	if (!docs) return [];
 	return docs;
 }
 
-async function getPosts(id, order = "asc") {
+export async function getPosts(id:string, order:string = "asc") {
     const o = (order === 'asc' || order === 'desc') ? `_createdAt ${order}` : order;
 	const filter = groq`*[_type == "${id}" && !(_id match "*drafts*") ] | order(${o})`;
-	const docs = await client.fetch(filter).catch((err) => console.error(err));
+	const docs = await sanityClient.fetch(filter).catch((err) => console.error(err));
 	if (!docs) return [];
 	return docs;
 }
 
-async function deletePost(type, id) {
+export async function deletePost(type:string, id:string) {
 	// const filter = groq`*[_type == "${type}" && _id == "${id}"][0]`;
-	const docs = await client.delete({
+	const docs = await sanityClient.delete({
 		query: `*[_type == "${type}" && _id == "${id}"][0]`
 	}).catch((err) => console.error(err));
 	return docs;
 }
 
-function slugify(str, grp) {
+export function slugify(str:string, grp:string[]) {
 	str = str.replace(/^\s+|\s+$/g, ''); // trim leading/trailing white space
 	str = str.toLowerCase(); // convert string to lowercase
 	str = str.replace(/[^a-z0-9 -]/g, '') // remove any non-alphanumeric characters
@@ -47,12 +47,4 @@ function slugify(str, grp) {
 		grp.push(str);
 	}
 	return str;
-}
-
-module.exports = {
-	getCustomQuery,
-	getPage,
-	getPosts,
-	deletePost,
-	slugify
 }
