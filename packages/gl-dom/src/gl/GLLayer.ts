@@ -18,7 +18,7 @@ export abstract class GLLayer {
      * @param height Height in pixels of layer
      */
     setSize(width: number, height: number): void {
-        
+
     }
 
     /**
@@ -32,6 +32,6 @@ export abstract class GLLayer {
      * Dispose API
      */
     dispose() {
-
+      this.gl.unregisterListener(this);
     }
 }

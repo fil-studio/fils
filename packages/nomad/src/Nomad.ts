@@ -187,7 +187,6 @@ export class Nomad {
 				// -- Replace
 				// -- Transition In
 				if(this.replace){
-
 					this.transitionOut().then(() => {
 						this.addContent(path, html).then(() => {
 							this.transitionIn().then(() => {

@@ -247,6 +247,7 @@ export class Section {
     // if it's not between thresholds and its visible, hide it
     if (this.visible) {
       this.hide();
+      this.updateProgress(); // fix progress wrong values after hiding
       this.updateTransform();
     }
   }

@@ -1,6 +1,6 @@
 {
 	"name": "@fils/scroller",
-	"version": "1.0.1",
+	"version": "1.0.3",
 	"description": "Smooth scroller by sections Package written in TypeScript",
 	"main": "lib/main.js",
 	"repository": "git@github.com:fil-studio/fils.git",
@@ -9,14 +9,14 @@
 	"license": "Apache-2.0",
 	"private": false,
 	"scripts": {
-		"prepare": "yarn build",
+	  "prepare": "yarn build",
 		"build": "tsc"
 	},
 	"files": [
 		"lib"
 	],
 	"devDependencies": {
-		"typescript": "^4.5.2"
+		"typescript": "^5.8.3"
 	},
 	"dependencies": {
 		"@fils/math": "0.1.0"
