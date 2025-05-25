@@ -150,6 +150,16 @@ export class Nomad {
 			this.transitionIn();
 		})
 	}
+
+	/**
+	 * Triggers a page change
+	 * @param path an absolute url path such as /about
+	 */
+	goToPath(path:string) {
+		const href = `${location.origin}${path}`;
+    this.goTo(href);
+	}
+
 	/**
 	 * @description Trigger location change
 	 * @param {string} href - The new location URL.

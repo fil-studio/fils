@@ -31,9 +31,31 @@ export async function deletePost(type:string, id:string) {
 	return docs;
 }
 
+const specialChars: Record<string, string> = {};
+specialChars['à'] = 'a';
+specialChars['á'] = 'a';
+specialChars['è'] = 'e';
+specialChars['é'] = 'e';
+specialChars['ì'] = 'i';
+specialChars['í'] = 'i';
+specialChars['ò'] = 'o';
+specialChars['ó'] = 'o';
+specialChars['ù'] = 'u';
+specialChars['ú'] = 'u';
+specialChars['ç'] = 'c';
+specialChars['ñ'] = 'n';
+specialChars['ö'] = 'oe';
+specialChars['ü'] = 'ue';
+specialChars['ä'] = 'ae';
+specialChars['ß'] = 'ss';
+
 export function slugify(str:string, grp:string[]) {
 	str = str.replace(/^\s+|\s+$/g, ''); // trim leading/trailing white space
 	str = str.toLowerCase(); // convert string to lowercase
+	//replace special char for equivalents
+	for(const key in specialChars) {
+    str = str.replaceAll(key, specialChars[key]);
+	}
 	str = str.replace(/[^a-z0-9 -]/g, '') // remove any non-alphanumeric characters
 			 .replace(/\s+/g, '-') // replace spaces with hyphens
 			 .replace(/-+/g, '-'); // remove consecutive hyphens
