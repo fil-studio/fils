@@ -155,9 +155,9 @@ export class Nomad {
 	 * Triggers a page change
 	 * @param path an absolute url path such as /about
 	 */
-	goToPath(path:string) {
-		const href = `${location.origin}${path}`;
-    this.goTo(href);
+	goToPath(path:string, search:string='') {
+		const href = `${location.origin}${path}${search}`;
+		this.goTo(href, location.search != search);
 	}
 
 	/**
@@ -168,11 +168,11 @@ export class Nomad {
 	 *   If true the user will be responsible for everything. Nomad will only handle page title and template.
 	 *   By default, this is set to false.
 	 */
-	goTo(href){
+	goTo(href, force:boolean=false){
 
 		let path = href;
 
-		if(this.utils.getPathname(path) === this.route.location.pathname){
+		if(!force && this.utils.getPathname(path) === this.route.location.pathname){
 			this.events.onAccessCurrentRoute();
 			console.warn('Nomad - Trying to access current location', this.route.location.pathname);
 			return;

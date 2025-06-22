@@ -229,7 +229,7 @@ export class Scroller {
 
 	}
 	updateNativeTarget() {
-		if (!this.config.useNative) return
+		if (!this.config.useNative) return	
 		this.position.target = window.scrollY;
 
 	}
@@ -398,7 +398,8 @@ export class Scroller {
 		}
 
 		if(this.config.useNative){
-			this.config.container.scrollTop = k;
+			// this.config.container.scrollTop = k;
+			window.scrollTo(0,k);
 		}
 	}
 
@@ -418,9 +419,8 @@ export class Scroller {
 		const section = this.sections[k];
 
 		if(this.config.useNative) {
-			const top = Math.min(section.rect.top, this.distance-this.containerSize.h);
-			this.config.container.scrollTop = top;
-
+			const top = section.rect.top + window.scrollY;
+			window.scrollTo(0,top);
 		} else {
 
 			if(this.isVertical()) {

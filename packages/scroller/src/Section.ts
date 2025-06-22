@@ -198,7 +198,10 @@ export class Section {
       this.threshold[0],
       this.threshold[0] + height,
       this.scroll
-    )
+    );
+
+    // console.log(this.scroll);
+
     this.progress.out = MathUtils.smoothstep(
       this.threshold[1] - height,
       this.threshold[1],
@@ -235,6 +238,8 @@ export class Section {
     }
   }
   updateVisible() {
+
+    if(this.config.useNative) this.updateProgress(); // fix progress fopr scrollTos
 
     // If its visible then
     if (this.scroll >= this.threshold[0] && this.scroll <= this.threshold[1]) {
