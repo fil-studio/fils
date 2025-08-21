@@ -22,13 +22,19 @@ export class DefaultPage extends Page {
 
     update() {}
 
-    dispose(unmountLater:boolean=false): void {
+    dispose(): void {
         this.rs.disconnect();
-        if(!unmountLater) this.unmount();
         // console.log('dispose');
     }
 
     unmount() {
         this.dom.remove();
+    }
+
+    transitionOut(resolve: any): Promise<void> {
+        return new Promise<void>(res => {
+            this.unmount();
+            res();
+        }).then(resolve);
     }
 }

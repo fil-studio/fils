@@ -5,6 +5,8 @@ You will need top have a `.env` file properly set up in your project.
 
 This is part of a series of packages that we use in our studio for personal and commercial web & [THREEjs](https://threejs.org) based work. It might remain undocumented for a long while but feel free to try it out!
 
+This package is discontinued. Back-End components & our publishing workflow will be moved into a private NPM package at GitHub.
+
 ### License
 © Copyright 2025, fil studio
 

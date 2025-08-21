@@ -12,3 +12,4 @@ const config = {
 };
 
 export const sanityClient = createClient(config);
+export const sanityConfig = config;
