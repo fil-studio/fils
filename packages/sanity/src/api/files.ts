@@ -48,13 +48,17 @@ export function initDownloadSession(id?:string) {
   if(id) session.id = id;
   session.total = 0;
   session.downloaded = 0;
+  console.log(`🔄 Initialized new download process for ${session.id}...`);
+  process.stdout.write('\r');
 }
 
 function onDownloaded() {
   session.downloaded++;
-  console.log(`${session.downloaded} items of ${session.total} downloaded`);
+  // console.log(`${session.downloaded} items of ${session.total} downloaded`);
+  const p = (session.downloaded / session.total) * 100;
+  process.stdout.write(`\r${session.downloaded} of ${session.total} downloaded...`);
   if(session.downloaded === session.total) {
-    console.log(`✅ All files for ${session.id} session downloaded`);
+    process.stdout.write(`\r✅ All files for ${session.id} session downloaded \n`);
   }
 }
 
@@ -86,13 +90,14 @@ export const downloadFile = (async (url, fileName) => {
     return `/assets/files/${fileName}`;
   }
   session.total++;
-  const res = await fetch(url);
-  // console.log(`Saving ${url} into ${fileName}...`);
-  const destination = path.resolve(dst, fileName);
-  const fileStream = createWriteStream(destination, { flags: 'wx' });
-  //@ts-ignore
-  finished(Readable.fromWeb(res.body).pipe(fileStream)).then(() => {
-    onDownloaded();
+  fetch(url).then( res => {
+    // console.log(`Saving ${url} into ${fileName}...`);
+    const destination = path.resolve(dst, fileName);
+    const fileStream = createWriteStream(destination, { flags: 'wx' });
+    //@ts-ignore
+    finished(Readable.fromWeb(res.body).pipe(fileStream)).then(() => {
+      onDownloaded();
+    });
   });
 
   return `/assets/files/${fileName}`;
