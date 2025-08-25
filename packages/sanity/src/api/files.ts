@@ -33,6 +33,30 @@ export function updateDistributionSettings(basePath:string, staticPath:string) {
   // mkdirSync(dst, {recursive: true});
 }
 
+const session = {
+  id: 'default',
+  downloaded: 0,
+  total: 0
+}
+
+/**
+ * Call in every data file to begin Background download session
+ * A download session allows parallel download of assets
+ * @param id id of the session (optional)
+ */
+export function initDownloadSession(id?:string) {
+  if(id) session.id = id;
+  session.total = 0;
+  session.downloaded = 0;
+}
+
+function onDownloaded() {
+  session.downloaded++;
+  if(session.downloaded === session.total) {
+    console.log(`✅ All files for ${session.id} session downloaded`);
+  }
+}
+
 /**
  * Internal use only:
  * Will create the destination path if not found
@@ -61,7 +85,9 @@ export const downloadFile = (async (url, fileName) => {
   const destination = path.resolve(dst, fileName);
   const fileStream = createWriteStream(destination, { flags: 'wx' });
   //@ts-ignore
-  await finished(Readable.fromWeb(res.body).pipe(fileStream));
+  finished(Readable.fromWeb(res.body).pipe(fileStream)).then(() => {
+    onDownloaded();
+  });
 
   return `/assets/files/${fileName}`;
 });
@@ -76,7 +102,7 @@ export const downloadFile = (async (url, fileName) => {
 export async function getImageFile(img, options, suffix="") {
   if(!img && !img.asset) return "";
   const fileName = suffix != "" ? `${img.asset._ref}-${suffix}.webp` : `${img.asset._ref}.webp`;
-  const url = await downloadFile(imageUrl(img, options), fileName);
+  const url = downloadFile(imageUrl(img, options), fileName);
   return url;
 }
 
