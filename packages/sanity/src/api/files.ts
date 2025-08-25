@@ -52,9 +52,14 @@ export function initDownloadSession(id?:string) {
 
 function onDownloaded() {
   session.downloaded++;
+  console.log(`${session.downloaded} items of ${session.total} downloaded`);
   if(session.downloaded === session.total) {
     console.log(`✅ All files for ${session.id} session downloaded`);
   }
+}
+
+export function getSessionProgress() {
+  return session.downloaded / session.total;
 }
 
 /**
@@ -80,8 +85,9 @@ export const downloadFile = (async (url, fileName) => {
     console.log('Asset already downloaded. Skipping...');
     return `/assets/files/${fileName}`;
   }
+  session.total++;
   const res = await fetch(url);
-  console.log(`Saving ${url} into ${fileName}...`);
+  // console.log(`Saving ${url} into ${fileName}...`);
   const destination = path.resolve(dst, fileName);
   const fileStream = createWriteStream(destination, { flags: 'wx' });
   //@ts-ignore
