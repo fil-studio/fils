@@ -104,6 +104,31 @@ export const downloadFile = (async (url, fileName) => {
 });
 
 /**
+ * Generic download from URL. Must be called by all utils
+ * @param url URL to file
+ * @param fileName file's name in your static folder
+ * @returns url string to site's path. i.e. /assets/files/image.webp
+ */
+export const downloadFileSync = (async (url, fileName) => {
+  checkPath();
+
+  if(existsSync(path.resolve(dst, fileName))) {
+    console.log('Asset already downloaded. Skipping...');
+    return `/assets/files/${fileName}`;
+  }
+  session.total++;
+  const res = await fetch(url);
+  
+  const destination = path.resolve(dst, fileName);
+  const fileStream = createWriteStream(destination, { flags: 'wx' });
+  //@ts-ignore
+  await finished(Readable.fromWeb(res.body).pipe(fileStream));
+  onDownloaded();
+
+  return `/assets/files/${fileName}`;
+});
+
+/**
  * Uses imageURL internally to fetch webp image
  * @param img Sanity's Image field (containing asset inside img.asset)
  * @param options imageUrl options (SanityImageParams)

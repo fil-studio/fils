@@ -1,6 +1,6 @@
 {
   "name": "@fils/sanity",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "Fil's Front-End utils for Sanity Back-Ends",
   "main": "lib/main.js",
   "repository": "git@github.com:fil-studio/fils.git",
