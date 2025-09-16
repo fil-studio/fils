@@ -87,7 +87,7 @@ export const downloadFile = (async (url, fileName) => {
 
   if(existsSync(path.resolve(dst, fileName))) {
     console.log('Asset already downloaded. Skipping...');
-    return `/assets/files/${fileName}`;
+    return `${settings.staticPath}/${fileName}`;
   }
   session.total++;
   fetch(url).then( res => {
@@ -100,7 +100,7 @@ export const downloadFile = (async (url, fileName) => {
     });
   });
 
-  return `/assets/files/${fileName}`;
+  return `${settings.staticPath}/${fileName}`;
 });
 
 /**
@@ -123,9 +123,11 @@ export const downloadFileSync = (async (url, fileName) => {
   const fileStream = createWriteStream(destination, { flags: 'wx' });
   //@ts-ignore
   await finished(Readable.fromWeb(res.body).pipe(fileStream));
-  onDownloaded();
+  setTimeout(() => {
+    onDownloaded();
+  }, 100);
 
-  return `/assets/files/${fileName}`;
+  return `${settings.staticPath}/${fileName}`;
 });
 
 /**
@@ -150,4 +152,28 @@ export async function getImageFile(img, options, suffix="") {
 export async function downloadAsset(asset) {
   const file = await sanityClient.getDocument(asset._ref);
   return downloadFile(file.url, `${file.assetId}.${file.extension}`);
+}
+
+/**
+ * Uses imageURL internally to fetch webp image
+ * @param img Sanity's Image field (containing asset inside img.asset)
+ * @param options imageUrl options (SanityImageParams)
+ * @param suffix suffix to add at the end of basePath (sueful when generating several image versions)
+ * @returns url string to site's path. i.e. /assets/files/image.webp
+ */
+export async function getImageFileSync(img, options, suffix="") {
+  if(!img && !img.asset) return "";
+  const fileName = suffix != "" ? `${img.asset._ref}-${suffix}.webp` : `${img.asset._ref}.webp`;
+  const url = await downloadFileSync(imageUrl(img, options), fileName);
+  return url;
+}
+
+/**
+ * Generic Sanity's Asset download
+ * @param asset Sanity's asset
+ * @returns url string to site's path. i.e. /assets/files/image.webp
+ */
+export async function downloadAssetSync(asset) {
+  const file = await sanityClient.getDocument(asset._ref);
+  return await downloadFileSync(file.url, `${file.assetId}.${file.extension}`);
 }

@@ -1,6 +1,6 @@
 {
   "name": "@fils/ani",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Animation Package written in TypeScript",
   "main": "lib/main.js",
   "repository": {
@@ -19,7 +19,7 @@
     "lib"
   ],
   "devDependencies": {
-    "typescript": "^4.5.2"
+    "typescript": "^5.8.3"
   },
   "keywords": [
     "typescript",

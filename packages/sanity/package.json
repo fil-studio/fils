@@ -1,6 +1,6 @@
 {
   "name": "@fils/sanity",
-  "version": "0.2.8",
+  "version": "0.3.2",
   "description": "Fil's Front-End utils for Sanity Back-Ends",
   "main": "lib/main.js",
   "repository": "git@github.com:fil-studio/fils.git",
@@ -15,12 +15,11 @@
     "lib"
   ],
   "peerDependencies": {
-    "@sanity/client": "^6.28.3",
+    "@sanity/client": "^7.11.1",
     "groq": "^3.79.0"
   },
   "devDependencies": {
     "dotenv": "^16.4.7",
-    "typescript": "^5.8.3",
-    "@sanity/client": "^6.28.3"
+    "typescript": "^5.8.3"
   }
 }
