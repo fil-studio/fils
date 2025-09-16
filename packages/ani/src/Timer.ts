@@ -42,6 +42,15 @@ export class Timer {
         this.delta = 0;
     }
 
+    set elapsedTime(value:number) {
+        if(!this.running) {
+            console.warn("Timer not running!");
+            return;
+        }
+        this.time = value;
+        this.lastTime = performance.now();
+    }
+
     pause() {
         if(!this.running) return;
         if(this.paused) return;

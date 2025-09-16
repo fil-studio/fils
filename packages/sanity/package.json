@@ -1,17 +1,25 @@
 {
   "name": "@fils/sanity",
-  "version": "0.0.1",
+  "version": "0.3.2",
   "description": "Fil's Front-End utils for Sanity Back-Ends",
-  "main": "src/main.js",
+  "main": "lib/main.js",
   "repository": "git@github.com:fil-studio/fils.git",
   "author": "Fil Studio <hello@fil.studio>",
   "license": "Apache-2.0",
   "private": false,
-  "dependencies": {
-    "@sanity/client": "^6.28.3",
+  "scripts": {
+    "prepare": "yarn build",
+    "build": "tsc"
+  },
+  "files": [
+    "lib"
+  ],
+  "peerDependencies": {
+    "@sanity/client": "^7.11.1",
     "groq": "^3.79.0"
   },
   "devDependencies": {
-    "dotenv": "^16.4.7"
+    "dotenv": "^16.4.7",
+    "typescript": "^5.8.3"
   }
 }

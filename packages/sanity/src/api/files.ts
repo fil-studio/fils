@@ -1,0 +1,179 @@
+import { Readable } from 'stream';
+import { finished } from 'stream/promises';
+import path from "path";
+import { createWriteStream, existsSync, mkdirSync } from 'fs';
+import { imageUrl } from './image';
+import { sanityClient } from './client';
+
+/**
+ * Allows downloading Sanity Assets to static
+ * site distribution
+ */
+
+const settings = {
+  distributionPath: 'public', //defaults to public
+  staticPath: '/assets/files' // default path for assets
+}
+
+let dst = `./${settings.distributionPath}${settings.staticPath}`;
+// mkdirSync(dst, {recursive: true});
+
+/**
+ * Updates Static Site Settings for Sanity's downloading
+ * Defaults are 'public' and '/assets/files/'
+ * Make sure to call this at the very beginning of your site generator's config!
+ * @param basePath distribution base path (i.e. public)
+ * @param staticPath site's path for downloaded files (i.e. /assets/files)
+ */
+export function updateDistributionSettings(basePath:string, staticPath:string) {
+  settings.distributionPath = basePath;
+  settings.staticPath= staticPath;
+
+  dst = `./${settings.distributionPath}${settings.staticPath}`;
+  // mkdirSync(dst, {recursive: true});
+}
+
+const session = {
+  id: 'default',
+  downloaded: 0,
+  total: 0
+}
+
+/**
+ * Call in every data file to begin Background download session
+ * A download session allows parallel download of assets
+ * @param id id of the session (optional)
+ */
+export function initDownloadSession(id?:string) {
+  if(id) session.id = id;
+  session.total = 0;
+  session.downloaded = 0;
+  console.log(`🔄 Initialized new download process for ${session.id}...`);
+  process.stdout.write('\r');
+}
+
+function onDownloaded() {
+  session.downloaded++;
+  // console.log(`${session.downloaded} items of ${session.total} downloaded`);
+  const p = (session.downloaded / session.total) * 100;
+  process.stdout.write(`\r${session.downloaded} of ${session.total} downloaded...`);
+  if(session.downloaded === session.total) {
+    process.stdout.write(`\r✅ All files for ${session.id} session downloaded \n`);
+  }
+}
+
+export function getSessionProgress() {
+  return session.downloaded / session.total;
+}
+
+/**
+ * Internal use only:
+ * Will create the destination path if not found
+ */
+function checkPath() {
+  if(!existsSync(dst)) {
+    mkdirSync(dst, {recursive: true});
+  }
+}
+
+/**
+ * Generic download from URL. Must be called by all utils
+ * @param url URL to file
+ * @param fileName file's name in your static folder
+ * @returns url string to site's path. i.e. /assets/files/image.webp
+ */
+export const downloadFile = (async (url, fileName) => {
+  checkPath();
+
+  if(existsSync(path.resolve(dst, fileName))) {
+    console.log('Asset already downloaded. Skipping...');
+    return `${settings.staticPath}/${fileName}`;
+  }
+  session.total++;
+  fetch(url).then( res => {
+    // console.log(`Saving ${url} into ${fileName}...`);
+    const destination = path.resolve(dst, fileName);
+    const fileStream = createWriteStream(destination, { flags: 'wx' });
+    //@ts-ignore
+    finished(Readable.fromWeb(res.body).pipe(fileStream)).then(() => {
+      onDownloaded();
+    });
+  });
+
+  return `${settings.staticPath}/${fileName}`;
+});
+
+/**
+ * Generic download from URL. Must be called by all utils
+ * @param url URL to file
+ * @param fileName file's name in your static folder
+ * @returns url string to site's path. i.e. /assets/files/image.webp
+ */
+export const downloadFileSync = (async (url, fileName) => {
+  checkPath();
+
+  if(existsSync(path.resolve(dst, fileName))) {
+    console.log('Asset already downloaded. Skipping...');
+    return `/assets/files/${fileName}`;
+  }
+  session.total++;
+  const res = await fetch(url);
+  
+  const destination = path.resolve(dst, fileName);
+  const fileStream = createWriteStream(destination, { flags: 'wx' });
+  //@ts-ignore
+  await finished(Readable.fromWeb(res.body).pipe(fileStream));
+  setTimeout(() => {
+    onDownloaded();
+  }, 100);
+
+  return `${settings.staticPath}/${fileName}`;
+});
+
+/**
+ * Uses imageURL internally to fetch webp image
+ * @param img Sanity's Image field (containing asset inside img.asset)
+ * @param options imageUrl options (SanityImageParams)
+ * @param suffix suffix to add at the end of basePath (sueful when generating several image versions)
+ * @returns url string to site's path. i.e. /assets/files/image.webp
+ */
+export async function getImageFile(img, options, suffix="") {
+  if(!img && !img.asset) return "";
+  const fileName = suffix != "" ? `${img.asset._ref}-${suffix}.webp` : `${img.asset._ref}.webp`;
+  const url = downloadFile(imageUrl(img, options), fileName);
+  return url;
+}
+
+/**
+ * Generic Sanity's Asset download
+ * @param asset Sanity's asset
+ * @returns url string to site's path. i.e. /assets/files/image.webp
+ */
+export async function downloadAsset(asset) {
+  const file = await sanityClient.getDocument(asset._ref);
+  return downloadFile(file.url, `${file.assetId}.${file.extension}`);
+}
+
+/**
+ * Uses imageURL internally to fetch webp image
+ * @param img Sanity's Image field (containing asset inside img.asset)
+ * @param options imageUrl options (SanityImageParams)
+ * @param suffix suffix to add at the end of basePath (sueful when generating several image versions)
+ * @returns url string to site's path. i.e. /assets/files/image.webp
+ */
+export async function getImageFileSync(img, options, suffix="") {
+  if(!img && !img.asset) return "";
+  const fileName = suffix != "" ? `${img.asset._ref}-${suffix}.webp` : `${img.asset._ref}.webp`;
+  const url = await downloadFileSync(imageUrl(img, options), fileName);
+  return url;
+}
+
+/**
+ * Generic Sanity's Asset download
+ * @param asset Sanity's asset
+ * @returns url string to site's path. i.e. /assets/files/image.webp
+ */
+export async function downloadAssetSync(asset) {
+  const file = await sanityClient.getDocument(asset._ref);
+  return await downloadFileSync(file.url, `${file.assetId}.${file.extension}`);
+}

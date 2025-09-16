@@ -14,7 +14,7 @@ export class CanvasDOMLayer extends GLDOMLayer {
     pixelRatio:number;
 
     protected layers: CanvasLayer[];
-    
+
     constructor(_dom:HTMLElement, _pixelRatio:number=1) {
         super(_dom);
 
@@ -42,7 +42,18 @@ export class CanvasDOMLayer extends GLDOMLayer {
         this.resizeCanvas();
     }
 
+    clear() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
     render(params: CanvasRenderingParameters): void {
         params.program(this.ctx);
+    }
+
+    renderAll(autoClear:boolean=true) {
+      if(autoClear) this.clear();
+      for(let i=0,len=this.layers.length;i<len;i++){
+        this.layers[i].render();
+      }
     }
 }

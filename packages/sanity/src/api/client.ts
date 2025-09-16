@@ -1,5 +1,5 @@
-const { createClient } = require("@sanity/client");
-const { configDotenv } = require("dotenv");
+import { createClient } from "@sanity/client";
+import { configDotenv } from "dotenv";
 
 configDotenv();
 
@@ -11,6 +11,5 @@ const config = {
   useCdn: false,
 };
 
-module.exports = {
-  client: createClient(config)
-}
+export const sanityClient = createClient(config);
+export const sanityConfig = config;

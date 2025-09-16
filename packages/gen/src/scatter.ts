@@ -76,3 +76,12 @@ export function randomFOnTriangle(geo:BufferGeometry, i1:number, i2:number, i3:n
         n: pointInTriangle(n1, n2, n3, a, b)
     }
 }
+
+export function randomPointOnRandomTriangle(geo:BufferGeometry):pt {
+    const i = Random.randi(0, geo.index.count/3);
+    const i1 = geo.index.array[i*3];
+    const i2 = geo.index.array[i*3+1];
+    const i3 = geo.index.array[i*3+2];
+    
+    return randomPointOnTriangle(geo, i1, i2, i3);
+}

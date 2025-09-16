@@ -183,6 +183,11 @@ export class Section {
   // ------------------------- UPDATE
   updateProgress(){
 
+    // console.log(this.containerRect.height);
+
+    const height = this.config.useNative ? this.config.nativeHeight : this.containerRect.height;
+    // console.log(height);
+
     this.progress.visible = MathUtils.smoothstep(
       this.threshold[0],
       this.threshold[1],
@@ -191,17 +196,20 @@ export class Section {
 
     this.progress.in = MathUtils.smoothstep(
       this.threshold[0],
-      this.threshold[0] + this.containerRect.height,
+      this.threshold[0] + height,
       this.scroll
-    )
+    );
+
+    // console.log(this.scroll);
+
     this.progress.out = MathUtils.smoothstep(
-      this.threshold[1] - this.containerRect.height,
+      this.threshold[1] - height,
       this.threshold[1],
       this.scroll
     )
     this.progress.focus = MathUtils.smoothstep(
-      this.threshold[0] + this.containerRect.height,
-      this.threshold[1] - this.containerRect.height,
+      this.threshold[0] + height,
+      this.threshold[1] - height,
       this.scroll
     )
 
@@ -231,6 +239,8 @@ export class Section {
   }
   updateVisible() {
 
+    if(this.config.useNative) this.updateProgress(); // fix progress fopr scrollTos
+
     // If its visible then
     if (this.scroll > this.threshold[0] && this.scroll < this.threshold[1]) {
 
@@ -247,6 +257,7 @@ export class Section {
     // if it's not between thresholds and its visible, hide it
     if (this.visible) {
       this.hide();
+      this.updateProgress(); // fix progress wrong values after hiding
       this.updateTransform();
     }
   }

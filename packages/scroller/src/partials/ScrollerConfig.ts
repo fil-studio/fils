@@ -15,6 +15,7 @@ export type FilScrollerParameters = {
 	touchForce?: number;
 	useNative?: boolean;
 	wheelForce?: number;
+	nativeHeight?:number;
 };
 
 export const DEFAULT_EASING = 0.16;
@@ -36,6 +37,7 @@ export class ScrollerConfig {
 	touchForce: number;
 	useNative: boolean;
 	wheelForce: number;
+	nativeHeight: number;
 
 	// Other config
 	force = {
