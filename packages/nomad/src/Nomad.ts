@@ -135,6 +135,7 @@ export class Nomad {
 
 		// Force reload if response fails
 		console.log('Fil Nomad - Fetch failed');
+		this.inProgress = false;
 
 		return false;
 
