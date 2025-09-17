@@ -12,7 +12,7 @@ import { sanityClient } from './client';
 
 const settings = {
   distributionPath: 'public', //defaults to public
-  staticPath: '/assets/files' // default path for assets
+  staticPath: '/cms-assets' // default path for assets
 }
 
 let dst = `./${settings.distributionPath}${settings.staticPath}`;
@@ -76,6 +76,21 @@ function checkPath() {
   }
 }
 
+async function doDownload(url, fileName) {
+  fetch(url).then( res => {
+    // console.log(`Saving ${url} into ${fileName}...`);
+    const destination = path.resolve(dst, fileName);
+    const fileStream = createWriteStream(destination, { flags: 'wx' });
+    //@ts-ignore
+    finished(Readable.fromWeb(res.body).pipe(fileStream)).then(() => {
+      onDownloaded();
+    });
+  }).catch(error => {
+    console.log('Error fetching File. Retrying...');
+    doDownload(url, fileName);
+  });
+}
+
 /**
  * Generic download from URL. Must be called by all utils
  * @param url URL to file
@@ -90,15 +105,7 @@ export const downloadFile = (async (url, fileName) => {
     return `${settings.staticPath}/${fileName}`;
   }
   session.total++;
-  fetch(url).then( res => {
-    // console.log(`Saving ${url} into ${fileName}...`);
-    const destination = path.resolve(dst, fileName);
-    const fileStream = createWriteStream(destination, { flags: 'wx' });
-    //@ts-ignore
-    finished(Readable.fromWeb(res.body).pipe(fileStream)).then(() => {
-      onDownloaded();
-    });
-  });
+  doDownload(url, fileName);
 
   return `${settings.staticPath}/${fileName}`;
 });

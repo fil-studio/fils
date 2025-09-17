@@ -14,7 +14,7 @@
   "files": [
     "lib"
   ],
-  "dependencies": {
+  "peerDependencies": {
     "@sanity/dashboard": "^4.1.3",
     "sanity": "^3.85.1",
     "sanity-plugin-dashboard-widget-netlify": "^2.0.1"
