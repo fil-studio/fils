@@ -2,6 +2,14 @@
  * Utils
  *
  */
+export function $(selector: string, scope?: HTMLElement): HTMLElement | null {
+  return (scope || document).querySelector(selector);
+}
+
+export function $$(selector: string, scope?: HTMLElement): Array<HTMLElement> {
+  return Array.from((scope || document).querySelectorAll(selector));
+}
+
 export function el (type:string, className?:string, parent?:HTMLElement):HTMLElement {
 	let e = document.createElement(type);
 	if (className != undefined) e.className = className;
