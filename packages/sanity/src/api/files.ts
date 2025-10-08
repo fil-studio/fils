@@ -78,8 +78,8 @@ function checkPath() {
 
 async function doDownload(url, fileName) {
   fetch(url).then( res => {
-    // console.log(`Saving ${url} into ${fileName}...`);
     const destination = path.resolve(dst, fileName);
+    // console.log(`Saving ${url} into ${fileName}...`);  
     const fileStream = createWriteStream(destination, { flags: 'wx' });
     //@ts-ignore
     finished(Readable.fromWeb(res.body).pipe(fileStream)).then(() => {
