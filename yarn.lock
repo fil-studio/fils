@@ -19,13 +19,6 @@
   dependencies:
     mersenne "^0.0.4"
 
-"@fils/math@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@fils/math/-/math-0.0.4.tgz#96251cadab220f75f80304867ccf020c3eea93ee"
-  integrity sha512-Ghs/ZeE6vwChCAOEGCGgPc9i6v2ygcAOF4AL8OCOkqfwo5tzE6oouhaK+P//jGAiP2ia6zgeE1rAezMjhXfpdw==
-  dependencies:
-    mersenne "^0.0.4"
-
 "@fils/math@^0.0.8":
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/@fils/math/-/math-0.0.8.tgz#6827b0f59ae61b54b6390a72d0e18e07b1471ce6"
@@ -39,13 +32,6 @@
   integrity sha512-s/RgWsdEUsXCoEEiJK001PDu/GvekzcKRYy9ifwSblsj6XrSiuJjc+l3vHv/ScZkndl6zEySFW36jjno/q5BHA==
   dependencies:
     mersenne "^0.0.4"
-
-"@fils/phy@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@fils/phy/-/phy-0.0.4.tgz#d148de7e96bab392c21ba15947411a1f7f31916f"
-  integrity sha512-IzM6BNTxK5keSxhc7zPpGrHbGH7lEbu5u7pis8ydcYKjUcOZebVHSme1VyUO2roFS93BL+04IbzobSc397qUIQ==
-  dependencies:
-    "@fils/math" "^0.0.4"
 
 "@fils/utils@0.0.15":
   version "0.0.15"
@@ -787,7 +773,7 @@ tunnel-agent@^0.6.0:
   dependencies:
     safe-buffer "^5.0.1"
 
-typescript@^4.5.2, typescript@^4.5.4, typescript@^4.8.4, typescript@^4.9.5:
+typescript@^4.5.2, typescript@^4.8.4, typescript@^4.9.5:
   version "4.9.5"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.5.tgz#095979f9bcc0d09da324d58d03ce8f8374cbe65a"
   integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==

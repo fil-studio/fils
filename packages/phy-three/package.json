@@ -1,6 +1,6 @@
 {
   "name": "@fils/phy-three",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "ThreeJS utils for @phy/three",
   "main": "lib/main.js",
   "repository": "git@github.com:fil-studio/fils.git",
@@ -15,12 +15,10 @@
     "lib"
   ],
   "devDependencies": {
-    "typescript": "^4.5.4"
-  },
-  "dependencies": {
-    "@fils/phy": "^0.0.4"
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
-		"three": "*"
+		"three": "*",
+    "@fils/phy": "^0.0.4"
 	}
 }
