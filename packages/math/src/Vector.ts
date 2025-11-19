@@ -3,7 +3,7 @@
  * To remove THREE core dependency
  */
 
-import { MathUtils } from './MathUtils'
+import { MathUtils } from './MathUtils.js'
 
 export class Vec {
 	x:number

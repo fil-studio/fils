@@ -1,6 +1,6 @@
 {
   "name": "@fils/phy",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Verlet Physics Package written in TypeScript",
   "main": "lib/main.js",
   "repository": "git@github.com:fil-studio/fils.git",
@@ -15,7 +15,7 @@
     "lib"
   ],
   "devDependencies": {
-    "typescript": "^4.5.4"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "@fils/math": "^0.0.8"

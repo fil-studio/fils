@@ -1,3 +1,3 @@
-export * from './Random';
-export * from './MathUtils';
-export * from './Vector';
+export * from './Random.js';
+export * from './MathUtils.js';
+export * from './Vector.js';

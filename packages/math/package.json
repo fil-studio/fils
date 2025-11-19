@@ -1,13 +1,22 @@
 {
   "name": "@fils/math",
-  "version": "0.1.0",
+  "version": "0.1.4",
   "description": "Math Package in TypeScript. Part of jocabola/web packages",
   "repository": "git@github.com:fil-studio/fils.git",
   "homepage": "https://github.com/fil-studio/fils/tree/main/packages/math",
   "author": "fil studio <hello@fil.studio>",
   "license": "Apache-2.0",
+  "type": "module",
   "main": "lib/main.js",
-  "typings": "lib/main.d.ts",
+  "module": "lib/main.js",
+  "types": "lib/main.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/main.d.ts",
+      "import": "./lib/main.js",
+      "default": "./lib/main.js"
+    }
+  },
   "scripts": {
     "prepare": "yarn build",
     "build": "tsc"
@@ -16,9 +25,10 @@
     "lib"
   ],
   "dependencies": {
-    "mersenne": "^0.0.4"
+    "seedrandom": "^3.0.5"
   },
   "devDependencies": {
-    "typescript": "^4.2.3"
+    "@types/seedrandom": "^3.0.8",
+    "typescript": "^5.9.3"
   }
 }

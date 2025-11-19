@@ -50,6 +50,7 @@ export class SmoothScroller {
   sections:SmoothScrollerSection[] = [];
 
   iObserver:IntersectionObserver;
+  rObserver:ResizeObserver;
 
   _onWheelEvent;
 
@@ -74,6 +75,13 @@ export class SmoothScroller {
         else section.onHidden();
       }
     });
+
+    this.rObserver = new ResizeObserver( entries => {
+      this.onResize();
+    });
+
+    const t = target === window ? document.body : target as HTMLElement;
+    this.rObserver.observe(t);
 
     this._onWheelEvent = this.wheelUpdate.bind(this);
 
@@ -154,6 +162,8 @@ export class SmoothScroller {
     this.updateScrollLimit();
     this.targetPosition = MathUtils.clamp(this.targetPosition, 0, this.limit);
     this.needsUpdate = true;
+
+    for(const section of this.sections) section.resize();
   }
 
   scrollTo(value:number) {
@@ -200,6 +210,7 @@ export class SmoothScroller {
 
   dispose() {
     this.iObserver.disconnect();
+    this.rObserver.disconnect();
     this.enabled = false;
     this.target.removeEventListener('wheel', this._onWheelEvent);
   }

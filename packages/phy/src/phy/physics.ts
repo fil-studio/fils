@@ -101,6 +101,7 @@ type Iterations = 1|2|3|4|5|6|7|8|9|10;
 type PhysicsOptions = {
 	constraintIterations?:Iterations
 	springIterations?:Iterations
+	targetDelta?:number;
 }
 
 class Physics {
@@ -111,6 +112,8 @@ class Physics {
 	emitter:Emitter|null
 	constraintIterations:Iterations
 	springIterations:Iterations
+	targetDelta:number;
+	lastExecuted:number = 0;
 
 	constructor(emitter:Emitter|null=null, options:PhysicsOptions={}) {
 		// list of particles in simulation
@@ -129,6 +132,7 @@ class Physics {
 		// Settings
 		this.constraintIterations = options.constraintIterations != undefined ? options.constraintIterations : 1;
 		this.springIterations = options.springIterations != undefined ? options.springIterations : 1;
+		this.targetDelta = options.targetDelta != undefined ? options.targetDelta : -1; // -1 no target delta applied
 	}
 
 	addParticle(particle:Particle) {
@@ -153,7 +157,7 @@ class Physics {
 
 		// To-Do : Spaces optimisation
 
-		this.applyEffectors(this.behaviours, this.particles);
+		this.applyEffectors(this.behaviours, this.particles, true);
 
 		let sl = this.springs.length;
 
@@ -182,7 +186,7 @@ class Physics {
 		}
 	}
 
-	applyEffectors(effectors:Array<Behaviour|Constraint>, particles:Array<Particle>) {
+	applyEffectors(effectors:Array<Behaviour|Constraint>, particles:Array<Particle>, applyTargetDT:boolean=false) {
 		let el = effectors.length;
 		let pl = particles.length;
 		for(let i=0;i<el;i++) {
@@ -190,6 +194,10 @@ class Physics {
 			for(let k=0;k<pl;k++) {
 				if(particles[k].state === State.ALIVE) {
 					effectors[i].apply(particles[k]);
+					if(applyTargetDT && this.targetDelta > 0 && this.lastExecuted > 0) {
+						const dt = .001 * (performance.now() - this.lastExecuted) / this.targetDelta;
+						particles[k].force.scale(dt);
+					}
 				}
 			}
 		}

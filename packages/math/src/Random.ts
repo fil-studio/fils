@@ -3,30 +3,34 @@
  * https://www.npmjs.com/package/mersenne
  */
 
-import mersenne from 'mersenne';
+import seedrandom from 'seedrandom';
+
+let rng = seedrandom();
 
 export class Random {
 	/*
 	 * Keep constructor for backwards compatibility
 	 * DEPRECATED
 	 */
-	constructor(seed:number=0) {
-		mersenne.seed(seed);
+	constructor(seed?:number|string) {
+		if(seed !== undefined) {
+			Random.seed(seed);
+		}
 	}
 
 	/*
 	 * Set generator's seed
 	 */
-	static seed (seed:number) {
-		mersenne.seed(seed);
+	static seed (seed:number|string) {
+		const seedStr = typeof seed === 'number' ? seed.toString() : seed;
+		rng = seedrandom(seedStr);
 	}
 
 	/*
 	 * Returns number from 0 to 1
 	 */
 	static random():number {
-		let N = 1000;
-		return mersenne.rand(N) / (N - 1);
+		return rng();
 	}
 
 	/*

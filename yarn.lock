@@ -12,6 +12,20 @@
   resolved "https://registry.yarnpkg.com/@fils/io/-/io-0.0.8.tgz#1300b7e692fcfec7f93e402bd2b7137b8ca779ea"
   integrity sha512-vqUVmbaYG2x55v2DF/08+g3wC/LVu6ViSEJfbY7/KX8NklZ020yMsjIPKJ14xGWnwS/pa3n7+gVVU/2IrRDscg==
 
+"@fils/math@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@fils/math/-/math-0.1.0.tgz#30db26088585dad7d5352d909c644cc3b794f375"
+  integrity sha512-1Ya/55+yMow6BYbJoDxqH57XdxKGxFdzdZmwqpN0mURyz5s6d5Kw2O3rF7cepM9Fo1OkoYj7TmlNtHqO3wuJLg==
+  dependencies:
+    mersenne "^0.0.4"
+
+"@fils/math@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@fils/math/-/math-0.0.4.tgz#96251cadab220f75f80304867ccf020c3eea93ee"
+  integrity sha512-Ghs/ZeE6vwChCAOEGCGgPc9i6v2ygcAOF4AL8OCOkqfwo5tzE6oouhaK+P//jGAiP2ia6zgeE1rAezMjhXfpdw==
+  dependencies:
+    mersenne "^0.0.4"
+
 "@fils/math@^0.0.8":
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/@fils/math/-/math-0.0.8.tgz#6827b0f59ae61b54b6390a72d0e18e07b1471ce6"
@@ -25,6 +39,13 @@
   integrity sha512-s/RgWsdEUsXCoEEiJK001PDu/GvekzcKRYy9ifwSblsj6XrSiuJjc+l3vHv/ScZkndl6zEySFW36jjno/q5BHA==
   dependencies:
     mersenne "^0.0.4"
+
+"@fils/phy@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@fils/phy/-/phy-0.0.4.tgz#d148de7e96bab392c21ba15947411a1f7f31916f"
+  integrity sha512-IzM6BNTxK5keSxhc7zPpGrHbGH7lEbu5u7pis8ydcYKjUcOZebVHSme1VyUO2roFS93BL+04IbzobSc397qUIQ==
+  dependencies:
+    "@fils/math" "^0.0.4"
 
 "@fils/utils@0.0.15":
   version "0.0.15"
@@ -198,6 +219,11 @@
   integrity sha512-oxLPMytKchWGbnQM9O7D67uPa9paTNxO7jVoNMXgkkErULBPhPARCfkKL9ytcIJJRGjbsVwW4ugJzyFFvm/Tiw==
   dependencies:
     csstype "^3.0.2"
+
+"@types/seedrandom@^3.0.8":
+  version "3.0.8"
+  resolved "https://registry.yarnpkg.com/@types/seedrandom/-/seedrandom-3.0.8.tgz#61cc8ed88f93a3c31289c295e6df8ca40be42bdf"
+  integrity sha512-TY1eezMU2zH2ozQoAFAQFOPpvP15g+ZgSfTZt31AUUH/Rxtnz3H+A/Sv1Snw2/amp//omibc+AEkTaA8KUeOLQ==
 
 "@types/stats.js@*":
   version "0.17.3"
@@ -660,6 +686,11 @@ sass@^1.57.1:
   optionalDependencies:
     "@parcel/watcher" "^2.4.1"
 
+seedrandom@^3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/seedrandom/-/seedrandom-3.0.5.tgz#54edc85c95222525b0c7a6f6b3543d8e0b3aa0a7"
+  integrity sha512-8OwmbklUNzwezjGInmZ+2clQmExQPvomqjL7LFqOYqtmuxRgQYqOD3mHaU+MvZn5FLUeVxVfQjwLZW/n/JFuqg==
+
 set-blocking@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/set-blocking/-/set-blocking-2.0.0.tgz#045f9782d011ae9a6803ddd382b24392b3d890f7"
@@ -756,7 +787,7 @@ tunnel-agent@^0.6.0:
   dependencies:
     safe-buffer "^5.0.1"
 
-typescript@^4.2.3, typescript@^4.5.2, typescript@^4.5.4, typescript@^4.8.4, typescript@^4.9.5:
+typescript@^4.5.2, typescript@^4.5.4, typescript@^4.8.4, typescript@^4.9.5:
   version "4.9.5"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.5.tgz#095979f9bcc0d09da324d58d03ce8f8374cbe65a"
   integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
@@ -770,6 +801,11 @@ typescript@^5.9.2:
   version "5.9.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.9.2.tgz#d93450cddec5154a2d5cabe3b8102b83316fb2a6"
   integrity sha512-CWBzXQrc/qOkhidw1OzBTQuYRbfyxDXJMVJ1XNwUHGROVmuaeiEm3OslpZ1RV96d7SKKjZKrSJu3+t/xlw3R9A==
+
+typescript@^5.9.3:
+  version "5.9.3"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.9.3.tgz#5b4f59e15310ab17a216f5d6cf53ee476ede670f"
+  integrity sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==
 
 undici-types@~6.21.0:
   version "6.21.0"

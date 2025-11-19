@@ -76,19 +76,48 @@ function checkPath() {
   }
 }
 
+const downloadPromises = new Map<string, Promise<void>>();
+
 async function doDownload(url, fileName) {
-  fetch(url).then( res => {
-    const destination = path.resolve(dst, fileName);
-    // console.log(`Saving ${url} into ${fileName}...`);  
-    const fileStream = createWriteStream(destination, { flags: 'wx' });
-    //@ts-ignore
-    finished(Readable.fromWeb(res.body).pipe(fileStream)).then(() => {
+  const destination = path.resolve(dst, fileName);
+  
+  // If already downloading, wait for it
+  if (downloadPromises.has(fileName)) {
+    await downloadPromises.get(fileName);
+    onDownloaded(); // Count this as completed for this caller too
+    return;
+  }
+  
+  // If file exists, mark as done
+  if(existsSync(destination)) {
+    onDownloaded();
+    return;
+  }
+  
+  // Create download promise
+  const downloadPromise = (async () => {
+    try {
+      const res = await fetch(url);
+      const fileStream = createWriteStream(destination, { flags: 'wx' });
+      //@ts-ignore
+      await finished(Readable.fromWeb(res.body).pipe(fileStream));
       onDownloaded();
-    });
-  }).catch(error => {
-    console.log('Error fetching File. Retrying...');
-    doDownload(url, fileName);
-  });
+    } catch (error) {
+      if (error.code === 'EEXIST') {
+        onDownloaded();
+      } else {
+        console.log(`Error downloading ${fileName}:`, error.message);
+        // Don't call onDownloaded on real errors
+        session.total--; // Decrement total since download failed
+        throw error;
+      }
+    } finally {
+      downloadPromises.delete(fileName);
+    }
+  })();
+  
+  downloadPromises.set(fileName, downloadPromise);
+  await downloadPromise;
 }
 
 /**
@@ -100,13 +129,15 @@ async function doDownload(url, fileName) {
 export const downloadFile = (async (url, fileName) => {
   checkPath();
 
-  if(existsSync(path.resolve(dst, fileName))) {
-    console.log('Asset already downloaded. Skipping...');
+  const fullPath = path.resolve(dst, fileName);
+  if(existsSync(fullPath)) {
+    // File already exists, count it as "downloaded"
     return `${settings.staticPath}/${fileName}`;
   }
+  
   session.total++;
-  doDownload(url, fileName);
-
+  doDownload(url, fileName); // Fire and forget
+  
   return `${settings.staticPath}/${fileName}`;
 });
 
