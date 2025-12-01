@@ -4,7 +4,7 @@ import { SEOImage } from "./SEOImage";
 export const SEO = defineType({
     name: 'seo',
     title: "SEO",
-    type: "document",
+    type: "object",
     fields: [
         defineField({
             name: 'title',
@@ -21,7 +21,7 @@ export const SEO = defineType({
 export const LocalizedSEO = defineType({
     name: 'localseo',
     title: "SEO",
-    type: "document",
+    type: "object",
     fields: [
         defineField({
             name: 'title',

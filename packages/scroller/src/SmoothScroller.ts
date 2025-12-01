@@ -16,16 +16,18 @@
 import { MathUtils } from "@fils/math";
 import { SmoothScrollerSection } from "./SmoothScrollerSection";
 
-const DEFAULT_OPTIONS = {
+const DEFAULT_OPTIONS:SmoothScrollerParameters = {
   wheelForce: 1,
   wheelMax: 100,
-  easing: .16
+  easing: .16,
+  customSizeRef: null
 }
 
 export interface SmoothScrollerParameters {
   wheelForce?:number;
   wheelMax?:number;
   easing?:number;
+  customSizeRef?:HTMLElement;
 }
 
 export class SmoothScroller {
@@ -56,7 +58,6 @@ export class SmoothScroller {
 
   constructor(public target:HTMLElement|Window=window, params?:SmoothScrollerParameters) {
     target.scrollTo(0, 0);
-    this.updateScrollLimit();
 
     if(!params) this.parameters = DEFAULT_OPTIONS;
     else {
@@ -65,6 +66,8 @@ export class SmoothScroller {
         this.parameters[key] = params[key] !== undefined && params[key] !== null ? params[key] : DEFAULT_OPTIONS[key];
       }
     }
+
+    // this.updateScrollLimit();
 
     this.iObserver = new IntersectionObserver(entries => {
       for(const s of entries) {
@@ -119,6 +122,13 @@ export class SmoothScroller {
       const rect = t.getBoundingClientRect();
       this.limit = t.scrollHeight - rect.height;
       this.contentSize = rect.height;
+    }
+
+    // overwrite limit if custom size ref available
+    if(this.parameters.customSizeRef) {
+      const rect = this.parameters.customSizeRef.getBoundingClientRect();
+      // console.log(rect.height);
+      this.limit = rect.height - this.contentSize;
     }
   }
 

@@ -32,6 +32,10 @@ export class SmoothScrollerSection {
     return this.progressIn > .5 && this.progressOut < 0.5;
   }
 
+  onFocus() {}
+
+  onBlur() {}
+
   update() {
     if(!this.visible) return;
     const rect = this.dom.getBoundingClientRect();
@@ -50,6 +54,8 @@ export class SmoothScrollerSection {
 
     const focus = this.isOnFocus();
     this.dom.setAttribute('scroll-focus', `${focus}`);
+    if(focus && !this.focused) this.onFocus();
+    else if(!focus && this.focused) this.onBlur();
     this.focused = focus;
   }
 
