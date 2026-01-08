@@ -196,3 +196,81 @@ export function fixHex(color: string):string {
 
     return fixedColor;
 }
+
+export type LABColor = {
+    l: number; // 0-100
+    a: number; // typically -128 to 127
+    b: number; // typically -128 to 127
+};
+
+// RGB to LAB conversion (via XYZ)
+export function rgbToLab(color: RGBColor): LABColor {
+    // Convert RGB to linear RGB
+    let r = color.r / 255;
+    let g = color.g / 255;
+    let b = color.b / 255;
+
+    // Apply sRGB gamma correction
+    r = r > 0.04045 ? Math.pow((r + 0.055) / 1.055, 2.4) : r / 12.92;
+    g = g > 0.04045 ? Math.pow((g + 0.055) / 1.055, 2.4) : g / 12.92;
+    b = b > 0.04045 ? Math.pow((b + 0.055) / 1.055, 2.4) : b / 12.92;
+
+    // Convert to XYZ using sRGB matrix (D65 illuminant)
+    let x = (r * 0.4124564 + g * 0.3575761 + b * 0.1804375) * 100;
+    let y = (r * 0.2126729 + g * 0.7151522 + b * 0.0721750) * 100;
+    let z = (r * 0.0193339 + g * 0.1191920 + b * 0.9503041) * 100;
+
+    // Normalize for D65 white point
+    x /= 95.047;
+    y /= 100.000;
+    z /= 108.883;
+
+    // Convert XYZ to LAB
+    x = x > 0.008856 ? Math.pow(x, 1/3) : (7.787 * x + 16/116);
+    y = y > 0.008856 ? Math.pow(y, 1/3) : (7.787 * y + 16/116);
+    z = z > 0.008856 ? Math.pow(z, 1/3) : (7.787 * z + 16/116);
+
+    return {
+        l: (116 * y) - 16,
+        a: 500 * (x - y),
+        b: 200 * (y - z)
+    };
+}
+
+// Simple ΔE*ab color difference (good enough for most cases)
+export function colorDistance(color1: RGBColor, color2: RGBColor): number {
+    const lab1 = rgbToLab(color1);
+    const lab2 = rgbToLab(color2);
+    
+    const deltaL = lab1.l - lab2.l;
+    const deltaA = lab1.a - lab2.a;
+    const deltaB = lab1.b - lab2.b;
+    
+    return Math.sqrt(deltaL * deltaL + deltaA * deltaA + deltaB * deltaB);
+}
+
+// Find closest color in palette
+export function findClosestColor(target: RGBColor, palette: RGBColor[]): {
+    color: RGBColor;
+    distance: number;
+    index: number;
+} {
+    let minDistance = Infinity;
+    let closestColor = palette[0];
+    let closestIndex = 0;
+
+    palette.forEach((paletteColor, index) => {
+        const distance = colorDistance(target, paletteColor);
+        if (distance < minDistance) {
+            minDistance = distance;
+            closestColor = paletteColor;
+            closestIndex = index;
+        }
+    });
+
+    return {
+        color: closestColor,
+        distance: minDistance,
+        index: closestIndex
+    };
+}

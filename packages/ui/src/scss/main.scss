@@ -1,8 +1,8 @@
-@import "./partials/google-font";
+@use "./partials/google-font";
 
-@import "./partials/vars";
-@import "./partials/reset";
-@import "./partials/fonts";
+@use "./partials/vars";
+@use "./partials/reset";
+@use "./partials/fonts";
 
 ._ui-wrapper {
 	z-index: var(--ui-index);
@@ -90,6 +90,5 @@
 
 	@import "./panels/select";
 	@import "./panels/color";
-
 }
 

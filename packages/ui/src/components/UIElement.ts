@@ -99,4 +99,9 @@ export class UIElement extends EventsManager implements HasPanel {
 	}
 	close() {}
 	open() {}
+
+	on(event: string, callback: Function): UIElement {
+		super.on(event, callback);
+		return this;
+	}
 }

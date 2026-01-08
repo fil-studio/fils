@@ -37,7 +37,7 @@ export class EventsManager {
 	* @param {Function} callback - The callback function to call when the event occurs.
 	* @returns {void}
 	*/
-	on(event:string, callback: Function) {
+	on(event:string, callback: Function):EventsManager {
 		if (!this.subscribers[event]) {
 			this.subscribers[event] = [];
 			const completeEvent = event + 'Complete';
@@ -47,6 +47,8 @@ export class EventsManager {
 			}, 100);
 		}
 		this.subscribers[event].push(callback);
+
+		return this;
 	}
 	emit(event:string, target?:EventsManager) {
 

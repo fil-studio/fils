@@ -57,7 +57,7 @@ export class UIButton extends UIElement {
 	* @param {Function} callback - The callback function to call when the event occurs.
 	* @returns {void}
 	*/
-	on(event: string, callback: Function): void {
-		super.on(event, callback);
+	on(event: string, callback: Function) {
+		return super.on(event, callback);
 	}
 }

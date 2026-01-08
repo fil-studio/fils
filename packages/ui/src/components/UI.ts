@@ -142,8 +142,9 @@ export class UI extends UIGroup {
 	* @param {Function} callback - The callback function to call when the event occurs.
 	* @returns {void}
 	*/
-	on(event: string, callback: Function): void {
+	on(event: string, callback: Function):UI {
 		super.on(event, callback);
+		return this;
 	}
 
 	change(target: EventsManager): void {

@@ -67,3 +67,40 @@ export const openFileImportDialog = (accept:string="", multiple:boolean=false) =
 
 	return input;
 }
+
+export function downloadCanvasFrame(
+  canvas: HTMLCanvasElement, 
+  filename: string, 
+  type: string = "image/png", 
+  quality = 1
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (!blob) {
+        reject(new Error('Failed to create blob from canvas'));
+        return;
+      }
+      
+      blob.arrayBuffer()
+        .then(buffer => {
+          downloadFile(buffer, filename);
+          resolve();
+        })
+        .catch(reject);
+    }, type, quality);
+  });
+}
+
+export function downloadBlob(blob:Blob, filename:string) {
+  const a = document.createElement("a");
+  document.body.appendChild(a);
+  a.style.visibility = "hidden";
+  const url = window.URL.createObjectURL(blob);
+  a.href = url;
+
+  a.download = filename;
+  a.click();
+  window.URL.revokeObjectURL(url);
+
+  document.body.removeChild(a);
+}
