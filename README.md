@@ -19,10 +19,12 @@ It might remain undocumented for a long while but feel free to try it out!
 | [@fils/color](https://www.npmjs.com/package/@fils/color) | Color utilities. |
 | [@fils/nomad](https://www.npmjs.com/package/@fils/nomad) | Routing and page transitions utils. |
 | [@fils/phy](https://www.npmjs.com/package/@fils/phy) | Verlet Physics package. |
+| [@fils/phy-three](https://www.npmjs.com/package/@fils/phy-three) | ThreeJS Utilities and Helpers for @fils/phy. |
 | [@fils/scroller](https://www.npmjs.com/package/@fils/scroller) | Smooth Scroller by sections. |
 | [@fils/utils](https://www.npmjs.com/package/@fils/utils) | Utils and FileUtils for the web. |
 | [@fils/ui](https://www.npmjs.com/package/@fils/ui) | GUI library. |
 | [@fils/ui-icons](https://www.npmjs.com/package/@fils/ui-icons) | Icons for GUI. |
+| [@fils/do ](https://www.npmjs.com/package/@fils/dom) | DOM Utilities & Components. |
 
 ## Version Notes
 

@@ -1,0 +1,31 @@
+{
+  "name": "@fils/dom",
+  "version": "0.0.1",
+  "description": "DOM Utilities and components",
+  "repository": "git@github.com:fil-studio/fils.git",
+  "homepage": "https://github.com/fil-studio/fils/tree/main/packages/dom",
+  "author": "Fil Studio <hello@fil.studio>",
+  "license": "Apache-2.0",
+  "main": "./lib/main.js",
+  "types": "./lib/main.d.ts",
+  "exports": {
+    ".": {
+      "import": "./lib/main.js",
+      "types": "./lib/main.d.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "prepublishOnly": "yarn build",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "gsap": "^3.14.2",
+    "@fils/math": "^0.1.4"
+  }
+}
