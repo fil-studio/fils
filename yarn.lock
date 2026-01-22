@@ -1406,6 +1406,11 @@
   resolved "https://registry.yarnpkg.com/@fastify/busboy/-/busboy-2.1.1.tgz#b9da6a878a371829a0502c9b6c1c143ef6663f4d"
   integrity sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==
 
+"@fils/color@^0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@fils/color/-/color-0.0.9.tgz#76c9dffe225b9bb0920e4d4a0c49af9d6a630620"
+  integrity sha512-ftTOXTO27W7QSdZYLx7ywFKaoaY0xuvUxDhxoc77u/KhIEnU+PlO1Lv/JYdRZbh3kC37X5u0gjUS1B62RSZHOg==
+
 "@fils/gfx@0.1.4":
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/@fils/gfx/-/gfx-0.1.4.tgz#a39372e3129133162194a3d452a613092c403c39"

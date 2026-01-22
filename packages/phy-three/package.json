@@ -1,6 +1,6 @@
 {
   "name": "@fils/phy-three",
-  "version": "0.0.2",
+  "version": "0.0.6",
   "description": "ThreeJS utils for @phy/three",
   "main": "lib/main.js",
   "repository": "git@github.com:fil-studio/fils.git",
@@ -8,7 +8,7 @@
   "author": "Fil Studio <hello@fil.studio>",
   "license": "Apache-2.0",
   "scripts": {
-    "prepare": "yarn build",
+    "prepublishOnly": "yarn build",
     "build": "tsc"
   },
   "files": [

@@ -5,7 +5,7 @@
  * To-Do: Move to @fils/phy-three
  */
 
-import { Physics } from "@fils/phy";
+import { Physics, Spring } from "@fils/phy";
 import { BufferAttribute, BufferGeometry, Color, InstancedMesh, LineBasicMaterial, LineSegments, MeshBasicMaterial, Object3D, SphereGeometry } from "three";
 
 const dummy:Object3D = new Object3D();
@@ -88,24 +88,48 @@ export class PhyThreeHelper extends Object3D {
             dummy.position.copy(p.position);
             dummy.updateMatrix();
             this.particles.setMatrixAt(i, dummy.matrix);
+            this.particles.setColorAt(i, p.locked ? color1 : color2);
         }
 
         this.particles.instanceMatrix.needsUpdate = true;
+        this.particles.instanceColor.needsUpdate = true;
 
         const pos = this.springs.geometry.attributes.position;
+        const color = this.springs.geometry.attributes.color;
         let k = 0;
+
+        function updateSpringColor(s:Spring) {
+            const i1 = k;
+            const i2 = k+1;
+
+            const c1 = s.a.locked ? color1 : color2;
+            const c2 = s.b.locked ? color1 : color2;
+
+            color.array[i1*3] = c1.r;
+            color.array[i1*3 + 1] = c1.g;
+            color.array[i1*3 + 2] = c1.b;
+
+            color.array[i2*3] = c2.r;
+            color.array[i2*3 + 1] = c2.g;
+            color.array[i2*3 + 2] = c2.b;
+        }
+
         for(let i=0, len=this.physics.springs.length; i<len; i++) {
             const s = this.physics.springs[i];
-            pos.array[k*3] = s.a.position.x;
-            pos.array[k*3+1] = s.a.position.y;
-            pos.array[k*3+2] = s.a.position.z;
-            k++;
-            pos.array[k*3] = s.b.position.x;
-            pos.array[k*3+1] = s.b.position.y;
-            pos.array[k*3+2] = s.b.position.z;
-            k++
+            updateSpringColor(s);
+            const i1 = k;
+            const i2 = k+1;
+
+            pos.array[i1*3] = s.a.position.x;
+            pos.array[i1*3+1] = s.a.position.y;
+            pos.array[i1*3+2] = s.a.position.z;
+            pos.array[i2*3] = s.b.position.x;
+            pos.array[i2*3+1] = s.b.position.y;
+            pos.array[i2*3+2] = s.b.position.z;
+            k+=2;
         }
 
         pos.needsUpdate = true;
+        color.needsUpdate = true;
     }
 }

@@ -16,6 +16,12 @@ export type HSLColor = {
     l:number;
 }
 
+export type HexColor = `#${string}`;
+
+export function isValidHexColor(color: string): color is HexColor {
+  return /^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(color);
+}
+
 export function componentToHex(c: number): string {
   const hex = c.toString(16);
   return hex.length === 1 ? '0' + hex : hex;
