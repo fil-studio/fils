@@ -1,6 +1,6 @@
 {
   "name": "@fils/dom",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "DOM Utilities and components",
   "repository": "git@github.com:fil-studio/fils.git",
   "homepage": "https://github.com/fil-studio/fils/tree/main/packages/dom",
