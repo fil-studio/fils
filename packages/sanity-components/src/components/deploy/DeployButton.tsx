@@ -11,7 +11,7 @@ import { Button, Card, Stack, Text, Spinner, Flex } from '@sanity/ui';
 import { PlayIcon, CheckmarkIcon, CloseIcon } from '@sanity/icons';
 import { useSecrets, SettingsView } from '@sanity/studio-secrets';
 
-interface DeployButtonConfig {
+export interface DeployButtonConfig {
   owner: string;
   repo: string;
   token?: string;
@@ -19,7 +19,7 @@ interface DeployButtonConfig {
   eventType?: string;
 }
 
-interface DeployButtonProps {
+export interface DeployButtonProps {
   config: DeployButtonConfig;
   title?: string;
   deploymentUrl?: string;
@@ -43,7 +43,7 @@ interface WorkflowRunsResponse {
   workflow_runs: WorkflowRun[];
 }
 
-const DeployButton = ({ 
+export const DeployButton = ({ 
   config,
   title = "🚀 Site Deployment",
   deploymentUrl,
@@ -102,8 +102,9 @@ const DeployButton = ({
     try {
       console.log('Polling workflow:', runId);
       
+      const cacheBuster = `_=${Date.now()}`;
       const response = await fetch(
-        `https://api.github.com/repos/${config.owner}/${config.repo}/actions/runs/${runId}`,
+        `https://api.github.com/repos/${config.owner}/${config.repo}/actions/runs/${runId}?${cacheBuster}`,
         {
           headers: {
             'Authorization': `token ${effectiveToken}`,
@@ -145,13 +146,16 @@ const DeployButton = ({
     }
   };
 
-  // Find the workflow run
-  const findWorkflowRun = async (): Promise<void> => {
+  // Find the workflow run with retry logic
+  const findWorkflowRun = async (retryCount = 0): Promise<void> => {
+    const maxRetries = 6; // Try for 30 seconds (5s * 6)
+    
     try {
-      console.log('Looking for workflow run...');
+      console.log(`Looking for workflow run... (attempt ${retryCount + 1}/${maxRetries})`);
       
+      const cacheBuster = `_=${Date.now()}`;
       const response = await fetch(
-        `https://api.github.com/repos/${config.owner}/${config.repo}/actions/runs?per_page=10`,
+        `https://api.github.com/repos/${config.owner}/${config.repo}/actions/runs?per_page=10&${cacheBuster}`,
         {
           headers: {
             'Authorization': `token ${effectiveToken}`,
@@ -179,23 +183,42 @@ const DeployButton = ({
         setDeployState('deploying');
         setMessage('🚀 Deployment started...');
         
-        // Start polling every 5 seconds
+        // Start polling every 3 seconds (faster response)
         intervalRef.current = setInterval(() => {
           pollWorkflowStatus(recentRun.id);
-        }, 5000);
+        }, 3000);
         
         // Initial poll
         pollWorkflowStatus(recentRun.id);
+        
+      } else if (retryCount < maxRetries) {
+        // Retry after 5 seconds
+        console.log(`Workflow not found yet, retrying in 5s... (${retryCount + 1}/${maxRetries})`);
+        setMessage(`⏳ Waiting for workflow to start... (${retryCount + 1}/${maxRetries})`);
+        setTimeout(() => {
+          findWorkflowRun(retryCount + 1);
+        }, 5000);
+        
       } else {
-        console.log('No recent workflow found');
+        console.log('No recent workflow found after retries');
         setDeployState('error');
         setMessage('❌ Could not find workflow run - check if workflow exists');
+        monitoringRef.current = false;
       }
     } catch (error) {
       console.error('Error finding workflow:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      setDeployState('error');
-      setMessage(`❌ Error finding workflow: ${errorMessage}`);
+      
+      if (retryCount < maxRetries) {
+        console.log(`Error finding workflow, retrying... (${retryCount + 1}/${maxRetries})`);
+        setTimeout(() => {
+          findWorkflowRun(retryCount + 1);
+        }, 5000);
+      } else {
+        setDeployState('error');
+        setMessage(`❌ Error finding workflow: ${errorMessage}`);
+        monitoringRef.current = false;
+      }
     }
   };
 
@@ -420,5 +443,3 @@ const DeployButton = ({
     </Card>
   );
 };
-
-export default DeployButton;
