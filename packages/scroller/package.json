@@ -1,6 +1,6 @@
 {
 	"name": "@fils/scroller",
-	"version": "1.1.8",
+	"version": "1.1.9",
 	"description": "Smooth scroller by sections Package written in TypeScript",
 	"main": "lib/main.js",
 	"repository": {
@@ -12,7 +12,7 @@
 	"license": "Apache-2.0",
 	"private": false,
 	"scripts": {
-		"prepare": "yarn build",
+		"prepublishOnly": "yarn build",
 		"build": "tsc"
 	},
 	"files": [

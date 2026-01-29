@@ -143,8 +143,8 @@ export class SmoothScroller {
   }
 
   protected wheelUpdate(event:WheelEvent) {
-    event.preventDefault();
     if(!this.enabled) return;
+    event.preventDefault();
     const d = event.deltaY;
     // console.log(d);
     let wd = d * this.parameters.wheelForce;
