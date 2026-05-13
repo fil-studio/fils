@@ -37,7 +37,7 @@ export class Random {
 	 * returns random integer from min to max
 	 */
 	static randi(min:number= 0, max:number=1):number {
-		return Math.round(Random.randf(min, max));
+		return Math.min(Math.floor(Random.randf(min, max + 1)), max);
 	}
 	
 	/*

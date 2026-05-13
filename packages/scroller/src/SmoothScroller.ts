@@ -159,7 +159,8 @@ export class SmoothScroller {
   set enabled(value:boolean) {
     this._enabled = value;
     const t = this.target === window ? document.body : this.target as HTMLElement;
-    t.setAttribute("scroll-disabled", value ? "false" : "true");
+    if(value) t.removeAttribute('scroll-disabled');
+    else t.setAttribute("scroll-disabled", "");
   }
 
   get enabled():boolean {

@@ -2,7 +2,7 @@ import { Readable } from 'stream';
 import { finished } from 'stream/promises';
 import path from "path";
 import { createWriteStream, existsSync, mkdirSync } from 'fs';
-import { imageUrl } from './image';
+import { imageUrl, SanityImageParams } from './image';
 import { sanityClient } from './client';
 
 /**
@@ -152,7 +152,7 @@ export const downloadFileSync = (async (url, fileName) => {
 
   if(existsSync(path.resolve(dst, fileName))) {
     console.log('Asset already downloaded. Skipping...');
-    return `/assets/files/${fileName}`;
+    return `${settings.staticPath}/${fileName}`;
   }
   session.total++;
   const res = await fetch(url);
@@ -168,6 +168,22 @@ export const downloadFileSync = (async (url, fileName) => {
   return `${settings.staticPath}/${fileName}`;
 });
 
+function getImageFilename(img, options: SanityImageParams, suffix = "") {
+  const parts = img.asset._ref.split('-');
+  const originalExt = parts[parts.length - 1];
+
+  if (options.original) return `${img.asset._ref}.${originalExt}`;
+
+  let baseName = suffix !== "" ? `${img.asset._ref}-${suffix}` : `${img.asset._ref}`;
+  if (options.width) baseName += `&w=${options.width}`;
+  if (options.height) baseName += `&h=${options.height}`;
+  if (options.quality) baseName += `&q=${options.quality}`;
+  if (options.format && options.format !== 'webp') baseName += `&fm=${options.format}`;
+  if (options.custom) baseName += `&${options.custom}`;
+
+  return `${baseName}.${options.format ?? 'webp'}`;
+}
+
 /**
  * Uses imageURL internally to fetch webp image
  * @param img Sanity's Image field (containing asset inside img.asset)
@@ -175,9 +191,9 @@ export const downloadFileSync = (async (url, fileName) => {
  * @param suffix suffix to add at the end of basePath (sueful when generating several image versions)
  * @returns url string to site's path. i.e. /assets/files/image.webp
  */
-export async function getImageFile(img, options, suffix="") {
+export async function getImageFile(img, options:SanityImageParams, suffix="") {
   if(!img && !img.asset) return "";
-  const fileName = suffix != "" ? `${img.asset._ref}-${suffix}.webp` : `${img.asset._ref}.webp`;
+  const fileName = getImageFilename(img, options);
   const url = downloadFile(imageUrl(img, options), fileName);
   return url;
 }
@@ -199,9 +215,9 @@ export async function downloadAsset(asset) {
  * @param suffix suffix to add at the end of basePath (sueful when generating several image versions)
  * @returns url string to site's path. i.e. /assets/files/image.webp
  */
-export async function getImageFileSync(img, options, suffix="") {
+export async function getImageFileSync(img, options:SanityImageParams, suffix="") {
   if(!img && !img.asset) return "";
-  const fileName = suffix != "" ? `${img.asset._ref}-${suffix}.webp` : `${img.asset._ref}.webp`;
+  const fileName = getImageFilename(img, options);
   const url = await downloadFileSync(imageUrl(img, options), fileName);
   return url;
 }

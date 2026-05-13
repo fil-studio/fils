@@ -1,48 +1,63 @@
-import { SanityImageAssetDocument } from "@sanity/client";
-import { configDotenv } from "dotenv";
-configDotenv();
+import imageUrlBuilder from '@sanity/image-url';
+import { sanityConfig } from './client';
 
-const baseURL = `https://cdn.sanity.io/images/${process.env.SANITY_PROJECT_ID}/production`;
+const builder = imageUrlBuilder({
+    projectId: sanityConfig.projectId as string,
+    dataset: sanityConfig.dataset as string
+});
+
+export type ImageFormat = 'jpg' | 'pjpg' | 'png' | 'webp';
+
+/** Shape of a Sanity image field value (asset reference + optional hotspot/crop) */
+export interface SanityImageField {
+    asset: { _ref: string; _type?: string };
+    hotspot?: { x: number; y: number; width: number; height: number };
+    crop?: { top: number; bottom: number; left: number; right: number };
+}
 
 export interface SanityImageParams {
-	width?: number;
-	height?: number;
-	quality?: number;
+    width?: number;
+    height?: number;
+    quality?: number;
+    /** Output format. Defaults to 'webp'. */
+    format?: ImageFormat;
+    /** Arbitrary query string appended to the URL as an escape hatch */
+    custom?: string;
+    /** Return the original file with no transforms applied. Ignores all other params. */
+    original?: boolean;
 }
 
-export function imageUrl(image:SanityImageAssetDocument, params:SanityImageParams) {
-    const parts = image.asset._ref.split('-');
-    const oWidth = parseInt(parts[2].split('x')[0]);
-    const oHeight = parseInt(parts[2].split('x')[1]);
-    const q = params.quality ? params.quality : 90;
+export function imageUrl(image: SanityImageField, params: SanityImageParams): string {
+    if (params.original) return builder.image(image).url();
 
-    let qp = `auto=format&q=${q}`;
-    if(params.width) qp += `&w=${Math.min(params.width, oWidth)}`;
-    if(params.height) qp += `&h=${Math.min(params.height, oHeight)}`;
-    return `${baseURL}/${parts[1]}-${parts[2]}.${parts[3]}?${qp}`;
+    const q = params.quality ?? 90;
+    const fmt = params.format ?? 'webp';
+
+    let b = builder.image(image).quality(q).format(fmt);
+
+    if (params.width) b = b.width(params.width);
+    if (params.height) b = b.height(params.height);
+
+    let url = b.url();
+    if (params.custom) url += `&${params.custom}`;
+
+    return url;
 }
 
-export function imageRatio(image:SanityImageAssetDocument) {
-    const parts = image.asset._ref.split('-');
-    const siz = parts[2].split('x');
-    const oWidth = parseInt(siz[0]);
-    const oHeight = parseInt(siz[1]);
-
-    return oWidth / oHeight;
+function parseRefDimensions(ref: string): [number, number] {
+    const [w, h] = ref.split('-')[2].split('x').map(Number);
+    return [w, h];
 }
 
-export function getImageWidth(image:SanityImageAssetDocument) {
-    const parts = image.asset._ref.split('-');
-    const siz = parts[2].split('x');
-    const oWidth = parseInt(siz[0]);
-
-    return oWidth;
+export function imageRatio(image: SanityImageField): number {
+    const [w, h] = parseRefDimensions(image.asset._ref);
+    return w / h;
 }
 
-export function getImageHeight(image:SanityImageAssetDocument) {
-    const parts = image.asset._ref.split('-');
-    const siz = parts[2].split('x');
-    const oHeight = parseInt(siz[1]);
+export function getImageWidth(image: SanityImageField): number {
+    return parseRefDimensions(image.asset._ref)[0];
+}
 
-    return oHeight;
+export function getImageHeight(image: SanityImageField): number {
+    return parseRefDimensions(image.asset._ref)[1];
 }

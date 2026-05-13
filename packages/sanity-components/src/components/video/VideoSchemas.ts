@@ -117,6 +117,7 @@ export const VideoFileObject = defineType({
     defineField({
       name: 'video',
       type: 'file',
+      title: 'File',
       options: {
         accept: "video/mp4, video/webm"
       }
@@ -146,7 +147,9 @@ export const VideoURLObject = defineType({
   fields: [
     defineField({
       name: 'video',
-      type: 'url'
+      type: 'url',
+      title: "URL",
+      description: "Paste your URL from Vimeo or similar here."
     }),
     defineField({
       name: 'image',
@@ -170,6 +173,7 @@ export const VideoFileNoThumb = defineType({
     defineField({
       name: 'video',
       type: 'file',
+      title: 'File',
       options: {
         accept: 'video/mp4, video/webm'
       }
@@ -190,10 +194,9 @@ export const VideoURLNoThumb = defineType({
   fields: [
     defineField({
       name: 'video',
-      type: 'file',
-      options: {
-        accept: 'video/mp4, video/webm'
-      }
+      type: 'url',
+      title: "URL",
+      description: "Paste your URL from Vimeo or similar here."
     })
   ],
   components: {
