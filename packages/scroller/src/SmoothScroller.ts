@@ -20,7 +20,8 @@ const DEFAULT_OPTIONS:SmoothScrollerParameters = {
   wheelForce: 1,
   wheelMax: 100,
   easing: .16,
-  customSizeRef: null
+  customSizeRef: null,
+  useNative: false
 }
 
 export interface SmoothScrollerParameters {
@@ -28,6 +29,7 @@ export interface SmoothScrollerParameters {
   wheelMax?:number;
   easing?:number;
   customSizeRef?:HTMLElement;
+  useNative?:boolean;
 }
 
 export class SmoothScroller {
@@ -88,9 +90,11 @@ export class SmoothScroller {
 
     this._onWheelEvent = this.wheelUpdate.bind(this);
 
-    target.addEventListener('wheel', this._onWheelEvent, {
-      passive: false
-    });
+    if(!this.parameters.useNative) {
+      target.addEventListener('wheel', this._onWheelEvent, {
+        passive: false
+      });
+    }
 
     target.onscroll = () => {
       if(this.isSmooth) return;
@@ -156,6 +160,22 @@ export class SmoothScroller {
     // this.targetPosition = MathUtils()
   }
 
+  set useNative(value:boolean) {
+    if(this.parameters.useNative === value) return;
+    this.parameters.useNative = value;
+    if(value) {
+      this.target.removeEventListener('wheel', this._onWheelEvent);
+      this.isSmooth = false;
+      this.needsUpdate = false;
+    } else {
+      this.target.addEventListener('wheel', this._onWheelEvent, { passive: false });
+    }
+  }
+
+  get useNative():boolean {
+    return this.parameters.useNative;
+  }
+
   set enabled(value:boolean) {
     this._enabled = value;
     const t = this.target === window ? document.body : this.target as HTMLElement;
@@ -172,7 +192,10 @@ export class SmoothScroller {
     // window.scrollTo(0, 0);
     this.updateScrollLimit();
     this.targetPosition = MathUtils.clamp(this.targetPosition, 0, this.limit);
-    this.needsUpdate = true;
+
+    if(!this.parameters.useNative) {
+      this.needsUpdate = true;
+    }
 
     for(const section of this.sections) section.resize();
   }
@@ -197,6 +220,13 @@ export class SmoothScroller {
   }
 
   update() {
+    if(this.parameters.useNative) {
+      for(let i=0,len=this.sections.length; i<len; i++) {
+        this.sections[i].update();
+      }
+      return;
+    }
+
     if(this.needsUpdate) {
       this.targetPosition = MathUtils.clamp(this.targetPosition, 0, this.limit);
       this.currentPosition = this.targetPosition;

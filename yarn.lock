@@ -2348,7 +2348,7 @@
     lodash "^4.17.21"
     ts-brand "^0.2.0"
 
-"@sanity/image-url@^1.0.2", "@sanity/image-url@^1.1.0":
+"@sanity/image-url@^1.0.2", "@sanity/image-url@^1.1.0", "@sanity/image-url@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@sanity/image-url/-/image-url-1.2.0.tgz#5e8b69d4b079fbcf89138660849f52960066c71e"
   integrity sha512-pYRhti+lDi22it+npWXkEGuYyzbXJLF+d0TYLiyWbKu46JHhYhTDKkp6zmGu4YKF5cXUjT6pnUjFsaf2vlB9nQ==
