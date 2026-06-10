@@ -15,9 +15,22 @@ export async function getPage(id:string) {
 	return docs;
 }
 
-export async function getPosts(id:string, order:string = "asc") {
+type GetPostsOptions = { order?: string; filter?: string };
+
+export async function getPosts(id:string, orderOrOptions: string | GetPostsOptions = "asc") {
+    let order: string;
+    let extraFilter: string = "";
+
+    if (typeof orderOrOptions === 'object') {
+        order = orderOrOptions.order ?? "asc";
+        extraFilter = orderOrOptions.filter ?? "";
+    } else {
+        order = orderOrOptions;
+    }
+
     const o = (order === 'asc' || order === 'desc') ? `_createdAt ${order}` : order;
-	const filter = groq`*[_type == "${id}" && !(_id match "*drafts*") ] | order(${o})`;
+    const extra = extraFilter ? ` && ${extraFilter}` : "";
+	const filter = groq`*[_type == "${id}" && !(_id match "*drafts*")${extra}] | order(${o})`;
 	const docs = await sanityClient.fetch(filter).catch((err) => console.error(err));
 	if (!docs) return [];
 	return docs;

@@ -76,6 +76,7 @@ export class SmoothScroller {
         const target = s.target;
         const index = parseInt(target.getAttribute('scroller-index'));
         const section = this.sections[index];
+        if(!section) continue;
         if(s.isIntersecting) section.onVisible();
         else section.onHidden();
       }
@@ -111,9 +112,13 @@ export class SmoothScroller {
   }
 
   removeSection(section:SmoothScrollerSection) {
-    if(this.sections.indexOf(section) === -1) return;
-    this.sections.splice(this.sections.indexOf(section), 1);
+    const idx = this.sections.indexOf(section);
+    if(idx === -1) return;
     this.iObserver.unobserve(section.dom);
+    this.sections.splice(idx, 1);
+    for(let i = idx; i < this.sections.length; i++) {
+      this.sections[i].dom.setAttribute('scroller-index', `${i}`);
+    }
   }
 
   updateScrollLimit() {
@@ -200,7 +205,11 @@ export class SmoothScroller {
     for(const section of this.sections) section.resize();
   }
 
-  scrollTo(value:number) {
+  scrollTo(value:number, behavior:ScrollBehavior = 'smooth') {
+    if(this.parameters.useNative) {
+      this.target.scrollTo({ top: value, behavior });
+      return;
+    }
     this.targetPosition = value;
     this.isSmooth = true;
   }

@@ -36,8 +36,17 @@ export function updateDistributionSettings(basePath:string, staticPath:string) {
 const session = {
   id: 'default',
   downloaded: 0,
+  skipped: 0,
   total: 0
 }
+
+const globalTotals = { downloaded: 0, skipped: 0, id: 'assets' };
+
+process.on('exit', () => {
+  if (globalTotals.downloaded + globalTotals.skipped > 0) {
+    process.stdout.write(`\r✅ [${globalTotals.id}] ${globalTotals.downloaded} downloaded, ${globalTotals.skipped} cached    \n`);
+  }
+});
 
 /**
  * Call in every data file to begin Background download session
@@ -45,25 +54,37 @@ const session = {
  * @param id id of the session (optional)
  */
 export function initDownloadSession(id?:string) {
-  if(id) session.id = id;
+  if(id) {
+    session.id = id;
+    globalTotals.id = id;
+  }
   session.total = 0;
   session.downloaded = 0;
-  console.log(`🔄 Initialized new download process for ${session.id}...`);
-  process.stdout.write('\r');
+  session.skipped = 0;
+}
+
+function printProgress() {
+  const done = session.downloaded + session.skipped;
+  if(done < session.total || session.total === 0) {
+    process.stdout.write(`\r⬇️  [${session.id}] ${globalTotals.downloaded} downloaded, ${globalTotals.skipped} cached...`);
+  }
 }
 
 function onDownloaded() {
   session.downloaded++;
-  // console.log(`${session.downloaded} items of ${session.total} downloaded`);
-  const p = (session.downloaded / session.total) * 100;
-  process.stdout.write(`\r${session.downloaded} of ${session.total} downloaded...`);
-  if(session.downloaded === session.total) {
-    process.stdout.write(`\r✅ All files for ${session.id} session downloaded \n`);
-  }
+  globalTotals.downloaded++;
+  printProgress();
+}
+
+function onSkipped() {
+  session.skipped++;
+  globalTotals.skipped++;
+  printProgress();
 }
 
 export function getSessionProgress() {
-  return session.downloaded / session.total;
+  if(session.total === 0) return 1;
+  return (session.downloaded + session.skipped) / session.total;
 }
 
 /**
@@ -88,7 +109,7 @@ async function doDownload(url, fileName) {
     return;
   }
   
-  // If file exists, mark as done
+  // If file exists (race condition), mark as done
   if(existsSync(destination)) {
     onDownloaded();
     return;
@@ -128,16 +149,16 @@ async function doDownload(url, fileName) {
  */
 export const downloadFile = (async (url, fileName) => {
   checkPath();
+  session.total++;
 
   const fullPath = path.resolve(dst, fileName);
   if(existsSync(fullPath)) {
-    // File already exists, count it as "downloaded"
+    onSkipped();
     return `${settings.staticPath}/${fileName}`;
   }
-  
-  session.total++;
+
   doDownload(url, fileName); // Fire and forget
-  
+
   return `${settings.staticPath}/${fileName}`;
 });
 
@@ -149,12 +170,13 @@ export const downloadFile = (async (url, fileName) => {
  */
 export const downloadFileSync = (async (url, fileName) => {
   checkPath();
+  session.total++;
 
   if(existsSync(path.resolve(dst, fileName))) {
-    console.log('Asset already downloaded. Skipping...');
+    onSkipped();
     return `${settings.staticPath}/${fileName}`;
   }
-  session.total++;
+
   const res = await fetch(url);
   
   const destination = path.resolve(dst, fileName);
