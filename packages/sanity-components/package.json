@@ -1,6 +1,6 @@
 {
   "name": "@fils/sanity-components",
-  "version": "0.1.6",
+  "version": "0.1.8",
   "description": "Fil's Components for Sanity Back-Ends",
   "repository": "git@github.com:fil-studio/fils.git",
   "author": "Fil Studio <hello@fil.studio>",

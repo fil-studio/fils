@@ -1,25 +1,8 @@
 import { defineField, defineType } from "sanity";
 import { SEOImage } from "./SEOImage";
 
-export const SEO = defineType({
-    name: 'seo',
-    title: "SEO",
-    type: "object",
-    fields: [
-        defineField({
-            name: 'title',
-            type: 'string'
-        }),
-        defineField({
-            name: 'description',
-            type: 'text'
-        }),
-        SEOImage
-    ]
-});
-
 export const LocalizedSEO = defineType({
-    name: 'localseo',
+    name: 'seo',
     title: "SEO",
     type: "object",
     fields: [

@@ -36,6 +36,25 @@ export async function getPosts(id:string, orderOrOptions: string | GetPostsOptio
 	return docs;
 }
 
+/**
+ * Deletes all image and file assets that are not referenced by any document.
+ * Safe to run after a deploy — unreferenced assets are orphans left by
+ * replaced uploads. Returns the number of assets deleted.
+ */
+export async function cleanUnusedAssets(): Promise<number> {
+  const assets = await sanityClient.fetch<{_id: string; _type: string; originalFilename?: string}[]>(
+    `*[_type in ["sanity.imageAsset", "sanity.fileAsset"] && !defined(*[references(^._id)][0])]{_id, _type, originalFilename}`
+  )
+  if (!assets.length) {
+    console.log('No unused assets found.')
+    return 0
+  }
+  console.log(`Deleting ${assets.length} unused asset(s)…`)
+  await Promise.all(assets.map(a => sanityClient.delete(a._id)))
+  console.log(`✅ Deleted ${assets.length} unused asset(s).`)
+  return assets.length
+}
+
 export async function deletePost(type:string, id:string) {
 	// const filter = groq`*[_type == "${type}" && _id == "${id}"][0]`;
 	const docs = await sanityClient.delete({

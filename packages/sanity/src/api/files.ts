@@ -33,58 +33,58 @@ export function updateDistributionSettings(basePath:string, staticPath:string) {
   // mkdirSync(dst, {recursive: true});
 }
 
-const session = {
-  id: 'default',
-  downloaded: 0,
-  skipped: 0,
-  total: 0
+type Session = { id: string, downloaded: number, skipped: number, total: number };
+const sessions = new Map<string, Session>();
+let currentSessionId = 'default';
+
+function getSession(id: string): Session {
+  if (!sessions.has(id)) sessions.set(id, { id, downloaded: 0, skipped: 0, total: 0 });
+  return sessions.get(id)!;
 }
-
-const globalTotals = { downloaded: 0, skipped: 0, id: 'assets' };
-
-process.on('exit', () => {
-  if (globalTotals.downloaded + globalTotals.skipped > 0) {
-    process.stdout.write(`\r✅ [${globalTotals.id}] ${globalTotals.downloaded} downloaded, ${globalTotals.skipped} cached    \n`);
-  }
-});
 
 /**
- * Call in every data file to begin Background download session
- * A download session allows parallel download of assets
- * @param id id of the session (optional)
+ * Call in every data file to begin a named download session.
+ * Sessions are independent — concurrent data files each get their own recap line.
+ * @param id session label shown in the recap (optional)
  */
-export function initDownloadSession(id?:string) {
-  if(id) {
-    session.id = id;
-    globalTotals.id = id;
-  }
-  session.total = 0;
-  session.downloaded = 0;
-  session.skipped = 0;
+export function initDownloadSession(id = 'default') {
+  currentSessionId = id;
+  sessions.set(id, { id, downloaded: 0, skipped: 0, total: 0 });
 }
 
-function printProgress() {
-  const done = session.downloaded + session.skipped;
-  if(done < session.total || session.total === 0) {
-    process.stdout.write(`\r⬇️  [${session.id}] ${globalTotals.downloaded} downloaded, ${globalTotals.skipped} cached...`);
-  }
+const completionTimers = new Map<string, ReturnType<typeof setTimeout>>();
+
+function printProgress(s: Session) {
+  process.stdout.write(`\r⬇️  [${s.id}] ${s.downloaded} downloaded, ${s.skipped} cached...`);
+
+  // Defer the completion check so all synchronous downloadFile calls in the
+  // same tick finish incrementing total before we decide we're done.
+  if (completionTimers.has(s.id)) clearTimeout(completionTimers.get(s.id)!);
+  completionTimers.set(s.id, setTimeout(() => {
+    completionTimers.delete(s.id);
+    const done = s.downloaded + s.skipped;
+    if (done === s.total && s.total > 0) {
+      process.stdout.write(`\r✅ [${s.id}] ${s.downloaded} downloaded, ${s.skipped} cached    \n`);
+    }
+  }, 0));
 }
 
-function onDownloaded() {
-  session.downloaded++;
-  globalTotals.downloaded++;
-  printProgress();
+function onDownloaded(id: string) {
+  const s = getSession(id);
+  s.downloaded++;
+  printProgress(s);
 }
 
-function onSkipped() {
-  session.skipped++;
-  globalTotals.skipped++;
-  printProgress();
+function onSkipped(id: string) {
+  const s = getSession(id);
+  s.skipped++;
+  printProgress(s);
 }
 
 export function getSessionProgress() {
-  if(session.total === 0) return 1;
-  return (session.downloaded + session.skipped) / session.total;
+  const s = getSession(currentSessionId);
+  if(s.total === 0) return 1;
+  return (s.downloaded + s.skipped) / s.total;
 }
 
 /**
@@ -99,44 +99,40 @@ function checkPath() {
 
 const downloadPromises = new Map<string, Promise<void>>();
 
-async function doDownload(url, fileName) {
+async function doDownload(url, fileName, sessionId: string) {
   const destination = path.resolve(dst, fileName);
-  
-  // If already downloading, wait for it
+
   if (downloadPromises.has(fileName)) {
     await downloadPromises.get(fileName);
-    onDownloaded(); // Count this as completed for this caller too
+    onDownloaded(sessionId);
     return;
   }
-  
-  // If file exists (race condition), mark as done
+
   if(existsSync(destination)) {
-    onDownloaded();
+    onDownloaded(sessionId);
     return;
   }
-  
-  // Create download promise
+
   const downloadPromise = (async () => {
     try {
       const res = await fetch(url);
       const fileStream = createWriteStream(destination, { flags: 'wx' });
       //@ts-ignore
       await finished(Readable.fromWeb(res.body).pipe(fileStream));
-      onDownloaded();
+      onDownloaded(sessionId);
     } catch (error) {
       if (error.code === 'EEXIST') {
-        onDownloaded();
+        onDownloaded(sessionId);
       } else {
         console.log(`Error downloading ${fileName}:`, error.message);
-        // Don't call onDownloaded on real errors
-        session.total--; // Decrement total since download failed
+        getSession(sessionId).total--;
         throw error;
       }
     } finally {
       downloadPromises.delete(fileName);
     }
   })();
-  
+
   downloadPromises.set(fileName, downloadPromise);
   await downloadPromise;
 }
@@ -148,16 +144,17 @@ async function doDownload(url, fileName) {
  * @returns url string to site's path. i.e. /assets/files/image.webp
  */
 export const downloadFile = (async (url, fileName) => {
+  const sessionId = currentSessionId; // capture at call time
   checkPath();
-  session.total++;
+  getSession(sessionId).total++;
 
   const fullPath = path.resolve(dst, fileName);
   if(existsSync(fullPath)) {
-    onSkipped();
+    onSkipped(sessionId);
     return `${settings.staticPath}/${fileName}`;
   }
 
-  doDownload(url, fileName); // Fire and forget
+  doDownload(url, fileName, sessionId); // fire and forget
 
   return `${settings.staticPath}/${fileName}`;
 });
@@ -169,22 +166,23 @@ export const downloadFile = (async (url, fileName) => {
  * @returns url string to site's path. i.e. /assets/files/image.webp
  */
 export const downloadFileSync = (async (url, fileName) => {
+  const sessionId = currentSessionId; // capture at call time
   checkPath();
-  session.total++;
+  getSession(sessionId).total++;
 
   if(existsSync(path.resolve(dst, fileName))) {
-    onSkipped();
+    onSkipped(sessionId);
     return `${settings.staticPath}/${fileName}`;
   }
 
   const res = await fetch(url);
-  
+
   const destination = path.resolve(dst, fileName);
   const fileStream = createWriteStream(destination, { flags: 'wx' });
   //@ts-ignore
   await finished(Readable.fromWeb(res.body).pipe(fileStream));
   setTimeout(() => {
-    onDownloaded();
+    onDownloaded(sessionId);
   }, 100);
 
   return `${settings.staticPath}/${fileName}`;
