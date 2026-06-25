@@ -184,6 +184,21 @@ export const VideoFileNoThumb = defineType({
       inputType: 'file',
       enableThumbnailGeneration: false
     })
+  },
+  preview: {
+    select: {
+      video: 'video'
+    },
+    prepare(selected) {
+      const { video } = selected as { video?: { asset?: { _ref?: string } } };
+      const filename = video?.asset?._ref
+        ? video.asset._ref.split('-').slice(1, -1).join('-')
+        : 'No video';
+      return {
+        title: filename,
+        media: PlayIcon
+      }
+    }
   }
 });
 
@@ -204,5 +219,17 @@ export const VideoURLNoThumb = defineType({
       inputType: 'url',
       enableThumbnailGeneration: false
     })
+  },
+  preview: {
+    select: {
+      video: 'video'
+    },
+    prepare(selected) {
+      const { video } = selected as { video?: string };
+      return {
+        title: video || 'No URL',
+        media: LinkIcon
+      }
+    }
   }
 });
