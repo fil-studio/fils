@@ -17,6 +17,7 @@ const isProduction = process.env.ELEVENTY_ENV === 'production';
 const examples = [
   'scroller',
   'selective-glow',
+  'vfx-renderer',
   'vfx-common-pipeline',
   'vfx-pipeline',
   'vfx-materials',
@@ -61,7 +62,7 @@ const compileJs = (example) => {
     outfile: `public/${example}/js/main.js`,
     plugins: [
       alias({
-        three: __dirname + '/node_modules/three/build/three.min.js',
+        three: __dirname + '/node_modules/three/build/three.module.js',
       }),
     ],
   });

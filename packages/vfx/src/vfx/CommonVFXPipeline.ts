@@ -1,5 +1,6 @@
+import { WebGLRenderer } from "three";
 import { DoFPass, DoFSettings, FinalPass, FinalPassSettings, FXAAPass } from "../main";
-import { VFXPipeline, SupportedRenderer, VFXPipelineSettings} from "./VFXPipeline";
+import { VFXPipeline, VFXPipelineSettings} from "./VFXPipeline";
 
 export type CommonPipelineSettings = {
     dof?:DoFSettings;
@@ -14,7 +15,7 @@ export class CommonVFXPipeline extends VFXPipeline {
     dof:DoFPass;
     final:FinalPass;
 
-    constructor(rnd:SupportedRenderer, params:VFXPipelineSettings={
+    constructor(rnd:WebGLRenderer, params:VFXPipelineSettings={
         width: window.innerWidth,
         height: window.innerHeight
     }, pipelineParams?:CommonPipelineSettings) {

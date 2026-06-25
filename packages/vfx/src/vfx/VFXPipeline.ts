@@ -1,6 +1,5 @@
-import { DepthFormat, DepthTexture, FloatType, Mesh, OrthographicCamera, PerspectiveCamera, PlaneGeometry, RawShaderMaterial, Scene, Texture, WebGLRenderer, WebGLRenderTarget } from "three";
+import { DepthFormat, DepthTexture, FloatType, Mesh, OrthographicCamera, PerspectiveCamera, PlaneGeometry, Scene, Texture, TextureDataType, WebGLRenderer, WebGLRenderTarget } from "three";
 import { RenderPass } from "./pipeline/RenderPass";
-import { VFXRenderer } from "./VFXRenderer";
 
 export type VFXPipelineSettings = {
     samples?:number; // useful for MSAA when using WebGLRenderer
@@ -8,22 +7,26 @@ export type VFXPipelineSettings = {
     width:number,
     height:number,
     neverToScreen?:boolean;
+    /**
+     * Data type for the intermediate ping-pong render targets.
+     * Defaults to 8-bit (UnsignedByteType). Use HalfFloatType for
+     * HDR-quality blur/glow/DoF without banding or clipped highlights.
+     */
+    type?:TextureDataType;
 }
 
-export type SupportedRenderer = WebGLRenderer|VFXRenderer;
-export type RendererType = "WebGLRenderer"|"VFXRenderer";
-
 /**
- * This class replaces the deprecated RenderComposer
- * It is meant to be used with either a WebGLRenderer
- * or a VFXRebderer and create a post-processing stack
- * on top of it.
+ * This class replaces the deprecated RenderComposer.
+ * It wraps a WebGLRenderer and builds a post-processing
+ * stack on top of it: the scene is rendered into an offscreen
+ * target, then an ordered stack of RenderPasses is applied by
+ * ping-ponging two intermediate buffers.
  */
 export class VFXPipeline {
     protected sceneRT:WebGLRenderTarget;
     protected front:WebGLRenderTarget;
     protected back:WebGLRenderTarget;
-    protected renderer:SupportedRenderer;
+    protected renderer:WebGLRenderer;
     protected stack:RenderPass[] = [];
 
     protected firstPass:boolean = false;
@@ -34,10 +37,9 @@ export class VFXPipeline {
     width:number;
     height:number;
 
-    protected type:RendererType;
     protected blockScreen:boolean;
 
-    constructor(rnd:SupportedRenderer, params:VFXPipelineSettings={
+    constructor(rnd:WebGLRenderer, params:VFXPipelineSettings={
         width: window.innerWidth,
         height: window.innerHeight
     }) {
@@ -48,17 +50,10 @@ export class VFXPipeline {
         this.width = w;
         this.height = h;
         this.blockScreen = params.neverToScreen === true;
-        
-        this.front = new WebGLRenderTarget(w, h);
-        
-        if(rnd['isWebGLRenderer']) {
-            // this.front.samples = params.samples || 4;
-            this.type = "WebGLRenderer";
-        } else {
-            const r = rnd as VFXRenderer;
-            r.setSize(w, h);
-            this.type = "VFXRenderer";
-        }
+
+        this.front = new WebGLRenderTarget(w, h, {
+            type: params.type
+        });
         this.back = this.front.clone();
         this.sceneRT = this.front.clone();
         this.sceneRT.samples = params.samples || 4;
@@ -82,10 +77,6 @@ export class VFXPipeline {
         this.scene.add(this.quad);
     }
 
-    get rendererType():RendererType {
-        return this.type;
-    }
-
     addPass(pass:RenderPass) {
         this.stack.push(pass);
         pass.setSize(this.width, this.height);
@@ -93,11 +84,6 @@ export class VFXPipeline {
 
     removePass(pass:RenderPass) {
         this.stack.splice(this.stack.indexOf(pass), 1);
-    }
-
-    setRenderer(rnd:SupportedRenderer) {
-        this.renderer = rnd;
-        this.type = rnd['isWebGLRenderer'] ? "WebGLRenderer" : "VFXRenderer";
     }
 
     setSize(width:number, height:number) {
@@ -126,10 +112,9 @@ export class VFXPipeline {
     }
 
     get read():WebGLRenderTarget {
-        if(this.firstPass && this.type === "WebGLRenderer") {
-            return this.sceneRT;
-        }
-        return this.front;
+        // The first pass reads the freshly rendered scene; every
+        // subsequent pass reads the previous pass' output (front).
+        return this.firstPass ? this.sceneRT : this.front;
     }
 
     get write():WebGLRenderTarget {
@@ -141,25 +126,11 @@ export class VFXPipeline {
     }
 
     get depthTexture():DepthTexture {
-        if(this.type === "WebGLRenderer") {
-            return this.sceneRT.depthTexture;
-        }
-        const rnd = this.renderer as VFXRenderer;
-        return rnd.depthTexture;
-    }
-
-    protected getRenderer():WebGLRenderer {
-        if(this.type === "WebGLRenderer") {
-            return this.renderer as WebGLRenderer;
-        }
-
-        const rnd = this.renderer as VFXRenderer;
-        return rnd.rnd;
+        return this.sceneRT.depthTexture;
     }
 
     protected renderPass(pass:RenderPass, toScreen:boolean=false) {
-        const renderer = this.getRenderer();
-        pass.render(renderer, this, toScreen && !this.blockScreen ? null : this.write);
+        pass.render(this.renderer, this, toScreen && !this.blockScreen ? null : this.write);
         this.swapBuffers();
     }
 
@@ -167,29 +138,24 @@ export class VFXPipeline {
         const stack = this.stack.filter(obj=>obj.enabled);
 
         if(!stack.length && !this.blockScreen) {
-            if(this.type === "WebGLRenderer") {
-                const rnd = this.renderer as WebGLRenderer;
-                rnd.setRenderTarget(null);
-                rnd.render(scene, camera);
-            } else this.renderer.render(scene, camera, null);
-        } else {
-            this.firstPass = true;
-            if(this.type === "WebGLRenderer") {
-                const rnd = this.renderer as WebGLRenderer;
-                rnd.setRenderTarget(this.sceneRT);
-                rnd.render(scene, camera);
-            } else this.renderer.render(scene, camera, this.write);
-            this.swapBuffers();
-            for(let k=0;k<stack.length;k++) {
-                if(stack[k].shader.uniforms['cameraNear']) {
-                    stack[k].shader.uniforms['cameraNear'].value = camera.near;
-                }
-                if(stack[k].shader.uniforms['cameraFar']) {
-                    stack[k].shader.uniforms['cameraFar'].value = camera.far;
-                }
-                this.renderPass(stack[k], k === stack.length-1);
-                this.firstPass = false;
+            this.renderer.setRenderTarget(null);
+            this.renderer.render(scene, camera);
+            return;
+        }
+
+        this.renderer.setRenderTarget(this.sceneRT);
+        this.renderer.render(scene, camera);
+
+        this.firstPass = true;
+        for(let k=0;k<stack.length;k++) {
+            if(stack[k].shader.uniforms['cameraNear']) {
+                stack[k].shader.uniforms['cameraNear'].value = camera.near;
             }
+            if(stack[k].shader.uniforms['cameraFar']) {
+                stack[k].shader.uniforms['cameraFar'].value = camera.far;
+            }
+            this.renderPass(stack[k], k === stack.length-1);
+            this.firstPass = false;
         }
     }
 
@@ -197,5 +163,7 @@ export class VFXPipeline {
         this.front.dispose();
         this.back.dispose();
         this.sceneRT.dispose();
+        for(const pass of this.stack) pass.dispose();
+        this.stack.length = 0;
     }
 }

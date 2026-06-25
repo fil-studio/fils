@@ -23,9 +23,9 @@ const BlurDefaults:BlurSettings = {
 }
 
 export class BlurPass extends RenderPass{
-	radius:number = 2;
-	iterations:number = 4;
-	quality:BlurQuality = 0;
+	radius:number;
+	iterations:number;
+	quality:BlurQuality;
 	scale:number;
 	read:WebGLRenderTarget;
 	write:WebGLRenderTarget;

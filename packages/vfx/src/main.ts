@@ -1,5 +1,4 @@
 export * from './vfx/VFXRenderer';
-export * from './vfx/VFXRenderer2';
 export * from './vfx/pipeline/RenderPass';
 export * from './vfx/pipeline/BlurPass';
 export * from './vfx/pipeline/GlowPass';
@@ -34,3 +33,13 @@ const vfxShaders = {
 export {
 	vfxShaders
 }
+
+import { VFXRenderer } from './vfx/VFXRenderer';
+
+/**
+ * @deprecated `VFXRenderer2` was renamed to `VFXRenderer`.
+ * This alias will be removed in the next minor release.
+ */
+export const VFXRenderer2 = VFXRenderer;
+/** @deprecated Use `VFXRendererParameters`. */
+export type { VFXRendererParameters as VFXRenderer2Parameters } from './vfx/VFXRenderer';

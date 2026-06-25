@@ -1,4 +1,4 @@
-#include <output_fragment>
+#include <opaque_fragment>
 
 #ifdef USE_EMISSIVEMAP
     oGlow = vec4(totalEmissiveRadiance, emissiveColor.a);

@@ -15,7 +15,7 @@ export function injectVFXBasics(shader:Shader, emissive:boolean=false) {
             fs = fs.replace(`#include <clipping_planes_pars_fragment>`, `#include <clipping_planes_pars_fragment>
     layout(location = 1) out vec4 oGlow;`);
 
-            fs = fs.replace(`#include <output_fragment>`, `#include <output_fragment>
+            fs = fs.replace(`#include <opaque_fragment>`, `#include <opaque_fragment>
     oGlow = vec4(0.);`);
 
             shader.fragmentShader = fs;
@@ -24,7 +24,7 @@ export function injectVFXBasics(shader:Shader, emissive:boolean=false) {
             let fs = shader.fragmentShader;
 
             fs = fs.replace('#include <clipping_planes_pars_fragment>', pars);
-            fs = fs.replace('#include <output_fragment>', output);
+            fs = fs.replace('#include <opaque_fragment>', output);
 
             shader.fragmentShader = fs;
         }

@@ -168,18 +168,18 @@
     }
   });
 
-  // ../packages/math/lib/Random.js
+  // ../packages/scroller/node_modules/@fils/math/lib/Random.js
   var import_mersenne;
   var init_Random = __esm({
-    "../packages/math/lib/Random.js"() {
+    "../packages/scroller/node_modules/@fils/math/lib/Random.js"() {
       import_mersenne = __toESM(require_mersenne());
     }
   });
 
-  // ../packages/math/lib/MathUtils.js
+  // ../packages/scroller/node_modules/@fils/math/lib/MathUtils.js
   var MathUtils;
   var init_MathUtils = __esm({
-    "../packages/math/lib/MathUtils.js"() {
+    "../packages/scroller/node_modules/@fils/math/lib/MathUtils.js"() {
       MathUtils = class {
         static clamp(v, min, max) {
           return Math.min(max, Math.max(min, v));
@@ -214,16 +214,16 @@
     }
   });
 
-  // ../packages/math/lib/Vector.js
+  // ../packages/scroller/node_modules/@fils/math/lib/Vector.js
   var init_Vector = __esm({
-    "../packages/math/lib/Vector.js"() {
+    "../packages/scroller/node_modules/@fils/math/lib/Vector.js"() {
       init_MathUtils();
     }
   });
 
-  // ../packages/math/lib/main.js
+  // ../packages/scroller/node_modules/@fils/math/lib/main.js
   var init_main = __esm({
-    "../packages/math/lib/main.js"() {
+    "../packages/scroller/node_modules/@fils/math/lib/main.js"() {
       init_Random();
       init_MathUtils();
       init_Vector();
@@ -231,20 +231,19 @@
   });
 
   // ../packages/scroller/lib/Section.js
-  var PRECISION, Section;
+  var Section;
   var init_Section = __esm({
     "../packages/scroller/lib/Section.js"() {
       init_main();
       init_Scroller();
-      PRECISION = 5;
       Section = class {
-        constructor(id, dom2, direction, useNative) {
-          this.w = {
-            w: 0,
-            h: 0
+        constructor(i, dom2, config) {
+          this.progress = {
+            visible: 0,
+            in: 0,
+            out: 0,
+            focus: 0
           };
-          this.progress = 0;
-          this._direction = D.LEFT;
           this.threshold = [];
           this.scroll = 0;
           this.delta = 0;
@@ -253,46 +252,54 @@
             y: 0
           };
           this.visible = false;
-          this.closeToVisible = false;
           this.disabled = false;
           this.listeners = [];
           this.sticky = [];
-          this.nativeScrolling = false;
-          this.id = id;
+          this.exposeProgressValues = false;
           this.dom = dom2;
-          this._direction = direction;
-          this.nativeScrolling = useNative === true;
+          const id = this.dom.getAttribute("fil-scroller-section");
+          if (id)
+            this.id = id;
+          else
+            this.id = `section-${i}`;
+          this.config = config;
           const s = dom2.querySelectorAll("[fil-scroller-sticky]");
           s.forEach((value) => {
             this.sticky.push(value);
           });
+          if (this.dom.hasAttribute("fil-scroller-expose")) {
+            this.exposeProgressValues = true;
+          }
+          this.containerRect = this.config.container.getBoundingClientRect();
+          this.calculateThreshold();
         }
-        set direction(value) {
-          if (this._direction === value)
-            return;
-          this._direction = value;
+        restore() {
+          this.dom.style.transform = "";
+          this.progress.visible = 0;
+          this.calculateThreshold();
+          this.updateTransform();
         }
-        get direction() {
-          return this._direction;
-        }
-        calculateDims() {
+        calculateThreshold() {
           this.rect = this.dom.getBoundingClientRect();
-          if (this.direction === D.TOP || this.direction === D.BOTTOM) {
+          if (this.config.isVertical()) {
             this.threshold = [
-              this.rect.top - this.w.h,
+              this.rect.top - window.innerHeight,
               this.rect.top + this.rect.height
             ];
-            if (this.nativeScrolling) {
+            if (this.config.useNative) {
               this.threshold[0] += this.scroll;
               this.threshold[1] += this.scroll;
             }
           } else {
             this.threshold = [
-              this.widthOffset - this.w.w,
-              this.widthOffset + this.rect.width
+              // Section offset in relation to the other sections
+              this.offset - this.containerRect.width,
+              // Section offset in relation to the other sections
+              this.offset + this.rect.width
             ];
           }
         }
+        // Listeners
         addSectionListener(lis) {
           if (this.listeners.indexOf(lis) > -1)
             return;
@@ -301,18 +308,15 @@
         removeSectionListener(lis) {
           this.listeners.splice(this.listeners.indexOf(lis), 1);
         }
-        restore(resizing = false) {
+        onBeforeRestore() {
           for (const lis of this.listeners) {
-            lis === null || lis === void 0 ? void 0 : lis.onBeforeRestore(resizing);
+            lis === null || lis === void 0 ? void 0 : lis.onBeforeRestore();
           }
-          this.dom.style.transform = "";
-          this.visible = true;
-          this.progress = 0;
-          this.calculateDims();
+        }
+        onAfterRestore() {
           for (const lis of this.listeners) {
-            lis === null || lis === void 0 ? void 0 : lis.onAfterRestore(resizing);
+            lis === null || lis === void 0 ? void 0 : lis.onAfterRestore();
           }
-          this.hide();
         }
         animationIn() {
           for (const lis of this.listeners) {
@@ -324,101 +328,136 @@
             lis === null || lis === void 0 ? void 0 : lis.onAnimationOut();
           }
         }
-        get position() {
-          if (!this.visible) {
-            this._position.x = 0;
-            this._position.y = -this.w.h;
-          }
-          if (this.direction === D.TOP) {
-            this._position.x = 0;
-            this._position.y = -this.scroll;
-          }
-          if (this.direction === D.BOTTOM) {
-            this._position.x = 0;
-            this._position.y = this.scroll + (this.w.h - this.rect.height) - this.rect.top * 2;
-          }
-          if (this.direction === D.LEFT) {
-            this._position.x = this.widthOffset - this.scroll;
-            this._position.y = -this.rect.top;
-          }
-          if (this.direction === D.RIGHT) {
-            this._position.x = this.scroll + (this.w.w - this.rect.width) - this.widthOffset;
-            this._position.y = -this.rect.top;
-          }
-          return this._position;
-        }
-        updateTransform() {
+        // Disabled sections won't be accounted for
+        disable() {
           if (this.disabled)
             return;
-          if (this.nativeScrolling) {
-            return;
-          }
-          const wH = this.w.h;
-          const wW = this.w.w;
-          let px = this.position.x, py = this.position.y;
-          for (const s of this.sticky) {
-            let tY, sY;
-            switch (this.direction) {
-              case D.TOP:
-                tY = 1 - MathUtils.smoothstep(-this.threshold[1] + wH, -this.threshold[0] - wH, py);
-                sY = tY * (this.threshold[1] - this.threshold[0] - 2 * wH);
-                s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(PRECISION)},0,1)`;
-                break;
-              case D.BOTTOM:
-                tY = 1 - MathUtils.smoothstep(-this.threshold[1] + wH, -this.threshold[0] - wH, py);
-                sY = tY * (this.threshold[1] - this.threshold[0] - 2 * wH);
-                s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(PRECISION)},0,1)`;
-                break;
-              case D.LEFT:
-                tY = 1 - MathUtils.smoothstep(-this.threshold[1] + wW, -this.threshold[0] - wW, px);
-                sY = tY * (this.threshold[1] - this.threshold[0] - 2 * wW);
-                s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${sY.toFixed(PRECISION)},0,0,1)`;
-                break;
-            }
-          }
-          this.dom.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${px.toFixed(PRECISION)},${py.toFixed(PRECISION)},0,1)`;
+          this.disabled = true;
+          this.dom.classList.add("fil-scroller__section-disabled");
         }
+        enable() {
+          if (!this.disabled)
+            return;
+          this.disabled = false;
+          this.dom.classList.remove("fil-scroller__section-disabled");
+        }
+        // Show - Hide
         show() {
           if (this.visible)
             return;
-          this.animationIn();
-          this.dom.classList.add("fil-scroller__visible");
           this.visible = true;
+          this.dom.classList.add("fil-scroller__visible");
+          this.animationIn();
         }
         hide() {
           if (!this.visible)
             return;
-          this.animationOut();
           this.visible = false;
-          this.progress = 0;
+          this.progress.visible = 0;
           this.delta = 0;
           this.dom.classList.remove("fil-scroller__visible");
-          this.dom.style.setProperty("--fil-scroller-delta", "0");
-          this.dom.style.setProperty("--fil-scroller-progress", "0");
+          this.animationOut();
         }
-        update() {
-          if (!this.visible) {
-            const margin = this.w.w;
-            if (this.scroll + margin > this.threshold[0] && this.scroll + margin < this.threshold[1]) {
-              this.closeToVisible = true;
-            } else {
-              this.closeToVisible = false;
-            }
+        // ------------------------- UPDATE
+        updateProgress() {
+          const height = this.config.useNative ? this.config.nativeHeight : this.containerRect.height;
+          this.progress.visible = MathUtils.smoothstep(this.threshold[0], this.threshold[1], this.scroll);
+          this.progress.in = MathUtils.smoothstep(this.threshold[0], this.threshold[0] + height, this.scroll);
+          this.progress.out = MathUtils.smoothstep(this.threshold[1] - height, this.threshold[1], this.scroll);
+          this.progress.focus = MathUtils.smoothstep(this.threshold[0] + height, this.threshold[1] - height, this.scroll);
+          if (this.exposeProgressValues) {
+            this.dom.style.setProperty("--fil-scroller-delta", `${this.delta.toFixed(PRECISION)}`);
+            this.dom.style.setProperty("--fil-scroller-progress-visible", `${this.progress.visible.toFixed(PRECISION)}`);
+            this.dom.style.setProperty("--fil-scroller-progress-in", `${this.progress.in.toFixed(PRECISION)}`);
+            this.dom.style.setProperty("--fil-scroller-progress-out", `${this.progress.out.toFixed(PRECISION)}`);
+            this.dom.style.setProperty("--fil-scroller-progress-focus", `${this.progress.focus.toFixed(PRECISION)}`);
           }
+        }
+        updateVisible() {
+          if (this.config.useNative)
+            this.updateProgress();
           if (this.scroll > this.threshold[0] && this.scroll < this.threshold[1]) {
             if (!this.visible) {
               this.show();
             }
-            this.dom.style.setProperty("--fil-scroller-delta", `${this.delta.toFixed(PRECISION)}`);
-            this.progress = MathUtils.smoothstep(this.threshold[0], this.threshold[1], this.scroll);
-            this.dom.style.setProperty("--fil-scroller-progress", `${this.progress.toFixed(PRECISION)}`);
+            this.updateProgress();
             this.updateTransform();
             return;
           }
+          if (this.visible) {
+            this.hide();
+            this.updateProgress();
+            this.updateTransform();
+          }
+        }
+        updateSticky() {
+          const cH = this.containerRect.height;
+          const cW = this.containerRect.width;
+          const t0 = this.threshold[0];
+          const t1 = this.threshold[1];
+          let px = this.position.x;
+          let py = this.position.y;
+          for (const s of this.sticky) {
+            let tY, sY;
+            switch (this.config.direction) {
+              case D.TOP:
+                tY = 1 - MathUtils.smoothstep(-t1 + cH, -t0 - cH, py);
+                sY = tY * (t1 - t0 - 2 * cH);
+                s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(PRECISION)},0,1)`;
+                break;
+              case D.BOTTOM:
+                tY = 1 - MathUtils.smoothstep(-t1 + cH, -t0 - cH, py);
+                sY = tY * (t1 - t0 - 2 * cH);
+                s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,${sY.toFixed(PRECISION)},0,1)`;
+                break;
+              case D.RIGHT:
+                tY = 1 - MathUtils.smoothstep(-t1 + cW, -t0 - cW, px);
+                sY = tY * (t1 - t0 - 2 * cW);
+                s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${sY.toFixed(PRECISION)},0,0,1)`;
+                break;
+              case D.LEFT:
+                tY = 1 - MathUtils.smoothstep(-t1 + cW, -t0 - cW, px);
+                sY = tY * (t1 - t0 - 2 * cW);
+                s.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${sY.toFixed(PRECISION)},0,0,1)`;
+                break;
+            }
+          }
+        }
+        updateTransform() {
+          if (this.config.useNative)
+            return;
+          this.updateSticky();
+          let px = this.position.x;
+          let py = this.position.y;
+          this.dom.style.transform = `matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,${px.toFixed(PRECISION)},${py.toFixed(PRECISION)},0,1)`;
+        }
+        get position() {
+          if (this.config.direction === D.TOP) {
+            this._position.x = 0;
+            this._position.y = -this.scroll;
+          }
+          if (this.config.direction === D.BOTTOM) {
+            this._position.x = 0;
+            this._position.y = this.scroll + (this.containerRect.height - this.rect.height) - this.rect.top * 2;
+          }
+          if (this.config.direction === D.LEFT) {
+            this._position.x = this.offset - this.scroll;
+            this._position.y = this.containerRect.top - this.rect.top;
+          }
+          if (this.config.direction === D.RIGHT) {
+            this._position.x = this.scroll + (this.containerRect.width - this.rect.width) - this.offset;
+            this._position.y = -this.rect.top;
+          }
+          return this._position;
+        }
+        update() {
+          var _a;
+          this.updateVisible();
           if (!this.visible)
             return;
-          this.hide();
-          this.updateTransform();
+          for (let i = 0, len = this.listeners.length; i < len; i++) {
+            (_a = this.listeners[i]) === null || _a === void 0 ? void 0 : _a.onUpdate();
+          }
         }
       };
     }
@@ -465,6 +504,9 @@
           document.head.append(_styles);
           document.body.appendChild(this.dom);
         }
+        remove() {
+          this.dom.remove();
+        }
         set contentHeight(height) {
           const dh = height - window.innerHeight;
           if (dh < 0) {
@@ -479,14 +521,16 @@
           this.height = Math.round(h);
           this.bar.style.height = `${this.height}px`;
         }
-        show(blockTimeout = false) {
+        show() {
           this.dom.style.opacity = `1`;
-          if (blockTimeout)
-            return;
           this.hide();
         }
-        hide() {
+        hide(force = false) {
           window.clearTimeout(tid);
+          if (force) {
+            this.dom.style.opacity = `0`;
+            return;
+          }
           tid = window.setTimeout(() => {
             this.dom.style.opacity = `0`;
           }, TIMEOUT);
@@ -506,19 +550,275 @@
     }
   });
 
-  // ../packages/scroller/lib/Scroller.js
-  var D, style2, touchWheel, DEFAULT_EASING, Scroller;
-  var init_Scroller = __esm({
-    "../packages/scroller/lib/Scroller.js"() {
-      init_main();
-      init_Section();
-      init_VirtualScrollBar();
-      (function(D3) {
-        D3[D3["TOP"] = 0] = "TOP";
-        D3[D3["BOTTOM"] = 1] = "BOTTOM";
-        D3[D3["LEFT"] = 2] = "LEFT";
-        D3[D3["RIGHT"] = 3] = "RIGHT";
-      })(D || (D = {}));
+  // ../packages/scroller/lib/partials/ScrollerConfig.js
+  var DEFAULT_EASING, ScrollerConfig;
+  var init_ScrollerConfig = __esm({
+    "../packages/scroller/lib/partials/ScrollerConfig.js"() {
+      init_Scroller();
+      DEFAULT_EASING = 0.16;
+      ScrollerConfig = class {
+        constructor(params) {
+          this.force = {
+            touch: 1,
+            wheel: 1
+          };
+          this.scrollDirection = {
+            vertical: true,
+            horizontal: false
+          };
+          this.loopPossible = false;
+          this.allowHorizontalScrolling = false;
+          this.allowVerticalScrolling = true;
+          this.container = null;
+          this.content = null;
+          this.direction = D.TOP;
+          this.easing = DEFAULT_EASING;
+          this.loop = false;
+          this.showVirtualScrollBar = false;
+          this.snapping = false;
+          this.snappingPossible = false;
+          this.touchForce = 1;
+          this.scrollbar = null;
+          this.useNative = false;
+          this.wheelForce = 1;
+          if (params) {
+            Object.assign(this, params);
+          }
+          this.scrollDirection.vertical = this.allowVerticalScrolling;
+          this.scrollDirection.horizontal = this.allowHorizontalScrolling;
+          if (this.touchForce)
+            this.force.touch = this.touchForce;
+          if (this.wheelForce)
+            this.force.wheel = this.wheelForce;
+          this.container = this.container ? this.container : document.querySelector("[fil-scroller]");
+          this.content = this.content ? this.content : this.container.querySelector("[fil-scroller-content]");
+          if (!this.container) {
+            console.warn("Fil Scroller - No `[fil-scroller]` element");
+            return;
+          }
+          if (this.useNative) {
+            console.log("Fil Scroller - Using Native Scroll");
+            this.container.setAttribute("fil-scroller-native", "");
+            console.log("Fil Scroller - Easing set to 1 (native scroll)");
+            this.easing = 1;
+          }
+          this.setDirection(this.direction);
+        }
+        // Set scroll direction
+        setDirection(d) {
+          this.direction = d;
+          if (this.useNative && this.direction !== D.TOP) {
+            console.warn("Fil Scroller - Native scrolling supports only D.TOP vertical direction. Forcing D.TOP...");
+            this.direction = D.TOP;
+          }
+        }
+        // Get scroll direction
+        isHorizontal() {
+          return this.direction === D.LEFT || this.direction === D.RIGHT;
+        }
+        isVertical() {
+          return this.direction === D.TOP || this.direction === D.BOTTOM;
+        }
+        // Returns true if the loop is wanted and possible
+        canLoop() {
+          return this.loop && this.loopPossible;
+        }
+      };
+    }
+  });
+
+  // ../packages/scroller/lib/partials/ScrollerEvents.js
+  var touchWheel, SWIPE_TIME, SWIPE_THRESHOLD, ScrollerEvents;
+  var init_ScrollerEvents = __esm({
+    "../packages/scroller/lib/partials/ScrollerEvents.js"() {
+      touchWheel = {
+        delta: 0,
+        startY: 0,
+        amp: 10,
+        startDrag: 0
+      };
+      SWIPE_TIME = 300;
+      SWIPE_THRESHOLD = 10;
+      ScrollerEvents = class {
+        constructor(scroller) {
+          this.blocked = false;
+          this.userInput = false;
+          this.listeners = [];
+          this.userSwipe = null;
+          this.scroller = scroller;
+          this.swipeStart = {
+            x: 0,
+            y: 0
+          };
+          this.swipeParams = {
+            time: SWIPE_TIME,
+            threshold: SWIPE_THRESHOLD
+          };
+          this.swipeTimeCount = null;
+          this.swipeTooLong = false;
+        }
+        // Listeners
+        addEventsListener(lis) {
+          if (this.listeners.indexOf(lis) > -1)
+            return;
+          this.listeners.push(lis);
+        }
+        removeEventsListener(lis) {
+          this.listeners.splice(this.listeners.indexOf(lis), 1);
+        }
+        onUserInputStart() {
+          for (const lis of this.listeners) {
+            if (lis && typeof lis.onUserInputStart === "function") {
+              lis.onUserInputStart();
+            }
+          }
+        }
+        onUserInputInProgress() {
+          for (const lis of this.listeners) {
+            if (lis && typeof lis.onUserInputInProgress === "function") {
+              lis.onUserInputInProgress();
+            }
+          }
+        }
+        onUserInputStop() {
+          for (const lis of this.listeners) {
+            if (lis && typeof lis.onUserInputStop === "function") {
+              lis.onUserInputStop();
+            }
+          }
+        }
+        onBeforeRestore() {
+          for (const lis of this.listeners) {
+            if (lis && typeof lis.onBeforeRestore === "function") {
+              lis.onBeforeRestore();
+            }
+          }
+        }
+        onAfterRestore() {
+          for (const lis of this.listeners) {
+            if (lis && typeof lis.onAfterRestore === "function") {
+              lis.onAfterRestore();
+            }
+          }
+        }
+        // Block - Unblock
+        block() {
+          if (this.blocked)
+            return;
+          this.blocked = true;
+        }
+        unblock() {
+          if (!this.blocked)
+            return;
+          this.blocked = false;
+        }
+        addInternalEventListeners(_target) {
+          const target = _target || window;
+          const s = this.scroller;
+          let userInputTimer;
+          target.addEventListener("wheel", (e) => {
+            if (!this.userInput)
+              this.onUserInputStart();
+            this.userInput = true;
+            if (userInputTimer) {
+              clearTimeout(userInputTimer);
+            }
+            userInputTimer = setTimeout(() => {
+              this.onUserInputStop();
+              this.userInput = false;
+            }, 100);
+            if (this.blocked)
+              return;
+            let delta = e.deltaY;
+            if (s.config.scrollDirection.horizontal && s.config.scrollDirection.vertical) {
+              const d = Math.abs(e.deltaX) > Math.abs(e.deltaY);
+              delta = d ? e.deltaX : e.deltaY;
+            } else if (s.config.scrollDirection.horizontal) {
+              delta = e.deltaX;
+            }
+            s.updateExternalByType(delta, "wheel");
+          }, { passive: true });
+          target.addEventListener("touchstart", (e) => {
+            this.userInput = true;
+            this.onUserInputStart();
+            this.swipeStart.x = e.changedTouches[0].pageX;
+            this.swipeStart.y = e.changedTouches[0].pageY;
+            if (this.swipeTimeCount)
+              clearTimeout(this.swipeTimeCount);
+            this.swipeTooLong = false;
+            this.userSwipe = "none";
+            this.swipeTimeCount = setTimeout(() => {
+              this.swipeTooLong = true;
+              this.userSwipe = null;
+            }, this.swipeParams.time);
+            if (this.blocked)
+              return;
+            const et = e.touches[0];
+            touchWheel.startY = et.clientY;
+            touchWheel.startDrag = performance.now();
+          }, {
+            passive: true
+          });
+          target.addEventListener("touchend", (e) => {
+            this.userInput = false;
+            this.onUserInputStop();
+            if (this.blocked)
+              return;
+            if (performance.now() - touchWheel.startDrag < 100) {
+              s.updateExternalByType(-touchWheel.delta * 10, "touch");
+            }
+            touchWheel.delta = 0;
+          }, {
+            passive: true
+          });
+          target.addEventListener("touchmove", (e) => {
+            const et = e.changedTouches[0];
+            const dx = et.pageX - this.swipeStart.x;
+            const dy = et.pageY - this.swipeStart.y;
+            const absX = Math.abs(dx);
+            const absY = Math.abs(dy);
+            if (!this.swipeTooLong) {
+              if (absX > this.swipeParams.threshold || absY > this.swipeParams.threshold) {
+                if (absX > absY) {
+                  if (dx > 0) {
+                    this.userSwipe = "right";
+                  } else {
+                    this.userSwipe = "left";
+                  }
+                } else {
+                  if (dy > 0) {
+                    this.userSwipe = "down";
+                  } else {
+                    this.userSwipe = "up";
+                  }
+                }
+              }
+            } else {
+              this.userSwipe = null;
+            }
+            if (this.blocked)
+              return;
+            const e1 = e.touches[0];
+            touchWheel.delta = e1.clientY - touchWheel.startY;
+            touchWheel.startY = e1.clientY;
+            s.updateExternalByType(-touchWheel.delta, "touch");
+          }, {
+            passive: true
+          });
+        }
+        update() {
+          if (this.userInput) {
+            this.onUserInputInProgress();
+          }
+        }
+      };
+    }
+  });
+
+  // ../packages/scroller/lib/partials/ScrollerStyles.js
+  var style2, START_END_OFFSET, ScrollerStyles;
+  var init_ScrollerStyles = __esm({
+    "../packages/scroller/lib/partials/ScrollerStyles.js"() {
       style2 = `
 	html {
 		overscroll-behavior: none;
@@ -537,7 +837,6 @@
 	[fil-scroller-section]{
 		opacity: 0;
 		visibility: hidden;
-		will-change: auto;
 	}
 	[fil-scroller-sticky]{
 		position: sticky;
@@ -546,7 +845,7 @@
 	[fil-scroller-section].fil-scroller__visible {
 		opacity: 1;
 		visibility: visible;
-		will-change: transform, scroll-position;
+		will-change: transform;
 	}
 	[fil-scroller="disabled"] [fil-scroller-container] {
 		position: relative;
@@ -560,150 +859,20 @@
 	[fil-scroller-section].fil-scroller__visible [fil-scroller-sticky] {
 		will-change: transform;
 	}
+
+	[fil-scroller-section].fil-scroller__section-disabled {
+		opacity: 0;
+		visibility: hidden;
+		pointer-events: none;
+	}
 `;
-      touchWheel = {
-        delta: 0,
-        startY: 0,
-        amp: 10,
-        startDrag: 0
-      };
-      DEFAULT_EASING = 0.16;
-      Scroller = class {
-        constructor(params) {
-          this.isBody = false;
-          this.progress = 0;
-          this.scrollDirection = {
-            vertical: true,
-            horizontal: false
-          };
-          this.force = {
-            touch: 1,
-            wheel: 1
-          };
-          this.position = {
-            current: 0,
-            target: 0
-          };
-          this.overScrolling = false;
-          this._direction = D.TOP;
-          this.sections = [];
-          this.loaded = false;
-          this.disabled = false;
-          this.blocked = false;
-          this.distance = 0;
-          this.delta = 0;
-          this.w = {
-            w: 0,
-            h: 0
-          };
-          this.edges = [0, 0];
-          this.useNative = false;
-          if (params.customContainer) {
-            this.container = params.customContainer;
-          } else
-            this.container = document.querySelector("[fil-scroller]");
-          if (params.customContent) {
-            this.content = params.customContent;
-          } else
-            this.content = this.container.querySelector("[fil-scroller-content]");
-          this.isBody = this.container === document.body;
-          this.scrollDirection.vertical = !(params.allowVerticalScrolling === false);
-          this.scrollDirection.horizontal = params.allowHorizontalScrolling === true;
-          if (!this.container) {
-            console.warn("Fil Scroller - No `[fil-scroller]` element");
-            return;
-          }
-          this.sectionsWrapper = this.container.querySelector("[fil-scroller-sections-wrapper]");
-          if (!this.sectionsWrapper) {
-            console.log(`Fil Scroller - No '[fil-scroller-sections-wrapper]' element, using [fil-scroller-content] as wrapper`);
-            this.sectionsWrapper = this.content;
-          }
-          this.ease = (params === null || params === void 0 ? void 0 : params.easing) || DEFAULT_EASING;
-          this.useNative = (params === null || params === void 0 ? void 0 : params.useNative) === true;
-          this._direction = (params === null || params === void 0 ? void 0 : params.direction) || D.TOP;
-          if (params.touchForce)
-            this.force.touch = params.touchForce;
-          if (params.wheelForce)
-            this.force.wheel = params.wheelForce;
-          if (this.useNative) {
-            console.log("Using Native Scroll");
-            document.querySelector("[fil-scroller]").setAttribute("fil-scroller-native", "");
-            if (this._direction !== D.TOP) {
-              console.warn("Native scrolling supports only D.TOP vertical direction! Forcing D.TOP...");
-              this._direction = D.TOP;
-            }
-            this.ease = 1;
-          } else if (params === null || params === void 0 ? void 0 : params.showVirtualScrollBar) {
-            this.virtualScrollBar = (params === null || params === void 0 ? void 0 : params.customScrollBar) || new VirtualScrollBar(0);
-          }
+      START_END_OFFSET = 10;
+      ScrollerStyles = class {
+        constructor(scroller) {
+          this.isAtStart = false;
+          this.isAtEnd = false;
+          this.scroller = scroller;
           this.addStyles();
-          this.refresh();
-          this.addEventListeners(this.container);
-        }
-        get enabled() {
-          return !this.disabled;
-        }
-        // Disable - enable
-        disable() {
-          if (this.disabled)
-            return;
-          this.disabled = true;
-          for (const section of this.sections)
-            section.disabled = this.disabled;
-          const b = document.body;
-          if (this.container != b)
-            this.container.setAttribute("fil-scroller", "disabled");
-          else
-            document.documentElement.classList.add("fil-scroller-disabled");
-          if (this.virtualScrollBar) {
-            this.virtualScrollBar.dom.style.display = "none";
-          }
-        }
-        enable() {
-          if (!this.disabled)
-            return;
-          this.disabled = false;
-          for (const section of this.sections)
-            section.disabled = this.disabled;
-          const b = document.body;
-          if (this.container != b)
-            this.container.setAttribute("fil-scroller", "");
-          else
-            document.documentElement.classList.remove("fil-scroller-disabled");
-          if (this.virtualScrollBar) {
-            this.virtualScrollBar.dom.style.display = "block";
-          }
-        }
-        // Block - Unblock
-        block() {
-          if (this.blocked)
-            return;
-          this.blocked = true;
-        }
-        unblock() {
-          if (!this.blocked)
-            return;
-          this.blocked = false;
-        }
-        set direction(val) {
-          if (this.useNative && val !== D.TOP) {
-            console.warn("Native scrolling supports only D.TOP vertical direction! Forcing D.TOP...");
-            this._direction = D.TOP;
-          } else {
-            this._direction = MathUtils.clamp(val, 0, 3);
-          }
-          for (const section of this.sections)
-            section.direction = this.direction;
-          this.restore();
-        }
-        get direction() {
-          return this._direction;
-        }
-        set ease(newEase) {
-          this._ease = newEase;
-        }
-        get ease() {
-          return this._ease;
         }
         addStyles() {
           document.documentElement.setAttribute("fil-scroller-parent", "");
@@ -711,116 +880,172 @@
           _styles.textContent = style2;
           document.head.append(_styles);
         }
+        update() {
+          const s = this.scroller;
+          if (s.config.canLoop())
+            return;
+          const isAtStart = s.position.current <= s.edges[0] + START_END_OFFSET;
+          if (isAtStart && !this.isAtStart) {
+            this.isAtStart = true;
+            s.config.container.classList.add("fil-scroller__top");
+            return;
+          }
+          if (!isAtStart && this.isAtStart) {
+            this.isAtStart = false;
+            s.config.container.classList.remove("fil-scroller__top");
+            return;
+          }
+          const isAtEnd = s.position.current >= s.edges[1] - START_END_OFFSET;
+          if (isAtEnd && !this.isAtEnd) {
+            this.isAtEnd = true;
+            s.config.container.classList.add("fil-scroller__bottom");
+            return;
+          }
+          if (!isAtEnd && this.isAtEnd) {
+            this.isAtEnd = false;
+            s.config.container.classList.remove("fil-scroller__bottom");
+            return;
+          }
+        }
+      };
+    }
+  });
+
+  // ../packages/scroller/lib/Scroller.js
+  var D, PRECISION, SNAP_THRESHOLD, Scroller;
+  var init_Scroller = __esm({
+    "../packages/scroller/lib/Scroller.js"() {
+      init_main();
+      init_Section();
+      init_VirtualScrollBar();
+      init_ScrollerConfig();
+      init_ScrollerEvents();
+      init_ScrollerStyles();
+      (function(D3) {
+        D3[D3["TOP"] = 0] = "TOP";
+        D3[D3["BOTTOM"] = 1] = "BOTTOM";
+        D3[D3["LEFT"] = 2] = "LEFT";
+        D3[D3["RIGHT"] = 3] = "RIGHT";
+      })(D || (D = {}));
+      PRECISION = 5;
+      SNAP_THRESHOLD = 5e-3;
+      Scroller = class {
+        constructor(params) {
+          this.sections = [];
+          this.loaded = false;
+          this.progress = 0;
+          this.position = {
+            current: 0,
+            target: 0
+          };
+          this.distance = 0;
+          this.delta = 0;
+          this.containerSize = {
+            w: 0,
+            h: 0
+          };
+          this.edges = [0, 0];
+          this.config = new ScrollerConfig(params);
+          if (this.config.showVirtualScrollBar) {
+            this.virtualScrollBar = this.config.scrollbar || new VirtualScrollBar(0);
+          }
+          this.styles = new ScrollerStyles(this);
+          this.events = new ScrollerEvents(this);
+          if (!this.config.useNative)
+            this.events.addInternalEventListeners(this.config.container);
+          this.refresh();
+        }
+        // --------------------------------------------------- EVENTS
+        // Block - Unblock
+        block() {
+          this.events.block();
+        }
+        unblock() {
+          this.events.unblock();
+        }
+        // Setters - Getters
+        set direction(d) {
+          this.config.setDirection(d);
+          this.restore();
+        }
+        get direction() {
+          return this.config.direction;
+        }
+        set ease(newEase) {
+          this.config.easing = newEase;
+        }
+        get ease() {
+          return this.config.easing;
+        }
+        getSectionIndex(s) {
+          for (let i = 0; i < this.sections.length; i++) {
+            if (this.sections[i] === s)
+              return i;
+          }
+          return 0;
+        }
+        // Get scroller direction
+        isHorizontal() {
+          return this.config.isHorizontal();
+        }
+        isVertical() {
+          return this.config.isVertical();
+        }
         addSections() {
-          const sections = this.sectionsWrapper.querySelectorAll(":scope > [fil-scroller-section]");
+          const sections = this.config.content.querySelectorAll(":scope > [fil-scroller-section]");
           for (let i = 0, len = sections.length; i < len; i++) {
-            const _section = sections[i];
-            const id = _section.getAttribute("fil-scroller-section") ? _section.getAttribute("fil-scroller-section") : `section-${i}`;
-            const section = new Section(id, _section, this.direction, this.useNative);
+            const dom2 = sections[i];
+            const section = new Section(i, dom2, this.config);
             this.sections.push(section);
           }
         }
-        isHorizontal() {
-          return this.direction === D.LEFT || this.direction === D.RIGHT;
-        }
-        restore(resizing = false) {
-          const ww = window.innerWidth;
-          const wh = window.innerHeight;
-          this.w.w = ww;
-          this.w.h = wh;
+        restore() {
           for (const section of this.sections) {
-            section.dom.classList.remove("disabled");
-            section.w = this.w;
-            section.restore(resizing);
+            section.onBeforeRestore();
+            this.events.onBeforeRestore();
           }
-          this.updateSections();
+          const containerRect = this.config.container.getBoundingClientRect();
+          const vertical = this.isVertical();
+          this.containerSize.w = containerRect.width;
+          this.containerSize.h = containerRect.height;
           let w = 0;
           for (let section of this.sections) {
-            section.widthOffset = w;
-            w += section.sticky.length ? section.rect.width : section.rect.width;
+            section.containerRect = containerRect;
+            section.offset = w;
+            if (section.disabled)
+              continue;
+            w += vertical ? section.rect.height : section.rect.width;
           }
+          for (const section of this.sections) {
+            section.restore();
+          }
+          this.updateSections();
           this.updateCheckHeight();
-        }
-        contentChanged() {
-          this.restore();
-          this.update();
-        }
-        resize() {
-          this.restore(true);
-        }
-        updateExternal(delta) {
-          this.position.target = MathUtils.clamp(this.position.target + delta, this.edges[0], this.edges[1]);
-          this.updateOverScrolling(delta);
-        }
-        addEventListeners(_target) {
-          if (this.useNative)
-            return;
-          const target = _target || window;
-          target.addEventListener("wheel", (e) => {
-            if (this.disabled)
-              return;
-            if (this.blocked)
-              return;
-            let delta = e.deltaY;
-            if (this.scrollDirection.horizontal && this.scrollDirection.vertical) {
-              const d = Math.abs(e.deltaX) > Math.abs(e.deltaY);
-              delta = d ? e.deltaX : e.deltaY;
-            } else if (this.scrollDirection.horizontal) {
-              delta = e.deltaX;
+          setTimeout(() => {
+            for (const section of this.sections) {
+              section.onAfterRestore();
+              this.events.onAfterRestore();
             }
-            this.updateExternal(delta * this.force.wheel);
-          });
-          target.addEventListener("touchstart", (e) => {
-            if (this.disabled)
-              return;
-            if (this.blocked)
-              return;
-            const e1 = e.touches[0];
-            touchWheel.startY = e1.clientY;
-            touchWheel.startDrag = performance.now();
-          }, {
-            passive: false
-          });
-          target.addEventListener("touchend", (e) => {
-            if (this.disabled)
-              return;
-            if (this.blocked)
-              return;
-            if (performance.now() - touchWheel.startDrag < 100) {
-              this.updateExternal(-touchWheel.delta * 10 * this.force.touch);
-            }
-            touchWheel.delta = 0;
-          }, {
-            passive: false
-          });
-          target.addEventListener("touchmove", (e) => {
-            if (this.disabled)
-              return;
-            if (this.blocked)
-              return;
-            e.preventDefault();
-            const e1 = e.touches[0];
-            touchWheel.delta = e1.clientY - touchWheel.startY;
-            touchWheel.startY = e1.clientY;
-            this.updateExternal(-touchWheel.delta * this.force.touch);
-          }, {
-            passive: false
-          });
+          }, 15);
+        }
+        dispose() {
+          this.loaded = false;
+          this.sections = [];
+        }
+        stop() {
+          this.delta = 0;
+          this.position.target = this.position.current;
         }
         refresh(forceTop = true) {
-          this.loaded = false;
           if (forceTop) {
             this.position.current = 0;
-            if (this.useNative) {
-              this.container.scrollTop = 0;
+            if (this.config.useNative) {
+              this.config.container.scrollTop = 0;
             }
           }
           this.position.target = this.position.current;
-          this.sections = [];
+          this.dispose();
           this.create();
-          if (this.isHorizontal()) {
-            this.restore();
-          }
         }
         create() {
           this.addSections();
@@ -830,108 +1055,188 @@
           console.log("Fil Scroller - Loaded");
           this.loaded = true;
         }
-        updateTarget() {
-          if (this.useNative) {
-            this.position.target = this.isBody ? window.scrollY : this.container.scrollTop;
-          }
+        updateExternalByType(_delta, type) {
+          const force = type === "touch" ? this.config.force.touch : this.config.force.wheel;
+          const delta = _delta * force;
+          this.updateExternal(delta);
+        }
+        updateExternal(delta) {
+          if (this.config.canLoop())
+            this.position.target += delta;
+          else
+            this.position.target = MathUtils.clamp(this.position.target + delta, this.edges[0], this.edges[1]);
         }
         updateCheckHeight() {
           this.distance = 0;
-          const vertical = !this.isHorizontal();
+          const vertical = this.isVertical();
           for (let i = 0, len = this.sections.length; i < len; i++) {
             const section = this.sections[i];
+            if (section.disabled)
+              continue;
             if (vertical)
               this.distance += section.rect.height;
             else
               this.distance += section.sticky.length ? section.rect.height : section.rect.width;
           }
-          const dw = this.w.h - this.w.w;
-          if (!vertical)
-            this.distance += dw;
-          this.content.style.height = `${this.distance}px`;
-          if (!this.useNative && this.virtualScrollBar) {
+          this.config.content.style.height = `${this.distance}px`;
+          if (!this.config.useNative && this.virtualScrollBar) {
             this.virtualScrollBar.contentHeight = this.distance;
           }
-          this.edges[1] = vertical ? this.distance - this.w.h : this.distance - this.w.w - dw;
+          const containerSize = vertical ? this.containerSize.h : this.containerSize.w;
+          this.edges[0] = 0;
+          this.edges[1] = MathUtils.clamp(this.distance - containerSize, 0, this.distance);
+          if (this.config.useNative) {
+            this.edges[1] = this.distance - window.innerHeight;
+          }
+          this.config.loopPossible = this.distance >= containerSize * 2;
+        }
+        updateNativeTarget() {
+          if (!this.config.useNative)
+            return;
+          this.position.target = window.scrollY;
         }
         updateScrollValues() {
           const previous = this.position.current;
-          if (this.disabled) {
-            this.position.current = this.position.target;
-          } else {
-            this.position.current = MathUtils.lerp(this.position.current, this.position.target, this.ease);
-            if (Math.abs(this.position.target - this.position.current) < 1) {
-              this.position.current = this.position.target;
-            }
-          }
-          if (!this.useNative && this.virtualScrollBar) {
+          this.position.current = MathUtils.lerp(this.position.current, this.position.target, this.config.easing);
+          if (!this.config.useNative && this.virtualScrollBar) {
             this.virtualScrollBar.progress = MathUtils.clamp(this.position.current / this.edges[1], 0, 1);
           }
-          this.position.current = MathUtils.clamp(this.position.current, this.edges[0], this.edges[1]);
+          if (!this.config.canLoop()) {
+            this.position.current = MathUtils.clamp(this.position.current, this.edges[0], this.edges[1]);
+          }
           const newDelta = (this.position.current - previous) * 0.01;
-          this.delta = MathUtils.clamp(MathUtils.lerp(this.delta, newDelta, 0.1), -1, 1);
+          const previousDelta = parseFloat(this.delta.toFixed(PRECISION));
+          this.delta = parseFloat(MathUtils.clamp(MathUtils.lerp(this.delta, newDelta, 0.1), -1, 1).toFixed(PRECISION));
+          this.snapCheck(previousDelta, this.delta);
+        }
+        // This will seameless restart the loop in both directions
+        updateLoop() {
+          if (!this.config.canLoop())
+            return;
+          const vertical = this.isVertical();
+          const containerSize = vertical ? this.containerSize.h : this.containerSize.w;
+          const distanceBetweenCurrentAndTarget = this.position.target - this.position.current;
+          if (this.position.current < this.edges[0] - containerSize) {
+            this.position.current = this.distance - containerSize;
+            this.position.target = this.position.current + distanceBetweenCurrentAndTarget;
+          }
+          if (this.position.current > this.distance) {
+            this.position.current = this.edges[0];
+            this.position.target = this.position.current + distanceBetweenCurrentAndTarget;
+          }
+        }
+        updateSection(section, scroll, delta) {
+          section.scroll = scroll;
+          section.delta = delta;
+          section.update();
         }
         updateSections() {
-          const scroll = this.position.current;
           for (let i = 0, len = this.sections.length; i < len; i++) {
             const section = this.sections[i];
-            section.scroll = scroll;
-            section.delta = this.delta;
-            section.update();
+            this.updateSection(section, this.position.current, this.delta);
           }
-        }
-        updateOverScrolling(delta) {
-          this.overScrolling = false;
-          if (this.position.current <= this.edges[0] && delta < 0) {
-            this.overScrolling = true;
+          if (!this.config.canLoop())
+            return;
+          const vertical = this.isVertical();
+          const containerSize = vertical ? this.containerSize.h : this.containerSize.w;
+          let p = 0;
+          const l = this.sections.length - 1;
+          if (this.position.current < this.edges[0]) {
+            for (let i = l; i > 0; i--) {
+              if (p > containerSize)
+                break;
+              const section = this.sections[i];
+              const current = this.position.current + this.distance;
+              this.updateSection(section, current, this.delta);
+              p += vertical ? section.rect.height : section.rect.width;
+            }
           }
-          if (this.position.current >= this.edges[1] && delta > 0) {
-            this.overScrolling = true;
+          if (this.position.current > this.distance - containerSize) {
+            for (let i = 0; i < l; i++) {
+              if (p > containerSize)
+                break;
+              const section = this.sections[i];
+              const current = this.position.current - this.distance;
+              this.updateSection(section, current, this.delta);
+              p += vertical ? section.rect.height : section.rect.width;
+            }
           }
         }
         update() {
           if (!this.loaded)
             return;
-          this.updateTarget();
+          this.styles.update();
+          this.updateNativeTarget();
           this.updateScrollValues();
-          if (Math.abs(this.delta) > 1e-3) {
-            this.updateSections();
-          }
-          this.container.classList.toggle("fil-scroller__top", this.position.current <= this.edges[0] + 0.5);
-          this.container.classList.toggle("fil-scroller__bottom", this.position.current >= this.edges[1] - 0.5);
+          this.updateLoop();
+          this.updateSections();
           this.progress = MathUtils.truncateDecimals(MathUtils.map(this.position.current, this.edges[0], this.edges[1], 0, 1), 3);
+          this.events.update();
+        }
+        // Trigger snapping
+        // Todo
+        // - snap to center
+        // - snap mirant el loop, ara si estas en el tros aquest entre un i altre encara creu que es mes propera la primera o ultima que la loopejada
+        snapCheck(previousDelta, delta) {
+          if (!this.config.snapping)
+            return;
+          const absDelta = Math.abs(delta);
+          const absPrevDelta = Math.abs(previousDelta);
+          if (absDelta > absPrevDelta && absDelta > SNAP_THRESHOLD)
+            this.config.snappingPossible = true;
+          if (absDelta < absPrevDelta && this.config.snappingPossible && absDelta < SNAP_THRESHOLD) {
+            this.config.snappingPossible = false;
+            this.snap();
+          }
+        }
+        snap() {
+          let section = this.sections[0];
+          for (let i = 0; i < this.sections.length; i++) {
+            const s = this.sections[i];
+            const currentDiff = Math.abs(s.offset - this.position.current);
+            const closestDiff = Math.abs(section.offset - this.position.current);
+            if (currentDiff < closestDiff) {
+              section = s;
+            }
+          }
+          console.log(`Fil Scroller - Snap to Section ${this.getSectionIndex(section)}`);
+          this.scrollToSection(section);
         }
         /**
          * Scrolls to a given position
          * @param k index of section to scroll to
          * @returns
          */
-        scrollTo(k) {
+        scrollTo(k, instant = false) {
           const _k = MathUtils.clamp(k, this.edges[0], this.edges[1]);
           this.position.target = _k;
-          if (this.useNative) {
-            this.container.scrollTop = k;
+          if (instant) {
+            this.position.current = 0;
+          }
+          if (this.config.useNative) {
+            window.scrollTo(0, k);
           }
         }
         /**
          * Scrolls to a given section
-         * @param k index of section to scroll to
+         * @param k index of section or Section to scroll to
          * @returns
          */
-        scrollToSection(k) {
+        scrollToSection(s) {
+          const k = typeof s === "number" ? s : this.getSectionIndex(s);
           if (k < 0 || k > this.sections.length - 1) {
-            return console.warn("Section Out of bounds!");
+            return console.warn("Fil Scroller - Section Out of bounds");
           }
-          const sec = this.sections[k];
-          if (this.useNative) {
-            const top = Math.min(sec.rect.top, this.distance - this.w.h);
-            this.container.scrollTop = top;
+          const section = this.sections[k];
+          if (this.config.useNative) {
+            const top = section.rect.top + window.scrollY;
+            window.scrollTo(0, top);
           } else {
-            if (!this.isHorizontal()) {
-              const top = Math.min(sec.rect.top, this.distance - this.w.h);
+            if (this.isVertical()) {
+              const top = Math.min(section.rect.top, this.distance - this.containerSize.h);
               this.position.target = top;
             } else {
-              const l = Math.min(sec.widthOffset, this.distance);
+              const l = Math.min(section.offset, this.distance);
               this.position.target = l;
             }
           }
@@ -961,7 +1266,8 @@
       ContentSection = class {
         constructor(_dom, scroller) {
           this.dom = _dom;
-          const sections = scroller === null || scroller === void 0 ? void 0 : scroller.sections;
+          this.scroller = scroller;
+          const sections = scroller.sections;
           if (sections) {
             const s = sections.find((s2) => s2.dom === _dom);
             if (s) {
@@ -969,10 +1275,9 @@
               this.section = s;
             }
           }
-          this.init();
         }
         /**
-         * Init function. Must be called by your child classes
+         * Init function. Must be called
          */
         init() {
           this.onInit();
@@ -981,9 +1286,24 @@
             this.onAnimationIn();
         }
         /**
-         * You must initialize all your stuff here
+         * onInit triggers first time that this section loads
          */
         onInit() {
+        }
+        // /**
+        //  * Resume, triggers any time this section is re-inititated (if it's already created it will trigger "resume" but not onInit)
+        //  */
+        // resume(){
+        // }
+        // /**
+        //  * Stop, triggers any time this section is stopped, when the user leaves the page with this section but it's not destroying its dom
+        //  */
+        // stop(){
+        // }
+        /**
+         * Dispose, triggers when the
+         */
+        dispose() {
         }
         addEventListeners() {
         }
@@ -1001,28 +1321,34 @@
         }
         /**
          * Called on section before restore
-         * @param resizing whereas scroller is resizing or not
          */
-        onBeforeRestore(resizing) {
+        onBeforeRestore() {
         }
         /**
          * Called on section after restore
-         * @param resizing whereas scroller is resizing or not
          */
-        onAfterRestore(resizing) {
+        onAfterRestore() {
         }
         /**
-         * You must call this function in your own raf
-         * @param time animation time in seconds
+         * Called on section update when visible
          */
-        update(time = 0) {
-        }
-        /**
-         * Dispose events
-         */
-        dispose() {
+        onUpdate() {
         }
       };
+    }
+  });
+
+  // ../packages/scroller/lib/SmoothScroller.js
+  var init_SmoothScroller = __esm({
+    "../packages/scroller/lib/SmoothScroller.js"() {
+      init_main();
+    }
+  });
+
+  // ../packages/scroller/lib/SmoothScrollerSection.js
+  var init_SmoothScrollerSection = __esm({
+    "../packages/scroller/lib/SmoothScrollerSection.js"() {
+      init_main();
     }
   });
 
@@ -1030,9 +1356,13 @@
   var init_main2 = __esm({
     "../packages/scroller/lib/main.js"() {
       init_Scroller();
+      init_ScrollerConfig();
+      init_ScrollerEvents();
       init_VirtualScrollBar();
       init_Section();
       init_ContentSection();
+      init_SmoothScroller();
+      init_SmoothScrollerSection();
     }
   });
 
@@ -1496,6 +1826,7 @@
             }, 100);
           }
           this.subscribers[event].push(callback);
+          return this;
         }
         emit(event, target) {
           if (this.subscribers[event]) {
@@ -1591,6 +1922,10 @@
         close() {
         }
         open() {
+        }
+        on(event, callback) {
+          super.on(event, callback);
+          return this;
         }
       };
     }
@@ -1896,12 +2231,13 @@
   });
 
   // ../packages/ui/lib/components/items/customItems/StringItem.js
-  var StringItem;
+  var DEFAULT_EMPTY, StringItem;
   var init_StringItem = __esm({
     "../packages/ui/lib/components/items/customItems/StringItem.js"() {
       init_main3();
       init_main7();
       init_Item();
+      DEFAULT_EMPTY = "String";
       StringItem = class extends Item {
         constructor() {
           super(...arguments);
@@ -1920,14 +2256,14 @@
         createContent() {
           this.input = el("input");
           this.input.setAttribute("tabindex", "1");
-          this.input.placeholder = "String";
+          this.input.placeholder = this.params.emptyState || DEFAULT_EMPTY;
           this.input.type = "text";
           this.input.classList.add(CSS_UI.item);
           this.content.appendChild(this.input);
         }
         setValue(value) {
           if (isNull(value) || isUndefined(value)) {
-            value = "String";
+            value = this.params.emptyState || DEFAULT_EMPTY;
           }
           super.setValue(value);
         }
@@ -1943,7 +2279,7 @@
     }
   });
 
-  // ../packages/color/lib/utils.js
+  // ../packages/ui/node_modules/@fils/color/lib/utils.js
   function componentToHex(c7) {
     const hex = c7.toString(16);
     return hex.length === 1 ? "0" + hex : hex;
@@ -2046,11 +2382,11 @@
     return fixedColor;
   }
   var init_utils = __esm({
-    "../packages/color/lib/utils.js"() {
+    "../packages/ui/node_modules/@fils/color/lib/utils.js"() {
     }
   });
 
-  // ../packages/color/lib/canvas-utils.js
+  // ../packages/ui/node_modules/@fils/color/lib/canvas-utils.js
   function drawColorPickerBar(canvas, x, y, width, height) {
     const _x = x !== void 0 ? x : 0;
     const _y = y !== void 0 ? y : 0;
@@ -2085,14 +2421,14 @@
     }
   }
   var init_canvas_utils = __esm({
-    "../packages/color/lib/canvas-utils.js"() {
+    "../packages/ui/node_modules/@fils/color/lib/canvas-utils.js"() {
       init_utils();
     }
   });
 
-  // ../packages/color/lib/main.js
+  // ../packages/ui/node_modules/@fils/color/lib/main.js
   var init_main5 = __esm({
-    "../packages/color/lib/main.js"() {
+    "../packages/ui/node_modules/@fils/color/lib/main.js"() {
       init_utils();
       init_canvas_utils();
     }
@@ -3020,7 +3356,7 @@
   var CSS;
   var init_styles = __esm({
     "../packages/ui/lib/styles.js"() {
-      CSS = `@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjXr8AIxsdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjXr8AIVsdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjXr8AIJsdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0370-03FF}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjXr8AI5sdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+1EA0-1EF9,U+20AB}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjXr8AI9sdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjXr8AIFsdP3pBms.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYXgKVElMYYaJe8bpLHnCwDKhdzeFaxOedfTDw.woff2) format("woff2");unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYXgKVElMYYaJe8bpLHnCwDKhdXeFaxOedfTDw.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYXgKVElMYYaJe8bpLHnCwDKhdLeFaxOedfTDw.woff2) format("woff2");unicode-range:U+0370-03FF}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYXgKVElMYYaJe8bpLHnCwDKhd7eFaxOedfTDw.woff2) format("woff2");unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+1EA0-1EF9,U+20AB}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYXgKVElMYYaJe8bpLHnCwDKhd_eFaxOedfTDw.woff2) format("woff2");unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYXgKVElMYYaJe8bpLHnCwDKhdHeFaxOedc.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjWr7AIxsdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjWr7AIVsdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjWr7AIJsdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0370-03FF}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjWr7AI5sdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+1EA0-1EF9,U+20AB}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjWr7AI9sdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjWr7AIFsdP3pBms.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}:root{--ui-index:998;--ui-panels-index:999;--radius-0:4px;--radius-1:8px;--padding:0.2rem 0.4rem;--spacer:0.25rem;--duration:.3s;--timing:cubic-bezier(.6, 0, .4, 1);--accent-color:#2871C7;--happy-color:#49db6e;--warning-color:#ae7d15;--danger-color:#8f0000;--bg-0:#303030;--bg-1:#191919;--white:#FFF;--color-0:#CCCCCC;--color-1:#999999;--color-2:#7b7b7b}._ui-panel,._ui-panel *,._ui-wrapper,._ui-wrapper *{box-sizing:border-box}._ui-panel fieldset,._ui-wrapper fieldset{min-inline-size:unset}._ui-panel button,._ui-panel input,._ui-panel select,._ui-panel textarea,._ui-wrapper button,._ui-wrapper input,._ui-wrapper select,._ui-wrapper textarea{padding:0;margin:0;border:none;color:inherit;background-color:transparent;border-radius:0;font:inherit;text-align:inherit;text-transform:inherit;letter-spacing:inherit}._ui-panel a,._ui-panel h1,._ui-panel h2,._ui-panel h3,._ui-panel h4,._ui-panel h5,._ui-panel h6,._ui-panel p,._ui-wrapper a,._ui-wrapper h1,._ui-wrapper h2,._ui-wrapper h3,._ui-wrapper h4,._ui-wrapper h5,._ui-wrapper h6,._ui-wrapper p{margin:0;font:inherit}._ui-panel input[type=number],._ui-wrapper input[type=number]{-moz-appearance:textfield}._ui-panel input[type=number]::-webkit-inner-spin-button,._ui-panel input[type=number]::-webkit-outer-spin-button,._ui-wrapper input[type=number]::-webkit-inner-spin-button,._ui-wrapper input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}._ui-panel,._ui-wrapper{font-family:"IBM Plex Sans",sans-serif;font-size:12px;color:var(--color-1);font-weight:400}._ui-panel header,._ui-wrapper header{font-weight:700}._ui-panel [ui-depth="0"]>header,._ui-wrapper [ui-depth="0"]>header{color:var(--color-0)}._ui-panel fieldset h4,._ui-panel fieldset p,._ui-wrapper fieldset h4,._ui-wrapper fieldset p{color:var(--color-2)}._ui-wrapper{z-index:var(--ui-index);--wrapper-width:300px;position:fixed;top:5px;right:5px;width:var(--wrapper-width);min-width:300px}._ui-wrapper ::selection{background:var(--white);color:var(--accent-color)}._ui-wrapper ._ui--hidden{display:none!important;pointer-events:none}._ui-wrapper ._ui-item{width:100%;min-height:2rem;padding:var(--padding);text-align:left;background-color:var(--section-bg-1);border:1px solid var(--section-bg-1);border-radius:var(--radius-0);display:flex;align-items:center;cursor:pointer}._ui-wrapper ._ui-item:focus{border-color:var(--accent-color)}._ui-wrapper._ui-wrapper-has-parent{position:relative;top:unset;right:unset;width:100%}._ui-wrapper ._ui-wrapper-resizer{position:absolute;width:4px;height:calc(100% - 4px);top:4px;left:0;cursor:ew-resize;z-index:1}._ui-wrapper._ui-minimal section[ui-depth="0"]>header{display:none}._ui-wrapper section{--section-bg-0:var(--bg-1);--section-bg-1:var(--bg-0);position:relative;width:100%;height:auto;overflow:hidden;border-radius:var(--radius-1);background-color:var(--section-bg-0)}._ui-wrapper section[ui-depth="0"],._ui-wrapper section[ui-depth="10"],._ui-wrapper section[ui-depth="2"],._ui-wrapper section[ui-depth="4"],._ui-wrapper section[ui-depth="6"],._ui-wrapper section[ui-depth="8"]{--section-bg-0:var(--bg-0);--section-bg-1:var(--bg-1)}._ui-wrapper section:not([ui-depth="0"]){margin-top:var(--spacer)}._ui-wrapper section ._ui-section-content{padding:0 var(--spacer) var(--spacer) var(--spacer);position:relative;float:left;display:flex;flex-direction:column;width:100%}._ui-wrapper section ._ui-section-content fieldset:first-of-type{margin-top:.5rem}._ui-wrapper section ._ui-section-content fieldset:last-child{margin-bottom:.5rem}._ui-wrapper ._ui-section-foldable{transition-duration:var(--duration);transition-timing-function:var(--timing);overflow:hidden}._ui-wrapper ._ui-section-foldable>header{cursor:pointer}._ui-wrapper ._ui-section-foldable ._ui-section-foldable-element{overflow:hidden;transition-duration:inherit;transition-timing-function:inherit;transition-property:height}._ui-wrapper ._ui-section-foldable ._ui-section-header-icon{transition:transform var(--duration) var(--timing)}._ui-wrapper ._ui-section-foldable ._ui-section-foldable-element ._ui-section-header-icon{transform:rotate(0);width:20px;transform-origin:50%}._ui-wrapper ._ui-section-foldable._ui-section-folded>._ui-section-foldable-element{height:0!important}._ui-wrapper ._ui-section-foldable._ui-section-folded>header ._ui-section-header-chevron{transform:rotate(-90deg)}._ui-wrapper header{position:relative;width:100%;height:40px;display:flex;justify-content:flex-start;align-items:center;padding:var(--padding);user-select:none}._ui-wrapper header ._ui-section-header-icon{width:auto;max-width:20px;height:1em;display:flex;justify-content:center;align-items:center;margin-right:5px}._ui-wrapper header h3{margin:0}._ui-wrapper section:not(._ui-section-foldable)>header>._ui-section-header-chevron{margin-right:.2em}._ui-wrapper section:not(._ui-section-foldable)>header>._ui-section-header-chevron svg{display:none}._ui-wrapper fieldset{width:calc(100% - .5rem);margin:var(--spacer) var(--spacer) 0 var(--spacer);padding:0;position:relative;border:none;display:flex;justify-content:space-between;align-items:center}._ui-wrapper fieldset h4{width:33.33%;max-width:200px;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;padding-right:5px;flex-grow:0;flex-shrink:0;user-select:none}._ui-wrapper fieldset ._ui-item-content{width:66.66%;display:flex;justify-content:flex-end;flex-grow:1;flex-shrink:0;position:relative;float:left}._ui-wrapper fieldset._ui-row-vertical{flex-direction:column;align-items:flex-start}._ui-wrapper fieldset._ui-row-vertical>h4{padding:.5rem 0}._ui-wrapper fieldset._ui-row-vertical>div{width:100%}._ui-wrapper ._ui-button._ui-item{--button-accent:var(--accent-color);padding:.2rem .7rem;justify-content:center;border:1px solid var(--section-bg-1);transition:var(--duration) var(--timing);margin-top:var(--animation-space);user-select:none}._ui-wrapper ._ui-button._ui-item._ui-button-happy{--button-accent:var(--happy-color)}._ui-wrapper ._ui-button._ui-item._ui-button-warning{--button-accent:var(--warning-color)}._ui-wrapper ._ui-button._ui-item._ui-button-danger{--button-accent:var(--danger-color)}._ui-wrapper ._ui-button._ui-item:hover{border:1px solid var(--button-accent)}._ui-wrapper ._ui-button._ui-item._ui--active{background-color:var(--button-accent);border:1px solid var(--button-accent);color:var(--white);transition:0s}._ui-wrapper ._ui-button._ui-item h3{text-overflow:ellipsis;overflow:hidden}._ui-wrapper ._ui-button-has-icon._ui-item{justify-content:space-between}._ui-wrapper ._ui-button-has-icon._ui-item ._ui-button-icon{display:flex;justify-content:center;align-items:center}._ui-wrapper ._ui-button-has-icon._ui-item ._ui-button-icon svg{width:20px}._ui-wrapper ._ui-spacer{width:100%;display:block;margin-bottom:calc(-1 * var(--spacer))}._ui-wrapper ._ui-spacer._ui-spacer-small{padding:10px 0}._ui-wrapper ._ui-spacer._ui-spacer-medium{padding:15px 0}._ui-wrapper ._ui-spacer._ui-spacer-large{padding:20px 0}._ui-wrapper ._ui-spacer._ui-spacer-has-line:before{content:"";display:block;width:calc(100% - .25rem);margin:0 auto;height:1px;background:var(--section-bg-1)}._ui-wrapper ._ui-info{display:flex;flex-direction:column;width:100%;margin:var(--spacer) 0 0;padding:.75rem var(--spacer);align-items:flex-start}._ui-wrapper ._ui-info p{line-height:1.3em}._ui-wrapper ._ui-info p:not(:first-of-type){margin-top:var(--spacer)}._ui-wrapper ._ui-info:after,._ui-wrapper ._ui-info:before{content:"";position:absolute;left:var(--spacer);width:calc(100% - 2 * var(--spacer));height:1px;background-color:var(--section-bg-1)}._ui-wrapper ._ui-info:before{top:0}._ui-wrapper ._ui-info:after{bottom:0}._ui-wrapper ._ui-boolean{cursor:pointer}._ui-wrapper ._ui-boolean ._ui-toggle{width:40px;height:25px;border-radius:15px;background-color:var(--section-bg-1);position:relative;float:left;transition:var(--duration) var(--timing);display:flex;justify-content:center;align-items:center}._ui-wrapper ._ui-boolean ._ui-toggle div{width:25px;height:25px;border-radius:100%;background-color:var(--white);transform:translate3d(-8px,0,0);transition:inherit}._ui-wrapper ._ui-boolean._ui--active ._ui-toggle{background-color:var(--accent-color)}._ui-wrapper ._ui-boolean._ui--active ._ui-toggle div{transform:translate3d(8px,0,0)}._ui-wrapper ._ui-number ._ui-number-input{flex-grow:1;position:relative;float:left}._ui-wrapper ._ui-number ._ui-number-input:not(:last-of-type){margin:0 var(--spacer) 0 0}._ui-wrapper ._ui-number ._ui-number-buttons{position:absolute;top:0;right:0;height:100%;width:auto;display:flex;flex-direction:column;align-items:center;user-select:none}._ui-wrapper ._ui-number ._ui-number-buttons button{padding:0;display:flex;justify-content:flex-start;align-items:center;height:50%;width:20px;cursor:pointer;user-select:none}._ui-wrapper ._ui-number ._ui-number-buttons button:active{color:var(--white);transition:0s}._ui-wrapper ._ui-number ._ui-number-buttons svg{user-select:none;width:20px}._ui-wrapper ._ui-number ._ui-number-buttons ._ui-number-btn-increase svg{transform:rotate(180deg);transform-origin:center}._ui-wrapper ._ui-range ._ui-range-input{position:relative;float:left;width:calc(65% - 12px);cursor:pointer;margin:0 12px 0 0}._ui-wrapper ._ui-range ._ui-range-input *{pointer-events:none}._ui-wrapper ._ui-range ._ui-range-overexpose,._ui-wrapper ._ui-range ._ui-range-track{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);height:2px;background-color:var(--color-0);width:100%}._ui-wrapper ._ui-range ._ui-range-overexpose{background-color:var(--color-2);transform:translate(0,-50%);left:unset;width:calc(var(--size) * 100%)}._ui-wrapper ._ui-range ._ui-range-overexpose._ui-range-overexpose-min{left:0}._ui-wrapper ._ui-range ._ui-range-overexpose._ui-range-overexpose-max{right:0}._ui-wrapper ._ui-range ._ui-range-thumb{position:absolute;top:50%;left:calc(var(--value) * 100%);transform:translate(-50%,-50%);width:20px;height:20px;border-radius:50%;background-color:var(--white);cursor:grab;pointer-events:all;transition:background-color var(--duration) var(--timing)}._ui-wrapper ._ui-range ._ui-range-thumb._ui--grab{background-color:rgba(var(--white),.2)}._ui-wrapper ._ui-range ._ui-range-thumb::after,._ui-wrapper ._ui-range ._ui-range-thumb::before{content:"";position:absolute;height:8px;width:2px;background-color:var(--white);left:50%;transform:translate(-50%,0)}._ui-wrapper ._ui-range ._ui-range-thumb::after{top:0}._ui-wrapper ._ui-range ._ui-range-thumb::before{bottom:0}._ui-wrapper ._ui-range ._ui-item{width:calc(35% - var(--spacer))}._ui-wrapper ._ui-select{position:relative;float:left}._ui-wrapper ._ui-select ._ui-item._ui-select-input *{pointer-events:none}._ui-wrapper ._ui-select ._ui-item._ui-select-input svg{width:20px;position:absolute;right:11px;top:50%;transition:all var(--duration) var(--timing);transform:translateY(-50%) rotate(0)}._ui-wrapper ._ui-select._ui-select-open ._ui-select-input svg{color:var(--white);transform:translateY(-50%) rotate(90deg)}._ui-wrapper ._ui-color div{justify-content:flex-end;align-items:center}._ui-wrapper ._ui-color ._ui-item{max-width:70px}._ui-wrapper ._ui-color ._ui-color-box{width:calc(2rem - 5px);height:calc(2rem - 5px);margin-right:10px;border-radius:var(--radius-0);flex-shrink:0;flex-grow:0;cursor:pointer;background-color:var(--active-color);border:1px solid var(--color-1)}._ui-wrapper ._ui-panel{z-index:var(--ui-panels-index);position:absolute;height:auto;border-radius:var(--radius-0);width:100%;top:100%;opacity:0}._ui-wrapper ._ui-panel._ui--loaded{transition-property:opacity;transition-duration:var(--duration);transition-timing-function:var(--timing)}._ui-wrapper ._ui-panel._ui--active{opacity:1}._ui-wrapper ._ui-panel._ui-panel-dropdown{height:auto;max-height:300px;overflow-y:auto}._ui-wrapper ._ui-panel._ui-panel-left,._ui-wrapper ._ui-panel._ui-panel-right{width:300px;height:auto}._ui-wrapper ._ui-panel-select{background-color:var(--section-bg-1);border:1px solid var(--section-bg-0)}._ui-wrapper ._ui-panel-select-button,._ui-wrapper ._ui-panel-select-option,._ui-wrapper ._ui-panel-select-option-none,._ui-wrapper ._ui-panel-select-search{padding:.6rem;background-color:var(--section-bg-1);cursor:pointer}._ui-wrapper ._ui-panel-select-option{text-align:left;border-radius:var(--radius-0);display:flex;justify-content:flex-start;align-items:center;min-height:40px}._ui-wrapper ._ui-panel-select-option._ui--active{border:1px solid var(--accent-color)}._ui-wrapper ._ui-panel-select-option:hover{background-color:var(--accent-color)}._ui-wrapper ._ui-panel-select-option:hover p{color:var(--white)}._ui-wrapper ._ui-panel-select-option-button{position:sticky;top:0;border-bottom:2px solid var(--section-bg-0)}._ui-wrapper ._ui-panel-select-option-button svg{margin-right:5px}._ui-wrapper ._ui-panel-color{display:flex;justify-content:center;align-items:center;flex-direction:column;overflow:hidden}._ui-wrapper ._ui-panel-color ._ui-color-info,._ui-wrapper ._ui-panel-color ._ui-color-view{width:100%;height:100%;position:relative}._ui-wrapper ._ui-panel-color canvas{width:100%;height:auto;display:block}._ui-wrapper ._ui-color-target{position:absolute;transform:translate3d(-50%,-50%,0);border:2px solid var(--white);border-radius:100%;width:10px;height:10px;pointer-events:none;mix-blend-mode:exclusion}._ui-wrapper ._ui-color-dragger{position:absolute;width:3px;border-radius:5px;height:calc(100% - 8px);background:#fff;top:50%;left:50%;transform:translate3d(-50%,-50%,0);pointer-events:none}`;
+      CSS = `@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjXr8AIxsdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjXr8AIVsdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjXr8AIJsdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0370-03FF}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjXr8AI5sdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+1EA0-1EF9,U+20AB}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjXr8AI9sdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjXr8AIFsdP3pBms.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYXgKVElMYYaJe8bpLHnCwDKhdzeFaxOedfTDw.woff2) format("woff2");unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYXgKVElMYYaJe8bpLHnCwDKhdXeFaxOedfTDw.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYXgKVElMYYaJe8bpLHnCwDKhdLeFaxOedfTDw.woff2) format("woff2");unicode-range:U+0370-03FF}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYXgKVElMYYaJe8bpLHnCwDKhd7eFaxOedfTDw.woff2) format("woff2");unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+1EA0-1EF9,U+20AB}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYXgKVElMYYaJe8bpLHnCwDKhd_eFaxOedfTDw.woff2) format("woff2");unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYXgKVElMYYaJe8bpLHnCwDKhdHeFaxOedc.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjWr7AIxsdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjWr7AIVsdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjWr7AIJsdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0370-03FF}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjWr7AI5sdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+1EA0-1EF9,U+20AB}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjWr7AI9sdP3pBmtF8A.woff2) format("woff2");unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/ibmplexsans/v14/zYX9KVElMYYaJe8bpLHnCwDKjWr7AIFsdP3pBms.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}:root{--ui-index:998;--ui-panels-index:999;--radius-0:4px;--radius-1:8px;--padding:0.2rem 0.4rem;--spacer:0.25rem;--duration:.3s;--timing:cubic-bezier(.6, 0, .4, 1);--accent-color:#2871C7;--happy-color:#49db6e;--warning-color:#ae7d15;--danger-color:#8f0000;--bg-0:#303030;--bg-1:#191919;--white:#FFF;--color-0:#CCCCCC;--color-1:#999999;--color-2:#7b7b7b}._ui-panel,._ui-panel *,._ui-wrapper,._ui-wrapper *{box-sizing:border-box}._ui-panel fieldset,._ui-wrapper fieldset{min-inline-size:unset}._ui-panel button,._ui-panel input,._ui-panel select,._ui-panel textarea,._ui-wrapper button,._ui-wrapper input,._ui-wrapper select,._ui-wrapper textarea{padding:0;margin:0;border:none;color:inherit;background-color:transparent;border-radius:0;font:inherit;text-align:inherit;text-transform:inherit;letter-spacing:inherit}._ui-panel a,._ui-panel h1,._ui-panel h2,._ui-panel h3,._ui-panel h4,._ui-panel h5,._ui-panel h6,._ui-panel p,._ui-wrapper a,._ui-wrapper h1,._ui-wrapper h2,._ui-wrapper h3,._ui-wrapper h4,._ui-wrapper h5,._ui-wrapper h6,._ui-wrapper p{margin:0;font:inherit}._ui-panel input[type=number],._ui-wrapper input[type=number]{-moz-appearance:textfield}._ui-panel input[type=number]::-webkit-inner-spin-button,._ui-panel input[type=number]::-webkit-outer-spin-button,._ui-wrapper input[type=number]::-webkit-inner-spin-button,._ui-wrapper input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}._ui-panel,._ui-wrapper{font-family:"IBM Plex Sans",sans-serif;font-size:12px;color:var(--color-1);font-weight:400}._ui-panel header,._ui-wrapper header{font-weight:700}._ui-panel [ui-depth="0"]>header,._ui-wrapper [ui-depth="0"]>header{color:var(--color-0)}._ui-panel fieldset h4,._ui-panel fieldset p,._ui-wrapper fieldset h4,._ui-wrapper fieldset p{color:var(--color-2)}._ui-wrapper{z-index:var(--ui-index);--wrapper-width:300px;position:fixed;top:5px;right:5px;width:var(--wrapper-width);min-width:300px}._ui-wrapper ::selection{background:var(--white);color:var(--accent-color)}._ui-wrapper ._ui--hidden{display:none!important;pointer-events:none}._ui-wrapper ._ui-item{width:100%;min-height:2rem;padding:var(--padding);text-align:left;background-color:var(--section-bg-1);border:1px solid var(--section-bg-1);border-radius:var(--radius-0);display:flex;align-items:center;cursor:pointer}._ui-wrapper ._ui-item:focus{border-color:var(--accent-color)}._ui-wrapper._ui-wrapper-has-parent{position:relative;top:unset;right:unset;width:100%}._ui-wrapper ._ui-wrapper-resizer{position:absolute;width:4px;height:calc(100% - 4px);top:4px;left:0;cursor:ew-resize;z-index:1}._ui-wrapper._ui-minimal section[ui-depth="0"]>header{display:none}._ui-wrapper section{--section-bg-0:var(--bg-1);--section-bg-1:var(--bg-0)}._ui-wrapper section[ui-depth="0"],._ui-wrapper section[ui-depth="10"],._ui-wrapper section[ui-depth="2"],._ui-wrapper section[ui-depth="4"],._ui-wrapper section[ui-depth="6"],._ui-wrapper section[ui-depth="8"]{--section-bg-0:var(--bg-0);--section-bg-1:var(--bg-1)}._ui-wrapper section{position:relative;width:100%;height:auto;overflow:hidden;border-radius:var(--radius-1);background-color:var(--section-bg-0)}._ui-wrapper section:not([ui-depth="0"]){margin-top:var(--spacer)}._ui-wrapper section ._ui-section-content{padding:0 var(--spacer) var(--spacer) var(--spacer);position:relative;float:left;display:flex;flex-direction:column;width:100%}._ui-wrapper section ._ui-section-content fieldset:first-of-type{margin-top:.5rem}._ui-wrapper section ._ui-section-content fieldset:last-child{margin-bottom:.5rem}._ui-wrapper ._ui-section-foldable{transition-duration:var(--duration);transition-timing-function:var(--timing);overflow:hidden}._ui-wrapper ._ui-section-foldable>header{cursor:pointer}._ui-wrapper ._ui-section-foldable ._ui-section-foldable-element{overflow:hidden;transition-duration:inherit;transition-timing-function:inherit;transition-property:height}._ui-wrapper ._ui-section-foldable ._ui-section-header-icon{transition:transform var(--duration) var(--timing)}._ui-wrapper ._ui-section-foldable ._ui-section-foldable-element ._ui-section-header-icon{transform:rotate(0);width:20px;transform-origin:50%}._ui-wrapper ._ui-section-foldable._ui-section-folded>._ui-section-foldable-element{height:0!important}._ui-wrapper ._ui-section-foldable._ui-section-folded>header ._ui-section-header-chevron{transform:rotate(-90deg)}._ui-wrapper header{position:relative;width:100%;height:40px;display:flex;justify-content:flex-start;align-items:center;padding:var(--padding);user-select:none}._ui-wrapper header ._ui-section-header-icon{width:auto;max-width:20px;height:1em;display:flex;justify-content:center;align-items:center;margin-right:5px}._ui-wrapper header h3{margin:0}._ui-wrapper section:not(._ui-section-foldable)>header>._ui-section-header-chevron{margin-right:.2em}._ui-wrapper section:not(._ui-section-foldable)>header>._ui-section-header-chevron svg{display:none}._ui-wrapper fieldset{width:calc(100% - .5rem);margin:var(--spacer) var(--spacer) 0 var(--spacer);padding:0;position:relative;border:none;display:flex;justify-content:space-between;align-items:center}._ui-wrapper fieldset h4{width:33.33%;max-width:200px;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;padding-right:5px;flex-grow:0;flex-shrink:0;user-select:none}._ui-wrapper fieldset ._ui-item-content{width:66.66%;display:flex;justify-content:flex-end;flex-grow:1;flex-shrink:0;position:relative;float:left}._ui-wrapper fieldset._ui-row-vertical{flex-direction:column;align-items:flex-start}._ui-wrapper fieldset._ui-row-vertical>h4{padding:.5rem 0}._ui-wrapper fieldset._ui-row-vertical>div{width:100%}._ui-wrapper ._ui-button._ui-item{--button-accent:var(--accent-color)}._ui-wrapper ._ui-button._ui-item._ui-button-happy{--button-accent:var(--happy-color)}._ui-wrapper ._ui-button._ui-item._ui-button-warning{--button-accent:var(--warning-color)}._ui-wrapper ._ui-button._ui-item._ui-button-danger{--button-accent:var(--danger-color)}._ui-wrapper ._ui-button._ui-item{padding:.2rem .7rem;justify-content:center;border:1px solid var(--section-bg-1);transition:var(--duration) var(--timing);margin-top:var(--animation-space);user-select:none}._ui-wrapper ._ui-button._ui-item:hover{border:1px solid var(--button-accent)}._ui-wrapper ._ui-button._ui-item._ui--active{background-color:var(--button-accent);border:1px solid var(--button-accent);color:var(--white);transition:0s}._ui-wrapper ._ui-button._ui-item h3{text-overflow:ellipsis;overflow:hidden}._ui-wrapper ._ui-button-has-icon._ui-item{justify-content:space-between}._ui-wrapper ._ui-button-has-icon._ui-item ._ui-button-icon{display:flex;justify-content:center;align-items:center}._ui-wrapper ._ui-button-has-icon._ui-item ._ui-button-icon svg{width:20px}._ui-wrapper ._ui-spacer{width:100%;display:block;margin-bottom:calc(-1 * var(--spacer))}._ui-wrapper ._ui-spacer._ui-spacer-small{padding:10px 0}._ui-wrapper ._ui-spacer._ui-spacer-medium{padding:15px 0}._ui-wrapper ._ui-spacer._ui-spacer-large{padding:20px 0}._ui-wrapper ._ui-spacer._ui-spacer-has-line:before{content:"";display:block;width:calc(100% - .25rem);margin:0 auto;height:1px;background:var(--section-bg-1)}._ui-wrapper ._ui-info{display:flex;flex-direction:column;width:100%;margin:var(--spacer) 0 0;padding:.75rem var(--spacer);align-items:flex-start}._ui-wrapper ._ui-info p{line-height:1.3em}._ui-wrapper ._ui-info p:not(:first-of-type){margin-top:var(--spacer)}._ui-wrapper ._ui-info:after,._ui-wrapper ._ui-info:before{content:"";position:absolute;left:var(--spacer);width:calc(100% - 2 * var(--spacer));height:1px;background-color:var(--section-bg-1)}._ui-wrapper ._ui-info:before{top:0}._ui-wrapper ._ui-info:after{bottom:0}._ui-wrapper ._ui-boolean{cursor:pointer}._ui-wrapper ._ui-boolean ._ui-toggle{width:40px;height:25px;border-radius:15px;background-color:var(--section-bg-1);position:relative;float:left;transition:var(--duration) var(--timing);display:flex;justify-content:center;align-items:center}._ui-wrapper ._ui-boolean ._ui-toggle div{width:25px;height:25px;border-radius:100%;background-color:var(--white);transform:translate3d(-8px,0,0);transition:inherit}._ui-wrapper ._ui-boolean._ui--active ._ui-toggle{background-color:var(--accent-color)}._ui-wrapper ._ui-boolean._ui--active ._ui-toggle div{transform:translate3d(8px,0,0)}._ui-wrapper ._ui-number ._ui-number-input{flex-grow:1;position:relative;float:left}._ui-wrapper ._ui-number ._ui-number-input:not(:last-of-type){margin:0 var(--spacer) 0 0}._ui-wrapper ._ui-number ._ui-number-buttons{position:absolute;top:0;right:0;height:100%;width:auto;display:flex;flex-direction:column;align-items:center;user-select:none}._ui-wrapper ._ui-number ._ui-number-buttons button{padding:0;display:flex;justify-content:flex-start;align-items:center;height:50%;width:20px;cursor:pointer;user-select:none}._ui-wrapper ._ui-number ._ui-number-buttons button:active{color:var(--white);transition:0s}._ui-wrapper ._ui-number ._ui-number-buttons svg{user-select:none;width:20px}._ui-wrapper ._ui-number ._ui-number-buttons ._ui-number-btn-increase svg{transform:rotate(180deg);transform-origin:center}._ui-wrapper ._ui-range ._ui-range-input{position:relative;float:left;width:calc(65% - 12px);cursor:pointer;margin:0 12px 0 0}._ui-wrapper ._ui-range ._ui-range-input *{pointer-events:none}._ui-wrapper ._ui-range ._ui-range-overexpose,._ui-wrapper ._ui-range ._ui-range-track{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);height:2px;background-color:var(--color-0);width:100%}._ui-wrapper ._ui-range ._ui-range-overexpose{background-color:var(--color-2);transform:translate(0,-50%);left:unset;width:calc(var(--size) * 100%)}._ui-wrapper ._ui-range ._ui-range-overexpose._ui-range-overexpose-min{left:0}._ui-wrapper ._ui-range ._ui-range-overexpose._ui-range-overexpose-max{right:0}._ui-wrapper ._ui-range ._ui-range-thumb{position:absolute;top:50%;left:calc(var(--value) * 100%);transform:translate(-50%,-50%);width:20px;height:20px;border-radius:50%;background-color:var(--white);cursor:grab;pointer-events:all;transition:background-color var(--duration) var(--timing)}._ui-wrapper ._ui-range ._ui-range-thumb._ui--grab{background-color:rgba(var(--white),.2)}._ui-wrapper ._ui-range ._ui-range-thumb::after,._ui-wrapper ._ui-range ._ui-range-thumb::before{content:"";position:absolute;height:8px;width:2px;background-color:var(--white);left:50%;transform:translate(-50%,0)}._ui-wrapper ._ui-range ._ui-range-thumb::after{top:0}._ui-wrapper ._ui-range ._ui-range-thumb::before{bottom:0}._ui-wrapper ._ui-range ._ui-item{width:calc(35% - var(--spacer))}._ui-wrapper ._ui-select{position:relative;float:left}._ui-wrapper ._ui-select ._ui-item._ui-select-input *{pointer-events:none}._ui-wrapper ._ui-select ._ui-item._ui-select-input svg{width:20px;position:absolute;right:11px;top:50%;transition:all var(--duration) var(--timing);transform:translateY(-50%) rotate(0)}._ui-wrapper ._ui-select._ui-select-open ._ui-select-input svg{color:var(--white);transform:translateY(-50%) rotate(90deg)}._ui-wrapper ._ui-color div{justify-content:flex-end;align-items:center}._ui-wrapper ._ui-color ._ui-item{max-width:70px}._ui-wrapper ._ui-color ._ui-color-box{width:calc(2rem - 5px);height:calc(2rem - 5px);margin-right:10px;border-radius:var(--radius-0);flex-shrink:0;flex-grow:0;cursor:pointer;background-color:var(--active-color);border:1px solid var(--color-1)}._ui-wrapper ._ui-panel{z-index:var(--ui-panels-index);position:absolute;height:auto;border-radius:var(--radius-0);width:100%;top:100%;opacity:0}._ui-wrapper ._ui-panel._ui--loaded{transition-property:opacity;transition-duration:var(--duration);transition-timing-function:var(--timing)}._ui-wrapper ._ui-panel._ui--active{opacity:1}._ui-wrapper ._ui-panel._ui-panel-dropdown{height:auto;max-height:300px;overflow-y:auto}._ui-wrapper ._ui-panel._ui-panel-left,._ui-wrapper ._ui-panel._ui-panel-right{width:300px;height:auto}._ui-wrapper ._ui-panel-select{background-color:var(--section-bg-1);border:1px solid var(--section-bg-0)}._ui-wrapper ._ui-panel-select-button,._ui-wrapper ._ui-panel-select-option,._ui-wrapper ._ui-panel-select-option-none,._ui-wrapper ._ui-panel-select-search{padding:.6rem;background-color:var(--section-bg-1);cursor:pointer}._ui-wrapper ._ui-panel-select-option{text-align:left;border-radius:var(--radius-0);display:flex;justify-content:flex-start;align-items:center;min-height:40px}._ui-wrapper ._ui-panel-select-option._ui--active{border:1px solid var(--accent-color)}._ui-wrapper ._ui-panel-select-option:hover{background-color:var(--accent-color)}._ui-wrapper ._ui-panel-select-option:hover p{color:var(--white)}._ui-wrapper ._ui-panel-select-option-button{position:sticky;top:0;border-bottom:2px solid var(--section-bg-0)}._ui-wrapper ._ui-panel-select-option-button svg{margin-right:5px}._ui-wrapper ._ui-panel-color{display:flex;justify-content:center;align-items:center;flex-direction:column;overflow:hidden}._ui-wrapper ._ui-panel-color ._ui-color-info,._ui-wrapper ._ui-panel-color ._ui-color-view{width:100%;height:100%;position:relative}._ui-wrapper ._ui-panel-color canvas{width:100%;height:auto;display:block}._ui-wrapper ._ui-color-target{position:absolute;transform:translate3d(-50%,-50%,0);border:2px solid var(--white);border-radius:100%;width:10px;height:10px;pointer-events:none;mix-blend-mode:exclusion}._ui-wrapper ._ui-color-dragger{position:absolute;width:3px;border-radius:5px;height:calc(100% - 8px);background:#fff;top:50%;left:50%;transform:translate3d(-50%,-50%,0);pointer-events:none}`;
     }
   });
 
@@ -3184,7 +3520,7 @@
         * @returns {void}
         */
         on(event, callback) {
-          super.on(event, callback);
+          return super.on(event, callback);
         }
       };
     }
@@ -3393,6 +3729,7 @@
           const info = new Info(this.depth + 1, { text });
           if (info && info.el)
             this.content.appendChild(info.el);
+          return info;
         }
         /**
          * Adds an item element to the parent and returns it.
@@ -3589,6 +3926,7 @@
         */
         on(event, callback) {
           super.on(event, callback);
+          return this;
         }
         change(target) {
           super.change(target);
@@ -3646,13 +3984,14 @@
   });
 
   // ../packages/utils/lib/Utils.js
+  function isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent);
+  }
+  function isAndroid() {
+    return /Android/.test(navigator.userAgent);
+  }
   function isMobile() {
-    var check = false;
-    (function(a) {
-      if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4)))
-        check = true;
-    })(navigator.userAgent || navigator.vendor);
-    return check;
+    return isIOS() || isAndroid();
   }
   var init_Utils2 = __esm({
     "../packages/utils/lib/Utils.js"() {
