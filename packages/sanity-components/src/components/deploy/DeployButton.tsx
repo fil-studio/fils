@@ -8,7 +8,9 @@
 import * as React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { Button, Card, Stack, Text, Spinner, Flex } from '@sanity/ui';
-import { PlayIcon, CheckmarkIcon, CloseIcon } from '@sanity/icons';
+import { PlayIcon } from '@sanity/icons/Play';
+import { CheckmarkIcon } from '@sanity/icons/Checkmark';
+import { CloseIcon } from '@sanity/icons/Close';
 import { useSecrets, SettingsView } from '@sanity/studio-secrets';
 
 export interface DeployButtonConfig {

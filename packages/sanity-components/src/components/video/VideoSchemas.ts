@@ -1,4 +1,6 @@
-import { LinkIcon, PlayIcon, VideoIcon } from "@sanity/icons";
+import { LinkIcon } from "@sanity/icons/Link";
+import { PlayIcon } from "@sanity/icons/Play";
+import { VideoIcon } from "@sanity/icons/Video";
 import { defineField, defineType } from "sanity";
 import { createVideoInput } from "./CreateVideoInput";
 
