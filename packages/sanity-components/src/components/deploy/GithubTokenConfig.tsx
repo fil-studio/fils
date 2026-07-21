@@ -8,7 +8,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import { Card, Stack, Text, Button } from '@sanity/ui';
 import { useSecrets, SettingsView } from '@sanity/studio-secrets';
-import { CogIcon } from '@sanity/icons';
+import { CogIcon } from '@sanity/icons/Cog';
 
 interface TokenConfigProps {
   title?: string;

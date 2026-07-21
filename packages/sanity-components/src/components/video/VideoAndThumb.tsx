@@ -1,4 +1,7 @@
-import { ChevronDownIcon, ChevronRightIcon, DropIcon, WarningOutlineIcon } from '@sanity/icons';
+import { ChevronDownIcon } from '@sanity/icons/ChevronDown';
+import { ChevronRightIcon } from '@sanity/icons/ChevronRight';
+import { DropIcon } from '@sanity/icons/Drop';
+import { WarningOutlineIcon } from '@sanity/icons/WarningOutline';
 import { Button, Card, Flex, Stack, Text } from '@sanity/ui';
 import { useRef, useState } from 'react';
 import { ObjectInputProps, set, useClient } from 'sanity';
