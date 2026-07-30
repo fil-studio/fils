@@ -219,6 +219,84 @@ export async function getImageFile(img, options:SanityImageParams, suffix="") {
 }
 
 /**
+ * Named width ladders for getImageSrcSet. Kept short and deliberate rather
+ * than a long device-width enumeration — these are build-time downloads
+ * (one file per width, stored in the static output), not requests against
+ * an on-demand image CDN, so every extra width is a real file written to
+ * disk on every build. 'default' suits inline/card images; 'hero' suits
+ * full-bleed/background images that can occupy the entire viewport on large
+ * screens and therefore need larger top-end variants.
+ */
+export const imageSrcSetPresets = {
+  default: [640, 960, 1280, 1920],
+  hero: [960, 1440, 1920, 2560],
+} as const;
+
+export type ImageSrcSetPreset = keyof typeof imageSrcSetPresets;
+
+export interface SanitySrcSetParams extends Omit<SanityImageParams, 'width' | 'height'> {
+  /** Named width ladder (see imageSrcSetPresets). Ignored if `widths` is set. Defaults to 'default'. */
+  preset?: ImageSrcSetPreset;
+  /** Explicit widths (px) to generate, overriding `preset` for a one-off case. */
+  widths?: number[];
+  /**
+   * The `sizes` attribute for the consuming <img>/<source> — how much of the
+   * viewport width the image actually occupies at each breakpoint, which is
+   * a layout/CSS concern this function has no visibility into. Defaults to
+   * '100vw' (full viewport width); override per usage to match the real
+   * layout, e.g. '(min-width: 1024px) 50vw, 100vw' for a two-column grid.
+   */
+  sizes?: string;
+}
+
+export interface ImageSrcSet {
+  /** Fallback <img src> for browsers that ignore srcset — the largest generated width. */
+  src: string;
+  srcset: string;
+  sizes: string;
+}
+
+/**
+ * Downloads one file per width in the resolved ladder (via getImageFile, so
+ * caching/dedup/session-progress tracking all apply per-width exactly like a
+ * single getImageFile call) and returns a ready-to-spread {src, srcset,
+ * sizes} object for an <img>/<source>.
+ * @param img Sanity's Image field (containing asset inside img.asset)
+ * @param options preset/widths + sizes, plus the usual SanityImageParams (quality/format/custom)
+ * @param suffix suffix to add at the end of basePath (useful when generating several image versions)
+ * @returns {src, srcset, sizes} — src is the largest width's URL, srcset is a ready-to-use `"url Nw, ..."` string
+ */
+export async function getImageSrcSet(
+  img,
+  options: SanitySrcSetParams = {},
+  suffix = "",
+): Promise<ImageSrcSet> {
+  const sizes = options.sizes ?? '100vw';
+  if (!img?.asset) return { src: "", srcset: "", sizes };
+
+  // Sorted ascending regardless of input order, so `src`'s "last = largest"
+  // assumption below holds even for a hand-passed, unsorted `widths` list.
+  const widths = [...(options.widths ?? imageSrcSetPresets[options.preset ?? 'default'])].sort(
+    (a, b) => a - b,
+  );
+  const imgParams: SanityImageParams = {
+    quality: options.quality,
+    format: options.format,
+    custom: options.custom,
+  };
+
+  const urls = await Promise.all(
+    widths.map((width) => getImageFile(img, { ...imgParams, width }, suffix)),
+  );
+
+  return {
+    src: urls[urls.length - 1],
+    srcset: urls.map((url, i) => `${url} ${widths[i]}w`).join(', '),
+    sizes,
+  };
+}
+
+/**
  * Generic Sanity's Asset download
  * @param asset Sanity's asset
  * @returns url string to site's path. i.e. /assets/files/image.webp
