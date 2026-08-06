@@ -155,6 +155,31 @@ class Physics {
 
 		this.applyEffectors(this.behaviours, this.particles);
 
+		// Integrate BEFORE constraints/springs, not after (see v0.1.0 note
+		// below) — this matches the standard Verlet-integration technique
+		// (apply forces, integrate position, THEN relax constraints against
+		// the newly-integrated position, optionally over several iterations
+		// via constraintIterations/springIterations). Doing it the other way
+		// around — as this method used to, up to v0.0.x — fed any position
+		// correction a constraint/spring made straight into that SAME
+		// particle's own implicit velocity term (position - prev), which
+		// Particle.update() below then reads and re-applies again on top of
+		// the correction, within the very same frame. For a hard/stiff
+		// constraint (e.g. a collision wall) that's an undamped feedback
+		// loop: each frame's correction becomes part of next frame's
+		// "velocity", which gets corrected again, compounding — in testing
+		// this was enough to blow a particle system up within a couple of
+		// seconds. See the @fils/phy README's "v0.1.0 — constraint/spring
+		// ordering change" section for the full writeup and what to check in
+		// projects still pinned to <0.1.0.
+		let dead = [];
+		let pl = this.particles.length;
+		for(let pi=0; pi<pl; pi++) {
+			let p = this.particles[pi];
+			p.update();
+			if(p.dead) dead.push(p);
+		}
+
 		let sl = this.springs.length;
 
 		for(let i=0; i<this.constraintIterations; i++) {
@@ -164,15 +189,6 @@ class Physics {
 					this.springs[k].update();
 				}
 			}
-		}
-
-		// update all particles
-		let dead = [];
-		let pl = this.particles.length;
-		for(let pi=0; pi<pl; pi++) {
-			let p = this.particles[pi];
-			p.update();
-			if(p.dead) dead.push(p);
 		}
 
 		// remove dead particles
