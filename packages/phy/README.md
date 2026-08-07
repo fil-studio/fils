@@ -4,6 +4,45 @@ Verlet Physics Package written in TypeScript.
 
 This is part of a series of packages that I use in my studio for personal and commercial web & [THREEjs](https://threejs.org) based work. It might remain undocumented for a long while but feel free to try it out!
 
+## `Space` — broad-phase neighbor queries (new in v0.1.1)
+
+Any `Behaviour`/`Constraint` that needs to compare particles against *each other* (separation, collision, flocking/boids-style cohesion, anything neighbor-based) tends to reach for the obvious approach: loop over every other particle for each one. That's O(n²) — fine at a few dozen particles, a real cost at a few hundred, and the dominant cost of the whole simulation well before a thousand.
+
+`Space` is a uniform 3D grid (spatial hash) that turns that into roughly O(n · k), k = particles actually nearby, by only checking the 27 cells (3×3×3) immediately around a particle's own cell instead of every particle in the simulation. That 3×3×3 block is a guarantee, not a heuristic — as long as `cellSize` is set to (or above) the interaction radius you actually care about, nothing within that radius of a particle can fall outside its own cell or an immediate neighbor.
+
+```ts
+import { Behaviour, Constraint, Particle, Physics, Space } from '@fils/phy'
+
+class SeparationConstraint extends Constraint {
+	space = new Space(minDistance) // cellSize = your interaction radius
+	particles: Array<Particle> = []
+	minDistance = 0.1
+	strength = 0.5
+
+	// prepare() runs once per frame, before apply() runs per particle —
+	// rebuild the grid here so it reflects this frame's latest positions.
+	prepare() {
+		this.space.build(this.particles)
+	}
+
+	apply(p: Particle) {
+		this.space.forEachNeighbor(p, (other) => {
+			if (other === p) return // Space includes p itself — it shares its own cell
+
+			// ...distance check + position correction against `other`,
+			// exactly like an all-pairs loop, just over far fewer candidates
+		})
+	}
+}
+```
+
+Tuning notes:
+- **`cellSize` too small** → a particle's real neighbors spill outside the 3×3×3 search block and get missed. **Too large** → each cell holds most of the simulation anyway, and you're back to something close to O(n²) per cell. Matching `cellSize` to the actual interaction radius (e.g. a separation constraint's `minDistance`) is what keeps the 3×3×3 guarantee correct while keeping buckets small.
+- `Space.build()` rebuilds from scratch every call — intentional, not an oversight. Particles move every frame in this package, so a grid computed on a stale frame's positions would already be wrong by the time it's queried; the rebuild itself is O(n), cheap relative to the O(n²) scan it replaces.
+- `Space.size()` (occupied cell count) is handy for eyeballing whether `cellSize` is in a sane range during development — very few, dense cells means it's too large; a huge number of near-empty cells means it's too small.
+
+See `src/phy/space.ts`'s own doc comment for the full reasoning and API.
+
 ## ⚠️ v0.1.0 — constraint/spring ordering change (read before upgrading)
 
 **Existing projects pinned to `^0.0.x` are not affected automatically** — npm's semver range for a `0.0.z` version (`^0.0.7` ⇒ `>=0.0.7 <0.0.8`) is exact-patch-only, so nothing currently installed will pick this up on its own. This note is for when you deliberately bump a project to `0.1.0+`.

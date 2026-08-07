@@ -89,10 +89,6 @@ class Emitter {
 }
 
 /*
- * To-Do: Space optimization 
-*/
-
-/*
  * Physics Class
  */
 
@@ -151,8 +147,12 @@ class Physics {
 		// shoot new particles?
 		if (this.emitter !== null) this.emitter.update();
 
-		// To-Do : Spaces optimisation
-
+		// Broad-phase neighbor queries (an all-pairs O(n²) scan is the usual
+		// bottleneck for a Behaviour/Constraint that compares particles
+		// against each other, e.g. separation/collision) are the individual
+		// effector's own concern, not Physics' — see the Space class for a
+		// spatial hash any Behaviour/Constraint can build in prepare() and
+		// query in apply() to avoid that O(n²) scan.
 		this.applyEffectors(this.behaviours, this.particles);
 
 		// Integrate BEFORE constraints/springs, not after (see v0.1.0 note
