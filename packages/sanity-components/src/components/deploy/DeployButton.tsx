@@ -307,7 +307,7 @@ export const DeployButton = ({
   if (!config || !config.owner || !config.repo) {
     return (
       <Card padding={4} radius={2} shadow={1} tone="critical">
-        <Stack space={3}>
+        <Stack gap={3}>
           <Text size={2} weight="semibold">
             ❌ Deploy Button Configuration Error
           </Text>
@@ -323,7 +323,7 @@ export const DeployButton = ({
   if (showSettings && !effectiveToken) {
     return (
       <Card padding={4} radius={2} shadow={1}>
-        <Stack space={3}>
+        <Stack gap={3}>
           <Text size={2} weight="semibold">
             🔐 {title} - Setup Required
           </Text>
@@ -347,7 +347,7 @@ export const DeployButton = ({
   if (!effectiveToken) {
     return (
       <Card padding={4} radius={2} shadow={1} tone="critical">
-        <Stack space={3}>
+        <Stack gap={3}>
           <Text size={2} weight="semibold">
             ❌ Authentication Required
           </Text>
@@ -357,7 +357,7 @@ export const DeployButton = ({
           <Button
             tone="primary"
             mode="ghost"
-            size={1}
+            fontSize={1}
             onClick={() => setShowSettings(true)}
           >
             Configure Token
@@ -371,7 +371,7 @@ export const DeployButton = ({
 
   return (
     <Card padding={4} radius={2} shadow={1}>
-      <Stack space={3}>
+      <Stack gap={3}>
         <Text size={2} weight="semibold">
           {title}
         </Text>
@@ -381,8 +381,8 @@ export const DeployButton = ({
             tone={buttonProps.tone}
             disabled={buttonProps.disabled}
             onClick={triggerDeploy}
-            size={3}
-            style={{ 
+            fontSize={3}
+            style={{
               width: '100%',
               maxWidth: '360px',
             }}
@@ -432,7 +432,7 @@ export const DeployButton = ({
             rel="noopener noreferrer"
             tone="primary"
             mode="ghost"
-            size={3}
+            fontSize={3}
           >
             🌐 View Live Site
           </Button>

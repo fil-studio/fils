@@ -46,7 +46,7 @@ export const GitHubTokenConfig = ({
   if (showSettings) {
     return (
       <Card padding={4} radius={2} shadow={1}>
-        <Stack space={3}>
+        <Stack gap={3}>
           <Text size={2} weight="semibold">
             {title}
           </Text>
@@ -65,7 +65,7 @@ export const GitHubTokenConfig = ({
 
   return (
     <Card padding={4} radius={2} shadow={1}>
-      <Stack space={3}>
+      <Stack gap={3}>
         <Text size={2} weight="semibold">
           {title}
         </Text>
@@ -73,7 +73,7 @@ export const GitHubTokenConfig = ({
           {description}
         </Text>
         
-        <Stack space={2}>
+        <Stack gap={2}>
           <Text size={1}>
             Status: {hasToken ? '✅ Token configured' : '⚠️ No token configured'}
           </Text>

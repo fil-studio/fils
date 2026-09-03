@@ -111,7 +111,7 @@ export function VideoAndThumb(params: VideoAndThumbProperties) {
   };
 
   return (
-    <Stack space={1}>
+    <Stack gap={1}>
       <style>{` video { width: 100%; } `}</style>
       
       {/* Video field */}
@@ -123,7 +123,7 @@ export function VideoAndThumb(params: VideoAndThumbProperties) {
       {/* Video preview */}
       {url && (
         <Card>
-          <Stack space={2}>
+          <Stack gap={2}>
             <Button
               mode="bleed"
               justify="flex-start"
@@ -176,7 +176,7 @@ export function VideoAndThumb(params: VideoAndThumbProperties) {
       {/* Warning display */}
       {warning && (
         <Card padding={3} tone="caution" border>
-          <Stack space={2}>
+          <Stack gap={2}>
             <Text size={1} weight="medium">
               <WarningOutlineIcon style={{ marginRight: '8px' }} />
               Warning
